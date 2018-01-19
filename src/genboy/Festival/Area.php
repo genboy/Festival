@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace LDX\iProtector;
+namespace genboy\Festival;
 
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
