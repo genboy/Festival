@@ -13,6 +13,8 @@ class Area{
 	public $flags;
 	/** @var string */
 	private $name;
+	/** @var string */
+	private $desc;
 	/** @var Vector3 */
 	private $pos1;
 	/** @var Vector3 */
@@ -26,8 +28,9 @@ class Area{
 	/** @var Main */
 	private $plugin;
 
-	public function __construct(string $name, array $flags, Vector3 $pos1, Vector3 $pos2, string $levelName, array $whitelist, array $commands, Main $plugin){
+	public function __construct(string $name, string $desc, array $flags, Vector3 $pos1, Vector3 $pos2, string $levelName, array $whitelist, array $commands, Main $plugin){
 		$this->name = strtolower($name);
+		$this->desc = $desc;
 		$this->flags = $flags;
 		$this->pos1 = $pos1;
 		$this->pos2 = $pos2;
@@ -45,6 +48,13 @@ class Area{
 		return $this->name;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getDesc() : string {
+		return $this->desc;
+	}
+	
 	/**
 	 * @return Vector3
 	 */
@@ -96,6 +106,43 @@ class Area{
 		return false;
 	}
 
+	/**
+	 * @return string[]
+	 */
+	public function getCommands() : array{
+		return $this->commands;
+	}
+
+	/**
+	 * @param string $flag
+	 *
+	 * @return bool
+	 */
+	public function getCommand(string $id) : bool{
+		if(isset($this->commands[$id])){
+			return $this->commands[$id];
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param string $flag
+	 * @param bool   $value
+	 *
+	 * @return bool
+	 */
+	public function setCommand(string $id, bool $value) : bool{
+		if(isset($this->commands[$id])){
+			$this->commands[$id] = $value;
+			$this->plugin->saveAreas();
+
+			return true;
+		}
+
+		return false;
+	}
+	
 	/**
 	 * @param Vector3 $pos
 	 * @param string  $levelName
