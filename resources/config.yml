@@ -1,0 +1,33 @@
+# Config file for Festival
+
+# Settings for unprotected areas in worlds without specific settings:
+Default:
+
+  # Keep players from getting hurt?
+  God: false
+
+  # Keep players from editing the world?
+  Edit: false
+
+  # Keep players from touching blocks and activating things like chests?
+  Touch: false
+  
+  # Keep players from seeing enter/leave/description messages?
+  Msg: false
+
+# Settings for unprotected areas in individual worlds:
+Worlds:
+
+  DEFAULT:
+
+    # Keep players from getting hurt?
+    God: false
+
+    # Keep players from editing the world?
+    Edit: false
+
+    # Keep players from touching blocks and activating things like chests?
+    Touch: false
+
+    # Keep players from seeing enter/leave/description messages?
+    Msg: false
