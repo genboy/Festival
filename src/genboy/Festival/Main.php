@@ -37,6 +37,8 @@ class Main extends PluginBase implements Listener{
 	private $edit = false;
 	/** @var bool */
 	private $touch = false;
+	/** @var string */
+	private $msg = false;  // area enter/leave messages display on/off or op only
 
 	/** @var bool[] */
 	private $selectingFirst = [];
@@ -49,8 +51,6 @@ class Main extends PluginBase implements Listener{
 	private $secondPosition = [];
 
 
-	/** @var string */
-	private $messages = 'op';  // area enter/leave messages display on/off or op only
 	/** @var string[] */
 	private $inArea = []; // array of area's player is in
 
@@ -79,8 +79,7 @@ class Main extends PluginBase implements Listener{
 		$this->god = $c["Default"]["God"];
 		$this->edit = $c["Default"]["Edit"];
 		$this->touch = $c["Default"]["Touch"];
-
-		$this->messages = $c["Info"]["Messages"];
+		$this->msg = $c["Default"]["Msg"];
 
 		foreach($c["Worlds"] as $level => $flags){
 			$this->levels[$level] = $flags;
@@ -349,7 +348,7 @@ class Main extends PluginBase implements Listener{
 	 * @return bool
 	 */
 	public function canEdit(Player $player, Position $position) : bool{
-		if($player->hasPermission("iprotector") || $player->hasPermission("iprotector.access")){
+		if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
 			return true;
 		}
 		$o = true;
@@ -383,7 +382,7 @@ class Main extends PluginBase implements Listener{
 	 * @return bool
 	 */
 	public function canTouch(Player $player, Position $position) : bool{
-		if($player->hasPermission("iprotector") || $player->hasPermission("iprotector.access")){
+		if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
 			return true;
 		}
 		$o = true;
@@ -487,7 +486,7 @@ class Main extends PluginBase implements Listener{
 		foreach($this->areas as $area){
 			if( !$area->contains( $ev->getPlayer()->getPosition(), $ev->getPlayer()->getLevel()->getName() ) ){
 				if( in_array( strtolower( $area->getName() ) , $this->inArea ) ){
-					if( $this->messages == 'on' || ( $this->messages == 'op' && ( $ev->getPlayer()->hasPermission("iprotector") || $ev->getPlayer()->hasPermission("iprotector.access")) ) ){
+					if( $this->msg == true || $ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
 						$ev->getPlayer()->sendMessage( TextFormat::YELLOW . "Leaving " . $area->getName() );
 					}
 					if (($key = array_search( strtolower( $area->getName() ), $this->inArea)) !== false) {
@@ -498,7 +497,7 @@ class Main extends PluginBase implements Listener{
 				}
 			}else{
 				if( !in_array( strtolower( $area->getName() ), $this->inArea ) ){ // Player enter in Area
-					if( $this->messages == 'on' || ( $this->messages == 'op' && ( $ev->getPlayer()->hasPermission("iprotector") || $ev->getPlayer()->hasPermission("iprotector.access")) ) ){
+					if( $this->msg == true ||$ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
 						$ev->getPlayer()->sendMessage( TextFormat::AQUA . "Enter " . $area->getName() );
 					}
 					$this->inArea[] = strtolower( $area->getName() );
