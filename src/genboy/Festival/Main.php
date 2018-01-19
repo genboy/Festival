@@ -1,14 +1,13 @@
 <?php
 /* src/genboy/Festival/Main.php */
 
-<?php
-
 declare(strict_types = 1);
 
 namespace genboy\Festival;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\command\ConsoleCommandSender;
 use pocketmine\entity\Entity;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
@@ -84,6 +83,10 @@ class Main extends PluginBase implements Listener{
 		foreach($c["Worlds"] as $level => $flags){
 			$this->levels[$level] = $flags;
 		}
+
+		// Start Info
+		$this->getLogger()->info(TextFormat::GREEN . "Festival plugin has " . count($this->areas) . " areas set.");
+
 	}
 
 	public function onCommand(CommandSender $sender, Command $cmd, string $label, array $args) : bool{
@@ -129,7 +132,7 @@ class Main extends PluginBase implements Listener{
 					if(isset($args[1])){
 						if(isset($this->firstPosition[$playerName], $this->secondPosition[$playerName])){
 							if(!isset($this->areas[strtolower($args[1])])){
-								new Area(strtolower($args[1]), "add description here",["edit" => true, "god" => false, "touch" => true], $this->firstPosition[$playerName], $this->secondPosition[$playerName], $sender->getLevel()->getName(), [$playerName], [],$this);
+								new Area(strtolower($args[1]), "add description here",["edit" => true, "god" => false, "touch" => true, "msg" => false], $this->firstPosition[$playerName], $this->secondPosition[$playerName], $sender->getLevel()->getName(), [$playerName], [],$this);
 								$this->saveAreas();
 								unset($this->firstPosition[$playerName], $this->secondPosition[$playerName]);
 								$o = TextFormat::AQUA . "Area created!";
@@ -221,10 +224,10 @@ class Main extends PluginBase implements Listener{
 									}
 									$o = TextFormat::GREEN . "Flag " . $flag . " set to " . $status . " for area " . $area->getName() . "!";
 								}else{
-									$o = TextFormat::RED . "Flag not found. (Flags: edit, god, touch)";
+									$o = TextFormat::RED . "Flag not found. (Flags: edit, god, touch, msg)";
 								}
 							}else{
-								$o = TextFormat::RED . "Please specify a flag. (Flags: edit, god, touch)";
+								$o = TextFormat::RED . "Please specify a flag. (Flags: edit, god, touch, msg)";
 							}
 						}else{
 							$o = TextFormat::RED . "Area doesn't exist.";
@@ -310,7 +313,7 @@ class Main extends PluginBase implements Listener{
 	public function saveAreas() : void{
 		$areas = [];
 		foreach($this->areas as $area){
-			$areas[] = ["name" => $area->getName(), "flags" => $area->getFlags(), "pos1" => [$area->getFirstPosition()->getFloorX(), $area->getFirstPosition()->getFloorY(), $area->getFirstPosition()->getFloorZ()] , "pos2" => [$area->getSecondPosition()->getFloorX(), $area->getSecondPosition()->getFloorY(), $area->getSecondPosition()->getFloorZ()], "level" => $area->getLevelName(), "whitelist" => $area->getWhitelist()];
+			$areas[] = ["name" => $area->getName(), "desc" => $area->getDesc(), "flags" => $area->getFlags(), "pos1" => [$area->getFirstPosition()->getFloorX(), $area->getFirstPosition()->getFloorY(), $area->getFirstPosition()->getFloorZ()] , "pos2" => [$area->getSecondPosition()->getFloorX(), $area->getSecondPosition()->getFloorY(), $area->getSecondPosition()->getFloorZ()], "level" => $area->getLevelName(), "whitelist" => $area->getWhitelist(), "commands" => $area->getCommands()];
 		}
 		file_put_contents($this->getDataFolder() . "areas.json", json_encode($areas));
 	}
@@ -486,7 +489,7 @@ class Main extends PluginBase implements Listener{
 		foreach($this->areas as $area){
 			if( !$area->contains( $ev->getPlayer()->getPosition(), $ev->getPlayer()->getLevel()->getName() ) ){
 				if( in_array( strtolower( $area->getName() ) , $this->inArea ) ){
-					if( $this->msg == true || $ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
+					if( !$area->getFlag("msg") || $ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
 						$ev->getPlayer()->sendMessage( TextFormat::YELLOW . "Leaving " . $area->getName() );
 					}
 					if (($key = array_search( strtolower( $area->getName() ), $this->inArea)) !== false) {
@@ -497,7 +500,7 @@ class Main extends PluginBase implements Listener{
 				}
 			}else{
 				if( !in_array( strtolower( $area->getName() ), $this->inArea ) ){ // Player enter in Area
-					if( $this->msg == true ||$ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
+					if( !$area->getFlag("msg")  || $ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
 						$ev->getPlayer()->sendMessage( TextFormat::AQUA . "Enter " . $area->getName() );
 					}
 					$this->inArea[] = strtolower( $area->getName() );

@@ -1,4 +1,5 @@
 <?php
+/* src/genboy/Festival/Area.php */
 
 declare(strict_types = 1);
 
