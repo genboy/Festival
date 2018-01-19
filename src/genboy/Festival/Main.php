@@ -302,6 +302,126 @@ class Main extends PluginBase implements Listener{
 					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
 				break;
+			case "command":
+					/* /fe command <areaname> <add|list|edit|del> <commandindex> <commandstring> */
+
+								if( isset($args[1]) && (  $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.command") ) ){
+
+									if( isset( $this->areas[strtolower($args[1])] ) ){
+
+										if( isset($args[2]) ){
+											$do = strtolower($args[2]);
+											switch($do){
+												case "add":
+													if( isset($args[3]) && isset($args[4]) ){
+														$ar = $args[1];
+														$cid = $args[3];
+														unset($args[0]);
+														unset($args[1]);
+														unset($args[2]);
+														unset($args[3]);
+														$commandstring = implode(" ", $args);
+
+														$area = $this->areas[strtolower($ar)];
+														$cmds = $area->commands;
+														if( count($cmds) == 0 || !isset($cmds[$cid]) ){
+															$area->commands[$cid] = $commandstring;
+															$this->saveAreas();
+															$o = TextFormat::GREEN .'Command (id:'.$cid.') added to event '.$ar;
+														}else{
+															$o = TextFormat::RED .'Command id:'.$cid.' allready used for '.$ar.', edit this id or use another id.';
+														}
+
+													}else{
+													$o = TextFormat::RED .'Please specify the command ID and command string to add. Usage: /fe command <areaname> add <COMMANDID> <COMMANDSTRING>';
+													}
+												break;
+												case "list":
+
+														$ar = $this->areas[strtolower($args[1])];
+														$o = $args[1] .' command list:';
+														foreach($ar->commands as $id => $commandstring){
+															if( strtolower($commandstring) != '' ){
+																$o .= "\n". $id . ": ". $commandstring;
+															}
+														}
+
+
+												break;
+												case "edit":
+													//$o = '/fe command <eventname> edit <COMMANDID> <NEWCOMMANDSTRING>';
+													if( isset($args[3]) && isset($args[4]) ){
+														$ar = $args[1];
+														$cid = $args[3];
+														unset($args[0]);
+														unset($args[1]);
+														unset($args[2]);
+														unset($args[3]);
+														$commandstring = implode(" ", $args);
+
+														$area = $this->areas[strtolower($ar)];
+														$cmds = $area->commands;
+														if( isset($cmds[$cid]) ){
+															$area->commands[$cid] = $commandstring;
+															$this->saveAreas();
+															$o = TextFormat::GREEN .'Command (id:'.$cid.') edited';
+														}else{
+															$o = TextFormat::RED .'Command id:'.$cid.' could not be found. Check the command id with /fe command <areaname> list';
+														}
+
+													}else{
+														$o = TextFormat::RED .'Please specify the command ID and command string to add. Usage: /fe command <areaname> add <COMMANDID> <COMMANDSTRING>';
+													}
+
+
+												break;
+
+												case "del":
+													if( isset($args[3]) ){
+														$area = $this->areas[strtolower($args[1])];
+														$cid = $args[3];
+														if( isset($area->commands[$cid]) ){
+															unset($area->commands[$cid]);
+															$this->saveAreas();
+															$o = TextFormat::GREEN .'Command (id:'.$cid.') deleted';
+														}else{
+															$o = TextFormat::RED .'Command ID not found. See the commands with /fe event command <areaname> list';
+														}
+													}else{
+														$o = TextFormat::RED .'Please specify the command ID to delete. Usage /fe event command <areaname> del <COMMANDID>';
+													}
+												break;
+												default:
+													return false;
+											}
+										}else{
+											$o = TextFormat::RED . "Please add an action to perform with command.  Usage: /fe command <areaname> <add/list/edit/del> <commandID> <commandstring>.";
+										}
+									}else{
+
+										$o = TextFormat::RED . "Area not found, please submit a valid name. Usage: /fe command <areaname> <add/list/edit/del> <commandID> <commandstring>.";
+
+									}
+								}else{
+
+									if(!isset($args[1])){
+
+										$o = TextFormat::RED . "Area not found, please submit a valid name. Usage: /fe command <areaname> <add/list/edit/del> <commandID> <commandstring>.";
+
+
+									}else{
+
+										$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+
+									}
+								}
+
+
+
+
+
+
+				break;
 			default:
 				return false;
 		}

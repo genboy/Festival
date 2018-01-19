@@ -25,7 +25,7 @@ class Area{
 	/** @var string[] */
 	private $whitelist;
 	/** @var string[] */
-	private $commands;
+	public $commands;
 	/** @var Main */
 	private $plugin;
 
