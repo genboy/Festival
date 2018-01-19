@@ -44,6 +44,9 @@ permissions:
               festival.command.fe.tp:
                 description: "Allows access to the Festival tp subcommand."
                 default: op
+              festival.command.fe.desc:
+                description: "Allows access to the Festival description subcommand."
+                default: op
               festival.command.fe.flag:
                 description: "Allows access to the Festival flag subcommand."
                 default: op
@@ -56,16 +59,3 @@ permissions:
               festival.command.fe.command:
                 description: "Allows access to the Festival command subcommand."
                 default: op
-                children:
-                  festival.command.fe.command.add:
-                    description: "Allows access to the Festival add command subcommand."
-                    default: op
-                  festival.command.fe.command.list:
-                    description: "Allows access to the Festival list commands subcommand."
-                    default: op
-                  festival.command.fe.command.edit:
-                    description: "Allows access to the Festival edit command subcommand."
-                    default: op
-                  festival.command.fe.command.del:
-                    description: "Allows access to the Festival del command subcommand."
-                    default: op
