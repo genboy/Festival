@@ -21,16 +21,19 @@ class Area{
 	private $levelName;
 	/** @var string[] */
 	private $whitelist;
+	/** @var string[] */
+	private $commands;
 	/** @var Main */
 	private $plugin;
 
-	public function __construct(string $name, array $flags, Vector3 $pos1, Vector3 $pos2, string $levelName, array $whitelist, Main $plugin){
+	public function __construct(string $name, array $flags, Vector3 $pos1, Vector3 $pos2, string $levelName, array $whitelist, array $commands, Main $plugin){
 		$this->name = strtolower($name);
 		$this->flags = $flags;
 		$this->pos1 = $pos1;
 		$this->pos2 = $pos2;
 		$this->levelName = $levelName;
 		$this->whitelist = $whitelist;
+		$this->commands = $commands;
 		$this->plugin = $plugin;
 		$this->save();
 	}
