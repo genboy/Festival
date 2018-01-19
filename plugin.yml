@@ -1,0 +1,58 @@
+name: iProtector
+author: LDX
+version: 3.1.0-9
+main: LDX\iProtector\Main
+load: POSTWORLD
+api: [3.0.0-ALPHA7, 3.0.0-ALPHA8, 3.0.0-ALPHA9, 3.0.0-ALPHA10]
+website: "https://github.com/LDX-MCPE/iProtector"
+commands:
+  area:
+    description: "Allows you to manage areas."
+    usage: "/area <pos1/pos2/create/list/here/flag/whitelist/delete>"
+    permission: iprotector.command.area
+permissions:
+  iprotector:
+    description: "Allows access to all iProtector features."
+    default: false
+    children:
+      iprotector.access:
+        description: "Allows access to editing terrain in iProtector areas."
+        default: op
+      iprotector.command:
+        description: "Allows access to all iProtector commands."
+        default: false
+        children:
+          iprotector.command.area:
+            description: "Allows access to the area command."
+            default: op
+            children:
+              iprotector.command.area.pos1:
+                description: "Allows access to the iProtector pos1 subcommand."
+                default: op
+              iprotector.command.area.pos2:
+                description: "Allows access to the iProtector pos2 subcommand."
+                default: op
+              iprotector.command.area.create:
+                description: "Allows access to the iProtector create subcommand."
+                default: op
+              iprotector.command.area.list:
+                description: "Allows access to the iProtector list subcommand."
+                default: op
+              iprotector.command.area.here:
+                description: "Allows access to the iProtector here subcommand."
+                default: op
+              iprotector.command.area.flag:
+                description: "Allows access to the iProtector flag subcommand."
+                default: op
+              iprotector.command.area.delete:
+                description: "Allows access to the iProtector delete subcommand."
+                default: op
+              iprotector.command.area.whitelist:
+                description: "Allows access to the iProtector whitelist subcommand."
+                default: op
+              iprotector.command.area.tp:
+                description: "Allows access to the iProtector tp subcommand."
+                default: op
+              iprotector.command.area.list:
+                description: "Allows access to the iProtector list subcommand."
+                default: op
