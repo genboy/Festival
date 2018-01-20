@@ -85,7 +85,11 @@ class Main extends PluginBase implements Listener{
 		}
 
 		// Start Info
-		$this->getLogger()->info(TextFormat::GREEN . "Festival plugin has " . count($this->areas) . " areas set.");
+		$c = 0;
+		foreach( $this->areas as $a ){
+			$c = $c + count( $a->getCommands() );
+		}
+		$this->getLogger()->info(TextFormat::GREEN . "Festival plugin has " . count($this->areas) . " areas and ". $c ." commands set.");
 
 	}
 
