@@ -153,6 +153,38 @@ class Main extends PluginBase implements Listener{
 					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
 				break;
+			case "desc":
+				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.desc")){
+
+					if(isset($args[1])){
+
+						if(isset($this->areas[strtolower($args[1])])){
+
+							if(isset($args[2])){
+								$ar = $args[1];
+								unset($args[0]);
+								unset($args[1]);
+								$desc = implode(" ", $args);
+								$area = $this->areas[strtolower($ar)];
+								$area->desc = $desc;
+								$this->saveAreas();
+								$o = TextFormat::GREEN . "Area ". TextFormat::LIGHT_PURPLE . $area->getName() . TextFormat::GREEN . " description saved";
+							}else{
+								$o = TextFormat::RED . "Please write the description. Usage /fe desc <areaname> <..>";
+							}
+
+						}else{
+							$o = TextFormat::RED . "Area does not exist.";
+						}
+					}else{
+						$o = TextFormat::RED . "Please specify an area to edit the description. Usage: /fe desc <areaname> <desc>";
+					}
+
+
+				}else{
+					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+				}
+				break;
 			case "list":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.list")){
 					$o = TextFormat::AQUA . "Areas: " . TextFormat::RESET;
@@ -173,8 +205,15 @@ class Main extends PluginBase implements Listener{
 					$o = "";
 					foreach($this->areas as $area){
 						if($area->contains($sender->getPosition(), $sender->getLevel()->getName()) && $area->getWhitelist() !== null){
-							$o .= TextFormat::AQUA . "Area " . $area->getName() . " can be edited by " . implode(", ", $area->getWhitelist());
-							break;
+							$o .= TextFormat::AQUA . "-- Area " . TextFormat::LIGHT_PURPLE . $area->getName() . TextFormat::AQUA . " can be edited by " . TextFormat::WHITE . implode(", ", $area->getWhitelist()) ."--";
+							if( $cmds = $area->getCommands() && count( $area->getCommands() ) > 0 ){
+								foreach( $area->getCommands() as $i => $c ){
+									$o .= "\n". TextFormat::LIGHT_PURPLE . "Area command " . $i . ": " . $c;
+								}
+							}else{
+								$o .= "\nNo commands attachted";
+							}
+							$o .= "\n";
 						}
 					}
 					if($o === "") {
@@ -626,6 +665,9 @@ class Main extends PluginBase implements Listener{
 				if( !in_array( strtolower( $area->getName() ), $this->inArea ) ){ // Player enter in Area
 					if( !$area->getFlag("msg")  || $ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
 						$ev->getPlayer()->sendMessage( TextFormat::AQUA . "Enter " . $area->getName() );
+						if( $area->getDesc() ){
+							$ev->getPlayer()->sendMessage( TextFormat::WHITE . $area->getDesc() );
+						}
 					}
 					$this->inArea[] = strtolower( $area->getName() );
 					$this->onEnterArea( $area, $ev);

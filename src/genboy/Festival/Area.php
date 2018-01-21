@@ -15,7 +15,7 @@ class Area{
 	/** @var string */
 	private $name;
 	/** @var string */
-	private $desc;
+	public $desc;
 	/** @var Vector3 */
 	private $pos1;
 	/** @var Vector3 */
