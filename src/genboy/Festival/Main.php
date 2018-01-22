@@ -71,7 +71,7 @@ class Main extends PluginBase implements Listener{
 		}
 		$data = json_decode(file_get_contents($this->getDataFolder() . "areas.json"), true);
 		foreach($data as $datum){
-			new Area($datum["name"], $datum["desc"], $datum["flags"], new Vector3($datum["pos1"]["0"], $datum["pos1"]["1"], $datum["pos1"]["2"]), new Vector3($datum["pos2"]["0"], $datum["pos2"]["1"], $datum["pos2"]["2"]), $datum["level"], $datum["whitelist"], $datum["commands"], $this);
+			new Area($datum["name"], $datum["desc"], $datum["flags"], new Vector3($datum["pos1"]["0"], $datum["pos1"]["1"], $datum["pos1"]["2"]), new Vector3($datum["pos2"]["0"], $datum["pos2"]["1"], $datum["pos2"]["2"]), $datum["level"], $datum["whitelist"], $datum["commands"], $datum["events"], $this);
 		}
 		$c = yaml_parse_file($this->getDataFolder() . "config.yml");
 
@@ -136,7 +136,7 @@ class Main extends PluginBase implements Listener{
 					if(isset($args[1])){
 						if(isset($this->firstPosition[$playerName], $this->secondPosition[$playerName])){
 							if(!isset($this->areas[strtolower($args[1])])){
-								new Area(strtolower($args[1]), "add description here",["edit" => true, "god" => false, "touch" => true, "msg" => false], $this->firstPosition[$playerName], $this->secondPosition[$playerName], $sender->getLevel()->getName(), [$playerName], [],$this);
+								new Area(strtolower($args[1]), "add description here",["edit" => true, "god" => false, "touch" => true, "msg" => false], $this->firstPosition[$playerName], $this->secondPosition[$playerName], $sender->getLevel()->getName(), [$playerName], [], [], $this);
 								$this->saveAreas();
 								unset($this->firstPosition[$playerName], $this->secondPosition[$playerName]);
 								$o = TextFormat::AQUA . "Area created!";
@@ -205,10 +205,12 @@ class Main extends PluginBase implements Listener{
 					$o = "";
 					foreach($this->areas as $area){
 						if($area->contains($sender->getPosition(), $sender->getLevel()->getName()) && $area->getWhitelist() !== null){
-							$o .= TextFormat::AQUA . "-- Area " . TextFormat::LIGHT_PURPLE . $area->getName() . TextFormat::AQUA . " can be edited by " . TextFormat::WHITE . implode(", ", $area->getWhitelist()) ."--";
+							$o .= TextFormat::AQUA . "-- Area " . TextFormat::WHITE . $area->getName() . TextFormat::AQUA . " --";
+							$o .= TextFormat::AQUA . "\nEditors: " . TextFormat::WHITE . implode(", ", $area->getWhitelist());
 							if( $cmds = $area->getCommands() && count( $area->getCommands() ) > 0 ){
+								$o .= "\n". TextFormat::AQUA . "Commands:";
 								foreach( $area->getCommands() as $i => $c ){
-									$o .= "\n". TextFormat::LIGHT_PURPLE . "Area command " . $i . ": " . $c;
+									$o .= "\n". TextFormat::LIGHT_PURPLE . $i . ": " . $c;
 								}
 							}else{
 								$o .= "\nNo commands attachted";
@@ -356,21 +358,45 @@ class Main extends PluginBase implements Listener{
 											$do = strtolower($args[2]);
 											switch($do){
 												case "add":
+													$do = "enter";
+												case "enter":
+												case "leave":
+												case "center":
 													if( isset($args[3]) && isset($args[4]) ){
+
 														$ar = $args[1];
 														$cid = $args[3];
 														unset($args[0]);
 														unset($args[1]);
 														unset($args[2]);
 														unset($args[3]);
+
 														$commandstring = implode(" ", $args);
 
 														$area = $this->areas[strtolower($ar)];
 														$cmds = $area->commands;
+
 														if( count($cmds) == 0 || !isset($cmds[$cid]) ){
+
+															if( isset($area->events[$do]) ){
+																$eventarr = explode(",", $area->events[$do] );
+																if(in_array($cid,$eventarr)){
+																	$o = TextFormat::RED .'Command id:'.$cid.' allready set for area '.$do.'-event.';
+																}else{
+																	$eventarr[] = $cid;
+																	$eventstr = implode(",", $eventarr );
+																	$area->events[$do] = $eventstr;
+																	$o = TextFormat::RED .'Command id:'.$cid.' set for area '.$do.'-event';
+																}
+															}else{
+																$area->events[$do] = $cid;
+																$o = TextFormat::RED .'Command id:'.$cid.' set for area '.$do.'-event';
+															}
+
 															$area->commands[$cid] = $commandstring;
 															$this->saveAreas();
-															$o = TextFormat::GREEN .'Command (id:'.$cid.') added to event '.$ar;
+															$o = TextFormat::GREEN .'Command (id:'.$cid.') added to area '.$ar;
+
 														}else{
 															$o = TextFormat::RED .'Command id:'.$cid.' allready used for '.$ar.', edit this id or use another id.';
 														}
@@ -424,6 +450,19 @@ class Main extends PluginBase implements Listener{
 														$area = $this->areas[strtolower($args[1])];
 														$cid = $args[3];
 														if( isset($area->commands[$cid]) ){
+
+															if( isset($area->events) ){
+																foreach($area->events as $e => $i){
+																	$evs = explode(",", $i);
+																	foreach($evs as $k => $ci){
+																		if($ci == $cid){
+																			unset($evs[$k]);
+																		}
+																	}
+																	$area->events[$e] = implode(",",$evs);
+																}
+															}
+
 															unset($area->commands[$cid]);
 															$this->saveAreas();
 															$o = TextFormat::GREEN .'Command (id:'.$cid.') deleted';
@@ -476,7 +515,7 @@ class Main extends PluginBase implements Listener{
 	public function saveAreas() : void{
 		$areas = [];
 		foreach($this->areas as $area){
-			$areas[] = ["name" => $area->getName(), "desc" => $area->getDesc(), "flags" => $area->getFlags(), "pos1" => [$area->getFirstPosition()->getFloorX(), $area->getFirstPosition()->getFloorY(), $area->getFirstPosition()->getFloorZ()] , "pos2" => [$area->getSecondPosition()->getFloorX(), $area->getSecondPosition()->getFloorY(), $area->getSecondPosition()->getFloorZ()], "level" => $area->getLevelName(), "whitelist" => $area->getWhitelist(), "commands" => $area->getCommands()];
+			$areas[] = ["name" => $area->getName(), "desc" => $area->getDesc(), "flags" => $area->getFlags(), "pos1" => [$area->getFirstPosition()->getFloorX(), $area->getFirstPosition()->getFloorY(), $area->getFirstPosition()->getFloorZ()] , "pos2" => [$area->getSecondPosition()->getFloorX(), $area->getSecondPosition()->getFloorY(), $area->getSecondPosition()->getFloorZ()], "level" => $area->getLevelName(), "whitelist" => $area->getWhitelist(), "commands" => $area->getCommands(), "events" => $area->getEvents()];
 		}
 		file_put_contents($this->getDataFolder() . "areas.json", json_encode($areas));
 	}

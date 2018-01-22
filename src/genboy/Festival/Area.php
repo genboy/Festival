@@ -26,10 +26,12 @@ class Area{
 	private $whitelist;
 	/** @var string[] */
 	public $commands;
+	/** @var string[] */
+	public $events;
 	/** @var Main */
 	private $plugin;
 
-	public function __construct(string $name, string $desc, array $flags, Vector3 $pos1, Vector3 $pos2, string $levelName, array $whitelist, array $commands, Main $plugin){
+	public function __construct(string $name, string $desc, array $flags, Vector3 $pos1, Vector3 $pos2, string $levelName, array $whitelist, array $commands, array $events, Main $plugin){
 		$this->name = strtolower($name);
 		$this->desc = $desc;
 		$this->flags = $flags;
@@ -38,6 +40,7 @@ class Area{
 		$this->levelName = $levelName;
 		$this->whitelist = $whitelist;
 		$this->commands = $commands;
+		$this->events = $events;
 		$this->plugin = $plugin;
 		$this->save();
 	}
@@ -144,6 +147,17 @@ class Area{
 		return false;
 	}
 	
+	/**
+	 * @return string[]
+	 */
+	public function getEvents() : array{
+		return $this->events;
+	}
+
+
+
+
+
 	/**
 	 * @param Vector3 $pos
 	 * @param string  $levelName
