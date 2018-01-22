@@ -130,23 +130,7 @@ class Area{
 		return false;
 	}
 
-	/**
-	 * @param string $flag
-	 * @param bool   $value
-	 *
-	 * @return bool
-	 */
-	public function setCommand(string $id, bool $value) : bool{
-		if(isset($this->commands[$id])){
-			$this->commands[$id] = $value;
-			$this->plugin->saveAreas();
 
-			return true;
-		}
-
-		return false;
-	}
-	
 	/**
 	 * @return string[]
 	 */
@@ -154,7 +138,12 @@ class Area{
 		return $this->events;
 	}
 
-
+	/**
+	 * @return string[]
+	 */
+	public function getEvents() : array{
+		return $this->events;
+	}
 
 
 
