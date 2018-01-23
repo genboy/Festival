@@ -207,14 +207,25 @@ class Main extends PluginBase implements Listener{
 						if($area->contains($sender->getPosition(), $sender->getLevel()->getName()) && $area->getWhitelist() !== null){
 							$o .= TextFormat::AQUA . "-- Area " . TextFormat::WHITE . $area->getName() . TextFormat::AQUA . " --";
 							$o .= TextFormat::AQUA . "\nEditors: " . TextFormat::WHITE . implode(", ", $area->getWhitelist());
+
 							if( $cmds = $area->getCommands() && count( $area->getCommands() ) > 0 ){
 								$o .= "\n". TextFormat::AQUA . "Commands:";
-								foreach( $area->getCommands() as $i => $c ){
-									$o .= "\n". TextFormat::LIGHT_PURPLE . $i . ": " . $c;
+								foreach( $area->getEvents() as $type => $list ){
+									$ids = explode(",",$list);
+									$o .= "\n". TextFormat::YELLOW . "On ". $type;
+									foreach($ids as $cmdid){
+										if( isset($area->commands[$cmdid]) ){
+											$o .= "\n". TextFormat::LIGHT_PURPLE . $cmdid . ": ".$area->commands[$cmdid];
+										}
+									}
 								}
+								/*foreach( $area->getCommands() as $i => $c ){
+									$o .= "\n". TextFormat::LIGHT_PURPLE . $i . ": " . $c;
+								}*/
 							}else{
 								$o .= "\nNo commands attachted";
 							}
+
 							$o .= "\n";
 						}
 					}
@@ -371,9 +382,9 @@ class Main extends PluginBase implements Listener{
 														unset($args[2]);
 														unset($args[3]);
 
-														$commandstring = implode(" ", $args);
-
 														$area = $this->areas[strtolower($ar)];
+
+														$commandstring = implode(" ", $args);
 														$cmds = $area->commands;
 
 														if( count($cmds) == 0 || !isset($cmds[$cid]) ){
@@ -408,13 +419,38 @@ class Main extends PluginBase implements Listener{
 												case "list":
 
 														$ar = $this->areas[strtolower($args[1])];
-														$o = $args[1] .' command list:';
-														foreach($ar->commands as $id => $commandstring){
-															if( strtolower($commandstring) != '' ){
-																$o .= "\n". $id . ": ". $commandstring;
+
+														if( count($ar->commands) > 0 ){
+
+															$o = TextFormat::WHITE . $args[1] . TextFormat::AQUA .' command list:';
+
+															foreach($ar->events as $type => $list){
+
+																$cmds = explode(",",$list);
+																$o .= "\n". TextFormat::YELLOW ."On ". $type . ":";
+
+																foreach($cmds as $cmdid){
+																	if(isset($ar->commands[$cmdid])){
+																		$o .= "\n". TextFormat::LIGHT_PURPLE . $cmdid .": ". $ar->commands[$cmdid];
+																	}
+																}
 															}
+
 														}
 
+													/*
+														foreach($ar->commands as $cmdid => $commandstring){
+															if( strtolower($commandstring) != '' ){
+																foreach($ar->events as $type => $list){
+																	$cmds = explode(",",$list);
+																	if( in_array($cmdid, $cmds)){
+																		$ct = $type;
+																	}
+																}
+																$o .= "\n". $cmdid . ": ". $commandstring;
+															}
+														}
+*/
 
 												break;
 												case "edit":

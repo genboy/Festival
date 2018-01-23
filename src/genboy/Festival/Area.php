@@ -141,8 +141,8 @@ class Area{
 	/**
 	 * @return string[]
 	 */
-	public function getEvents() : array{
-		return $this->events;
+	public function setEvent( string $type, string $cmdid) : array{
+		return true;
 	}
 
 
