@@ -437,27 +437,67 @@ class Main extends PluginBase implements Listener{
 															}
 
 														}
+													break;
+												case "event":
 
-													/*
-														foreach($ar->commands as $cmdid => $commandstring){
-															if( strtolower($commandstring) != '' ){
-																foreach($ar->events as $type => $list){
-																	$cmds = explode(",",$list);
-																	if( in_array($cmdid, $cmds)){
-																		$ct = $type;
+													//$o = '/fe command <eventname> event <COMMANDID> <EVENTTYPE>';
+													if( isset($args[3]) && isset($args[4]) ){
+														$ar = $args[1];
+														$area = $this->areas[strtolower($ar)];
+														$cid = $args[3];
+														$evt = strtolower($args[4]);
+														$o = '';
+
+														if( $evl = $area->getEvents() ){
+															$ts = 0;
+
+
+																foreach($evl as $t => $cids ){
+																	$arr = explode(",",$cids);
+																	if( in_array($cid,$arr) && $t != $evt){
+																		foreach($arr as $k => $ci){
+																			if($ci == $cid){
+																				unset($arr[$k]);
+																			}
+																		}
+																		$area->events[$t] = implode(",", $arr);
+																		$ts = 1;
 																	}
-																}
-																$o .= "\n". $cmdid . ": ". $commandstring;
-															}
-														}
-*/
+																	if( !in_array($cid,$arr) && $t == $evt){
+																		$arr[] = $cid;
+																		$area->events[$t] = implode(",", $arr);
+																		$ts = 1;
+																	}
 
-												break;
+																}
+
+															if(!isset($evl[$evt])){
+																// add new event type
+																$area->events[$evt] = $cid;
+																$ts = 1;
+															}
+
+															if($ts == 1){
+
+																$this->saveAreas();
+																$o = TextFormat::GREEN .'Command (id:'.$cid.') event is now '.$evt;
+
+															}else{
+																$o = TextFormat::RED .'Command (id:'.$cid.') event '.$evt.' change failed';
+															}
+
+
+														}
+
+													}
+
+													break;
 												case "edit":
 													//$o = '/fe command <eventname> edit <COMMANDID> <NEWCOMMANDSTRING>';
 													if( isset($args[3]) && isset($args[4]) ){
 														$ar = $args[1];
 														$cid = $args[3];
+
 														unset($args[0]);
 														unset($args[1]);
 														unset($args[2]);
