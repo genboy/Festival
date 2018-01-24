@@ -420,19 +420,23 @@ class Main extends PluginBase implements Listener{
 
 														$ar = $this->areas[strtolower($args[1])];
 
-														if( count($ar->commands) > 0 ){
+														if( isset($ar->commands) ){
 
 															$o = TextFormat::WHITE . $args[1] . TextFormat::AQUA .' command list:';
 
 															foreach($ar->events as $type => $list){
 
-																$cmds = explode(",",$list);
-																$o .= "\n". TextFormat::YELLOW ."On ". $type . ":";
-
-																foreach($cmds as $cmdid){
-																	if(isset($ar->commands[$cmdid])){
-																		$o .= "\n". TextFormat::LIGHT_PURPLE . $cmdid .": ". $ar->commands[$cmdid];
+																if( trim($list,",") != "" ){
+																	$o .= "\n". TextFormat::YELLOW ."On ". $type . ":";
+																	$cmds = explode(",", trim($list,",") );
+																	foreach($cmds as $cmdid){
+																		if(isset($ar->commands[$cmdid])){
+																			$o .= "\n". TextFormat::LIGHT_PURPLE . $cmdid .": ". $ar->commands[$cmdid];
+																		}
 																	}
+																}else{
+																	unset($this->areas[strtolower($args[1])]->events[$type]);
+																	$this->saveAreas();
 																}
 															}
 
@@ -535,7 +539,12 @@ class Main extends PluginBase implements Listener{
 																			unset($evs[$k]);
 																		}
 																	}
-																	$area->events[$e] = implode(",",$evs);
+																	$str = trim( implode(",",$evs), ",");
+																	if( $str != ""){
+																		$area->events[$e] = $str;
+																	}else{
+																		unset($area->events[$e]);
+																	}
 																}
 															}
 
@@ -764,8 +773,11 @@ class Main extends PluginBase implements Listener{
 	 * return onEnterArea, onLeaveArea
 	 */
 	public function onMove(PlayerMoveEvent $ev) : void{
+
 		foreach($this->areas as $area){
+
 			if( !$area->contains( $ev->getPlayer()->getPosition(), $ev->getPlayer()->getLevel()->getName() ) ){
+
 				if( in_array( strtolower( $area->getName() ) , $this->inArea ) ){
 					if( !$area->getFlag("msg") || $ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
 						$ev->getPlayer()->sendMessage( TextFormat::YELLOW . "Leaving " . $area->getName() );
@@ -773,11 +785,13 @@ class Main extends PluginBase implements Listener{
 					if (($key = array_search( strtolower( $area->getName() ), $this->inArea)) !== false) {
     					unset($this->inArea[$key]);
 					}
-
 					$this->onLeaveArea( $area, $ev);
 				}
+
 			}else{
+
 				if( !in_array( strtolower( $area->getName() ), $this->inArea ) ){ // Player enter in Area
+
 					if( !$area->getFlag("msg")  || $ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
 						$ev->getPlayer()->sendMessage( TextFormat::AQUA . "Enter " . $area->getName() );
 						if( $area->getDesc() ){
@@ -787,8 +801,36 @@ class Main extends PluginBase implements Listener{
 					$this->inArea[] = strtolower( $area->getName() );
 					$this->onEnterArea( $area, $ev);
 				}
+
+
+
+				if( $area->centerContains( $ev->getPlayer()->getPosition(), $ev->getPlayer()->getLevel()->getName() ) ){
+
+					if( !in_array( strtolower( $area->getName() )."center", $this->inArea ) ){ // Player enter in Area
+						// in area center
+						if( !$area->getFlag("msg")  || $ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
+							$ev->getPlayer()->sendMessage( TextFormat::WHITE . "Enter the center of area " . $area->getName() );
+						}
+						$this->onCenterArea( $area, $ev);
+						$this->inArea[] = strtolower( $area->getName() )."center";
+					}
+
+				}else{
+
+					if( in_array( strtolower( $area->getName()."center" ) , $this->inArea ) ){
+						// leaving area center
+						if( !$area->getFlag("msg")  || $ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
+							$ev->getPlayer()->sendMessage( TextFormat::WHITE . "Leaving the center of area " . $area->getName() );
+						}
+						if (($key = array_search( strtolower( $area->getName() )."center", $this->inArea)) !== false) {
+    					    unset($this->inArea[$key]);
+						}
+					}
+				}
+
 			}
 		}
+
 	}
 
 	/*
@@ -797,13 +839,48 @@ class Main extends PluginBase implements Listener{
 	 */
 	public function onEnterArea(Area $area, PlayerMoveEvent $ev): void{
 		$player = $ev->getPlayer();
+		$areaevents = $area->getEvents();
+		if( isset( $areaevents['enter'] ) ){
+			$cmds = explode( "," , $areaevents['enter'] );
+			if(count($cmds) > 0){
+				foreach($cmds as $command){
+					$this->getServer()->dispatchCommand(new ConsoleCommandSender(), $command);
+				}
+			}
+		}
 	}
 	/*
 	 * Leave area
 	 * return @var lastArea, event
 	 */
-	public function onLeaveArea( $area, PlayerMoveEvent $ev): void{
+	public function onLeaveArea(Area $area, PlayerMoveEvent $ev): void{
 		$player = $ev->getPlayer();
+		$areaevents = $area->getEvents();
+		if( isset( $areaevents['leave'] ) ){
+			$cmds = explode( "," , $areaevents['leave'] );
+			if(count($cmds) > 0){
+				foreach($cmds as $command){
+					$this->getServer()->dispatchCommand(new ConsoleCommandSender(), $command);
+				}
+			}
+		}
+	}
+
+	/*
+	 * Leave area
+	 * return @var lastArea, event
+	 */
+	public function onCenterArea(Area $area, PlayerMoveEvent $ev): void{
+		$player = $ev->getPlayer();
+		$areaevents = $area->getEvents();
+		if( isset( $areaevents['center'] ) ){
+			$cmds = explode( "," , $areaevents['center'] );
+			if(count($cmds) > 0){
+				foreach($cmds as $command){
+					$this->getServer()->dispatchCommand(new ConsoleCommandSender(), $command);
+				}
+			}
+		}
 	}
 
 
