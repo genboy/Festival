@@ -19,29 +19,29 @@ The Festival plugin: manage and run commmands on specific events attachted to a 
 
 #### Basic area features (like iProtector - /area = /fe)
 
-/fe <pos1/pos2>
+/fe pos1/pos2
 
-/fe create <areaname>
+/fe create AREANAME  
   
-/fe flag <areaname> <god/build/touch/msg>
+/fe flag AREANAME god/build/touch/msg
   
 /fe here
 
 /fe list
 
-/fe tp <areaname>
+/fe tp AREANAME
   
-/fe desc <areaname> <description>
+/fe desc AREANAME DESCRIPTION
   
-/fe whitelist <areaname> <playername>
+/fe whitelist AREANAME PLAYERNAME
   
-/fe delete <areaname>
+/fe delete AREANAME
   
 
 
 #### Extended area features
 
-/fe command <areaname> <add(1)/list/edit/(2)event/del> <commandindex> <commandstring/eventtype> 
+/fe command AREANAME add(1)/list/edit/event(2)/del COMMANDID COMMANDSTRING/enter/leave/center 
 
 (1) 'add' is the default for attaching a command on the 'enter' event. Using 'enter', 'center' or 'leave' instead of 'add' attaches a new command to the given eventtype: /fe command <areaname> center <commandid> <commandstring>
 
@@ -51,7 +51,7 @@ The Festival plugin: manage and run commmands on specific events attachted to a 
 
 sum up:
 
-/fe <pos1/pos2/create/list/here/tp/desc/flag/delete/whitelist/command/event> <areaname> <add/enter/leave/center/list/edit/del> <cmdid> <cmdstr/eventtype>
+/fe <pos1/pos2/create/list/here/tp/desc/flag/delete/whitelist/command> <areaname> <add/enter/leave/center/list/event/edit/del> <cmdid> <cmdstr/enter/leave/center>
 
 
 
