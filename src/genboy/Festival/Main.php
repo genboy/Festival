@@ -843,11 +843,22 @@ class Main extends PluginBase implements Listener{
 		if( isset( $areaevents['enter'] ) ){
 			$cmds = explode( "," , $areaevents['enter'] );
 			if(count($cmds) > 0){
-				foreach($cmds as $command){
-					$this->getServer()->dispatchCommand(new ConsoleCommandSender(), $command);
+				foreach($cmds as $cid){
+					$command = $area->commands[$cid];
+					if (!$player->isOp()) {
+						$player->setOp(true);
+						$player->getServer()->dispatchCommand($player, $command);
+						$player->setOp(false);
+					}else{
+						$player->getServer()->dispatchCommand($player, $command);
+					}
+
+
+
 				}
 			}
 		}
+		// foreach ($this->getServer()->getOnlinePlayers() as $mplayer) {}
 	}
 	/*
 	 * Leave area
@@ -859,8 +870,16 @@ class Main extends PluginBase implements Listener{
 		if( isset( $areaevents['leave'] ) ){
 			$cmds = explode( "," , $areaevents['leave'] );
 			if(count($cmds) > 0){
-				foreach($cmds as $command){
-					$this->getServer()->dispatchCommand(new ConsoleCommandSender(), $command);
+				foreach($cmds as $cid){
+					$command = $area->commands[$cid];
+					if (!$player->isOp()) {
+						$player->setOp(true);
+						$player->getServer()->dispatchCommand($player, $command);
+						$player->setOp(false);
+
+					}else{
+						$player->getServer()->dispatchCommand($player, $command);
+					}
 				}
 			}
 		}
@@ -876,9 +895,19 @@ class Main extends PluginBase implements Listener{
 		if( isset( $areaevents['center'] ) ){
 			$cmds = explode( "," , $areaevents['center'] );
 			if(count($cmds) > 0){
-				foreach($cmds as $command){
-					$this->getServer()->dispatchCommand(new ConsoleCommandSender(), $command);
+				foreach($cmds as $cid){
+					$command = $area->commands[$cid];
+					if (!$player->isOp()) {
+						$player->setOp(true);
+						//$player->sendMessage("/".$command);
+						$player->getServer()->dispatchCommand($player, $command);
+						$player->setOp(false);
+
+					}else{
+						$player->getServer()->dispatchCommand($player, $command);
+					}
 				}
+
 			}
 		}
 	}
