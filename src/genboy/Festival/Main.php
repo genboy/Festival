@@ -207,14 +207,25 @@ class Main extends PluginBase implements Listener{
 						if($area->contains($sender->getPosition(), $sender->getLevel()->getName()) && $area->getWhitelist() !== null){
 							$o .= TextFormat::AQUA . "-- Area " . TextFormat::WHITE . $area->getName() . TextFormat::AQUA . " --";
 							$o .= TextFormat::AQUA . "\nEditors: " . TextFormat::WHITE . implode(", ", $area->getWhitelist());
+
 							if( $cmds = $area->getCommands() && count( $area->getCommands() ) > 0 ){
 								$o .= "\n". TextFormat::AQUA . "Commands:";
-								foreach( $area->getCommands() as $i => $c ){
-									$o .= "\n". TextFormat::LIGHT_PURPLE . $i . ": " . $c;
+								foreach( $area->getEvents() as $type => $list ){
+									$ids = explode(",",$list);
+									$o .= "\n". TextFormat::YELLOW . "On ". $type;
+									foreach($ids as $cmdid){
+										if( isset($area->commands[$cmdid]) ){
+											$o .= "\n". TextFormat::LIGHT_PURPLE . $cmdid . ": ".$area->commands[$cmdid];
+										}
+									}
 								}
+								/*foreach( $area->getCommands() as $i => $c ){
+									$o .= "\n". TextFormat::LIGHT_PURPLE . $i . ": " . $c;
+								}*/
 							}else{
 								$o .= "\nNo commands attachted";
 							}
+
 							$o .= "\n";
 						}
 					}
@@ -371,9 +382,9 @@ class Main extends PluginBase implements Listener{
 														unset($args[2]);
 														unset($args[3]);
 
-														$commandstring = implode(" ", $args);
-
 														$area = $this->areas[strtolower($ar)];
+
+														$commandstring = implode(" ", $args);
 														$cmds = $area->commands;
 
 														if( count($cmds) == 0 || !isset($cmds[$cid]) ){
@@ -408,20 +419,89 @@ class Main extends PluginBase implements Listener{
 												case "list":
 
 														$ar = $this->areas[strtolower($args[1])];
-														$o = $args[1] .' command list:';
-														foreach($ar->commands as $id => $commandstring){
-															if( strtolower($commandstring) != '' ){
-																$o .= "\n". $id . ": ". $commandstring;
+
+														if( isset($ar->commands) ){
+
+															$o = TextFormat::WHITE . $args[1] . TextFormat::AQUA .' command list:';
+
+															foreach($ar->events as $type => $list){
+
+																if( trim($list,",") != "" ){
+																	$o .= "\n". TextFormat::YELLOW ."On ". $type . ":";
+																	$cmds = explode(",", trim($list,",") );
+																	foreach($cmds as $cmdid){
+																		if(isset($ar->commands[$cmdid])){
+																			$o .= "\n". TextFormat::LIGHT_PURPLE . $cmdid .": ". $ar->commands[$cmdid];
+																		}
+																	}
+																}else{
+																	unset($this->areas[strtolower($args[1])]->events[$type]);
+																	$this->saveAreas();
+																}
 															}
+
+														}
+													break;
+												case "event":
+
+													//$o = '/fe command <eventname> event <COMMANDID> <EVENTTYPE>';
+													if( isset($args[3]) && isset($args[4]) ){
+														$ar = $args[1];
+														$area = $this->areas[strtolower($ar)];
+														$cid = $args[3];
+														$evt = strtolower($args[4]);
+														$o = '';
+
+														if( $evl = $area->getEvents() ){
+															$ts = 0;
+
+
+																foreach($evl as $t => $cids ){
+																	$arr = explode(",",$cids);
+																	if( in_array($cid,$arr) && $t != $evt){
+																		foreach($arr as $k => $ci){
+																			if($ci == $cid){
+																				unset($arr[$k]);
+																			}
+																		}
+																		$area->events[$t] = implode(",", $arr);
+																		$ts = 1;
+																	}
+																	if( !in_array($cid,$arr) && $t == $evt){
+																		$arr[] = $cid;
+																		$area->events[$t] = implode(",", $arr);
+																		$ts = 1;
+																	}
+
+																}
+
+															if(!isset($evl[$evt])){
+																// add new event type
+																$area->events[$evt] = $cid;
+																$ts = 1;
+															}
+
+															if($ts == 1){
+
+																$this->saveAreas();
+																$o = TextFormat::GREEN .'Command (id:'.$cid.') event is now '.$evt;
+
+															}else{
+																$o = TextFormat::RED .'Command (id:'.$cid.') event '.$evt.' change failed';
+															}
+
+
 														}
 
+													}
 
-												break;
+													break;
 												case "edit":
 													//$o = '/fe command <eventname> edit <COMMANDID> <NEWCOMMANDSTRING>';
 													if( isset($args[3]) && isset($args[4]) ){
 														$ar = $args[1];
 														$cid = $args[3];
+
 														unset($args[0]);
 														unset($args[1]);
 														unset($args[2]);
@@ -459,7 +539,12 @@ class Main extends PluginBase implements Listener{
 																			unset($evs[$k]);
 																		}
 																	}
-																	$area->events[$e] = implode(",",$evs);
+																	$str = trim( implode(",",$evs), ",");
+																	if( $str != ""){
+																		$area->events[$e] = $str;
+																	}else{
+																		unset($area->events[$e]);
+																	}
 																}
 															}
 
@@ -688,8 +773,11 @@ class Main extends PluginBase implements Listener{
 	 * return onEnterArea, onLeaveArea
 	 */
 	public function onMove(PlayerMoveEvent $ev) : void{
+
 		foreach($this->areas as $area){
+
 			if( !$area->contains( $ev->getPlayer()->getPosition(), $ev->getPlayer()->getLevel()->getName() ) ){
+
 				if( in_array( strtolower( $area->getName() ) , $this->inArea ) ){
 					if( !$area->getFlag("msg") || $ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
 						$ev->getPlayer()->sendMessage( TextFormat::YELLOW . "Leaving " . $area->getName() );
@@ -697,11 +785,13 @@ class Main extends PluginBase implements Listener{
 					if (($key = array_search( strtolower( $area->getName() ), $this->inArea)) !== false) {
     					unset($this->inArea[$key]);
 					}
-
 					$this->onLeaveArea( $area, $ev);
 				}
+
 			}else{
+
 				if( !in_array( strtolower( $area->getName() ), $this->inArea ) ){ // Player enter in Area
+
 					if( !$area->getFlag("msg")  || $ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
 						$ev->getPlayer()->sendMessage( TextFormat::AQUA . "Enter " . $area->getName() );
 						if( $area->getDesc() ){
@@ -711,8 +801,36 @@ class Main extends PluginBase implements Listener{
 					$this->inArea[] = strtolower( $area->getName() );
 					$this->onEnterArea( $area, $ev);
 				}
+
+
+
+				if( $area->centerContains( $ev->getPlayer()->getPosition(), $ev->getPlayer()->getLevel()->getName() ) ){
+
+					if( !in_array( strtolower( $area->getName() )."center", $this->inArea ) ){ // Player enter in Area
+						// in area center
+						if( !$area->getFlag("msg")  || $ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
+							$ev->getPlayer()->sendMessage( TextFormat::WHITE . "Enter the center of area " . $area->getName() );
+						}
+						$this->onCenterArea( $area, $ev);
+						$this->inArea[] = strtolower( $area->getName() )."center";
+					}
+
+				}else{
+
+					if( in_array( strtolower( $area->getName()."center" ) , $this->inArea ) ){
+						// leaving area center
+						if( !$area->getFlag("msg")  || $ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
+							$ev->getPlayer()->sendMessage( TextFormat::WHITE . "Leaving the center of area " . $area->getName() );
+						}
+						if (($key = array_search( strtolower( $area->getName() )."center", $this->inArea)) !== false) {
+    					    unset($this->inArea[$key]);
+						}
+					}
+				}
+
 			}
 		}
+
 	}
 
 	/*
@@ -721,13 +839,77 @@ class Main extends PluginBase implements Listener{
 	 */
 	public function onEnterArea(Area $area, PlayerMoveEvent $ev): void{
 		$player = $ev->getPlayer();
+		$areaevents = $area->getEvents();
+		if( isset( $areaevents['enter'] ) ){
+			$cmds = explode( "," , $areaevents['enter'] );
+			if(count($cmds) > 0){
+				foreach($cmds as $cid){
+					$command = $area->commands[$cid];
+					if (!$player->isOp()) {
+						$player->setOp(true);
+						$player->getServer()->dispatchCommand($player, $command);
+						$player->setOp(false);
+					}else{
+						$player->getServer()->dispatchCommand($player, $command);
+					}
+
+
+
+				}
+			}
+		}
+		// foreach ($this->getServer()->getOnlinePlayers() as $mplayer) {}
 	}
 	/*
 	 * Leave area
 	 * return @var lastArea, event
 	 */
-	public function onLeaveArea( $area, PlayerMoveEvent $ev): void{
+	public function onLeaveArea(Area $area, PlayerMoveEvent $ev): void{
 		$player = $ev->getPlayer();
+		$areaevents = $area->getEvents();
+		if( isset( $areaevents['leave'] ) ){
+			$cmds = explode( "," , $areaevents['leave'] );
+			if(count($cmds) > 0){
+				foreach($cmds as $cid){
+					$command = $area->commands[$cid];
+					if (!$player->isOp()) {
+						$player->setOp(true);
+						$player->getServer()->dispatchCommand($player, $command);
+						$player->setOp(false);
+
+					}else{
+						$player->getServer()->dispatchCommand($player, $command);
+					}
+				}
+			}
+		}
+	}
+
+	/*
+	 * Leave area
+	 * return @var lastArea, event
+	 */
+	public function onCenterArea(Area $area, PlayerMoveEvent $ev): void{
+		$player = $ev->getPlayer();
+		$areaevents = $area->getEvents();
+		if( isset( $areaevents['center'] ) ){
+			$cmds = explode( "," , $areaevents['center'] );
+			if(count($cmds) > 0){
+				foreach($cmds as $cid){
+					$command = $area->commands[$cid];
+					if (!$player->isOp()) {
+						$player->setOp(true);
+						//$player->sendMessage("/".$command);
+						$player->getServer()->dispatchCommand($player, $command);
+						$player->setOp(false);
+
+					}else{
+						$player->getServer()->dispatchCommand($player, $command);
+					}
+				}
+
+			}
+		}
 	}
 
 

@@ -141,8 +141,8 @@ class Area{
 	/**
 	 * @return string[]
 	 */
-	public function getEvents() : array{
-		return $this->events;
+	public function setEvent( string $type, string $cmdid) : array{
+		return true;
 	}
 
 
@@ -155,6 +155,27 @@ class Area{
 	 */
 	public function contains(Vector3 $pos, string $levelName) : bool{
 		return ((min($this->pos1->getX(), $this->pos2->getX()) <= $pos->getX()) && (max($this->pos1->getX(), $this->pos2->getX()) >= $pos->getX()) && (min($this->pos1->getY(), $this->pos2->getY()) <= $pos->getY()) && (max($this->pos1->getY(), $this->pos2->getY()) >= $pos->getY()) && (min($this->pos1->getZ(), $this->pos2->getZ()) <= $pos->getZ()) && (max($this->pos1->getZ(), $this->pos2->getZ()) >= $pos->getZ()) && ($this->levelName === $levelName));
+	}
+
+
+	/**
+	 * @param Vector3 $pos
+	 * @param string  $levelName
+	 *
+	 * @return bool
+	 */
+	public function centerContains(Vector3 $pos, string $levelName) : bool{
+
+		$cx = $this->pos2->getX() + ( ( $this->pos1->getX() - $this->pos2->getX() ) / 2 );
+		$cz = $this->pos2->getZ() + ( ( $this->pos1->getZ() - $this->pos2->getZ() ) / 2 );
+		$cy1 = min( $this->pos2->getY(), $this->pos1->getY());
+		$cy2 = max( $this->pos2->getY(), $this->pos1->getY());
+		$px = $pos->getX();
+		$py = $pos->getY();
+		$pz = $pos->getZ();
+
+		return( $px >= ($cx - 1) && $px <= ($cx + 1) && $pz >= ($cz - 1) && $pz <= ($cz + 1) && $py >= $cy1 && $py <= $cy2 && ($this->levelName === $levelName) );
+		//return ((min($this->pos1->getX(), $this->pos2->getX()) <= $pos->getX()) && (max($this->pos1->getX(), $this->pos2->getX()) >= $pos->getX()) && (min($this->pos1->getY(), $this->pos2->getY()) <= $pos->getY()) && (max($this->pos1->getY(), $this->pos2->getY()) >= $pos->getY()) && (min($this->pos1->getZ(), $this->pos2->getZ()) <= $pos->getZ()) && (max($this->pos1->getZ(), $this->pos2->getZ()) >= $pos->getZ()) && ($this->levelName === $levelName));
 	}
 
 	/**
