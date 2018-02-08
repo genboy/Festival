@@ -56,23 +56,29 @@ class Main extends PluginBase implements Listener{
 
 
 	public function onEnable() : void{
+
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
+
 		if(!is_dir($this->getDataFolder())){
 			mkdir($this->getDataFolder());
 		}
+
 		if(!file_exists($this->getDataFolder() . "areas.json")){
 			file_put_contents($this->getDataFolder() . "areas.json", "[]");
 		}
+
 		if(!file_exists($this->getDataFolder() . "config.yml")){
 			$c = $this->getResource("config.yml");
 			$o = stream_get_contents($c);
 			fclose($c);
 			file_put_contents($this->getDataFolder() . "config.yml", str_replace("DEFAULT", $this->getServer()->getDefaultLevel()->getName(), $o));
 		}
+
 		$data = json_decode(file_get_contents($this->getDataFolder() . "areas.json"), true);
 		foreach($data as $datum){
 			new Area($datum["name"], $datum["desc"], $datum["flags"], new Vector3($datum["pos1"]["0"], $datum["pos1"]["1"], $datum["pos1"]["2"]), new Vector3($datum["pos2"]["0"], $datum["pos2"]["1"], $datum["pos2"]["2"]), $datum["level"], $datum["whitelist"], $datum["commands"], $datum["events"], $this);
 		}
+
 		$c = yaml_parse_file($this->getDataFolder() . "config.yml");
 
 		$this->god = $c["Default"]["God"];
@@ -93,6 +99,7 @@ class Main extends PluginBase implements Listener{
 	}
 
 	public function onCommand(CommandSender $sender, Command $cmd, string $label, array $args) : bool{
+
 		if(!($sender instanceof Player)){
 			$sender->sendMessage(TextFormat::RED . "Command must be used in-game.");
 
@@ -332,7 +339,6 @@ class Main extends PluginBase implements Listener{
 					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
 				break;
-
 			case "whitelist":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.whitelist")){
 					if(isset($args[1], $this->areas[strtolower($args[1])])){
@@ -379,7 +385,8 @@ class Main extends PluginBase implements Listener{
 					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
 				break;
-
+			case "c":
+			case "cmd":
 			case "command":
 					/* /fe command <areaname> <add|list|edit|del> <commandindex> <commandstring> */
 
