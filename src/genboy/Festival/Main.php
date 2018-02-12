@@ -56,23 +56,29 @@ class Main extends PluginBase implements Listener{
 
 
 	public function onEnable() : void{
+
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
+
 		if(!is_dir($this->getDataFolder())){
 			mkdir($this->getDataFolder());
 		}
+
 		if(!file_exists($this->getDataFolder() . "areas.json")){
 			file_put_contents($this->getDataFolder() . "areas.json", "[]");
 		}
+
 		if(!file_exists($this->getDataFolder() . "config.yml")){
 			$c = $this->getResource("config.yml");
 			$o = stream_get_contents($c);
 			fclose($c);
 			file_put_contents($this->getDataFolder() . "config.yml", str_replace("DEFAULT", $this->getServer()->getDefaultLevel()->getName(), $o));
 		}
+
 		$data = json_decode(file_get_contents($this->getDataFolder() . "areas.json"), true);
 		foreach($data as $datum){
 			new Area($datum["name"], $datum["desc"], $datum["flags"], new Vector3($datum["pos1"]["0"], $datum["pos1"]["1"], $datum["pos1"]["2"]), new Vector3($datum["pos2"]["0"], $datum["pos2"]["1"], $datum["pos2"]["2"]), $datum["level"], $datum["whitelist"], $datum["commands"], $datum["events"], $this);
 		}
+
 		$c = yaml_parse_file($this->getDataFolder() . "config.yml");
 
 		$this->god = $c["Default"]["God"];
@@ -84,7 +90,6 @@ class Main extends PluginBase implements Listener{
 			$this->levels[$level] = $flags;
 		}
 
-		// Start Info
 		$c = 0;
 		foreach( $this->areas as $a ){
 			$c = $c + count( $a->getCommands() );
@@ -94,6 +99,7 @@ class Main extends PluginBase implements Listener{
 	}
 
 	public function onCommand(CommandSender $sender, Command $cmd, string $label, array $args) : bool{
+
 		if(!($sender instanceof Player)){
 			$sender->sendMessage(TextFormat::RED . "Command must be used in-game.");
 
@@ -108,6 +114,7 @@ class Main extends PluginBase implements Listener{
 
 		switch($action){
 			case "pos1":
+
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.pos1")){
 					if(isset($this->selectingFirst[$playerName]) || isset($this->selectingSecond[$playerName])){
 						$o = TextFormat::RED . "You're already selecting a position!";
@@ -119,6 +126,7 @@ class Main extends PluginBase implements Listener{
 					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
 				break;
+
 			case "pos2":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.pos2")){
 					if(isset($this->selectingFirst[$playerName]) || isset($this->selectingSecond[$playerName])){
@@ -131,6 +139,7 @@ class Main extends PluginBase implements Listener{
 					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
 				break;
+
 			case "create":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.area") || $sender->hasPermission("festival.command.fe.create")){
 					if(isset($args[1])){
@@ -153,6 +162,7 @@ class Main extends PluginBase implements Listener{
 					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
 				break;
+
 			case "desc":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.desc")){
 
@@ -185,14 +195,29 @@ class Main extends PluginBase implements Listener{
 					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
 				break;
+
 			case "list":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.list")){
-					$o = TextFormat::AQUA . "Areas: " . TextFormat::RESET;
-					$i = 0;
-					foreach($this->areas as $area){
-						if($area->isWhitelisted($playerName)){
-							$o .= $area->getName() . " (" . implode(", ", $area->getWhitelist()) . "), ";
-							$i++;
+
+
+					$lvls = $this->getServer()->getLevels();
+					$o = '';
+					foreach( $lvls as $lvl ){
+						//$server->getLevels()
+						///$area->getLevelName()
+
+						$i = 0;
+						$t = '';
+						foreach($this->areas as $area){
+							if( $area->getLevelName() == $lvl->getName() ){
+								if($area->isWhitelisted($playerName)){
+									$t .= TextFormat::WHITE . $area->getName() . TextFormat::LIGHT_PURPLE . " (" . implode(", ", $area->getWhitelist()) . ") \n";
+									$i++;
+								}
+							}
+						}
+						if($i > 0){
+							$o .= TextFormat::AQUA . "Level " . TextFormat::WHITE . $lvl->getName() .":\n". $t;
 						}
 					}
 					if($i === 0){
@@ -200,6 +225,7 @@ class Main extends PluginBase implements Listener{
 					}
 				}
 				break;
+
 			case "here":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.here")){
 					$o = "";
@@ -219,9 +245,7 @@ class Main extends PluginBase implements Listener{
 										}
 									}
 								}
-								/*foreach( $area->getCommands() as $i => $c ){
-									$o .= "\n". TextFormat::LIGHT_PURPLE . $i . ": " . $c;
-								}*/
+
 							}else{
 								$o .= "\nNo commands attachted";
 							}
@@ -234,6 +258,7 @@ class Main extends PluginBase implements Listener{
 					}
 				}
 				break;
+
 			case "tp":
 				if (!isset($args[1])){
 					$o = TextFormat::RED . "You must specify an existing Area name";
@@ -254,6 +279,7 @@ class Main extends PluginBase implements Listener{
 					}
 				}
 				break;
+
 			case "flag":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.flag")){
 					if(isset($args[1])){
@@ -295,6 +321,7 @@ class Main extends PluginBase implements Listener{
 					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
 				break;
+
 			case "delete":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.delete")){
 					if(isset($args[1])){
@@ -358,6 +385,8 @@ class Main extends PluginBase implements Listener{
 					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
 				break;
+			case "c":
+			case "cmd":
 			case "command":
 					/* /fe command <areaname> <add|list|edit|del> <commandindex> <commandstring> */
 
@@ -785,7 +814,8 @@ class Main extends PluginBase implements Listener{
 					if (($key = array_search( strtolower( $area->getName() ), $this->inArea)) !== false) {
     					unset($this->inArea[$key]);
 					}
-					$this->onLeaveArea( $area, $ev);
+					$this->runAreaEvent($area, $ev, "leave");
+					break;
 				}
 
 			}else{
@@ -799,7 +829,8 @@ class Main extends PluginBase implements Listener{
 						}
 					}
 					$this->inArea[] = strtolower( $area->getName() );
-					$this->onEnterArea( $area, $ev);
+					$this->runAreaEvent($area, $ev, "enter");
+					break;
 				}
 
 
@@ -811,8 +842,9 @@ class Main extends PluginBase implements Listener{
 						if( !$area->getFlag("msg")  || $ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
 							$ev->getPlayer()->sendMessage( TextFormat::WHITE . "Enter the center of area " . $area->getName() );
 						}
-						$this->onCenterArea( $area, $ev);
 						$this->inArea[] = strtolower( $area->getName() )."center";
+						$this->runAreaEvent($area, $ev, "center");
+						break;
 					}
 
 				}else{
@@ -825,23 +857,29 @@ class Main extends PluginBase implements Listener{
 						if (($key = array_search( strtolower( $area->getName() )."center", $this->inArea)) !== false) {
     					    unset($this->inArea[$key]);
 						}
+						break;
 					}
 				}
 
+
 			}
+
+
 		}
 
 	}
 
 	/*
-	 * Enter area
-	 * @var string lastArea, player msg
+	 * Run Area Event
+	 * @var string area, eventtype player ev
 	 */
-	public function onEnterArea(Area $area, PlayerMoveEvent $ev): void{
-		$player = $ev->getPlayer();
+	public function runAreaEvent(Area $area, PlayerMoveEvent $event, string $eventtype): void{
+
+		$player = $event->getPlayer();
 		$areaevents = $area->getEvents();
-		if( isset( $areaevents['enter'] ) ){
-			$cmds = explode( "," , $areaevents['enter'] );
+
+		if( isset( $areaevents[$eventtype] ) ){
+			$cmds = explode( "," , $areaevents[$eventtype] );
 			if(count($cmds) > 0){
 				foreach($cmds as $cid){
 					$command = $area->commands[$cid];
@@ -852,65 +890,13 @@ class Main extends PluginBase implements Listener{
 					}else{
 						$player->getServer()->dispatchCommand($player, $command);
 					}
-
-
-
-				}
-			}
-		}
-		// foreach ($this->getServer()->getOnlinePlayers() as $mplayer) {}
-	}
-	/*
-	 * Leave area
-	 * return @var lastArea, event
-	 */
-	public function onLeaveArea(Area $area, PlayerMoveEvent $ev): void{
-		$player = $ev->getPlayer();
-		$areaevents = $area->getEvents();
-		if( isset( $areaevents['leave'] ) ){
-			$cmds = explode( "," , $areaevents['leave'] );
-			if(count($cmds) > 0){
-				foreach($cmds as $cid){
-					$command = $area->commands[$cid];
-					if (!$player->isOp()) {
-						$player->setOp(true);
-						$player->getServer()->dispatchCommand($player, $command);
-						$player->setOp(false);
-
-					}else{
-						$player->getServer()->dispatchCommand($player, $command);
-					}
 				}
 			}
 		}
 	}
 
-	/*
-	 * Leave area
-	 * return @var lastArea, event
-	 */
-	public function onCenterArea(Area $area, PlayerMoveEvent $ev): void{
-		$player = $ev->getPlayer();
-		$areaevents = $area->getEvents();
-		if( isset( $areaevents['center'] ) ){
-			$cmds = explode( "," , $areaevents['center'] );
-			if(count($cmds) > 0){
-				foreach($cmds as $cid){
-					$command = $area->commands[$cid];
-					if (!$player->isOp()) {
-						$player->setOp(true);
-						//$player->sendMessage("/".$command);
-						$player->getServer()->dispatchCommand($player, $command);
-						$player->setOp(false);
 
-					}else{
-						$player->getServer()->dispatchCommand($player, $command);
-					}
-				}
 
-			}
-		}
-	}
 
 
 }
