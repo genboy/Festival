@@ -815,6 +815,7 @@ class Main extends PluginBase implements Listener{
     					unset($this->inArea[$key]);
 					}
 					$this->runAreaEvent($area, $ev, "leave");
+					break;
 				}
 
 			}else{
@@ -829,6 +830,7 @@ class Main extends PluginBase implements Listener{
 					}
 					$this->inArea[] = strtolower( $area->getName() );
 					$this->runAreaEvent($area, $ev, "enter");
+					break;
 				}
 
 
@@ -842,6 +844,7 @@ class Main extends PluginBase implements Listener{
 						}
 						$this->inArea[] = strtolower( $area->getName() )."center";
 						$this->runAreaEvent($area, $ev, "center");
+						break;
 					}
 
 				}else{
@@ -854,10 +857,14 @@ class Main extends PluginBase implements Listener{
 						if (($key = array_search( strtolower( $area->getName() )."center", $this->inArea)) !== false) {
     					    unset($this->inArea[$key]);
 						}
+						break;
 					}
 				}
 
+
 			}
+
+
 		}
 
 	}
