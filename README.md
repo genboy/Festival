@@ -23,7 +23,7 @@ The Festival plugin: manage and run commmands on specific events attachted to a 
 
 /fe create AREANAME  
   
-/fe flag AREANAME god/build/touch/msg
+/fe flag AREANAME god/build/touch/msg set true/false
   
 /fe here
 
@@ -53,8 +53,8 @@ Usage:
 		/fe command AREANAME <add> COMMANDID COMMANDSTRING
 
 		'add' is the default for attaching a command on the 'enter' event. 
-		Using 'enter', 'center' or 'leave' instead of 'add' attaches a new command to the given eventtype: 
-		i.e. /fe command <areaname> center <commandid> <commandstring>
+		Using 'enter', 'center' or 'leave' instead of 'add' attaches a new command to 
+		the eventtype: i.e. /fe command <areaname> center <commandid> <commandstring>
 
 	edit a command:
 	
@@ -69,43 +69,38 @@ Usage:
 		/fe command AREANAME <del> COMMANDID
 
 
-Sum up:
-
-/fe <pos1/pos2/create/list/here/tp/desc/flag/delete/whitelist/command> <areaname> <add/enter/leave/center/list/event/edit/del> <cmdid> <cmdstr/enter/leave/center>
-
 
 
 ## In progress
 
 The plugin is in active development; 
-1. [x] area protection and flag management is stable 
-(core code from [iProtector](https://github.com/poggit-orphanage/iProtector) 
-Latest commit [9876ca3](https://github.com/poggit-orphanage/iProtector/commit/9876ca3acd48830599b3715346a1cf8ac964bdbd) on 11 Dec 2017) 
+  - [x] area protection and flag management is stable 
+  (core code from [iProtector](https://github.com/poggit-orphanage/iProtector) 
+  Latest commit [9876ca3](https://github.com/poggit-orphanage/iProtector/commit/9876ca3acd48830599b3715346a1cf8ac964bdbd) on 11 Dec 2017) 
 
-2. [x] Area messages and msg/description management are stable
+  - [x] Area messages and msg/description management are stable
 
-3. [x] Commands can be attachted to specific events at the area: 
+  - [x] Commands can be attachted to specific events at the area: 
   - [x] enter: on entering the area
   - [x] center: when in the center of the area
   - [x] leave: when leaving the area
   - [ ] ?: more area event types to consider
 
-4a. [ ] Submit to poggit
+  - [ ] Submit to poggit
 
-4b. [ ] Gather code and concept suggestions 
+  - [ ] Gather code and concept suggestions 
 
-=> Testing possibilities;
+	=> Testing possibilities;
     - design a minigame park
     - create a quest/parcour
     - use stable wormholes
     - .. Endless right? This step will take a while :)
 
-5. [ ] we can try to add an area tranformer method - using or copying iProtector area's for Festival events 
+  - [ ] we can try to add an area tranformer method - using or copying iProtector area's for Festival events 
 
-6. [ ] Develop a method to sync/log other plugins/Multiplayer/Timeline/Story/Minigame attachted events in given area's
+  - [ ] Develop a method to sync/log other plugins/Multiplayer/Timeline/Story/Minigame attachted events in given area's
 
-
-
+ 
 
 ### History
 
