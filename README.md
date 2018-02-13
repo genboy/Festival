@@ -1,11 +1,11 @@
 # Festival
 Custom Area Events plugin for Pocketmine Server ALPHA10+
 
-The Festival plugin: manage and run commmands on specific events attachted to a specific area.
+The Festival plugin: manage and run commmands on events attachted to a specified area.
 
 #### Festival time!
-- create and manage area's like with iProtector
-- add an area description
+- create and manage area's (like iProtector)
+- add an area description, flag it to hide for non-ops
 - set the flag to false to
   - edit: allow building/breaking
   - god: give players god mode 
@@ -13,29 +13,49 @@ The Festival plugin: manage and run commmands on specific events attachted to a 
   - msg: show enter/leave area messages to non-ops 
 - manage area events
   - add/edit/delete commands (with their own id) for each area
-  - assign the commands to the eventtypes enter, center and leave.
+  - assign commands to area eventtypes enter, center and leave.
 
 ## Usage
 
 #### Basic area features (like iProtector - /area = /fe)
 
-/fe pos1/pos2
+	- first select position 1, then select position2, 
+	  the endpoints of the longest diagonal in the area
 
-/fe create AREANAME  
-  
-/fe flag AREANAME god/build/touch/msg set true/false
-  
-/fe here
+		/fe pos1
+		/fe pos2
 
-/fe list
+	- name/save the selected area
 
-/fe tp AREANAME
+		/fe create <AREANAME>  
+
+	- set the area flags (msg = false : players see the area messages)
+	
+		/fe flag <AREANAME> <god/build/touch/msg> <true/false>
+
+	- see info on the area's you're in
+	
+		/fe here
+
+	- see a list of all area's
+	
+		/fe list
+
+	- teleport to an area
+	
+		/fe tp <AREANAME>
   
-/fe desc AREANAME DESCRIPTION
+	- set area description
+		
+		/fe desc <AREANAME> <DESCRIPTION>
   
-/fe whitelist AREANAME PLAYERNAME
+	- manage players in area whitelist
+	
+		/fe whitelist <AREANAME> <add/list/remove> <PLAYERNAME>
   
-/fe delete AREANAME
+	- delete an area
+	
+		/fe delete <AREANAME>
   
 
 
@@ -48,26 +68,29 @@ To add an command you need at least an areaname, an unique id for the command an
 
 Usage:
 	
-	add a command on area enter:
+	add a command to an area:
 
-		/fe command AREANAME <add> COMMANDID COMMANDSTRING
+		/fe command <AREANAME> add <COMMANDID> <COMMANDSTRING>
 
 		'add' is the default for attaching a command on the 'enter' event. 
 		Using 'enter', 'center' or 'leave' instead of 'add' attaches a new command to 
 		the eventtype: i.e. /fe command <areaname> center <commandid> <commandstring>
 
+	list area commands:
+	
+		/fe command <AREANAME> list
+		
 	edit a command:
 	
-		/fe command AREANAME <edit> COMMANDID COMMANDSTRING
+		/fe command <AREANAME> edit <COMMANDID> <COMMANDSTRING>
 	
 	change command event:
 	
-		/fe command AREANAME <edit> COMMANDID <enter/center/leave>
+		/fe command <AREANAME> event <COMMANDID> <enter/center/leave>
 		
 	remove command from area:
 	
-		/fe command AREANAME <del> COMMANDID
-
+		/fe command <AREANAME> del <COMMANDID>
 
 
 
@@ -84,23 +107,15 @@ The plugin is in active development;
   - [x] enter: on entering the area
   - [x] center: when in the center of the area
   - [x] leave: when leaving the area
-  - [ ] ?: more area event types to consider
 
-  - [ ] Submit to poggit
-
-  - [ ] Gather code and concept suggestions 
-
-	=> Testing possibilities;
-    - design a minigame park
-    - create a quest/parcour
-    - use stable wormholes
-    - .. Endless right? This step will take a while :)
-
-  - [ ] we can try to add an area tranformer method - using or copying iProtector area's for Festival events 
+  - [x] Submit to poggit
+  
+	=> Testing possibilities; use as portals and shields, design a minigame park, create a quest/parcour.. 
 
   - [ ] Develop a method to sync/log other plugins/Multiplayer/Timeline/Story/Minigame attachted events in given area's
-
- 
+  - [ ] options to add more area event types
+  - [ ] add an area tranformer method - using or copying iProtector area's for Festival events 
+  - [ ] Add an UI panel  
 
 ### History
 
