@@ -1,0 +1,7 @@
+--- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/genboy/Festival
+branches:
+- master
+projects:
+  Festival:
+    path: ""
+...
