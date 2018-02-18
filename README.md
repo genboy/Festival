@@ -11,6 +11,7 @@ The Festival plugin: manage and run commmands on events attachted to a specified
   - god: give players god mode 
   - touch: allow interaction with chests etc.  
   - msg: show enter/leave area messages to non-ops 
+  - barrier: prevent players to enter/leave the area
 - manage area events
   - add/edit/delete commands (with their own id) for each area
   - assign commands to area eventtypes enter, center and leave.
@@ -29,9 +30,9 @@ The Festival plugin: manage and run commmands on events attachted to a specified
 
 		/fe create <AREANAME>  
 
-	- set the area flags (msg = false : players see the area messages)
+	- set the area flags
 	
-		/fe flag <AREANAME> <god/build/touch/msg> <true/false>
+		/fe flag <AREANAME> <god/build/touch/msg/barrier> <true/false>
 
 	- see info on the area's you're in
 	
