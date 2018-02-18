@@ -15,6 +15,9 @@ Default:
   # Keep players from seeing enter/leave/description messages?
   Msg: false
 
+  # Prevent players from enter/leaving the area?
+  Barrier: false
+
 # Settings for unprotected areas in individual worlds:
 Worlds:
 
@@ -31,3 +34,6 @@ Worlds:
 
     # Keep players from seeing enter/leave/description messages?
     Msg: false
+
+    # Prevent players from enter/leaving the area?
+    Barrier: false
