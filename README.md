@@ -1,5 +1,10 @@
 # Festival
+
 Custom Area Events plugin for Pocketmine Server ALPHA10+
+
+[![](https://poggit.pmmp.io/shield.state/Festival)](https://poggit.pmmp.io/p/Festival)
+
+[![](https://poggit.pmmp.io/shield.api/Festival)](https://poggit.pmmp.io/p/Festival)
 
 The Festival plugin: manage and run commmands on events attachted to a specified area.
 
