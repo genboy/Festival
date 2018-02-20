@@ -8,7 +8,7 @@ website: "https://github.com/genboy/Festival"
 commands:
   fe:
     description: "Allows you to manage Festival area's and events."
-    usage: "/fe <pos1/pos2/create/list/here/tp/flag/command/whitelist/delete>"
+    usage: "/fe <pos1/pos2/create/desc-flag-command-tp/here/list/delete> <AREANAME> <-add/enter/leave/center/list/edit/event/del-god/edit/touch/msg/barrier> <COMMANDID-true/false> <COMMANDSTRING-enter/leave/center>"
     permission: festival.command.fe
 permissions:
   festival:
