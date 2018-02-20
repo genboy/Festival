@@ -301,38 +301,94 @@ class Main extends PluginBase implements Listener{
 					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
 				break;
-
+			case "f":
 			case "flag":
+			case "touch":
+			case "edit":
+			case "god":
+			case "msg":
+			case "barrier":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.flag")){
 					if(isset($args[1])){
+
 						if(isset($this->areas[strtolower($args[1])])){
+
 							$area = $this->areas[strtolower($args[1])];
-							if(isset($args[2])){
-								if(isset($area->flags[strtolower($args[2])])){
-									$flag = strtolower($args[2]);
-									if(isset($args[3])){
-										$mode = strtolower($args[3]);
-										if($mode === "true" || $mode === "on"){
-											$mode = true;
-										}else{
-											$mode = false;
-										}
-										$area->setFlag($flag, $mode);
+
+
+							if( $args[0] == "touch" || $args[0] == "edit" || $args[0] == "god" || $args[0] == "msg" || $args[0] == "barrier" ) {
+
+								// excute short (new) notation for flags
+								$flag = $args[0];
+
+								if( isset($args[2]) && ( $args[2] == "true" ||  $args[2] == "on" ||  $args[2] == "false" ||  $args[2] == "off" ) ){
+
+									$mode = strtolower($args[2]);
+									if($mode === "true" || $mode === "on"){
+										$mode = true;
 									}else{
-										$area->toggleFlag($flag);
+										$mode = false;
 									}
-									if($area->getFlag($flag)){
-										$status = "on";
-									}else{
-										$status = "off";
-									}
-									$o = TextFormat::GREEN . "Flag " . $flag . " set to " . $status . " for area " . $area->getName() . "!";
+									$area->setFlag($flag, $mode);
+
 								}else{
-									$o = TextFormat::RED . "Flag not found. (Flags: edit, god, touch, msg, barrier)";
+
+									$area->toggleFlag($flag);
+
 								}
+
+								if($area->getFlag($flag)){
+
+									$status = "on";
+
+								}else{
+
+									$status = "off";
+
+								}
+
+								$o = TextFormat::GREEN . "Flag " . $flag . " set to " . $status . " for area " . $area->getName() . "!";
+
 							}else{
-								$o = TextFormat::RED . "Please specify a flag. (Flags: edit, god, touch, msg, barrier)";
+
+								// excute long (old) notation
+								if(isset($args[2])){
+
+									if(isset($area->flags[strtolower($args[2])])){
+										$flag = strtolower($args[2]);
+										if(isset($args[3])){
+											$mode = strtolower($args[3]);
+											if($mode === "true" || $mode === "on"){
+												$mode = true;
+											}else{
+												$mode = false;
+											}
+											$area->setFlag($flag, $mode);
+										}else{
+											$area->toggleFlag($flag);
+										}
+										if($area->getFlag($flag)){
+											$status = "on";
+										}else{
+											$status = "off";
+										}
+										$o = TextFormat::GREEN . "Flag " . $flag . " set to " . $status . " for area " . $area->getName() . "!";
+									}else{
+
+										$o = TextFormat::RED . "Flag not found. (Flags: edit, god, touch, msg, barrier)";
+
+									}
+
+								}else{
+
+									$o = TextFormat::RED . "Please specify a flag. (Flags: edit, god, touch, msg, barrier)";
+
+								}
+
 							}
+
+
+
 						}else{
 							$o = TextFormat::RED . "Area doesn't exist.";
 						}
@@ -344,7 +400,9 @@ class Main extends PluginBase implements Listener{
 				}
 				break;
 
+			case "del":
 			case "delete":
+			case "remove":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.delete")){
 					if(isset($args[1])){
 						if(isset($this->areas[strtolower($args[1])])){
@@ -383,6 +441,7 @@ class Main extends PluginBase implements Listener{
 										$o .= " $w;";
 									}
 									break;
+								case "del":
 								case "delete":
 								case "remove":
 									$w = ($this->getServer()->getPlayer($args[3]) instanceof Player ? strtolower($this->getServer()->getPlayer($args[3])->getName()) : strtolower($args[3]));
@@ -656,6 +715,8 @@ class Main extends PluginBase implements Listener{
 		file_put_contents($this->getDataFolder() . "areas.json", json_encode($areas));
 	}
 
+
+
 	/**
 	 * @param Entity $entity
 	 *
@@ -829,7 +890,9 @@ class Main extends PluginBase implements Listener{
 
 			if( $area->getFlag("barrier") ){
 				// test barier
-				if( $ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") || $area->isWhitelisted($ev->getPlayer()->getName() ) !== null ){
+				$player = $ev->getPlayer();
+
+				if( $player->isOp() || $area->isWhitelisted( strtolower( $player->getName() )  ) ){
 
 					if( ( $area->contains( $ev->getPlayer()->getPosition(), $ev->getPlayer()->getLevel()->getName() ) && !$area->contains( $ev->getFrom(), $ev->getPlayer()->getLevel()->getName() ) )
 					   || !$area->contains( $ev->getPlayer()->getPosition(), $ev->getPlayer()->getLevel()->getName() ) && $area->contains( $ev->getFrom(), $ev->getPlayer()->getLevel()->getName() ) ){
