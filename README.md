@@ -4,11 +4,13 @@ Create a festival; custom area events plugin for Pocketmine Server ALPHA10+:
 
 ### Manage area's and run commmands attachted to area events.
 
+
 ![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_wallpaper3-1-1080x675.png)
 
 ![Festival command usage overview](https://genboy.net/wp-content/uploads/2018/02/festival_usage_1.0.0-11.jpg)
 
-Created by [Genboy 2018](https://genboy.net)
+###### Copyright [Genboy](https://genboy.net) 2018
+
 
 ## Info
 
@@ -17,156 +19,167 @@ Created by [Genboy 2018](https://genboy.net)
 [![](https://poggit.pmmp.io/shield.state/Festival)](https://poggit.pmmp.io/p/Festival)
  [![](https://poggit.pmmp.io/shield.api/Festival)](https://poggit.pmmp.io/p/Festival)
 
-Created by [Genboy 2018](https://genboy.net)
+
+[issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
 
 #### Features
 - create and manage area's (like iProtector)
 - add an area description
-- set the flag to false to
-  - edit: allow building/breaking
-  - god: give players god mode 
-  - touch: allow interaction with chests etc.  
+- set the flag to true to
+  - edit: disallow building/breaking
+  - god: deny players god mode 
+  - touch: disallow interaction with chests etc.  
   - msg: show enter/leave area messages & description to non-ops 
+  - barrier: new! only ops and whitelisted players can enter or leave the area!  
 - whitelist players for the area
 - manage area events
   - add/edit/delete commands (with their own id) for each area
   - assign commands to the area eventtypes: enter, center and leave.
-  - #### ! Each area event holds an array of commands to be triggered with OP permission from the player.  
+
+##### ! Important note: Each area event holds an array of commands to be triggered with OP permission from the player.
 
 
+###### Created by [Genboy](https://genboy.net) 2018
 
-## Usage
+Credits for most area protection code go to iProtector creator [LDX-MCPE](https://github.com/LDX-MCPE) and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
+
+  
+-------
+
+
+## Usage 
 
 ### Install & Configure
 
   - Standard Plugin installation; Upload .phar file (or .zip if you have latest devtools installed), restart the server, go to  folder plugins/Festival;
 
   - Edit config.yml; set the defaults for any area and the defaults for area's in specified worlds.
-  - #### Read the config comments carefully about how the flags work! 
--------
+  - ##### Read the config comments carefully about how the flags work!
 
-### Basics: Create, Set Flags & Manage Area's
-
-        (creating area's works like iProtector - /area = /fe)
-
-	- first select position 1, then select position2, 
-	  the endpoints of the longest diagonal in the area
-
-		/fe pos1
-		/fe pos2
-
-	- name/save the selected area
-
-		/fe create <AREANAME>  
-
-	- set the area flags (msg = false : players see the area messages)
 	
-		/fe flag <AREANAME> <god/build/touch/msg> <true/false>
+  #### Define area
+  first select position 1, then select position2, 
+  the endpoints of the longest diagonal in the area
 
-	- see info on the area's you're in
-	
-		/fe here
+	/fe pos1
+	/fe pos2
 
-	- see a list of all area's
-	
-		/fe list
+  #### name/save the selected area
 
-	- teleport to an area
+	/fe create <AREANAME>  
+
+  #### set the area flags (!defaults in config.yml)
 	
-		/fe tp <AREANAME>
-  
-	- set area description
+	/fe flag(f) <AREANAME> <god/build/touch/msg/barrier> <true/false>
 		
-		/fe desc <AREANAME> <DESCRIPTION>
-  
-	- manage players in area whitelist
-	
-		/fe whitelist <AREANAME> <add/list/remove> <PLAYERNAME>
-  
-	- delete an area
-	
-		/fe delete <AREANAME>
-
-! All credits for above features go to the iProtector creator [LDX-MCPE](https://github.com/LDX-MCPE)
-
-Created by [Genboy 2018](https://genboy.net)
-
--------
-
-
-### Extended: Add commands to area events
-
-  command to attach commands to an area
-
-  /fe command <AREANAME> <add/list/edit/event*/del> <COMMANDID> <COMMANDSTRING/enter*/leave*/center* 
-
-  To add a command you need at least;
-    - an areaname, 
-    - an unique id for the command 
-    - make sure the command works! (when you're an op).
-	
-	add a command to an area:
-
-		/fe command <AREANAME> add <COMMANDID> <COMMANDSTRING>
-
-		'add' is the default for attaching a command on the 'enter' event. 
-		Using 'enter', 'center' or 'leave' instead of 'add' attaches the new command to 
-		the given eventtype: i.e. /fe command <areaname> center <commandid> <commandstring>
-
-	list area commands:
-	
-		/fe command <AREANAME> list
+  #### fast flag toggle (new!)
 		
-	edit a command:
-	
-		/fe command <AREANAME> edit <COMMANDID> <COMMANDSTRING>
-	
-	change command event:
-	
-		/fe command <AREANAME> event <COMMANDID> <enter/center/leave>
+ 	/fe <god/build/touch/msg/barrier> <AREANAME> (<true/false>)
 		
-	remove command from area:
+  
+  #### see info on the area's you're in
 	
-		/fe command <AREANAME> del <COMMANDID>
+	/fe here
 
+  #### see a list of all area's
+	
+	/fe list
 
-Created by [Genboy 2018](https://genboy.net)
+  #### teleport to an area
+	
+	/fe tp <AREANAME>
+  
+  #### set area description
+		
+	/fe desc <AREANAME> <DESCRIPTION>
+  
+  #### manage players in area whitelist
+	
+    /fe whitelist <AREANAME> <add/list/remove(del,delete)> <PLAYERNAME>
+  
+  #### delete an area
+	
+	/fe delete(del,remove) <AREANAME> 
+
+  #### command to attach commands to an area
+
+    /fe command <AREANAME> <add/list/edit/event*/del> <COMMANDID> <COMMANDSTRING/enter*/leave*/center*> 
+ 
+    To add a command you need at least;
+      - an areaname, 
+      - an unique id for the command 
+      - make sure the command works! (when you are op).
+	
+  #### add a command to an area:
+
+	/fe command <AREANAME> add <COMMANDID> <COMMANDSTRING>
+
+ 	  'add' is the default for attaching a command on the 'enter' event. 
+	  Using 'enter', 'center' or 'leave' instead of 'add' attaches the new command to 
+	  the given eventtype: i.e. /fe command <areaname> center <commandid> <commandstring>
+
+  #### list area commands:
+	
+	/fe command <AREANAME> list
+		
+  #### edit a command:
+	
+	/fe command <AREANAME> edit <COMMANDID> <COMMANDSTRING>
+	
+  #### change command event:
+	
+	/fe command <AREANAME> event <COMMANDID> <enter/center/leave>
+		
+  #### remove command from area:
+	
+	/fe command <AREANAME> del <COMMANDID>
+
 
 ------
 
-## In progress
+## Development
 
-The Festival plugin is in active development, next release will include a barrier flag 
+The Festival plugin is in active development.
 
-(pls wait with requests after next release!)
+ ##### Development on [github.com/genboy/Festival](https://github.com/genboy/Festival)
 
-#### Developments
+
+#### Milestones 
 
   - [x] area protection and flag management is stable 
-  (core code from [iProtector](https://github.com/poggit-orphanage/iProtector), latest commit [9876ca3](https://github.com/poggit-orphanage/iProtector/commit/9876ca3acd48830599b3715346a1cf8ac964bdbd) on 11 Dec 2017) 
+  (core [iProtector](https://github.com/poggit-orphanage/iProtector), [9876ca3](https://github.com/poggit-orphanage/iProtector/commit/9876ca3acd48830599b3715346a1cf8ac964bdbd) Dec 2017) 
 
   - [x] Area messages and msg/description management are stable
   - [x] Commands can be attachted to specific events at the area: 
   - [x] enter: on entering the area
   - [x] center: when in the center of the area
-  - [x] leave: when leaving the area
+  - [x] leave: when leaving the area 
   - [x] Submit to poggit
   - [x] Testing expected possibilities; use as portals and shields, design a minigame park, create a quest/parcour.. 
-  - [ ] Barrier flag; turning the area into a barrier, no one in, no one out.
-  - [ ] iProtector area tranformer method - using or copying iProtector area's for Festival events 
+  - [x] Barrier flag; turning the area into a barrier, no one in, no one out.
+  - [ ] iProtector area tranformer method - using or copying iProtector areas for Festival events 
   - [ ] More area event types
-  - [ ] Develop a method to sync/log other plugins/Multiplayer/Timeline/Story/Minigame attachted events in given area's
-  
-  Help with creating a nice UI panel would be really cool!
-  - [ ] Add  UI Panel
+  - [ ] Develop a method to sync/log other plugins/Multiplayer/Timeline/Story/Minigame attachted events in given areas
+  - [ ] Add  UI Panel - Help with creating a nice UI panel would be really cool!
 
-Created by [Genboy 2018](https://genboy.net)
+ 
+ If you like to help improve this plugin;
+
+- download/use the plugin and give your feedback
+- look at the code and give feedback
+- both by submitting [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival) 
+
+or send an email to msg @ genboy.net
+	
+Thank you in advance!
+
 
 ------
 
+
 ## History
 
-The area code derives from the [iProctector plugin](https://github.com/LDX-MCPE/iProtector). All credits for the area creation and protection code go to the iProtector creator [LDX-MCPE](https://github.com/LDX-MCPE).
+The area code derives from the [iProctector plugin](https://github.com/LDX-MCPE/iProtector). All credits for the area creation and protection code go to the iProtector creator [LDX-MCPE](https://github.com/LDX-MCPE) and [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 
 In a first fork from [poggit-orphanage](https://github.com/poggit-orphanage/iProtector) the new code was extending the area with enter and leave messages and lateron also adding options to attach separate event-objects to an area and trigger specific events with commands. These test versions kept the core iProtector areas unchanged (to be able to use excisting area's). 
 
