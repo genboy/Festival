@@ -1,13 +1,16 @@
 ## Overview
 
-Create a festival; custom area events plugin for Pocketmine Server ALPHA10+:
-
-### Manage area's and run commmands attachted to area events.
 
 
 ![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_wallpaper3-1-1080x675.png)
 
-![Festival command usage overview](https://genboy.net/wp-content/uploads/2018/02/festival_usage_1.0.0-11.jpg)
+
+Create a festival with this custom area events plugin for Pocketmine Server ALPHA10+:
+
+### Manage area's and run commmands attachted to area events.
+
+
+![Festival command usage overview](https://genboy.net/wp-content/uploads/2018/02/festival_usage_1.0.1-11.jpg)
 
 ###### Copyright [Genboy](https://genboy.net) 2018
 
@@ -23,7 +26,7 @@ Create a festival; custom area events plugin for Pocketmine Server ALPHA10+:
 [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
 
 #### Features
-- create and manage area's (like iProtector)
+- create and manage area's (like iProtector) 
 - add an area description
 - set the flag to true to
   - edit: disallow building/breaking
