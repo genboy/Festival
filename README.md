@@ -30,7 +30,7 @@ Create a festival; custom area events plugin for Pocketmine Server ALPHA10+:
   - god: deny players god mode 
   - touch: disallow interaction with chests etc.  
   - msg: show enter/leave area messages & description to non-ops 
-  - barrier: new! only ops and whitelisted players can enter or leave the area!  
+  - barrier: only ops and whitelisted players can enter or leave the area! (new! v1.0.1-11)
 - whitelist players for the area
 - manage area events
   - add/edit/delete commands (with their own id) for each area
@@ -72,7 +72,7 @@ Credits for most area protection code go to iProtector creator [LDX-MCPE](https:
 	
 	/fe flag(f) <AREANAME> <god/build/touch/msg/barrier> <true/false>
 		
-  #### fast flag toggle (new!)
+  #### fast flag toggle (new! v1.0.1-11)
 		
  	/fe <god/build/touch/msg/barrier> <AREANAME> (<true/false>)
 		
@@ -143,6 +143,33 @@ The Festival plugin is in active development.
 
  ##### Development on [github.com/genboy/Festival](https://github.com/genboy/Festival)
 
+### Log
+
+  20 2 2018
+	
+	- info/readme update
+	
+    - barrier flag
+		- area act as barrier when flag is true
+		- whitelisted and ops allowed
+		
+	- short commands for flags
+		- f for flag: /fe f <AREANAME> <flag> <true/false>
+		- fast toggle: /fe <touch/edit/god/msg/barrier> <AREANAME>
+
+  13 2 2018
+  
+    - Pre-release 
+	    - version 1.0.0-11
+	    - submitted plugin to Poggit
+	
+	- Festival area setup and protection based on iprotector
+		- area enter, leave en center event detection/messages
+		- area object extended with commandlist and eventlist
+		
+	- Commands to add custom events
+		- add multiple commandstrings with id attachted to enter, leave or center area event
+		- list area extended info and manage event commands
 
 #### Milestones 
 
