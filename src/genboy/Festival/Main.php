@@ -206,27 +206,31 @@ class Main extends PluginBase implements Listener{
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.list")){
 
 
-					$lvls = $this->getServer()->getLevels();
+					$lvls = $this->getServer()->getLevels(); // $this->getServer()->getLevels();
 					$o = '';
 					foreach( $lvls as $lvl ){
-						//$server->getLevels()
-						///$area->getLevelName()
 
 						$i = 0;
 						$t = '';
 						foreach($this->areas as $area){
+
 							if( $area->getLevelName() == $lvl->getName() ){
-								if($area->isWhitelisted($playerName)){
-									$t .= TextFormat::WHITE . $area->getName() . TextFormat::LIGHT_PURPLE . " (" . implode(", ", $area->getWhitelist()) . ") \n";
+
+								if( $area->isWhitelisted($playerName) ){
+
+									$t .= $this->areaInfoList( $area );
+
 									$i++;
 								}
 							}
 						}
+
 						if($i > 0){
-							$o .= TextFormat::AQUA . "Level " . TextFormat::WHITE . $lvl->getName() .":\n". $t;
+							$o .= TextFormat::GRAY . "Level " . TextFormat::GREEN . $lvl->getName() .":". $t;
 						}
+
 					}
-					if($i === 0){
+					if($o == ''){
 						$o = "There are no areas that you can edit";
 					}
 				}
@@ -239,38 +243,8 @@ class Main extends PluginBase implements Listener{
 
 						if($area->contains($sender->getPosition(), $sender->getLevel()->getName()) && $area->getWhitelist() !== null){
 
-							$o .= TextFormat::AQUA . "-- Area " . TextFormat::WHITE . $area->getName() . TextFormat::AQUA . " --";
-							$o .= TextFormat::AQUA . "\nEditors: " . TextFormat::WHITE . implode(", ", $area->getWhitelist());
+							$o .= $this->areaInfoList( $area );
 
-							// Area Flags
-								$flgs = $area->getFlags();
-								$o .= "\n". TextFormat::BLUE . "Flags:";
-								foreach($flgs as $fi => $flg){
-									$o .= "\n". TextFormat::WHITE . $fi . ": ";
-									if( $flg ){
-										$o .= TextFormat::GREEN . "on";
-									}else{
-										$o .= TextFormat::RED . "off";
-									}
-								}
-							// Area Commands by event
-							if( $cmds = $area->getCommands() && count( $area->getCommands() ) > 0 ){
-								$o .= "\n". TextFormat::AQUA . "Commands:";
-								foreach( $area->getEvents() as $type => $list ){
-									$ids = explode(",",$list);
-									$o .= "\n". TextFormat::YELLOW . "On ". $type;
-									foreach($ids as $cmdid){
-										if( isset($area->commands[$cmdid]) ){
-											$o .= "\n". TextFormat::LIGHT_PURPLE . $cmdid . ": ".$area->commands[$cmdid];
-										}
-									}
-								}
-
-							}else{
-								$o .= "\nNo commands attachted";
-							}
-
-							$o .= "\n";
 						}
 					}
 					if($o === "") {
@@ -717,7 +691,41 @@ class Main extends PluginBase implements Listener{
 	}
 
 
+    public function areaInfoList( $area ){
 
+		$l = "\n". TextFormat::AQUA . "-- " . $area->getName() . " --";
+		// Area Flags
+										$flgs = $area->getFlags();
+										$l .= "\n". TextFormat::BLUE . "Flags:";
+										foreach($flgs as $fi => $flg){
+											$l .= "\n". TextFormat::WHITE . $fi . ": ";
+											if( $flg ){
+												$l .= TextFormat::GREEN . "on";
+											}else{
+												$l .= TextFormat::RED . "off";
+											}
+										}
+										// Area Commands by event
+										if( $cmds = $area->getCommands() && count( $area->getCommands() ) > 0 ){
+											$l.= "\n". TextFormat::AQUA . "Commands:";
+											foreach( $area->getEvents() as $type => $list ){
+												$ids = explode(",",$list);
+												$l .= "\n". TextFormat::YELLOW . "On ". $type;
+												foreach($ids as $cmdid){
+													if( isset($area->commands[$cmdid]) ){
+														$l .= "\n". TextFormat::LIGHT_PURPLE . $cmdid . ": ".$area->commands[$cmdid];
+													}
+												}
+											}
+
+										}else{
+											$l .=  TextFormat::GRAY . "\nNo commands attachted";
+										}
+		$l .=  "\n". TextFormat::WHITE . "(" . implode(", ", $area->getWhitelist()) . ") \n";
+
+		return $l;
+
+	}
 
 
 	/**
