@@ -60,10 +60,6 @@ class Main extends PluginBase implements Listener{
 	private $warn = 0; // delay counter for repeating event messages
 
 
-	/** @var string[] */
-	private $warn = 0; // delay counter for repeating event messages
-
-
 	public function onEnable() : void{
 
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
@@ -908,7 +904,8 @@ class Main extends PluginBase implements Listener{
 
 
 				if( $player->isOp() || $area->isWhitelisted( strtolower( $player->getName() )  ) ){
-
+					
+					
 					if( ( $area->contains( $ev->getPlayer()->getPosition(), $ev->getPlayer()->getLevel()->getName() ) && !$area->contains( $ev->getFrom(), $ev->getPlayer()->getLevel()->getName() ) )
 					   || !$area->contains( $ev->getPlayer()->getPosition(), $ev->getPlayer()->getLevel()->getName() ) && $area->contains( $ev->getFrom(), $ev->getPlayer()->getLevel()->getName() ) ){
 						// ops & whitelist players pass
@@ -980,7 +977,7 @@ class Main extends PluginBase implements Listener{
 		return;
 
 	}
-
+	
 	/*
 	 * Area event barrier enter
 	 * @param Area $area, PlayerMoveEvent $ev
@@ -988,7 +985,7 @@ class Main extends PluginBase implements Listener{
 	public function barrierEnterArea(Area $area, PlayerMoveEvent $ev): void{
 
 		$ev->getPlayer()->teleport($ev->getFrom());
-
+		
 		if( !$area->getFlag("msg")  || $ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
 				if( $this->skippTime(2) ){
 					$ev->getPlayer()->sendMessage( TextFormat::YELLOW . "You can not Enter area " . $area->getName() );
@@ -1006,9 +1003,7 @@ class Main extends PluginBase implements Listener{
 
 		$ev->getPlayer()->teleport($ev->getFrom());
 		if( !$area->getFlag("msg")  || $ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
-
 			if( $this->skippTime(2) ){ 
-
 				$ev->getPlayer()->sendMessage( TextFormat::YELLOW . "You can not leave area " . $area->getName() );
 			}
 		}
@@ -1132,27 +1127,6 @@ class Main extends PluginBase implements Listener{
 		 * 1. add sounds
 		 * 2. sound flag, config & command
 		 * 3. add config different sounds & specification 
-		 */
-	}
-
-	public function skippTime($sec){
-		$t = false;
-		if( ( time() - $sec ) > $this->warn ){
-			$this->warn = time();
-			$t = true;
-		}
-		return $t;
-	}
-
-	public function areaEventSound( $player ){
-
-
-		//$player->addSound(new AnvilBreakSound($player));
-
-		/* Todo:
-		 * 1. add sounds
-		 * 2. sound flag, config & command
-		 * 3. add config different sounds & specification
 		 */
 	}
 
