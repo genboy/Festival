@@ -56,6 +56,10 @@ class Main extends PluginBase implements Listener{
 	private $inArea = []; // array of area's player is in
 
 
+	/** @var string[] */
+	private $warn = 0; // delay counter for repeating event messages
+
+
 	public function onEnable() : void{
 
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
@@ -887,23 +891,21 @@ class Main extends PluginBase implements Listener{
 
 		foreach($this->areas as $area){
 
-			// test barrier
+			// test barrier flag
 			if( $area->getFlag("barrier") ){
 
 				$player = $ev->getPlayer();
 
 				if( $player->isOp() || $area->isWhitelisted( strtolower( $player->getName() )  ) ){
 
+
 					if( ( $area->contains( $ev->getPlayer()->getPosition(), $ev->getPlayer()->getLevel()->getName() ) && !$area->contains( $ev->getFrom(), $ev->getPlayer()->getLevel()->getName() ) )
 					   || !$area->contains( $ev->getPlayer()->getPosition(), $ev->getPlayer()->getLevel()->getName() ) && $area->contains( $ev->getFrom(), $ev->getPlayer()->getLevel()->getName() ) ){
 						// ops & whitelist players pass
-						$cm = TextFormat::WHITE . $area->getName(). TextFormat::RED . " barrier detected!";
-						$ev->getPlayer()->sendMessage( $cm );
-
+						$this->barrierCrossByOp($area, $ev);
 					}
 
 				}else{
-
 					if( $area->contains( $ev->getPlayer()->getPosition(), $ev->getPlayer()->getLevel()->getName() )
 					  && !$area->contains( $ev->getFrom(), $ev->getPlayer()->getLevel()->getName() ) ){
 						$this->barrierEnterArea($area, $ev);
@@ -958,16 +960,29 @@ class Main extends PluginBase implements Listener{
 	}
 
 	/*
+	 * Area event barrier cross by op
+	 * @param Area $area, PlayerMoveEvent $ev
+	 */
+	public function barrierCrossByOp(Area $area, PlayerMoveEvent $ev): void{
+
+		$cm = TextFormat::WHITE . $area->getName(). TextFormat::RED . " barrier detected!";
+		$ev->getPlayer()->sendMessage( $cm );
+		return;
+
+	}
+
+	/*
 	 * Area event barrier enter
 	 * @param Area $area, PlayerMoveEvent $ev
 	 */
 	public function barrierEnterArea(Area $area, PlayerMoveEvent $ev): void{
 
 		$ev->getPlayer()->teleport($ev->getFrom());
+
 		if( !$area->getFlag("msg")  || $ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
-
-				$ev->getPlayer()->sendMessage( TextFormat::YELLOW . "You can not Enter area " . $area->getName() );
-
+				if( $this->skippTime(2) ){
+					$ev->getPlayer()->sendMessage( TextFormat::YELLOW . "You can not Enter area " . $area->getName() );
+				}
 		}
 		return;
 
@@ -981,9 +996,9 @@ class Main extends PluginBase implements Listener{
 
 		$ev->getPlayer()->teleport($ev->getFrom());
 		if( !$area->getFlag("msg")  || $ev->getPlayer()->hasPermission("festival") || $ev->getPlayer()->hasPermission("festival.access") ){
-
-			$ev->getPlayer()->sendMessage( TextFormat::YELLOW . "You can not leave area " . $area->getName() );
-
+			if( $this->skippTime(2) ){
+				$ev->getPlayer()->sendMessage( TextFormat::YELLOW . "You can not leave area " . $area->getName() );
+			}
 		}
 		return;
 
@@ -1081,6 +1096,27 @@ class Main extends PluginBase implements Listener{
 				}
 			}
 		}
+	}
+
+	public function skippTime($sec){
+		$t = false;
+		if( ( time() - $sec ) > $this->warn ){
+			$this->warn = time();
+			$t = true;
+		}
+		return $t;
+	}
+
+	public function areaEventSound( $player ){
+
+
+		//$player->addSound(new AnvilBreakSound($player));
+
+		/* Todo:
+		 * 1. add sounds
+		 * 2. sound flag, config & command
+		 * 3. add config different sounds & specification
+		 */
 	}
 
 	/*
