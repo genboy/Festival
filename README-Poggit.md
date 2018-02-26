@@ -49,7 +49,7 @@ Create a festival with this custom area events plugin for Pocketmine Server ALPH
 
 Credits for most area protection code go to iProtector creator [LDX-MCPE](https://github.com/LDX-MCPE) and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 
-
+  
 -------
 
 
@@ -395,4 +395,3 @@ whether future versions of the GNU Lesser General Public License shall
 apply, that proxy's public statement of acceptance of any version is
 permanent authorization for you to choose that version for the
 Library.
-
