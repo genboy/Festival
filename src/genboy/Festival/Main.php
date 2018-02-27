@@ -25,10 +25,13 @@ use pocketmine\event\player\PlayerMoveEvent; // G 2018 01 19
 
 class Main extends PluginBase implements Listener{
 
-	/** @var array */
+	/** @var array[] */
 	private $levels = [];
 	/** @var Area[] */
 	public $areas = [];
+    /** @var array[] */
+    // v 1.0.3
+    public $options = [];
 
 	/** @var bool */
 	private $god = false;
@@ -57,7 +60,12 @@ class Main extends PluginBase implements Listener{
 	
 	
 	/** @var string[] */
-	private $warn = 0; // delay counter for repeating event messages
+	private $skipsec = 0; // delay counter for skipptime (delay repeating event messages like barrier) // v1.0.2
+
+    /** @var string[] */
+	private $playerTP = []; // players TP area active
+
+
 
 
 	public function onEnable() : void{
@@ -85,6 +93,8 @@ class Main extends PluginBase implements Listener{
 		}
 
 		$c = yaml_parse_file($this->getDataFolder() . "config.yml");
+
+        $this->options = $c["Options"];
 
 		$this->god = $c["Default"]["God"];
 		$this->edit = $c["Default"]["Edit"];
@@ -286,11 +296,25 @@ class Main extends PluginBase implements Listener{
 				}
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.tp")){
 					$area = $this->areas[strtolower($args[1])];
-					if($area !== null && $area->isWhitelisted($playerName)){
+					if($area !== null){ // && $area->isWhitelisted($playerName)){ v1.0.3
 						$levelName = $area->getLevelName();
 						if(isset($levelName) && Server::getInstance()->loadLevel($levelName) != false){
 							$o = TextFormat::GREEN . "You are teleporting to Area " . $args[1];
-							$sender->teleport(new Position($area->getFirstPosition()->getX(), $area->getFirstPosition()->getY() + 0.5, $area->getFirstPosition()->getZ(), $area->getLevel()));
+
+                            //get center area
+                            $cx = $area->getSecondPosition()->getX() + ( ( $area->getFirstPosition()->getX() - $area->getSecondPosition()->getX() ) / 2 );
+		                    $cz = $area->getSecondPosition()->getZ() + ( ( $area->getFirstPosition()->getZ() - $area->getSecondPosition()->getZ() ) / 2 );
+		                    $cy1 = min( $area->getSecondPosition()->getY(), $area->getFirstPosition()->getY());
+		                    $cy2 = max( $area->getSecondPosition()->getY(), $area->getFirstPosition()->getY());
+
+                            $this->playerTP[$playerName] = true; // player tp active
+
+                            // send player there
+                            $sender->teleport( new Position( $cx, $cy2 + 0.5, $cz, $area->getLevel() ) );
+
+							//$sender->teleport(new Position($area->getFirstPosition()->getX(), $area->getFirstPosition()->getY() + 0.5, $area->getFirstPosition()->getZ(), $area->getLevel()));
+
+
 						}else{
 							$o = TextFormat::RED . "The level " . $levelName . " for Area ". $args[1] ." cannot be found";
 						}
@@ -882,6 +906,28 @@ class Main extends PluginBase implements Listener{
 		}
 	}
 
+
+
+
+    /* Add no fall damage in area ..
+     * .. https://github.com/iZeaoGamer/Wild/blob/patch-2/src/SkyLightMCPE/Main.php
+     */
+
+     public function onDamage(EntityDamageEvent $event){
+       if($event->getEntity() instanceof Player){
+
+           if(isset($this->playerTP[$event->getEntity()->getName()])){
+                $p = $event->getEntity();
+                unset($this->playerTP[$p->getName()]);
+                $event->setCancelled();
+           }
+       }
+    }
+
+
+
+
+
 	/*
 	 * @param PlayerMoveEvent $ev
 	 * @var string inArea
@@ -910,6 +956,7 @@ class Main extends PluginBase implements Listener{
 					   || !$area->contains( $player->getPosition(), $player->getLevel()->getName() ) && $area->contains( $ev->getFrom(), $player->getLevel()->getName() ) ){
 						// ops & whitelist players pass
 						$this->barrierCrossByOp($area, $ev);
+                        break;
 					}
 
 				}else{
@@ -953,6 +1000,9 @@ class Main extends PluginBase implements Listener{
 
 					if( in_array( strtolower( $area->getName()."center" ) , $this->inArea[$playerName] ) ){
 						$this->leaveAreaCenter($area, $ev);
+
+                        // release TP active (extra, if entity not fallen damage)
+                        unset($this->playerTP[$playerName]);
 						break;
 					}
 				}
@@ -985,7 +1035,7 @@ class Main extends PluginBase implements Listener{
 	 */
 	public function barrierEnterArea(Area $area, PlayerMoveEvent $ev): void{
         $player = $ev->getPlayer();
-		$player->teleport($ev->getFrom());
+		$ev->getPlayer()->teleport($ev->getFrom());
 		
 		if( !$area->getFlag("msg")  || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
 				if( $this->skippTime(2) ){
@@ -1004,7 +1054,7 @@ class Main extends PluginBase implements Listener{
 	public function barrierLeaveArea(Area $area, PlayerMoveEvent $ev): void{
         $player = $ev->getPlayer();
         $msg = '';
-		$player->teleport($ev->getFrom());
+		$ev->getPlayer()->teleport($ev->getFrom());
 		if( !$area->getFlag("msg")  || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
 			if( $this->skippTime(2) ){ 
 				$msg = TextFormat::YELLOW . "You can not leave area " . $area->getName();
@@ -1135,8 +1185,8 @@ class Main extends PluginBase implements Listener{
 	
 	public function skippTime($sec){
 		$t = false;
-		if( ( time() - $sec ) > $this->warn ){
-			$this->warn = time();
+		if( ( time() - $sec ) > $this->skipsec ){
+			$this->skipsec = time();
 			$t = true; 
 		}
 		return $t;
@@ -1144,8 +1194,11 @@ class Main extends PluginBase implements Listener{
 	
     public function areaMessage( $msg , $player ){
 
-                $player->sendTip($msg);
-                //$player->sendMessage($msg);
+        if($this->options['Msgtype'] == 'tip'){
+            $player->sendTip($msg);
+        }else{
+            $player->sendPopup($msg);
+        } // replacing $player->sendMessage($msg);
     }
 
 	public function areaEventSound( $player ){
@@ -1159,6 +1212,7 @@ class Main extends PluginBase implements Listener{
 		 * 3. add config different sounds & specification 
 		 */
 	}
+
 
 	/*
 	 * List Area Info

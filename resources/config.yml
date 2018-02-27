@@ -1,5 +1,10 @@
 # Config file for Festival
 
+# Festival options
+Options:
+  # Messages tip or pop
+  Msgtype: pop
+
 # Settings for unprotected areas in worlds without specific settings:
 Default:
 
