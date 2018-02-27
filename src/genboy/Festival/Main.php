@@ -63,7 +63,7 @@ class Main extends PluginBase implements Listener{
 	private $skipsec = 0; // delay counter for skipptime (delay repeating event messages like barrier) // v1.0.2
 
     /** @var string[] */
-	private $playerTP = []; // players TP area active
+	public $playerTP = []; // players TP area active
 
 
 
@@ -308,7 +308,8 @@ class Main extends PluginBase implements Listener{
 		                    $cy2 = max( $area->getSecondPosition()->getY(), $area->getFirstPosition()->getY());
 
                             $this->playerTP[$playerName] = true; // player tp active
-
+                            $this->areaMessage( 'Fall save on!', $sender );
+                            $sender->sendMessage( $playerName );
                             // send player there
                             $sender->teleport( new Position( $cx, $cy2 + 0.5, $cz, $area->getLevel() ) );
 
@@ -900,9 +901,15 @@ class Main extends PluginBase implements Listener{
 	public function onHurt(EntityDamageEvent $event) : void{
 		if($event->getEntity() instanceof Player){
 			$player = $event->getEntity();
+            $playerName = strtolower($player->getName());
 			if(!$this->canGetHurt($player)){
 				$event->setCancelled();
 			}
+           if( $this->playerTP[$playerName] == true ){
+                unset( $this->playerTP[$playerName] );
+                $this->areaMessage( 'Fall save off', $player );
+                $event->setCancelled();
+           }
 		}
 	}
 
@@ -913,15 +920,19 @@ class Main extends PluginBase implements Listener{
      * .. https://github.com/iZeaoGamer/Wild/blob/patch-2/src/SkyLightMCPE/Main.php
      */
 
-     public function onDamage(EntityDamageEvent $event){
+     public function onDamage(EntityDamageEvent $event) : void{
        if($event->getEntity() instanceof Player){
-
-           if(isset($this->playerTP[$event->getEntity()->getName()])){
-                $p = $event->getEntity();
-                unset($this->playerTP[$p->getName()]);
+			$player = $event->getEntity();
+            $playerName = strtolower($player->getName());
+			if(!$this->canGetHurt($player)){
+				$event->setCancelled();
+			}
+            if( $this->playerTP[$playerName] == true ){
+                unset( $this->playerTP[$playerName] );
+                $this->areaMessage( 'Fall save off', $player );
                 $event->setCancelled();
            }
-       }
+		}
     }
 
 
@@ -1001,8 +1012,6 @@ class Main extends PluginBase implements Listener{
 					if( in_array( strtolower( $area->getName()."center" ) , $this->inArea[$playerName] ) ){
 						$this->leaveAreaCenter($area, $ev);
 
-                        // release TP active (extra, if entity not fallen damage)
-                        unset($this->playerTP[$playerName]);
 						break;
 					}
 				}
@@ -1141,6 +1150,10 @@ class Main extends PluginBase implements Listener{
 	public function leaveAreaCenter(Area $area, PlayerMoveEvent $ev): void{
 		// leaving area center
         $player = $ev->getPlayer();
+        $playerName = strtolower( $player->getName() );
+
+        //unset($this->playerTP[$playerName]);// release TP active (extra, if entity not fallen damage)
+
         $msg = '';
 		if( !$area->getFlag("msg")  || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
 			$msg = TextFormat::WHITE . "Leaving the center of area " . $area->getName();
@@ -1148,7 +1161,7 @@ class Main extends PluginBase implements Listener{
         if( $msg != ''){
             $this->areaMessage( $msg, $player );
         }
-		$playerName = strtolower( $player->getName() );
+
 		if (($key = array_search( strtolower( $area->getName() )."center", $this->inArea[$playerName])) !== false) {
     		unset($this->inArea[$playerName][$key]);
 		}
