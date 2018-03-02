@@ -8,7 +8,7 @@ Create a festival with this custom area events plugin for Pocketmine Server ALPH
 ### Manage area's and run commmands attachted to area events.
 
 
-![Festival command usage overview](https://genboy.net/wp-content/uploads/2018/02/festival_usage_1.0.2-11.png)
+![Festival command usage overview](https://genboy.net/wp-content/uploads/2018/03/festival_usage_1.0.3-11.png)
 
 ###### Copyright [Genboy](https://genboy.net) 2018
 
@@ -16,10 +16,10 @@ Create a festival with this custom area events plugin for Pocketmine Server ALPH
 ## Info
 
 # Festival
-
 [![](https://poggit.pmmp.io/shield.state/Festival)](https://poggit.pmmp.io/p/Festival)
- [![](https://poggit.pmmp.io/shield.api/Festival)](https://poggit.pmmp.io/p/Festival)
-
+[![](https://poggit.pmmp.io/shield.api/Festival)](https://poggit.pmmp.io/p/Festival)
+[![](https://poggit.pmmp.io/shield.dl.total/Festival)](https://poggit.pmmp.io/p/Festival)
+[![](https://poggit.pmmp.io/shield.dl/Festival)](https://poggit.pmmp.io/p/Festival)
 
 [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
 
@@ -212,10 +212,10 @@ The Festival plugin is in active development.
   - [x] leave: when leaving the area 
   - [x] Submit to poggit
   - [x] Testing expected possibilities; use as portals and shields, design a minigame park, create a quest/parcour.. 
-  - [x] Barrier flag; turning the area into a barrier, no one in, no one out. (this is now 'Passage' or pass for short)
+  - [x] Passage flag; turning the area into a barrir, no one in, no one out. (this is now 'Passage' or pass for short)
+  - [x] /fe tp <areaname> now sends player to the area top-center and prevents fall damage
   
   Many ideas and necessities popped-up and more will be added to [the Bucketlist](https://github.com/genboy/Festival/issues/11) 
-  
 
  
  If you like to help improve this plugin;
