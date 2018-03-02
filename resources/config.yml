@@ -20,8 +20,8 @@ Default:
   # Keep players from seeing enter/leave/description messages?
   Msg: false
 
-  # Prevent players from enter/leaving the area?
-  Barrier: false
+  # Prevent players from enter/leaving the area? (previously barrier)
+  Passage: false
 
 # Settings for unprotected areas in individual worlds:
 Worlds:
@@ -40,5 +40,22 @@ Worlds:
     # Keep players from seeing enter/leave/description messages?
     Msg: false
 
-    # Prevent players from enter/leaving the area?
-    Barrier: false
+    # Prevent players from enter/leaving the area? (previously barrier)
+    Passage: false
+
+  World:
+
+    # Keep players from getting hurt?
+    God: false
+
+    # Keep players from editing the world?
+    Edit: false
+
+    # Keep players from touching blocks and activating things like chests?
+    Touch: false
+
+    # Keep players from seeing enter/leave/description messages?
+    Msg: false
+
+    # Prevent players from enter/leaving the area? (previously barrier)
+    Passage: false

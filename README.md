@@ -48,7 +48,7 @@ Flags
     - god: deny players god mode
     - touch: disallow interaction with chests etc.
     - msg: hide enter/leave messages
-    - barrier: no passage! (new! v1.0.1-11)
+    - passage: no passage for non-whitelisted players! (previously barrier flag)
 
     Default & world specific flags in config.yml
 
@@ -95,11 +95,11 @@ Credits for the area creation and protection code go to iProtector creator [LDX-
 
   #### set the area flags (!defaults in config.yml)
 	
-	/fe flag(f) <AREANAME> <god/build/touch/msg/barrier> <true/false>
+	/fe flag(f) <AREANAME> <god/build/touch/msg/pass> <true/false>
 		
   #### fast flag toggle (new! v1.0.1-11)
 		
- 	/fe <god/build/touch/msg/barrier> <AREANAME> (<true/false>)
+ 	/fe <god/build/touch/msg/pass> <AREANAME> (<true/false>)
 		
   
   #### see info on the area's you're in
@@ -170,6 +170,7 @@ The Festival plugin is in active development.
 ### Log
   - 2 3 2018
     - update readme.md
+    - replace name 'barrier' flag with 'passage' (better name for the flag)
     - Moving license content to own file
 
   - 27 2 2018

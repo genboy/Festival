@@ -39,7 +39,7 @@ class Main extends PluginBase implements Listener{
 	/** @var string */
 	private $msg = false;  // area enter/leave messages display on/off or op only
 	/** @var string */
-	private $barrier = false;  // area is a barrier and prevents players to enter/leave
+	private $passage = false;  // area is a passage and prevents players to enter/leave
 
 	/** @var bool[] */
 	private $selectingFirst = [];
@@ -55,7 +55,7 @@ class Main extends PluginBase implements Listener{
 	private $inArea = []; // array of area's player is in
 
 	/** @var string[] */
-	private $skipsec = 0; // delay counter for skipptime (delay repeating event messages like barrier) // v1.0.2
+	private $skipsec = 0; // delay counter for skipptime (delay repeating event messages like barrier passage) // v1.0.2
 
     /** @var string[] */
 	public $playerTP = []; // players TP area active
@@ -83,8 +83,19 @@ class Main extends PluginBase implements Listener{
 		}
 
 		$data = json_decode(file_get_contents($this->getDataFolder() . "areas.json"), true);
+        $newchange = 0; // check flag change
+
 		foreach($data as $datum){
-			new Area($datum["name"], $datum["desc"], $datum["flags"], new Vector3($datum["pos1"]["0"], $datum["pos1"]["1"], $datum["pos1"]["2"]), new Vector3($datum["pos2"]["0"], $datum["pos2"]["1"], $datum["pos2"]["2"]), $datum["level"], $datum["whitelist"], $datum["commands"], $datum["events"], $this);
+
+            // change flag name barrier to passage from previous versions
+            $flags = $datum["flags"];
+            if( isset($datum["flags"]["barrier"]) ){
+                $flags["passage"] = $datum["flags"]["barrier"];
+                unset($flags["barrier"]);
+                $newchange = 1;
+            }
+
+			new Area($datum["name"], $datum["desc"], $flags, new Vector3($datum["pos1"]["0"], $datum["pos1"]["1"], $datum["pos1"]["2"]), new Vector3($datum["pos2"]["0"], $datum["pos2"]["1"], $datum["pos2"]["2"]), $datum["level"], $datum["whitelist"], $datum["commands"], $datum["events"], $this);
 		}
 
 		$c = yaml_parse_file($this->getDataFolder() . "config.yml");
@@ -95,17 +106,36 @@ class Main extends PluginBase implements Listener{
 		$this->edit = $c["Default"]["Edit"];
 		$this->touch = $c["Default"]["Touch"];
 		$this->msg = $c["Default"]["Msg"];
-		$this->barrier = $c["Default"]["Barrier"];
+
+        if( isset($c["Default"]["Barrier"]) ){
+          $this->passage =  $c["Default"]["Barrier"];
+        }else{
+          $this->passage =  $c["Default"]["Passage"];
+        }
 
 		foreach($c["Worlds"] as $level => $flags){
-			$this->levels[$level] = $flags;
+
+            if( isset($flags["Barrier"]) ){
+              $fls = $flags;
+              $fls["Passage"] = $flags["Barrier"];
+              unset($fls["Barrier"]);
+              $this->levels[$level] = $fls;
+            }else{
+			  $this->levels[$level] = $flags;
+            }
 		}
 
-		$c = 0;
+		$ca = 0;
 		foreach( $this->areas as $a ){
-			$c = $c + count( $a->getCommands() );
+			$ca = $ca + count( $a->getCommands() );
 		}
-		$this->getLogger()->info(TextFormat::GREEN . "Festival v1.0.3-11 has " . count($this->areas) . " areas and ". $c ." commands set.");
+		$this->getLogger()->info(TextFormat::GREEN . "Festival v1.0.3-11 has " . count($this->areas) . " areas and ". $ca ." commands set.");
+
+
+            $this->saveAreas();
+            $this->getLogger()->info(TextFormat::GREEN . "Note: the barrier flags have been renamed to 'passage' in v1.0.3-11:");
+            $this->getLogger()->info(TextFormat::RED . "! >> Please make sure to replace 'Barrier' with 'Passage' in your current config.yml (see resources/config.yml)");
+
 	}
 
 	/* Commands
@@ -156,7 +186,7 @@ class Main extends PluginBase implements Listener{
 					if(isset($args[1])){
 						if(isset($this->firstPosition[$playerName], $this->secondPosition[$playerName])){
 							if(!isset($this->areas[strtolower($args[1])])){
-								new Area(strtolower($args[1]), "add description here",["edit" => true, "god" => false, "touch" => true, "msg" => false, "barrier" => false], $this->firstPosition[$playerName], $this->secondPosition[$playerName], $sender->getLevel()->getName(), [$playerName], [], [], $this);
+								new Area(strtolower($args[1]), "add description here",["edit" => true, "god" => false, "touch" => true, "msg" => false, "passage" => false], $this->firstPosition[$playerName], $this->secondPosition[$playerName], $sender->getLevel()->getName(), [$playerName], [], [], $this);
 								$this->saveAreas();
 								unset($this->firstPosition[$playerName], $this->secondPosition[$playerName]);
 								$o = TextFormat::AQUA . "Area created!";
@@ -291,12 +321,18 @@ class Main extends PluginBase implements Listener{
 			case "edit":
 			case "god":
 			case "msg":
+            case "pass":
+            case "passage":
 			case "barrier":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.flag")){
 					if(isset($args[1])){
 						if(isset($this->areas[strtolower($args[1])])){
 							$area = $this->areas[strtolower($args[1])];
-							if( $args[0] == "touch" || $args[0] == "edit" || $args[0] == "god" || $args[0] == "msg" || $args[0] == "barrier" ) {
+							if( $args[0] == "touch" || $args[0] == "edit" || $args[0] == "god" || $args[0] == "msg" || $args[0] == "barrier" || $args[0] == "pass" || $args[0] == "passage" ) {
+
+                                if( $args[0] == "pass" || $args[0] == "barrier"){
+                                    $args[0] = "passage";
+                                }
 								// excute short (new) notation for flags
 								$flag = $args[0];
 								if( isset($args[2]) && ( $args[2] == "true" ||  $args[2] == "on" ||  $args[2] == "false" ||  $args[2] == "off" ) ){
@@ -339,10 +375,10 @@ class Main extends PluginBase implements Listener{
 										}
 										$o = TextFormat::GREEN . "Flag " . $flag . " set to " . $status . " for area " . $area->getName() . "!";
 									}else{
-										$o = TextFormat::RED . "Flag not found. (Flags: edit, god, touch, msg, barrier)";
+										$o = TextFormat::RED . "Flag not found. (Flags: edit, god, touch, msg, passage)";
 									}
 								}else{
-									$o = TextFormat::RED . "Please specify a flag. (Flags: edit, god, touch, msg, barrier)";
+									$o = TextFormat::RED . "Please specify a flag. (Flags: edit, god, touch, msg, passage)";
 								}
 							}
 						}else{
@@ -814,7 +850,7 @@ class Main extends PluginBase implements Listener{
 			$this->inArea[$playerName] = []; 
 		}
 		foreach($this->areas as $area){
-            if( $area->getFlag("barrier") ){ // test barrier flag
+            if( $area->getFlag("passage") ){ // test passage flag
 				if( $player->isOp() || $area->isWhitelisted( strtolower( $player->getName() )  ) ){
 					if( ( $area->contains( $player->getPosition(), $player->getLevel()->getName() ) && !$area->contains( $ev->getFrom(), $player->getLevel()->getName() ) )
 					   || !$area->contains( $player->getPosition(), $player->getLevel()->getName() ) && $area->contains( $ev->getFrom(), $player->getLevel()->getName() ) ){
@@ -868,8 +904,9 @@ class Main extends PluginBase implements Listener{
 	 */
 	public function barrierCrossByOp(Area $area, PlayerMoveEvent $ev): void{
         $player = $ev->getPlayer();
-		$msg = TextFormat::WHITE . $area->getName(). TextFormat::RED . " barrier detected!";
-		$this->areaMessage( $msg, $player );
+		$msg = TextFormat::WHITE . $area->getName(). TextFormat::RED . " passage barrier detected!";
+        $player->sendMessage( $msg );
+		//$this->areaMessage( $msg, $player );
 		return;
 	}
 	
