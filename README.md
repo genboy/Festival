@@ -12,46 +12,65 @@ Create a festival with this custom area events plugin for Pocketmine Server ALPH
 
 ###### Copyright [Genboy](https://genboy.net) 2018
 
+---
 
 ## Info
 
 # Festival
 
 [![](https://poggit.pmmp.io/shield.state/Festival)](https://poggit.pmmp.io/p/Festival)
- [![](https://poggit.pmmp.io/shield.api/Festival)](https://poggit.pmmp.io/p/Festival)
-
+[![](https://poggit.pmmp.io/shield.api/Festival)](https://poggit.pmmp.io/p/Festival)
+[![](https://poggit.pmmp.io/shield.dl.total/Festival)](https://poggit.pmmp.io/p/Festival)
+[![](https://poggit.pmmp.io/shield.dl/Festival)](https://poggit.pmmp.io/p/Festival)
 
 [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
 
 #### Features
 
-- create and manage area's (like WorldGuard/iProtector)
-  - define cuboid area with 2 positions and name/create the area 
-  - add an area description
-  - whitelist players for the area
-  - set the area flags to true to
+Area
+
+- Create and manage area’s
+  (like WorldGuard/iProtector)
+
+    - Define cuboid area by tapping 2 positions
+    - create/delete/list area’s
+    - add area description
+    - whitelist players for the area
+    - tp to an area
+    - show area’s info at current position
+
+
+Flags
+
+- Set flags true for players not to
+
     - edit: disallow building/breaking
     - god: deny players god mode
     - touch: disallow interaction with chests etc.
-    - msg: show enter/leave area messages to non-ops
-    - barrier: only ops and whitelisted players can enter or leave the area! (new! v1.0.1-11)
-- manage area events
-  - assign commands to area events
-  - event types: enter, center and leave.
-  - add/edit/list/delete area event commands 
-  - change eventtype of commands
+    - msg: hide enter/leave messages
+    - barrier: no passage! (new! v1.0.1-11)
+
+    Default & world specific flags in config.yml
 
 
-##### ! Important note: Each area event holds an array of commands to be triggered with OP permission from the player.
+Events
+
+- Add commands to area events
+
+    - assign commands to area events
+    - enter, center or leave.
+    - add/edit/delete area event commands
+    - list area commands (ordered by event)
+    - change event of area commands
+
+    Note! Area event commands are executed with op permission by players from the area.
 
 
 ###### Created by [Genboy](https://genboy.net) 2018
 
-Credits for most area protection code go to iProtector creator [LDX-MCPE](https://github.com/LDX-MCPE) and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
+Credits for the area creation and protection code go to iProtector creator [LDX-MCPE](https://github.com/LDX-MCPE) and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 
-
--------
-
+---
 
 ## Usage 
 
@@ -140,8 +159,7 @@ Credits for most area protection code go to iProtector creator [LDX-MCPE](https:
 	
 	/fe command <AREANAME> del <COMMANDID>
 
-
-------
+---
 
 ## Development
 
@@ -150,6 +168,18 @@ The Festival plugin is in active development.
  ##### Development on [github.com/genboy/Festival](https://github.com/genboy/Festival)
 
 ### Log
+  - 2 3 2018
+    - update readme.md
+    - Moving license content to own file
+
+  - 27 2 2018
+    - No hurt, no damage after falling from /fe tp
+    - Area tp to center top & fall into area without damage!
+
+  - 26 2 2018
+   - Area messages now popup 
+   - Separate readme for poggit release template
+   - code clean up to much player instance references
 
   - 22 2 2018
     - Pre-release 
