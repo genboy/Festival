@@ -1,9 +1,9 @@
 name: Festival
 author: Genboy
-version: 1.0.1-11
+version: 1.0.3-11
 main: genboy\Festival\Main
 load: POSTWORLD
-api: [3.0.0-ALPHA10,3.0.0-ALPHA11]
+api: [3.0.0-ALPHA10,3.0.0-ALPHA11,3.0.0-ALPHA12]
 website: "https://github.com/genboy/Festival"
 commands:
   fe:
