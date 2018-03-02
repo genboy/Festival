@@ -177,9 +177,9 @@ The Festival plugin is in active development.
     - Area tp to center top & fall into area without damage!
 
   - 26 2 2018
-   - Area messages now popup 
-   - Separate readme for poggit release template
-   - code clean up to much player instance references
+    - Area messages now popup 
+    - Separate readme for poggit release template
+    - code clean up to much player instance references
 
   - 22 2 2018
     - Pre-release 
