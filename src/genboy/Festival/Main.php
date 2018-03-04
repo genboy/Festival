@@ -814,7 +814,7 @@ class Main extends PluginBase implements Listener{
 			}
            if( isset($this->playerTP[$playerName]) && $this->playerTP[$playerName] == true ){
                 unset( $this->playerTP[$playerName] );
-                $this->areaMessage( 'Fall save off', $player );
+                //$this->areaMessage( 'Fall save off', $player );
                 $event->setCancelled();
            }
 		}
@@ -833,7 +833,7 @@ class Main extends PluginBase implements Listener{
 			}
             if( isset($this->playerTP[$playerName]) && $this->playerTP[$playerName] == true ){
                 unset( $this->playerTP[$playerName] );
-                $this->areaMessage( 'Fall save off', $player );
+                //$this->areaMessage( 'Fall save off', $player );
                 $event->setCancelled();
            }
 		}
@@ -905,9 +905,10 @@ class Main extends PluginBase implements Listener{
 	 */
 	public function barrierCrossByOp(Area $area, PlayerMoveEvent $ev): void{
         $player = $ev->getPlayer();
-		$msg = TextFormat::WHITE . $area->getName(). TextFormat::RED . " passage barrier detected!";
-        $player->sendMessage( $msg );
-		//$this->areaMessage( $msg, $player );
+        if( $this->msgOpDsp( $area, $player ) ){
+		  $msg = TextFormat::WHITE . $area->getName(). TextFormat::RED . " passage barrier detected!";
+          $player->sendMessage( $msg );
+        }
 		return;
 	}
 	
@@ -920,7 +921,7 @@ class Main extends PluginBase implements Listener{
 	public function barrierEnterArea(Area $area, PlayerMoveEvent $ev): void{
         $player = $ev->getPlayer();
 		$ev->getPlayer()->teleport($ev->getFrom());
-		if( !$area->getFlag("msg")  || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+		if( !$area->getFlag("msg")  || $this->msgOpDsp( $area, $player ) ){
 				if( $this->skippTime(2) ){
 					$msg = TextFormat::YELLOW . "You can not Enter area " . $area->getName();
                     $this->areaMessage( $msg, $player );
@@ -938,7 +939,7 @@ class Main extends PluginBase implements Listener{
         $player = $ev->getPlayer();
         $msg = '';
 		$ev->getPlayer()->teleport($ev->getFrom());
-		if( !$area->getFlag("msg")  || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+		if( !$area->getFlag("msg")  || $this->msgOpDsp( $area, $player ) ){
 			if( $this->skippTime(2) ){ 
 				$msg = TextFormat::YELLOW . "You can not leave area " . $area->getName();
 			}
@@ -958,7 +959,7 @@ class Main extends PluginBase implements Listener{
 	public function enterArea(Area $area, PlayerMoveEvent $ev): void{
         $player = $ev->getPlayer();
         $msg = '';
-		if( !$area->getFlag("msg")  || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+		if( !$area->getFlag("msg")  || $this->msgOpDsp( $area, $player ) ){
 			$msg = TextFormat::AQUA . $player->getName() . " enter " . $area->getName();
 			if( $area->getDesc() ){
 				$msg .= "\n". TextFormat::WHITE . $area->getDesc();
@@ -981,7 +982,7 @@ class Main extends PluginBase implements Listener{
 	public function leaveArea(Area $area, PlayerMoveEvent $ev): void{
         $player = $ev->getPlayer();
         $msg = '';
-		if( !$area->getFlag("msg") || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+		if( !$area->getFlag("msg") || $this->msgOpDsp( $area, $player ) ){
 			$msg .= TextFormat::YELLOW . $player->getName() . " leaving " . $area->getName();
 		}
         if( $msg != ''){
@@ -1005,7 +1006,7 @@ class Main extends PluginBase implements Listener{
 		// in area center
         $player = $ev->getPlayer();
         $msg = '';
-        if( !$area->getFlag("msg")  || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+        if( !$area->getFlag("msg")  || $this->msgOpDsp( $area, $player ) ){
 			$msg = TextFormat::WHITE . "Enter the center of area " . $area->getName();
 		}
         if( $msg != ''){
@@ -1027,7 +1028,7 @@ class Main extends PluginBase implements Listener{
         $player = $ev->getPlayer();
         $playerName = strtolower( $player->getName() );
         $msg = '';
-		if( !$area->getFlag("msg")  || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+		if( !$area->getFlag("msg")  || $this->msgOpDsp( $area, $player ) ){
 			$msg = TextFormat::WHITE . "Leaving the center of area " . $area->getName();
 		}
         if( $msg != ''){
@@ -1092,6 +1093,32 @@ class Main extends PluginBase implements Listener{
         }else{
             $player->sendPopup($msg);
         }
+    }
+
+    /**
+     * define message persistent display
+	 * @param Area $area
+	 * @param PlayerMoveEvent $ev->getPLayer()
+	 * @param array $options
+	 * return bool
+     */
+    public function msgOpDsp( $area, $player ){
+
+        if( isset( $this->options['Msgdisplay'] ) && $player->isOp() ){
+
+            if( $this->options['Msgdisplay'] == 'on' ){
+                return true;
+            }else if( $this->options['Msgdisplay'] == 'op' && $area->isWhitelisted(strtolower($player->getName())) ){
+                return true;
+            }else{
+                return false;
+            }
+
+        }else{
+            return false;
+        }
+
+
     }
 
     /** areaSounds
