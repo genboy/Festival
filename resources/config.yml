@@ -20,7 +20,7 @@ Default:
   # Keep players from seeing enter/leave/description messages?
   Msg: false
 
-  # Prevent players from enter/leaving the area? (previously barrier)
+  # Prevent players enter/leaving the area? Deny passage (previously barrier)
   Passage: false
 
 # Settings for unprotected areas in individual worlds:

@@ -1,4 +1,4 @@
-<?php /* src/genboy/Festival/Main.php */
+<?php /** src/genboy/Festival/Main.php **/
 
 declare(strict_types = 1);
 
@@ -60,7 +60,7 @@ class Main extends PluginBase implements Listener{
     /** @var string[] */
 	public $playerTP = []; // players TP area active
 
-	/* Enable
+	/** Enable
 	 * @return $this
 	 */
 	public function onEnable() : void{
@@ -81,6 +81,7 @@ class Main extends PluginBase implements Listener{
 			fclose($c);
 			file_put_contents($this->getDataFolder() . "config.yml", str_replace("DEFAULT", $this->getServer()->getDefaultLevel()->getName(), $o));
 		}
+
 
 		$data = json_decode(file_get_contents($this->getDataFolder() . "areas.json"), true);
         $newchange = 0; // check flag change
@@ -138,7 +139,7 @@ class Main extends PluginBase implements Listener{
 
 	}
 
-	/* Commands
+	/** Commands
      * @param CommandSender $sender
      * @param Command $cmd
      * @param string $label
@@ -459,7 +460,7 @@ class Main extends PluginBase implements Listener{
 				break;
 			case "c":
 			case "cmd":
-			case "command": /* /fe command <areaname> <add|list|edit|del> <commandindex> <commandstring> */
+			case "command": /** /fe command <areaname> <add|list|edit|del> <commandindex> <commandstring> */
 								if( isset($args[1]) && (  $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.command") ) ){
 									if( isset( $this->areas[strtolower($args[1])] ) ){
 										if( isset($args[2]) ){
@@ -648,7 +649,7 @@ class Main extends PluginBase implements Listener{
 		return true;
 	}
 
-	/* Hurt
+	/** Hurt
      * @param Entity $entity
 	 * @return bool
 	 */
@@ -672,7 +673,7 @@ class Main extends PluginBase implements Listener{
 		return $o;
 	}
 
-	/* Edit
+	/** Edit
      * @param Player   $player
 	 * @param Position $position
 	 * @return bool
@@ -704,7 +705,7 @@ class Main extends PluginBase implements Listener{
 		return $o;
 	}
 
-	/* Touch
+	/** Touch
      * @param Player   $player
 	 * @param Position $position
 	 * @return bool
@@ -736,7 +737,7 @@ class Main extends PluginBase implements Listener{
 		return $o;
 	}
 
-	/* Block Touch
+	/** Block Touch
      * @param PlayerInteractEvent $event
 	 * @ignoreCancelled true
 	 */
@@ -748,7 +749,7 @@ class Main extends PluginBase implements Listener{
 		}
 	}
 
-	/* Block Place
+	/** Block Place
      * @param BlockPlacekEvent $event
 	 * @ignoreCancelled true
 	 */
@@ -773,7 +774,7 @@ class Main extends PluginBase implements Listener{
 		}
 	}
 
-	/* Block break
+	/** Block break
      * @param BlockBreakEvent $event
 	 * @ignoreCancelled true
 	 */
@@ -800,7 +801,7 @@ class Main extends PluginBase implements Listener{
 		}
 	}
 
-	/* On hurt
+	/** On hurt
      * @param EntityDamageEvent $event
 	 * @ignoreCancelled true
 	 */
@@ -819,7 +820,7 @@ class Main extends PluginBase implements Listener{
 		}
 	}
 
-    /* Add no fall damage in area ..
+    /** Add no fall damage in area ..
      * @param EntityDamageEvent $event
 	 * @ignoreCancelled true
 	 */
@@ -838,7 +839,7 @@ class Main extends PluginBase implements Listener{
 		}
     }
 
-	/* On player move ..
+	/** On player move ..
      * @param PlayerMoveEvent $ev
 	 * @var string inArea
 	 * return true
@@ -897,7 +898,7 @@ class Main extends PluginBase implements Listener{
 		return;
 	}
 
-	/* Area event barrier cross by op
+	/** Area event barrier cross by op
 	 * @param area Area
 	 * @param PlayerMoveEvent $ev
 	 * return false
@@ -910,7 +911,7 @@ class Main extends PluginBase implements Listener{
 		return;
 	}
 	
-	/*
+	/**
 	 * Area event barrier enter
 	 * @param area Area
 	 * @param PlayerMoveEvent $ev
@@ -928,7 +929,7 @@ class Main extends PluginBase implements Listener{
 		return;
 	}
 
-	/* Area event barrier leave
+	/** Area event barrier leave
 	 * @param area Area
 	 * @param PlayerMoveEvent $ev
 	 * return false
@@ -949,7 +950,7 @@ class Main extends PluginBase implements Listener{
 
 	}
 
-	/* Area event enter
+	/** Area event enter
 	 * @param area Area
 	 * @param PlayerMoveEvent $ev
 	 * return false
@@ -972,7 +973,7 @@ class Main extends PluginBase implements Listener{
 		return;
 	}
 
-	/* Area event leave
+	/** Area event leave
 	 * @param area Area
 	 * @param PlayerMoveEvent $ev
 	 * return false
@@ -995,7 +996,7 @@ class Main extends PluginBase implements Listener{
 		return;
 	}
 
-	/* Area event enter center
+	/** Area event enter center
      * @param area Area
 	 * @param PlayerMoveEvent $ev
 	 * return false
@@ -1016,7 +1017,7 @@ class Main extends PluginBase implements Listener{
 		return;
 	}
 
-	/* Area event leave center
+	/** Area event leave center
      * @param area Area
 	 * @param PlayerMoveEvent $ev
 	 * return false
@@ -1038,7 +1039,7 @@ class Main extends PluginBase implements Listener{
 		return;
 	}
 
-	/* Run Area Event
+	/** Run Area Event
      * @param area Area
 	 * @param PlayerMoveEvent $ev
 	 * @param string $eventtype
@@ -1064,7 +1065,7 @@ class Main extends PluginBase implements Listener{
 		}
 	}
 
-    /* skippTime
+    /** skippTime
      * delay function for repeating
 	 * @param string $sec
 	 * return false
@@ -1078,7 +1079,7 @@ class Main extends PluginBase implements Listener{
 		return $t;
 	}
 
-    /* areaMessage
+    /** areaMessage
      * define message type
 	 * @param string $msg
 	 * @param PlayerMoveEvent $ev->getPLayer()
@@ -1093,19 +1094,19 @@ class Main extends PluginBase implements Listener{
         }
     }
 
-    /* areaSounds
+    /** areaSounds
 	 * @param array $sounds
 	 */
 	public function areaEventSound( $player ){
 		//$player->addSound(new AnvilBreakSound($player));
-		/* Todo: 
+		/** Todo:
 		 * 1. add sounds
 		 * 2. sound flag, config & command
 		 * 3. add config different sounds & specification 
 		 */
 	}
 
-	/* List Area Info
+	/** List Area Info
 	 * @var obj area
 	 */
     public function areaInfoList( $area ){
@@ -1141,7 +1142,7 @@ class Main extends PluginBase implements Listener{
 		return $l;
 	}
 
-    /* Save areas
+    /** Save areas
      * @var obj area
      * @file areas.json
      */
