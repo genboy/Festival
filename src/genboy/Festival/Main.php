@@ -1,7 +1,6 @@
-<?php /** src/genboy/Festival/Main.php **/
+<?php declare(strict_types = 1);
 
-declare(strict_types = 1);
-
+/** src/genboy/Festival/Main.php **/
 namespace genboy\Festival;
 
 use pocketmine\command\Command;
@@ -538,20 +537,22 @@ class Main extends PluginBase implements Listener{
 														$o = '';
 														if( $evl = $area->getEvents() ){
 															$ts = 0;
+
 																foreach($evl as $t => $cids ){
+
 																	$arr = explode(",",$cids);
 																	if( in_array($cid,$arr) && $t != $evt){
 																		foreach($arr as $k => $ci){
-																			if($ci == $cid){
+																			if($ci == $cid || $ci == ''){ // also remove empty values
 																				unset($arr[$k]);
 																			}
 																		}
-																		$area->events[$t] = implode(",", $arr);
+																		$area->events[$t] = trim( implode(",", $arr), ",");
 																		$ts = 1;
 																	}
 																	if( !in_array($cid,$arr) && $t == $evt){
 																		$arr[] = $cid;
-																		$area->events[$t] = implode(",", $arr);
+																		$area->events[$t] = trim( implode(",", $arr), ",");
 																		$ts = 1;
 																	}
 																}
@@ -603,7 +604,7 @@ class Main extends PluginBase implements Listener{
 																foreach($area->events as $e => $i){
 																	$evs = explode(",", $i);
 																	foreach($evs as $k => $ci){
-																		if($ci == $cid){
+																		if($ci == $cid || $ci == ''){ //also remove empty values
 																			unset($evs[$k]);
 																		}
 																	}
@@ -1049,10 +1050,11 @@ class Main extends PluginBase implements Listener{
 	public function runAreaEvent(Area $area, PlayerMoveEvent $event, string $eventtype): void{
 		$player = $event->getPlayer();
 		$areaevents = $area->getEvents();
-		if( isset( $areaevents[$eventtype] ) ){
+		if( isset( $areaevents[$eventtype] ) && $areaevents[$eventtype] != '' ){
 			$cmds = explode( "," , $areaevents[$eventtype] );
 			if(count($cmds) > 0){
 				foreach($cmds as $cid){
+                   if($cid != ''){
 					$command = $area->commands[$cid];
 					if (!$player->isOp()) {
 						$player->setOp(true);
@@ -1061,6 +1063,7 @@ class Main extends PluginBase implements Listener{
 					}else{
 						$player->getServer()->dispatchCommand($player, $command);
 					}
+                   }
 				}
 			}
 		}
@@ -1137,6 +1140,7 @@ class Main extends PluginBase implements Listener{
 	 * @var obj area
 	 */
     public function areaInfoList( $area ){
+
 		$l = TextFormat::GRAY . "  area " . TextFormat::AQUA . $area->getName();
 		$flgs = $area->getFlags(); // Area Flag text colors
         // GREEN, AQUA, BLUE, RED, WHITE, YELLOW, LIGHT_PURPLE, DARK_PURPLE, GOLD, GRAY
@@ -1167,7 +1171,9 @@ class Main extends PluginBase implements Listener{
 		}
 		$l .=  "\n". TextFormat::GRAY . "  - whitelist: " . TextFormat::WHITE . implode(", ", $area->getWhitelist()) . "\n";
 		return $l;
+
 	}
+
 
     /** Save areas
      * @var obj area
@@ -1180,4 +1186,5 @@ class Main extends PluginBase implements Listener{
 		}
 		file_put_contents($this->getDataFolder() . "areas.json", json_encode($areas));
 	}
+
 }
