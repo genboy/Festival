@@ -100,12 +100,19 @@ class Main extends PluginBase implements Listener{
 
 		$c = yaml_parse_file($this->getDataFolder() . "config.yml");
 
-        $this->options = $c["Options"];
+        $ochk = false;
+        if( isset( $c["Options"] ) && is_array( $c["Options"] ) ){
+            $this->options = $c["Options"];
+        }else{
+            $ochk = true;
+            $this->options = array("Msgtype"=>"pop", "Msgdisplay"=>"off");
+        }
 
 		$this->god = $c["Default"]["God"];
 		$this->edit = $c["Default"]["Edit"];
 		$this->touch = $c["Default"]["Touch"];
 		$this->msg = $c["Default"]["Msg"];
+
 
         if( isset($c["Default"]["Barrier"]) ){
           $this->passage =  $c["Default"]["Barrier"];
@@ -113,9 +120,11 @@ class Main extends PluginBase implements Listener{
           $this->passage =  $c["Default"]["Passage"];
         }
 
+
 		foreach($c["Worlds"] as $level => $flags){
 
             if( isset($flags["Barrier"]) ){
+
               $fls = $flags;
               $fls["Passage"] = $flags["Barrier"];
               unset($fls["Barrier"]);
@@ -125,16 +134,20 @@ class Main extends PluginBase implements Listener{
             }
 		}
 
+
 		$ca = 0;
 		foreach( $this->areas as $a ){
 			$ca = $ca + count( $a->getCommands() );
 		}
 		$this->getLogger()->info(TextFormat::GREEN . "Festival v1.0.3-11 has " . count($this->areas) . " areas and ". $ca ." commands set.");
 
+        $this->saveAreas();
 
-            $this->saveAreas();
-            $this->getLogger()->info(TextFormat::GREEN . "Note: the barrier flags have been renamed to 'passage' in v1.0.3-11:");
-            $this->getLogger()->info(TextFormat::RED . "! >> Please make sure to replace 'Barrier' with 'Passage' in your current config.yml (see resources/config.yml)");
+        if($ochk){
+        $this->getLogger()->info(TextFormat::GREEN . "Note: default config options set; add your options array in config.yml (see release v1.0.3-11)");
+        $this->getLogger()->info(TextFormat::GREEN . "Also, the barrier flags have been renamed to 'passage' in v1.0.3-11:");
+        $this->getLogger()->info(TextFormat::RED . "! >> Please make sure to replace 'Barrier' with 'Passage' in your current config.yml");
+        }
 
 	}
 
