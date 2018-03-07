@@ -27,7 +27,7 @@ class Main extends PluginBase implements Listener{
 	/** @var Area[] */
 	public $areas = [];
     /** @var array[] */
-    public $options = []; // v 1.0.3
+    public $options = [];
 
 	/** @var bool */
 	private $god = false;
@@ -36,9 +36,9 @@ class Main extends PluginBase implements Listener{
 	/** @var bool */
 	private $touch = false;
 	/** @var string */
-	private $msg = false;  // area enter/leave messages display on/off or op only
+	private $msg = false;
 	/** @var string */
-	private $passage = false;  // area is a passage and prevents players to enter/leave
+	private $passage = false;
 
 	/** @var bool[] */
 	private $selectingFirst = [];
@@ -51,13 +51,13 @@ class Main extends PluginBase implements Listener{
 	private $secondPosition = [];
 
 	/** @var string[] */
-	private $inArea = []; // array of area's player is in
+	private $inArea = [];
 
-	/** @var string[] */
-	private $skipsec = 0; // delay counter for skipptime (delay repeating event messages like barrier passage) // v1.0.2
+	/** @var int */
+	private $skipsec = 0;
 
     /** @var string[] */
-	public $playerTP = []; // players TP area active
+	public $playerTP = [];
 
 	/** Enable
 	 * @return $this
@@ -83,7 +83,7 @@ class Main extends PluginBase implements Listener{
 
 
 		$data = json_decode(file_get_contents($this->getDataFolder() . "areas.json"), true);
-        $newchange = 0; // check flag change
+        $newchange = false; // check flag change
 
 		foreach($data as $datum){
 
@@ -92,7 +92,7 @@ class Main extends PluginBase implements Listener{
             if( isset($datum["flags"]["barrier"]) ){
                 $flags["passage"] = $datum["flags"]["barrier"];
                 unset($flags["barrier"]);
-                $newchange = 1;
+                $newchange = true;
             }
 
 			new Area($datum["name"], $datum["desc"], $flags, new Vector3($datum["pos1"]["0"], $datum["pos1"]["1"], $datum["pos1"]["2"]), new Vector3($datum["pos2"]["0"], $datum["pos2"]["1"], $datum["pos2"]["2"]), $datum["level"], $datum["whitelist"], $datum["commands"], $datum["events"], $this);
@@ -100,50 +100,72 @@ class Main extends PluginBase implements Listener{
 
 		$c = yaml_parse_file($this->getDataFolder() . "config.yml");
 
-        $ochk = false;
+        // adjust in v1.0.5-11
         if( isset( $c["Options"] ) && is_array( $c["Options"] ) ){
+
+            if(!$c["Options"]["Msgtype"]){
+                $c["Options"]["Msgtype"] = 'pop';
+            }
+            if(!$c["Options"]["Msgdisplay"]){
+                $c["Options"]["Msgdisplay"] = 'off';
+            } //.. new options check
+
             $this->options = $c["Options"];
+
         }else{
-            $ochk = true;
-            $this->options = array("Msgtype"=>"pop", "Msgdisplay"=>"off");
+            $newchange = true;
+            $this->options = array("Msgtype"=>"pop", "Msgdisplay"=>"off"); // Fallback defaults
+        }
+
+        if(!isset($c["Default"]["God"])) {
+            $c["Default"]["God"] = false;
+        }
+        if(!isset($c["Default"]["Edit"])) {
+            $c["Default"]["Edit"] = true;
+        }
+        if(!isset($c["Default"]["Touch"])) {
+            $c["Default"]["Touch"] = false;
+        }
+        if(!isset($c["Default"]["Msg"])) {
+            $c["Default"]["Msg"] = false;
+        }
+        if( isset($c["Default"]["Barrier"]) ){ // remove in v1.0.5-11
+            $c["Default"]["Passage"] =  $c["Default"]["Barrier"];
+        }else if(!isset($c["Default"]["Passage"])) {
+            $c["Default"]["Passage"] = false;
+
         }
 
 		$this->god = $c["Default"]["God"];
 		$this->edit = $c["Default"]["Edit"];
 		$this->touch = $c["Default"]["Touch"];
 		$this->msg = $c["Default"]["Msg"];
+        $this->passage = $c["Default"]["Passage"];
 
 
-        if( isset($c["Default"]["Barrier"]) ){
-          $this->passage =  $c["Default"]["Barrier"];
-        }else{
-          $this->passage =  $c["Default"]["Passage"];
+        if(is_array( $c["Worlds"] )){
+            foreach($c["Worlds"] as $level => $flags){
+                if( isset($flags["Barrier"]) ){ // remove in v1.0.5-11
+                  $fls = $flags;
+                  $fls["Passage"] = $flags["Barrier"];
+                  unset($fls["Barrier"]);
+                  $this->levels[$level] = $fls;
+                }else{
+                  $this->levels[$level] = $flags;
+                }
+            }
         }
 
+        // all save :)
+        $this->saveAreas();
 
-		foreach($c["Worlds"] as $level => $flags){
-
-            if( isset($flags["Barrier"]) ){
-
-              $fls = $flags;
-              $fls["Passage"] = $flags["Barrier"];
-              unset($fls["Barrier"]);
-              $this->levels[$level] = $fls;
-            }else{
-			  $this->levels[$level] = $flags;
-            }
-		}
-
-
+        // console output
 		$ca = 0;
 		foreach( $this->areas as $a ){
 			$ca = $ca + count( $a->getCommands() );
 		}
-		$this->getLogger()->info(TextFormat::GREEN . "Festival v1.0.3-11 has " . count($this->areas) . " areas and ". $ca ." commands set.");
-
-        $this->saveAreas();
-
-        if($ochk){
+		$this->getLogger()->info(TextFormat::GREEN . "Festival v1.0.4-11 has " . count($this->areas) . " areas and ". $ca ." commands set.");
+        if($newchange){
         $this->getLogger()->info(TextFormat::GREEN . "Note: default config options set; add your options array in config.yml (see release v1.0.3-11)");
         $this->getLogger()->info(TextFormat::GREEN . "Also, the barrier flags have been renamed to 'passage' in v1.0.3-11:");
         $this->getLogger()->info(TextFormat::RED . "! >> Please make sure to replace 'Barrier' with 'Passage' in your current config.yml");
