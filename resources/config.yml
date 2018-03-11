@@ -25,6 +25,12 @@ Default:
   # Prevent players enter/leaving the area? Deny passage (previously barrier)
   Passage: false
 
+  # Prevent players drop items in the area? Deny drop
+  Drop: false
+
+  # Prevent player permission overwrite for area event command execution
+  Perms: false
+
 # Settings for unprotected areas in individual worlds:
 Worlds:
 
@@ -45,6 +51,12 @@ Worlds:
     # Prevent players from enter/leaving the area? (previously barrier)
     Passage: false
 
+    # Prevent players drop items in the area? Deny drop
+    Drop: false
+
+    # Prevent player permission overwrite for area event command execution
+    Perms: false
+
   World:
 
     # Keep players from getting hurt?
@@ -61,3 +73,9 @@ Worlds:
 
     # Prevent players from enter/leaving the area? (previously barrier)
     Passage: false
+
+    # Prevent players drop items in the area? Deny drop
+    Drop: false
+
+    # Prevent player permission overwrite for area event command execution
+    Perms: false

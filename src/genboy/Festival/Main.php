@@ -19,6 +19,11 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
 use pocketmine\Server;
 use pocketmine\event\player\PlayerMoveEvent;
+use pocketmine\event\player\PlayerDropItemEvent;
+
+/**
+ * use pocketmine\event\player\{PlayerJoinEvent, PlayerMoveEvent, PlayerInteractEvent, PlayerCommandPreprocessEvent, PlayerDropItemEvent, PlayerBedEnterEvent, PlayerChatEvent};
+ */
 
 class Main extends PluginBase implements Listener{
 
@@ -35,10 +40,14 @@ class Main extends PluginBase implements Listener{
 	private $edit = false;
 	/** @var bool */
 	private $touch = false;
-	/** @var string */
+	/** @var bool */
 	private $msg = false;
-	/** @var string */
+	/** @var bool */
 	private $passage = false;
+	/** @var bool */
+	private $perms = false;
+	/** @var bool */
+	private $drop = false;
 
 	/** @var bool[] */
 	private $selectingFirst = [];
@@ -87,11 +96,21 @@ class Main extends PluginBase implements Listener{
 
 		foreach($data as $datum){
 
-            // change flag name barrier to passage from previous versions
+            // change flag name barrier to passage from versions before v1.0.3-11
             $flags = $datum["flags"];
             if( isset($datum["flags"]["barrier"]) ){
                 $flags["passage"] = $datum["flags"]["barrier"];
                 unset($flags["barrier"]);
+                $newchange = true;
+            }
+            //check/add new flags v 1.0.4-11
+
+            if( !isset($datum["flags"]["perms"]) ){
+                $flags["perms"] = false;
+                $newchange = true;
+            }
+            if( !isset($datum["flags"]["drop"]) ){
+                $flags["drop"] = false;
                 $newchange = true;
             }
 
@@ -113,8 +132,8 @@ class Main extends PluginBase implements Listener{
             $this->options = $c["Options"];
 
         }else{
-            $newchange = true;
             $this->options = array("Msgtype"=>"pop", "Msgdisplay"=>"off"); // Fallback defaults
+            $newchange = true;
         }
 
         if(!isset($c["Default"]["God"])) {
@@ -133,26 +152,48 @@ class Main extends PluginBase implements Listener{
             $c["Default"]["Passage"] =  $c["Default"]["Barrier"];
         }else if(!isset($c["Default"]["Passage"])) {
             $c["Default"]["Passage"] = false;
-
+        }
+        // new in v1.0.4-11
+        if(!isset($c["Default"]["Perms"])) {
+            $c["Default"]["Perms"] = false;
+        }
+        if(!isset($c["Default"]["Drop"])) {
+            $c["Default"]["Drop"] = false;
         }
 
 		$this->god = $c["Default"]["God"];
 		$this->edit = $c["Default"]["Edit"];
 		$this->touch = $c["Default"]["Touch"];
 		$this->msg = $c["Default"]["Msg"];
+        // changed in v1.0.3-11
         $this->passage = $c["Default"]["Passage"];
-
+        // new in v1.0.4-11
+		/* $this->perms = $c["Default"]["Perms"];
+        $this->drop = $c["Default"]["Drop"];
+        */
 
         if(is_array( $c["Worlds"] )){
             foreach($c["Worlds"] as $level => $flags){
-                if( isset($flags["Barrier"]) ){ // remove in v1.0.5-11
-                  $fls = $flags;
-                  $fls["Passage"] = $flags["Barrier"];
-                  unset($fls["Barrier"]);
-                  $this->levels[$level] = $fls;
-                }else{
-                  $this->levels[$level] = $flags;
+
+                // check since v1.0.3-11
+                if( isset($flags["Barrier"]) ){
+                    $flags["Passage"] = $flags["Barrier"];
+                    unset($flags["Barrier"]);
                 }
+                if( !isset($flags["Passage"]) ){
+                    $flags["Passage"] = false;
+                }
+
+                 // new v1.0.4-11
+                   if( !isset($flags["Perms"]) ){
+                      $flags["Perms"] = false;
+                   }
+                   if( !isset($flags["Drop"]) ){
+                      $flags["Drop"] = false;
+                   }
+
+                $this->levels[$level] = $flags;
+
             }
         }
 
@@ -164,7 +205,7 @@ class Main extends PluginBase implements Listener{
 		foreach( $this->areas as $a ){
 			$ca = $ca + count( $a->getCommands() );
 		}
-		$this->getLogger()->info(TextFormat::GREEN . "Festival v1.0.4-11 has " . count($this->areas) . " areas and ". $ca ." commands set.");
+		$this->getLogger()->info(TextFormat::GREEN . "Festival Dev-ext-v1.0.4-11 has " . count($this->areas) . " areas and ". $ca ." commands set.");
         if($newchange){
         $this->getLogger()->info(TextFormat::GREEN . "Note: default config options set; add your options array in config.yml (see release v1.0.3-11)");
         $this->getLogger()->info(TextFormat::GREEN . "Also, the barrier flags have been renamed to 'passage' in v1.0.3-11:");
@@ -359,12 +400,19 @@ class Main extends PluginBase implements Listener{
             case "pass":
             case "passage":
 			case "barrier":
+			case "perm":
+            case "perms":
+            case "drop":
+
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.flag")){
 					if(isset($args[1])){
 						if(isset($this->areas[strtolower($args[1])])){
 							$area = $this->areas[strtolower($args[1])];
-							if( $args[0] == "touch" || $args[0] == "edit" || $args[0] == "god" || $args[0] == "msg" || $args[0] == "barrier" || $args[0] == "pass" || $args[0] == "passage" ) {
+							if( $args[0] == "touch" || $args[0] == "edit" || $args[0] == "god" || $args[0] == "msg" || $args[0] == "barrier" || $args[0] == "pass" || $args[0] == "passage" || $args[0] == "perm" || $args[0] == "perms" || $args[0] == "drop" ) {
 
+                                if( $args[0] == "perm" ){
+                                    $args[0] = "perms";
+                                }
                                 if( $args[0] == "pass" || $args[0] == "barrier"){
                                     $args[0] = "passage";
                                 }
@@ -785,8 +833,61 @@ class Main extends PluginBase implements Listener{
 		}
 	}
 
+
+
+
+	/** Item drop
+     * @param itemDropEvent $event
+	 * @ignoreCancelled true
+	 */
+    public function onDrop(PlayerDropItemEvent $event)
+    {
+		$player = $event->getPlayer();
+        $position = $player->getPosition();
+
+		if(!$this->canDrop($player, $position)){
+		  $event->setCancelled();
+		  return;
+        }
+    }
+
+	/** Drop
+     * @param Player   $player
+	 * @param Position $position
+	 * @return bool
+	 */
+	public function canDrop(Player $player, Position $position) : bool{
+		if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
+			return true;
+		}
+		$o = true;
+		$g = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Drop"] : $this->edit);
+		if($g){
+			$o = false;
+		}
+		foreach($this->areas as $area){
+			if($area->contains($position, $position->getLevel()->getName())){
+				if($area->getFlag("drop")){
+					$o = false;
+				}
+				if($area->isWhitelisted(strtolower($player->getName()))){
+					$o = true;
+					break;
+				}
+				if(!$area->getFlag("drop") && $g){
+					$o = true;
+					break;
+				}
+			}
+		}
+		return $o;
+	}
+
+
+
+
 	/** Block Place
-     * @param BlockPlacekEvent $event
+     * @param BlockPlaceEvent $event
 	 * @ignoreCancelled true
 	 */
 	public function onBlockPlace(BlockPlaceEvent $event) : void{
@@ -855,6 +956,36 @@ class Main extends PluginBase implements Listener{
            }
 		}
 	}
+
+
+
+
+    /** Op Perms
+     * @param Player   $player
+	 * @param Position $position
+	 * @return bool
+	 */
+	public function useOpPerms(Player $player, Area $area) : bool{
+
+        if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
+			return true; // festival ops..
+		}
+
+        $position = $player->getPosition();
+        $o = true;
+		$g = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Perms"] : $this->edit);
+		if($g){
+			$o = false;
+		}
+        if($area->getFlag("perms")){
+            $o = false;
+        }
+        if($area->isWhitelisted(strtolower($player->getName()))){
+            $o = true;
+        }
+		return $o;
+    }
+
 
     /** Add no fall damage in area ..
      * @param EntityDamageEvent $event
@@ -1085,19 +1216,26 @@ class Main extends PluginBase implements Listener{
 	public function runAreaEvent(Area $area, PlayerMoveEvent $event, string $eventtype): void{
 		$player = $event->getPlayer();
 		$areaevents = $area->getEvents();
+
 		if( isset( $areaevents[$eventtype] ) && $areaevents[$eventtype] != '' ){
 			$cmds = explode( "," , $areaevents[$eventtype] );
 			if(count($cmds) > 0){
 				foreach($cmds as $cid){
                    if($cid != ''){
 					$command = $area->commands[$cid];
-					if (!$player->isOp()) {
+					//if ( !$player->isOp() ) {
+					if ( !$player->isOp() && $this->useOpPerms($player, $area)  ) { // perm flag v1.0.4-11
+
 						$player->setOp(true);
 						$player->getServer()->dispatchCommand($player, $command);
 						$player->setOp(false);
+
 					}else{
+                        // ! should check command perms on player ?..
 						$player->getServer()->dispatchCommand($player, $command);
+
 					}
+
                    }
 				}
 			}
