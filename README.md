@@ -8,14 +8,14 @@ Create a festival with this custom area events plugin for Pocketmine Server ALPH
 ### Manage area's and run commmands attachted to area events.
 
 
-![Festival command usage overview](https://genboy.net/wp-content/uploads/2018/03/festival_usage_1.0.3-11.png)
+![Festival command usage overview](https://genboy.net/wp-content/uploads/2018/03/festival_usage_1.0.4-11.png)
 
 ###### Copyright [Genboy](https://genboy.net) 2018
 
 ---
 
 ## Info
-
+ 
 # Festival
 
 [![](https://poggit.pmmp.io/shield.state/Festival)](https://poggit.pmmp.io/p/Festival)
@@ -42,13 +42,15 @@ Area
 
 Flags
 
-- Set flags true for players not to
+- Set area flags true means
 
-    - edit: disallow building/breaking
-    - god: deny players god mode
-    - touch: disallow interaction with chests etc.
-    - msg: hide enter/leave messages
+    - edit: area is save from building/breaking
+    - god: players in the area are save in god mode
+    - touch: area is save from player interaction with chests/signs etc.
+    - msg: do not display area enter/leave messages 
     - passage: no passage for non-whitelisted players! (previously barrier flag)
+    - perms: player permissions are used to determine area command execution (experiment)
+    - drop: players can not drop things
 
     Default & world specific flags in config.yml
 
@@ -63,7 +65,9 @@ Events
     - list area commands (ordered by event)
     - change event of area commands
 
-    Note! Area event commands are executed with op permission by players from the area.
+    Area event commands are executed by default with op permission by players from the area.
+    In v1.0.4-11 an experimental perms flag is added, functionality may change in the future;
+    perms flag true: area uses the player permissions (= without permission no commands/messages are triggered)
 
 
 ###### Created by [Genboy](https://genboy.net) 2018
@@ -95,11 +99,11 @@ Credits for the area creation and protection code go to iProtector creator [LDX-
 
   #### set the area flags (!defaults in config.yml)
 	
-	/fe flag(f) <AREANAME> <god/build/touch/msg/pass> <true/false>
+	/fe flag(f) <AREANAME> <god/build/touch/drop/msg/pass/perms> <true/false>
 		
   #### fast flag toggle (new! v1.0.1-11)
 		
- 	/fe <god/build/touch/msg/pass> <AREANAME> (<true/false>)
+ 	/fe <god/build/touch/drop/msg/pass/perms> <AREANAME> (<true/false>)
 		
   
   #### see info on the area's you're in
@@ -167,7 +171,41 @@ The Festival plugin is in active development.
 
  ##### Development on [github.com/genboy/Festival](https://github.com/genboy/Festival)
 
-### Log
+#### Milestones 
+
+  v1.0.0-11
+  - [x] area protection and flag management is stable 
+  (core [iProtector](https://github.com/poggit-orphanage/iProtector), [9876ca3](https://github.com/poggit-orphanage/iProtector/commit/9876ca3acd48830599b3715346a1cf8ac964bdbd) Dec 2017) 
+  - [x] Area messages and msg/description management are stable
+  - [x] Commands can be attachted to specific events at the area: 
+  - [x] enter: on entering the area
+  - [x] center: when in the center of the area
+  - [x] leave: when leaving the area 
+  
+  v1.0.1-11
+  - [x] Submit to poggit
+  - [x] Testing expected possibilities; use as portals and shields, design a minigame park, create a quest/parcour.. 
+  
+  v1.0.2-11 - v1.0.3-11
+  - [x] Passage flag; turning the area into a barrier, no one in, no one out.
+  - [x] /fe tp <areaname> now sends player to the area top-center and prevents fall damage
+	
+  v1.0.4-11
+  - [x] Perms flag to use custom player permissions for area commands
+
+    
+If you like to help improve this plugin;
+
+- download/use the plugin and give your feedback
+- look at the code and give feedback
+- both by submitting [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival) 
+
+or send an email to msg @ genboy.net
+	
+Thank you
+--- 
+
+# History
   - 2 3 2018
     - update readme.md
     - replace name 'barrier' flag with 'passage' (better name for the flag)
@@ -217,34 +255,7 @@ The Festival plugin is in active development.
       - add multiple commandstrings with id attachted to enter, leave or center area event
       - list area extended info and manage event commands
 
-#### Milestones 
-
-  - [x] area protection and flag management is stable 
-  (core [iProtector](https://github.com/poggit-orphanage/iProtector), [9876ca3](https://github.com/poggit-orphanage/iProtector/commit/9876ca3acd48830599b3715346a1cf8ac964bdbd) Dec 2017) 
-
-  - [x] Area messages and msg/description management are stable
-  - [x] Commands can be attachted to specific events at the area: 
-  - [x] enter: on entering the area
-  - [x] center: when in the center of the area
-  - [x] leave: when leaving the area 
-  - [x] Submit to poggit
-  - [x] Testing expected possibilities; use as portals and shields, design a minigame park, create a quest/parcour.. 
-  - [x] Passage flag; turning the area into a barrier, no one in, no one out.
-  - [x] /fe tp <areaname> now sends player to the area top-center and prevents fall damage
-    
-  Many ideas and necessities popped-up and more will be added to [the Bucketlist](https://github.com/genboy/Festival/issues/11)
  
-If you like to help improve this plugin;
-
-- download/use the plugin and give your feedback
-- look at the code and give feedback
-- both by submitting [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival) 
-
-or send an email to msg @ genboy.net
-	
-Thank you
-
-
 ------
 
 
