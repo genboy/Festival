@@ -149,7 +149,7 @@ class Area{
 	 */
 	public function getEvents() : array{
 
-        $arr = [];
+        $arr = []; 
         if(is_array($this->events)){
             foreach($this->events as $nm => $ids){
                 if( $ids != '' && $ids != ' ' && $ids != 'null' ){
@@ -170,7 +170,7 @@ class Area{
 
 	/**
 	 * @param Vector3 $pos
-	 * @param string  $levelName
+	 * @param string  $levelName 
 	 *
 	 * @return bool
 	 */
