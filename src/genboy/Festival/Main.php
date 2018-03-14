@@ -1265,7 +1265,7 @@ class Main extends PluginBase implements Listener{
 						$player->setOp(false);
 					}else{
                         if ( !$player->isOp() ){
-                            $this->getServer()->getPluginManager()->callEvent($ne = new PlayerCommandPreprocessEvent_sub($player, "/" . $command));
+                            $this->getServer()->getPluginManager()->callEvent($ne = new PlayerCommandPreprocessEvent($player, "/" . $command));
                             if(!$ne->isCancelled()) return; // don't do this
                         } 
 						$player->getServer()->dispatchCommand($player, $command); 
@@ -1395,14 +1395,4 @@ class Main extends PluginBase implements Listener{
 		file_put_contents($this->getDataFolder() . "areas.json", json_encode($areas));
 	}
 
-}
-
-    /** preprocess instance
-     * @obj Player $player
-     * @str $command
-     */
-class PlayerCommandPreprocessEvent_sub extends PlayerCommandPreprocessEvent{
-     /** runAreaEvent function checks command return in preprocess if perm flag for players is on to not show any command blocked messages.
-      * preprocess example code found in: https://github.com/poggit-orphanage/GrabBag/blob/master/src/aliuly/grabbag/CmdSelMgr.php
-      */
 }
