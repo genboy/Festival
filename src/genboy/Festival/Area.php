@@ -1,7 +1,6 @@
-<?php
-/** src/genboy/Festival/Area.php */
+<?php declare(strict_types = 1);
 
-declare(strict_types = 1);
+/** src/genboy/Festival/Area.php */
 
 namespace genboy\Festival;
 
@@ -112,9 +111,21 @@ class Area{
 
 	/**
 	 * @return string[]
+     *
+	 * @return array
 	 */
 	public function getCommands() : array{
-		return $this->commands;
+
+        $arr = [];
+        if(is_array($this->commands)){
+            foreach($this->commands as $id => $cmd){
+                if( $cmd != '' && $cmd != ' ' && $cmd != 'null' ){
+                    $arr[$id] = $cmd;
+                }
+            }
+        }
+		return $arr;
+
 	}
 
 	/**
@@ -133,9 +144,21 @@ class Area{
 
 	/**
 	 * @return string[]
+     *
+	 * @return array
 	 */
 	public function getEvents() : array{
-		return $this->events;
+
+        $arr = []; 
+        if(is_array($this->events)){
+            foreach($this->events as $nm => $ids){
+                if( $ids != '' && $ids != ' ' && $ids != 'null' ){
+                    $arr[$nm] = $ids;
+                }
+            }
+        }
+
+		return $arr;
 	}
 
 	/**
@@ -145,11 +168,9 @@ class Area{
 		return true;
 	}
 
-
-
 	/**
 	 * @param Vector3 $pos
-	 * @param string  $levelName
+	 * @param string  $levelName 
 	 *
 	 * @return bool
 	 */

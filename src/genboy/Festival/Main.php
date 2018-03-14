@@ -1,7 +1,6 @@
-<?php /** src/genboy/Festival/Main.php **/
+<?php declare(strict_types = 1);
 
-declare(strict_types = 1);
-
+/** src/genboy/Festival/Main.php **/
 namespace genboy\Festival;
 
 use pocketmine\command\Command;
@@ -20,6 +19,12 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
 use pocketmine\Server;
 use pocketmine\event\player\PlayerMoveEvent;
+use pocketmine\event\player\PlayerCommandPreprocessEvent; // silently block commands [perms flag true] v1.0.4-11
+use pocketmine\event\player\PlayerDropItemEvent;
+
+/** More events to use
+ * use pocketmine\event\player\{PlayerJoinEvent, PlayerMoveEvent, PlayerInteractEvent, PlayerCommandPreprocessEvent, PlayerBedEnterEvent, PlayerChatEvent};
+ */
 
 class Main extends PluginBase implements Listener{
 
@@ -28,7 +33,7 @@ class Main extends PluginBase implements Listener{
 	/** @var Area[] */
 	public $areas = [];
     /** @var array[] */
-    public $options = []; // v 1.0.3
+    public $options = [];
 
 	/** @var bool */
 	private $god = false;
@@ -36,10 +41,14 @@ class Main extends PluginBase implements Listener{
 	private $edit = false;
 	/** @var bool */
 	private $touch = false;
-	/** @var string */
-	private $msg = false;  // area enter/leave messages display on/off or op only
-	/** @var string */
-	private $passage = false;  // area is a passage and prevents players to enter/leave
+	/** @var bool */
+	private $msg = false;
+	/** @var bool */
+	private $passage = false;
+	/** @var bool */
+	private $perms = false;
+	/** @var bool */
+	private $drop = false;
 
 	/** @var bool[] */
 	private $selectingFirst = [];
@@ -52,13 +61,13 @@ class Main extends PluginBase implements Listener{
 	private $secondPosition = [];
 
 	/** @var string[] */
-	private $inArea = []; // array of area's player is in
+	private $inArea = [];
 
-	/** @var string[] */
-	private $skipsec = 0; // delay counter for skipptime (delay repeating event messages like barrier passage) // v1.0.2
+	/** @var int */
+	private $skipsec = 0;
 
     /** @var string[] */
-	public $playerTP = []; // players TP area active
+	public $playerTP = [];
 
 	/** Enable
 	 * @return $this
@@ -84,16 +93,26 @@ class Main extends PluginBase implements Listener{
 
 
 		$data = json_decode(file_get_contents($this->getDataFolder() . "areas.json"), true);
-        $newchange = 0; // check flag change
+        $newchange = false; // check flag change
 
 		foreach($data as $datum){
 
-            // change flag name barrier to passage from previous versions
+            // change flag name barrier to passage from versions before v1.0.3-11
             $flags = $datum["flags"];
             if( isset($datum["flags"]["barrier"]) ){
                 $flags["passage"] = $datum["flags"]["barrier"];
                 unset($flags["barrier"]);
-                $newchange = 1;
+                $newchange = true;
+            }
+            
+            //check/add new flags v 1.0.4-11
+            if( !isset($datum["flags"]["perms"]) ){
+                $flags["perms"] = false;
+                $newchange = true;
+            }
+            if( !isset($datum["flags"]["drop"]) ){
+                $flags["drop"] = false;
+                $newchange = true;
             }
 
 			new Area($datum["name"], $datum["desc"], $flags, new Vector3($datum["pos1"]["0"], $datum["pos1"]["1"], $datum["pos1"]["2"]), new Vector3($datum["pos2"]["0"], $datum["pos2"]["1"], $datum["pos2"]["2"]), $datum["level"], $datum["whitelist"], $datum["commands"], $datum["events"], $this);
@@ -101,41 +120,99 @@ class Main extends PluginBase implements Listener{
 
 		$c = yaml_parse_file($this->getDataFolder() . "config.yml");
 
-        $this->options = $c["Options"];
+        // adjust in v1.0.5-11
+        if( isset( $c["Options"] ) && is_array( $c["Options"] ) ){
+
+            if(!$c["Options"]["Msgtype"]){
+                $c["Options"]["Msgtype"] = 'pop';
+            }
+            if(!$c["Options"]["Msgdisplay"]){
+                $c["Options"]["Msgdisplay"] = 'off';
+            } //.. new options check
+
+            $this->options = $c["Options"];
+
+        }else{
+            $this->options = array("Msgtype"=>"pop", "Msgdisplay"=>"off"); // Fallback defaults
+            $newchange = true;
+        }
+
+        if(!isset($c["Default"]["God"])) {
+            $c["Default"]["God"] = false;
+        }
+        if(!isset($c["Default"]["Edit"])) {
+            $c["Default"]["Edit"] = true;
+        }
+        if(!isset($c["Default"]["Touch"])) {
+            $c["Default"]["Touch"] = false;
+        }
+        if(!isset($c["Default"]["Msg"])) {
+            $c["Default"]["Msg"] = false;
+        }
+        if( isset($c["Default"]["Barrier"]) ){ // remove in v1.0.5-11
+            $c["Default"]["Passage"] =  $c["Default"]["Barrier"];
+        }else if(!isset($c["Default"]["Passage"])) {
+            $c["Default"]["Passage"] = false;
+        }
+        // new in v1.0.4-11
+        if(!isset($c["Default"]["Perms"])) {
+            $c["Default"]["Perms"] = false;
+        }
+        if(!isset($c["Default"]["Drop"])) {
+            $c["Default"]["Drop"] = false;
+        }
 
 		$this->god = $c["Default"]["God"];
 		$this->edit = $c["Default"]["Edit"];
 		$this->touch = $c["Default"]["Touch"];
 		$this->msg = $c["Default"]["Msg"];
+        // changed in v1.0.3-11
+        $this->passage = $c["Default"]["Passage"];
+        // new in v1.0.4-11
+		/* $this->perms = $c["Default"]["Perms"];
+        $this->drop = $c["Default"]["Drop"];
+        */
 
-        if( isset($c["Default"]["Barrier"]) ){
-          $this->passage =  $c["Default"]["Barrier"];
-        }else{
-          $this->passage =  $c["Default"]["Passage"];
+        if(is_array( $c["Worlds"] )){
+            foreach($c["Worlds"] as $level => $flags){
+
+                // check since v1.0.3-11
+                if( isset($flags["Barrier"]) ){
+                    $flags["Passage"] = $flags["Barrier"];
+                    unset($flags["Barrier"]);
+                }
+                if( !isset($flags["Passage"]) ){
+                    $flags["Passage"] = false;
+                }
+
+                 // new v1.0.4-11
+                   if( !isset($flags["Perms"]) ){
+                      $flags["Perms"] = false;
+                   }
+                   if( !isset($flags["Drop"]) ){
+                      $flags["Drop"] = false;
+                   }
+
+                $this->levels[$level] = $flags;
+
+            }
         }
 
-		foreach($c["Worlds"] as $level => $flags){
+        // all save :)
+        $this->saveAreas();
 
-            if( isset($flags["Barrier"]) ){
-              $fls = $flags;
-              $fls["Passage"] = $flags["Barrier"];
-              unset($fls["Barrier"]);
-              $this->levels[$level] = $fls;
-            }else{
-			  $this->levels[$level] = $flags;
-            }
-		}
-
+        // console output
 		$ca = 0;
 		foreach( $this->areas as $a ){
 			$ca = $ca + count( $a->getCommands() );
 		}
-		$this->getLogger()->info(TextFormat::GREEN . "Festival v1.0.3-11 has " . count($this->areas) . " areas and ". $ca ." commands set.");
-
-
-            $this->saveAreas();
-            $this->getLogger()->info(TextFormat::GREEN . "Note: the barrier flags have been renamed to 'passage' in v1.0.3-11:");
-            $this->getLogger()->info(TextFormat::RED . "! >> Please make sure to replace 'Barrier' with 'Passage' in your current config.yml (see resources/config.yml)");
+		$this->getLogger()->info(TextFormat::GREEN . "Festival v1.0.4-11 has " . count($this->areas) . " areas and ". $ca ." commands set.");
+        if($newchange){
+        $this->getLogger()->info(TextFormat::GREEN . "Note: default config options set; add your options array in config.yml (see release v1.0.3-11)"); 
+        $this->getLogger()->info(TextFormat::GREEN . "Also, the barrier flags have been renamed to 'passage' in v1.0.3-11:");
+        $this->getLogger()->info(TextFormat::RED . "! >> Please make sure to replace 'Barrier' with 'Passage' in your current config.yml");
+        $this->getLogger()->info(TextFormat::GREEN . "v1.0.4-11 Experiment with the new perms flag");
+        }
 
 	}
 
@@ -187,7 +264,7 @@ class Main extends PluginBase implements Listener{
 					if(isset($args[1])){
 						if(isset($this->firstPosition[$playerName], $this->secondPosition[$playerName])){
 							if(!isset($this->areas[strtolower($args[1])])){
-								new Area(strtolower($args[1]), "add description here",["edit" => true, "god" => false, "touch" => true, "msg" => false, "passage" => false], $this->firstPosition[$playerName], $this->secondPosition[$playerName], $sender->getLevel()->getName(), [$playerName], [], [], $this);
+								new Area(strtolower($args[1]), "add description here",["edit" => true, "god" => false, "touch" => true, "drop" => false, "msg" => false, "passage" => false, "perms" => false], $this->firstPosition[$playerName], $this->secondPosition[$playerName], $sender->getLevel()->getName(), [$playerName], [], [], $this);
 								$this->saveAreas();
 								unset($this->firstPosition[$playerName], $this->secondPosition[$playerName]);
 								$o = TextFormat::AQUA . "Area created!";
@@ -226,7 +303,7 @@ class Main extends PluginBase implements Listener{
 					}else{
 						$o = TextFormat::RED . "Please specify an area to edit the description. Usage: /fe desc <areaname> <desc>";
 					}
-				}else{
+				}else{  
 					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
 				break;
@@ -289,23 +366,24 @@ class Main extends PluginBase implements Listener{
 					$o = TextFormat::RED . "You must specify an existing Area name";
 					break;
 				}
-				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.tp")){
-					$area = $this->areas[strtolower($args[1])];
-					if($area !== null){ // && $area->isWhitelisted($playerName)){ v1.0.3
+                $area = $this->areas[strtolower($args[1])];
+                
+				if( $area->isWhitelisted($playerName) || $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.tp")){
+					
+					if($area !== null){
 						$levelName = $area->getLevelName();
 						if(isset($levelName) && Server::getInstance()->loadLevel($levelName) != false){
 							$o = TextFormat::GREEN . "You are teleporting to Area " . $args[1];
-                            //get center area
                             $cx = $area->getSecondPosition()->getX() + ( ( $area->getFirstPosition()->getX() - $area->getSecondPosition()->getX() ) / 2 );
 		                    $cz = $area->getSecondPosition()->getZ() + ( ( $area->getFirstPosition()->getZ() - $area->getSecondPosition()->getZ() ) / 2 );
 		                    $cy1 = min( $area->getSecondPosition()->getY(), $area->getFirstPosition()->getY());
 		                    $cy2 = max( $area->getSecondPosition()->getY(), $area->getFirstPosition()->getY());
                             $this->playerTP[$playerName] = true; // player tp active
+                            
                             $this->areaMessage( 'Fall save on!', $sender );
                             $sender->sendMessage( $playerName );
-                            // send player there
                             $sender->teleport( new Position( $cx, $cy2 + 0.5, $cz, $area->getLevel() ) );
-							//$sender->teleport(new Position($area->getFirstPosition()->getX(), $area->getFirstPosition()->getY() + 0.5, $area->getFirstPosition()->getZ(), $area->getLevel()));
+                            
 						}else{
 							$o = TextFormat::RED . "The level " . $levelName . " for Area ". $args[1] ." cannot be found";
 						}
@@ -325,17 +403,55 @@ class Main extends PluginBase implements Listener{
             case "pass":
             case "passage":
 			case "barrier":
+			case "perm":
+            case "perms":
+            case "drop":
+
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.flag")){
 					if(isset($args[1])){
-						if(isset($this->areas[strtolower($args[1])])){
-							$area = $this->areas[strtolower($args[1])];
-							if( $args[0] == "touch" || $args[0] == "edit" || $args[0] == "god" || $args[0] == "msg" || $args[0] == "barrier" || $args[0] == "pass" || $args[0] == "passage" ) {
+                        
+                        /**
+                         * Revert a flag in all area's (v1.0.4-11)
+                         */
+                        if($args[1] == 'swappall'){
+                            if( $args[0] == "touch" || $args[0] == "edit" || $args[0] == "god" || $args[0] == "msg" || $args[0] == "barrier" || $args[0] == "pass" || $args[0] == "passage" || $args[0] == "perm" || $args[0] == "perms" || $args[0] == "drop" ) {
 
+                                if( $args[0] == "perm" ){
+                                    $args[0] = "perms";
+                                }
+                                if( $args[0] == "pass" || $args[0] == "barrier"){
+                                    $args[0] = "passage";
+                                }
+                                 
+                                $flag = $args[0];
+                                foreach($this->areas as $area){
+                                    if($area->getFlag($flag)){
+                                        $area->setFlag($flag, false);
+                                    }else{
+                                        $area->setFlag($flag, true);
+                                    }
+                                }
+                                $this->saveAreas();
+                                $o = TextFormat::RED . "All ". $flag ." flags for all areas have been swapped";
+                                
+                                
+                            }else{
+                                $o = TextFormat::RED . $flag ." is not a flag and can not be swapped";
+                            }  
+                            
+                        }else if(isset($this->areas[strtolower($args[1])])){
+							$area = $this->areas[strtolower($args[1])];
+							if( $args[0] == "touch" || $args[0] == "edit" || $args[0] == "god" || $args[0] == "msg" || $args[0] == "barrier" || $args[0] == "pass" || $args[0] == "passage" || $args[0] == "perm" || $args[0] == "perms" || $args[0] == "drop" ) {
+
+                                if( $args[0] == "perm" ){
+                                    $args[0] = "perms";
+                                }
                                 if( $args[0] == "pass" || $args[0] == "barrier"){
                                     $args[0] = "passage";
                                 }
 								// excute short (new) notation for flags
 								$flag = $args[0];
+                                
 								if( isset($args[2]) && ( $args[2] == "true" ||  $args[2] == "on" ||  $args[2] == "false" ||  $args[2] == "off" ) ){
 									$mode = strtolower($args[2]);
 									if($mode === "true" || $mode === "on"){
@@ -350,10 +466,12 @@ class Main extends PluginBase implements Listener{
 								if($area->getFlag($flag)){
 									$status = "on";
 								}else{
-									$status = "off";
+									$status = "off"; 
 								}
 								$o = TextFormat::GREEN . "Flag " . $flag . " set to " . $status . " for area " . $area->getName() . "!";
+                                
 							}else{
+                                
 								// excute long (old) notation
 								if(isset($args[2])){
 									if(isset($area->flags[strtolower($args[2])])){
@@ -376,10 +494,10 @@ class Main extends PluginBase implements Listener{
 										}
 										$o = TextFormat::GREEN . "Flag " . $flag . " set to " . $status . " for area " . $area->getName() . "!";
 									}else{
-										$o = TextFormat::RED . "Flag not found. (Flags: edit, god, touch, msg, passage)";
+										$o = TextFormat::RED . "Flag not found. (Flags: edit, god, touch, msg, passage, perms, drop)";
 									}
 								}else{
-									$o = TextFormat::RED . "Please specify a flag. (Flags: edit, god, touch, msg, passage)";
+									$o = TextFormat::RED . "Please specify a flag. (Flags: edit, god, touch, msg, passage, perms, drop)";
 								}
 							}
 						}else{
@@ -538,20 +656,22 @@ class Main extends PluginBase implements Listener{
 														$o = '';
 														if( $evl = $area->getEvents() ){
 															$ts = 0;
+
 																foreach($evl as $t => $cids ){
+
 																	$arr = explode(",",$cids);
 																	if( in_array($cid,$arr) && $t != $evt){
 																		foreach($arr as $k => $ci){
-																			if($ci == $cid){
+																			if($ci == $cid || $ci == ''){ // also remove empty values
 																				unset($arr[$k]);
 																			}
 																		}
-																		$area->events[$t] = implode(",", $arr);
+																		$area->events[$t] = trim( implode(",", $arr), ",");
 																		$ts = 1;
 																	}
 																	if( !in_array($cid,$arr) && $t == $evt){
 																		$arr[] = $cid;
-																		$area->events[$t] = implode(",", $arr);
+																		$area->events[$t] = trim( implode(",", $arr), ",");
 																		$ts = 1;
 																	}
 																}
@@ -570,7 +690,6 @@ class Main extends PluginBase implements Listener{
 													}
 													break;
 												case "edit":
-													//$o = '/fe command <eventname> edit <COMMANDID> <NEWCOMMANDSTRING>';
 													if( isset($args[3]) && isset($args[4]) ){
 														$ar = $args[1];
 														$cid = $args[3];
@@ -603,7 +722,7 @@ class Main extends PluginBase implements Listener{
 																foreach($area->events as $e => $i){
 																	$evs = explode(",", $i);
 																	foreach($evs as $k => $ci){
-																		if($ci == $cid){
+																		if($ci == $cid || $ci == ''){ //also remove empty values
 																			unset($evs[$k]);
 																		}
 																	}
@@ -652,21 +771,22 @@ class Main extends PluginBase implements Listener{
 	/** Hurt
      * @param Entity $entity
 	 * @return bool
+     * true was false before v1.0.4-11
 	 */
 	public function canGetHurt(Entity $entity) : bool{
 		$o = true;
 		$default = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["God"] : $this->god);
 		if($default){
-			$o = false;
+			$o = false; 
 		}
 		foreach($this->areas as $area){
 			if($area->contains(new Vector3($entity->getX(), $entity->getY(), $entity->getZ()), $entity->getLevel()->getName())){
 				if($default && !$area->getFlag("god")){
-					$o = true;
+					$o = true; 
 					break;
 				}
 				if($area->getFlag("god")){
-					$o = false;
+					$o = false; 
 				}
 			}
 		}
@@ -749,8 +869,61 @@ class Main extends PluginBase implements Listener{
 		}
 	}
 
+
+
+
+	/** Item drop
+     * @param itemDropEvent $event
+	 * @ignoreCancelled true
+	 */
+    public function onDrop(PlayerDropItemEvent $event)
+    {
+		$player = $event->getPlayer();
+        $position = $player->getPosition();
+
+		if(!$this->canDrop($player, $position)){
+		  $event->setCancelled();
+		  return;
+        }
+    }
+
+	/** Drop
+     * @param Player   $player
+	 * @param Position $position
+	 * @return bool
+	 */
+	public function canDrop(Player $player, Position $position) : bool{
+		if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
+			return true;
+		}
+		$o = true;
+		$g = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Drop"] : $this->edit);
+		if($g){
+			$o = false;
+		}
+		foreach($this->areas as $area){
+			if($area->contains($position, $position->getLevel()->getName())){
+				if($area->getFlag("drop")){
+					$o = false;
+				}
+				if($area->isWhitelisted(strtolower($player->getName()))){
+					$o = true;
+					break;
+				}
+				if(!$area->getFlag("drop") && $g){
+					$o = true;
+					break;
+				}
+			}
+		}
+		return $o;
+	}
+
+
+
+
 	/** Block Place
-     * @param BlockPlacekEvent $event
+     * @param BlockPlaceEvent $event
 	 * @ignoreCancelled true
 	 */
 	public function onBlockPlace(BlockPlaceEvent $event) : void{
@@ -814,11 +987,41 @@ class Main extends PluginBase implements Listener{
 			}
            if( isset($this->playerTP[$playerName]) && $this->playerTP[$playerName] == true ){
                 unset( $this->playerTP[$playerName] );
-                $this->areaMessage( 'Fall save off', $player );
+                //$this->areaMessage( 'Fall save off', $player );
                 $event->setCancelled();
            }
 		}
 	}
+
+
+
+
+    /** Op Perms
+     * @param Player   $player
+	 * @param Position $position
+	 * @return bool
+	 */
+	public function useOpPerms(Player $player, Area $area) : bool{
+
+        if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
+			return true; // festival ops..
+		}
+
+        $position = $player->getPosition();
+        $o = true;
+		$g = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Perms"] : $this->edit);
+		if($g){
+			$o = false;
+		}
+        if($area->getFlag("perms")){
+            $o = false;
+        }
+        if($area->isWhitelisted(strtolower($player->getName()))){
+            $o = true;
+        }
+		return $o;
+    }
+
 
     /** Add no fall damage in area ..
      * @param EntityDamageEvent $event
@@ -832,8 +1035,7 @@ class Main extends PluginBase implements Listener{
 				$event->setCancelled();
 			}
             if( isset($this->playerTP[$playerName]) && $this->playerTP[$playerName] == true ){
-                unset( $this->playerTP[$playerName] );
-                $this->areaMessage( 'Fall save off', $player );
+                unset( $this->playerTP[$playerName] ); //$this->areaMessage( 'Fall save off', $player );
                 $event->setCancelled();
            }
 		}
@@ -905,9 +1107,10 @@ class Main extends PluginBase implements Listener{
 	 */
 	public function barrierCrossByOp(Area $area, PlayerMoveEvent $ev): void{
         $player = $ev->getPlayer();
-		$msg = TextFormat::WHITE . $area->getName(). TextFormat::RED . " passage barrier detected!";
-        $player->sendMessage( $msg );
-		//$this->areaMessage( $msg, $player );
+        if( $this->msgOpDsp( $area, $player ) ){
+		  $msg = TextFormat::WHITE . $area->getName(). TextFormat::RED . " passage barrier detected!";
+          $player->sendMessage( $msg );
+        }
 		return;
 	}
 	
@@ -920,7 +1123,7 @@ class Main extends PluginBase implements Listener{
 	public function barrierEnterArea(Area $area, PlayerMoveEvent $ev): void{
         $player = $ev->getPlayer();
 		$ev->getPlayer()->teleport($ev->getFrom());
-		if( !$area->getFlag("msg")  || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+		if( !$area->getFlag("msg")  || $this->msgOpDsp( $area, $player ) ){
 				if( $this->skippTime(2) ){
 					$msg = TextFormat::YELLOW . "You can not Enter area " . $area->getName();
                     $this->areaMessage( $msg, $player );
@@ -938,7 +1141,7 @@ class Main extends PluginBase implements Listener{
         $player = $ev->getPlayer();
         $msg = '';
 		$ev->getPlayer()->teleport($ev->getFrom());
-		if( !$area->getFlag("msg")  || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+		if( !$area->getFlag("msg")  || $this->msgOpDsp( $area, $player ) ){
 			if( $this->skippTime(2) ){ 
 				$msg = TextFormat::YELLOW . "You can not leave area " . $area->getName();
 			}
@@ -958,7 +1161,7 @@ class Main extends PluginBase implements Listener{
 	public function enterArea(Area $area, PlayerMoveEvent $ev): void{
         $player = $ev->getPlayer();
         $msg = '';
-		if( !$area->getFlag("msg")  || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+		if( !$area->getFlag("msg")  || $this->msgOpDsp( $area, $player ) ){
 			$msg = TextFormat::AQUA . $player->getName() . " enter " . $area->getName();
 			if( $area->getDesc() ){
 				$msg .= "\n". TextFormat::WHITE . $area->getDesc();
@@ -981,7 +1184,7 @@ class Main extends PluginBase implements Listener{
 	public function leaveArea(Area $area, PlayerMoveEvent $ev): void{
         $player = $ev->getPlayer();
         $msg = '';
-		if( !$area->getFlag("msg") || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+		if( !$area->getFlag("msg") || $this->msgOpDsp( $area, $player ) ){
 			$msg .= TextFormat::YELLOW . $player->getName() . " leaving " . $area->getName();
 		}
         if( $msg != ''){
@@ -1005,7 +1208,7 @@ class Main extends PluginBase implements Listener{
 		// in area center
         $player = $ev->getPlayer();
         $msg = '';
-        if( !$area->getFlag("msg")  || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+        if( !$area->getFlag("msg")  || $this->msgOpDsp( $area, $player ) ){
 			$msg = TextFormat::WHITE . "Enter the center of area " . $area->getName();
 		}
         if( $msg != ''){
@@ -1027,7 +1230,7 @@ class Main extends PluginBase implements Listener{
         $player = $ev->getPlayer();
         $playerName = strtolower( $player->getName() );
         $msg = '';
-		if( !$area->getFlag("msg")  || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+		if( !$area->getFlag("msg")  || $this->msgOpDsp( $area, $player ) ){
 			$msg = TextFormat::WHITE . "Leaving the center of area " . $area->getName();
 		}
         if( $msg != ''){
@@ -1048,18 +1251,27 @@ class Main extends PluginBase implements Listener{
 	public function runAreaEvent(Area $area, PlayerMoveEvent $event, string $eventtype): void{
 		$player = $event->getPlayer();
 		$areaevents = $area->getEvents();
-		if( isset( $areaevents[$eventtype] ) ){
+
+		if( isset( $areaevents[$eventtype] ) && $areaevents[$eventtype] != '' ){
 			$cmds = explode( "," , $areaevents[$eventtype] );
 			if(count($cmds) > 0){
 				foreach($cmds as $cid){
+                   if($cid != ''){
 					$command = $area->commands[$cid];
-					if (!$player->isOp()) {
+					
+					if ( !$player->isOp() && $this->useOpPerms($player, $area)  ) { // perm flag v1.0.4-11
 						$player->setOp(true);
 						$player->getServer()->dispatchCommand($player, $command);
 						$player->setOp(false);
 					}else{
-						$player->getServer()->dispatchCommand($player, $command);
+                        if ( !$player->isOp() ){
+                            $this->getServer()->getPluginManager()->callEvent($ne = new PlayerCommandPreprocessEvent_sub($player, "/" . $command));
+                            if(!$ne->isCancelled()) return; // don't do this
+                        } 
+						$player->getServer()->dispatchCommand($player, $command); 
 					}
+
+                   }
 				}
 			}
 		}
@@ -1094,6 +1306,32 @@ class Main extends PluginBase implements Listener{
         }
     }
 
+    /**
+     * define message persistent display
+	 * @param Area $area
+	 * @param PlayerMoveEvent $ev->getPLayer()
+	 * @param array $options
+	 * return bool
+     */
+    public function msgOpDsp( $area, $player ){
+
+        if( isset( $this->options['Msgdisplay'] ) && $player->isOp() ){
+
+            if( $this->options['Msgdisplay'] == 'on' ){
+                return true;
+            }else if( $this->options['Msgdisplay'] == 'op' && $area->isWhitelisted(strtolower($player->getName())) ){
+                return true;
+            }else{
+                return false;
+            }
+
+        }else{
+            return false;
+        }
+
+
+    }
+
     /** areaSounds
 	 * @param array $sounds
 	 */
@@ -1110,6 +1348,7 @@ class Main extends PluginBase implements Listener{
 	 * @var obj area
 	 */
     public function areaInfoList( $area ){
+
 		$l = TextFormat::GRAY . "  area " . TextFormat::AQUA . $area->getName();
 		$flgs = $area->getFlags(); // Area Flag text colors
         // GREEN, AQUA, BLUE, RED, WHITE, YELLOW, LIGHT_PURPLE, DARK_PURPLE, GOLD, GRAY
@@ -1140,7 +1379,9 @@ class Main extends PluginBase implements Listener{
 		}
 		$l .=  "\n". TextFormat::GRAY . "  - whitelist: " . TextFormat::WHITE . implode(", ", $area->getWhitelist()) . "\n";
 		return $l;
+
 	}
+
 
     /** Save areas
      * @var obj area
@@ -1153,4 +1394,15 @@ class Main extends PluginBase implements Listener{
 		}
 		file_put_contents($this->getDataFolder() . "areas.json", json_encode($areas));
 	}
+
+}
+
+    /** preprocess instance
+     * @obj Player $player
+     * @str $command
+     */
+class PlayerCommandPreprocessEvent_sub extends PlayerCommandPreprocessEvent{
+     /** runAreaEvent function checks command return in preprocess if perm flag for players is on to not show any command blocked messages.
+      * preprocess example code found in: https://github.com/poggit-orphanage/GrabBag/blob/master/src/aliuly/grabbag/CmdSelMgr.php
+      */
 }

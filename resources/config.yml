@@ -2,17 +2,21 @@
 
 # Festival options
 Options:
-  # Messages tip or pop
+  
+  # Messages (tip/pop) 
   Msgtype: pop
+  
+  # Messages persist display to ops (off/op/on)
+  Msgdisplay: off
 
 # Settings for unprotected areas in worlds without specific settings:
 Default:
 
-  # Keep players from getting hurt?
+  # Keep players from getting hurt? 
   God: false
 
   # Keep players from editing the world?
-  Edit: false
+  Edit: false 
 
   # Keep players from touching blocks and activating things like chests?
   Touch: false
@@ -23,13 +27,19 @@ Default:
   # Prevent players enter/leaving the area? Deny passage (previously barrier)
   Passage: false
 
+  # Prevent players drop items in the area? Deny drop
+  Drop: false
+
+  # Player permission overwrite for area event command execution
+  Perms: false
+
 # Settings for unprotected areas in individual worlds:
 Worlds:
-
+ 
   DEFAULT:
 
-    # Keep players from getting hurt?
-    God: false
+    # Keep players from getting hurt? 
+    God: false 
 
     # Keep players from editing the world?
     Edit: false
@@ -42,10 +52,16 @@ Worlds:
 
     # Prevent players from enter/leaving the area? (previously barrier)
     Passage: false
+
+    # Prevent players drop items in the area? Deny drop
+    Drop: false
+
+    # Player permission overwrite for area event command execution
+    Perms: false
 
   World:
-
-    # Keep players from getting hurt?
+  
+    # Keep players from getting hurt? 
     God: false
 
     # Keep players from editing the world?
@@ -59,3 +75,9 @@ Worlds:
 
     # Prevent players from enter/leaving the area? (previously barrier)
     Passage: false
+
+    # Prevent players drop items in the area? Deny drop
+    Drop: false
+ 
+    # Player permission overwrite for area event command execution
+    Perms: false
