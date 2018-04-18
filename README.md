@@ -1,5 +1,7 @@
 ## Festival
 
+If you like Festival please leave a thumb up at [poggit](https://poggit.pmmp.io/p/Festival/1.0.4-11)  to help getting the Festival plugin approved, thank you!_
+
 ![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png)
 
 

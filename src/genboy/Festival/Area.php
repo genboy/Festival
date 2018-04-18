@@ -111,19 +111,19 @@ class Area{
 
 	/**
 	 * @return string[]
-     *
+	 *
 	 * @return array
 	 */
 	public function getCommands() : array{
 
-        $arr = [];
-        if(is_array($this->commands)){
-            foreach($this->commands as $id => $cmd){
-                if( $cmd != '' && $cmd != ' ' && $cmd != 'null' ){
-                    $arr[$id] = $cmd;
-                }
-            }
-        }
+		$arr = [];
+		if(is_array($this->commands)){
+			foreach($this->commands as $id => $cmd){
+				if( $cmd != '' && $cmd != ' ' && $cmd != 'null' ){
+					$arr[$id] = $cmd;
+				}
+			}
+		}
 		return $arr;
 
 	}
@@ -144,19 +144,19 @@ class Area{
 
 	/**
 	 * @return string[]
-     *
+	 *
 	 * @return array
 	 */
 	public function getEvents() : array{
 
-        $arr = []; 
-        if(is_array($this->events)){
-            foreach($this->events as $nm => $ids){
-                if( $ids != '' && $ids != ' ' && $ids != 'null' ){
-                    $arr[$nm] = $ids;
-                }
-            }
-        }
+		$arr = []; 
+		if(is_array($this->events)){
+			foreach($this->events as $nm => $ids){
+				if( $ids != '' && $ids != ' ' && $ids != 'null' ){
+					$arr[$nm] = $ids;
+				}
+			}
+		}
 
 		return $arr;
 	}
