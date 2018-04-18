@@ -22,7 +22,7 @@ use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerCommandPreprocessEvent; // silently block commands [perms flag true] v1.0.4-11
 use pocketmine\event\player\PlayerDropItemEvent;
 
-/*
+/**
 More events to use
 use pocketmine\event\player\{PlayerJoinEvent, PlayerMoveEvent, PlayerInteractEvent, PlayerCommandPreprocessEvent, PlayerBedEnterEvent, PlayerChatEvent};
 */
@@ -33,6 +33,8 @@ class Main extends PluginBase implements Listener{
 	private $levels = [];
 	/** @var Area[] */
 	public $areas = [];
+	/** @var array[] */
+	public $flagset = [];
 	/** @var array[] */
 	public $options = [];
 
@@ -169,9 +171,10 @@ class Main extends PluginBase implements Listener{
 		// changed in v1.0.3-11
 		$this->passage = $c["Default"]["Passage"];
 		// new in v1.0.4-11
-		/* $this->perms = $c["Default"]["Perms"];
+		$this->perms = $c["Default"]["Perms"];
 		$this->drop = $c["Default"]["Drop"];
-		 */
+
+        $this->flagset = $c['Default'];
 
 		if(is_array( $c["Worlds"] )){
 			foreach($c["Worlds"] as $level => $flags){
@@ -182,15 +185,15 @@ class Main extends PluginBase implements Listener{
 					unset($flags["Barrier"]);
 				}
 				if( !isset($flags["Passage"]) ){
-					$flags["Passage"] = false;
+					$flags["Passage"] = $this->passage;
 				}
 
 				// new v1.0.4-11
 				if( !isset($flags["Perms"]) ){
-					$flags["Perms"] = false;
+					$flags["Perms"] = $this->perms;
 				}
 				if( !isset($flags["Drop"]) ){
-					$flags["Drop"] = false;
+					$flags["Drop"] = $this->drop;
 				}
 
 				$this->levels[$level] = $flags;
@@ -206,7 +209,8 @@ class Main extends PluginBase implements Listener{
 		foreach( $this->areas as $a ){
 			$ca = $ca + count( $a->getCommands() );
 		}
-		$this->getLogger()->info(TextFormat::GREEN . "Festival v1.0.4-11 has " . count($this->areas) . " areas and ". $ca ." commands set.");
+		$this->getLogger()->info(TextFormat::GREEN . "Festival v1.0.4-12-dev has " . count($this->areas) . " areas and ". $ca ." commands set.");
+		//v1.0.4-12-dev Experiment perms/whitelist flag & options
 		if($newchange){
 			$this->getLogger()->info(TextFormat::GREEN . "Note: default config options set; add your options array in config.yml (see release v1.0.3-11)"); 
 			$this->getLogger()->info(TextFormat::GREEN . "Also, the barrier flags have been renamed to 'passage' in v1.0.3-11:");
@@ -264,7 +268,31 @@ class Main extends PluginBase implements Listener{
 					if(isset($args[1])){
 						if(isset($this->firstPosition[$playerName], $this->secondPosition[$playerName])){
 							if(!isset($this->areas[strtolower($args[1])])){
-								new Area(strtolower($args[1]), "add description here",["edit" => true, "god" => false, "touch" => true, "drop" => false, "msg" => false, "passage" => false, "perms" => false], $this->firstPosition[$playerName], $this->secondPosition[$playerName], $sender->getLevel()->getName(), [$playerName], [], [], $this);
+
+                                /** dev correcting default flags
+                                * old
+                                new Area(strtolower($args[1]), "add description here",["edit" => true, "god" => false, "touch" => true, "drop" => false, "msg" => false, "passage" => false, "perms" => false], $this->firstPosition[$playerName], $this->secondPosition[$playerName], $sender->getLevel()->getName(), [$playerName], [], [], $this);
+                                */
+                                $flags = $this->flagset;
+                                if( isset($this->levels[$sender->getLevel()->getName()]) ){
+                                    if( is_array( $this->levels[$sender->getLevel()->getName()] ) ){
+                                        $flags = $this->levels[$sender->getLevel()->getName()];
+                                    }
+                                }
+
+                                new Area(
+                                    strtolower($args[1]),
+                                    "",
+                                    ["edit" => $flags['Edit'], "god" => $flags['God'], "touch" => $flags['Touch'], "drop" => $flags['Drop'], "msg" => $flags['Msg'], "passage" => $flags['Passage'], "perms" => $flags['Perms']],
+                                    $this->firstPosition[$playerName],
+                                    $this->secondPosition[$playerName],
+                                    $sender->getLevel()->getName(),
+                                    [$playerName],
+                                    [],
+                                    [],
+                                    $this
+                                );
+
 								$this->saveAreas();
 								unset($this->firstPosition[$playerName], $this->secondPosition[$playerName]);
 								$o = TextFormat::AQUA . "Area created!";
@@ -308,7 +336,7 @@ class Main extends PluginBase implements Listener{
 				}
 			break;
 			case "list":
-				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.list")){
+				if( $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.list")){
 					$lvls = $this->getServer()->getLevels(); // $this->getServer()->getLevels();
 					$o = '';
 					$l = '';
@@ -322,11 +350,9 @@ class Main extends PluginBase implements Listener{
 						$t = '';
 						foreach($this->areas as $area){
 							if( $area->getLevelName() == $lvl->getName() ){
-								if( $area->isWhitelisted($playerName) ){
-									if( ( !empty($l) && $l == $lvl->getName() ) || $l == false ){
-										$t .= $this->areaInfoList( $area );
-										$i++;
-									}
+								if( ( !empty($l) && $l == $lvl->getName() ) || $l == false ){
+								    $t .= $this->areaInfoList( $area );
+								    $i++;
 								}
 							}
 						}
@@ -343,7 +369,7 @@ class Main extends PluginBase implements Listener{
 						$o = "There are no areas that you can edit";
 					}
 				}
-			break;
+            break;
 			case "here":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.here")){
 					$o = "";
