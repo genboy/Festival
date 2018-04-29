@@ -45,6 +45,8 @@ class Main extends PluginBase implements Listener{
 	/** @var bool */
 	private $touch = false;
 	/** @var bool */
+	private $effects = false;
+	/** @var bool */
 	private $msg = false;
 	/** @var bool */
 	private $passage = false;
