@@ -1,6 +1,6 @@
 ## Festival
 
-If you like Festival please leave a thumb up at [poggit](https://poggit.pmmp.io/p/Festival/1.0.4-11)  to help getting the Festival plugin approved, thank you!_
+If you like Festival please leave a thumb up at [poggit](https://poggit.pmmp.io/p/Festival/1.0.5-12)  to help getting the Festival plugin approved, thank you!_
 
 ![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png)
 
@@ -10,7 +10,7 @@ Create a festival with this custom area events plugin for Pocketmine Server ALPH
 ### Manage area's and run commmands attachted to area events.
 
 
-![Festival command usage overview](https://genboy.net/wp-content/uploads/2018/03/festival_usage_1.0.4-11.png)
+![Festival command usage overview](https://genboy.net/wp-content/uploads/2018/04/festival_usage_1.0.5-12.png)
 
 ###### Copyright [Genboy](https://genboy.net) 2018
  
@@ -49,6 +49,7 @@ Flags
     - edit: area is save from building/breaking
     - god: players in the area are save in god mode
     - touch: area is save from player interaction with chests/signs etc.
+    - effects: player can not keep using effects in the area (v.1.0.5-12)
     - msg: do not display area enter/leave messages 
     - passage: no passage for non-whitelisted players! (previously barrier flag)
     - perms: player permissions are used to determine area command execution (experiment)
@@ -80,19 +81,26 @@ Credits for the area creation and protection code go to iProtector creator [LDX-
 
 ## Usage 
 
-### Install & Configure
+
+  #### Setup
+
+  ### Install & Configure
 
   - Standard Plugin installation; Upload .phar file (or .zip if you have latest devtools installed), restart the server, go to  folder plugins/Festival;
 
-  - Edit config.yml; set the defaults for any area and the defaults for area's in specified worlds.
+  - Edit config.yml; set the defaults for options, default area flags and the default area flags for specific worlds.
   
   - ##### Read the config comments carefully about how the flags work!
   
+  
   ### Updates
+  
+  
   
   ##### !Before update always copy your config.yml and areas.json files to a save place, with this you can revert your Festival installation
   
-  Since v1.0.3-11
+  
+  Since v1.0.3-11+
   
   - after .phar install and first restart/reload plugins; check console info and your areas.json and config.yml; restart after adjusted correctly 
   
@@ -109,63 +117,84 @@ Credits for the area creation and protection code go to iProtector creator [LDX-
   - areas are updated with the new flags, configuration should be updated manually; example [resources/config.yml](https://github.com/genboy/Festival/blob/master/resources/config.yml)
   - after .phar install and first restart/reload config.yml; check console info and config.yml; restart after adjusted correctly 
 
-  
+  Since v1.0.5-12
+
+  - configuration should be updated with AutoWhitelist option & new Effects flag; example [resources/config.yml](https://github.com/genboy/Festival/blob/master/resources/config.yml)
+  - after .phar install and first restart/reload config.yml; check console info and config.yml; restart after adjusted correctly 
+
   
 	
-  #### Define area
-  first select position 1, then select position2, 
-  the endpoints of the longest diagonal in the area
+  #### Create area
+  First command '/fe pos1' and tab a block for position 1, 
+  then command '/fe pos2' and ab a block to set position2, 
+  these are the endpoints of the area longest diagonal.
 
 	/fe pos1
 	/fe pos2
 
-  #### name/save the selected area
+
+  Then name/save the selected area
 
 	/fe create <AREANAME>  
 
-  #### set the area flags (!defaults in config.yml)
-	
-	/fe flag(f) <AREANAME> <god/build/touch/drop/msg/pass/perms> <true/false>
-		
-  #### fast flag toggle (new! v1.0.1-11)
-		
- 	/fe <god/build/touch/drop/msg/pass/perms> <AREANAME> (<true/false>)
-		
+  Now the area is ready to use
   
-  #### see info on the area's you're in
+  You might want to set or edit the area description line
+  
+    /fe desc <AREANAME> <description>
+
+
+  #### Set area flags 
+  
+    Festival v1.0.1-11 introduced a fast toggle for flags:
+  
+      /fe <god/build/touch/effects/drop/msg/pass/perms> <AREANAME>
+
+  
+    Area flag defaults are set in the config.yml), server defaults and world specific default flag. 
+    The basic command to control area flags:
+  
+	  /fe flag(f) <AREANAME> <god/build/touch/effects/drop/msg/pass/perms> <true/false>
+  
+    Area flag listing
+  
+      /fe flag <AREANAME> list
+  
+  
+  #### Position info
 	
 	/fe here
 
-  #### see a list of all area's
+  #### List all area's
 	
 	/fe list
 
-  #### teleport to an area
+  #### Teleport to area
 	
 	/fe tp <AREANAME>
   
-  #### set area description
+  #### Set description
 		
 	/fe desc <AREANAME> <DESCRIPTION>
   
-  #### manage players in area whitelist
+  #### Manage  whitelist
 	
     /fe whitelist <AREANAME> <add/list/remove(del,delete)> <PLAYERNAME>
   
-  #### delete an area
+  #### Delete an area
 	
 	/fe delete(del,remove) <AREANAME> 
 
-  #### command to attach commands to an area
+  #### Area event commands
 
     /fe command <AREANAME> <add/list/edit/event*/del> <COMMANDID> <COMMANDSTRING/enter*/leave*/center*> 
  
     To add a command you need at least;
       - an areaname, 
       - an unique id for the command 
-      - make sure the command works! (when you are op).
+      - make sure the command works! (when you are op). 
 	
-  #### add a command to an area:
+  #### Add a command:
 
 	/fe command <AREANAME> add <COMMANDID> <COMMANDSTRING>
 
@@ -173,19 +202,19 @@ Credits for the area creation and protection code go to iProtector creator [LDX-
 	  Using 'enter', 'center' or 'leave' instead of 'add' attaches the new command to 
 	  the given eventtype: i.e. /fe command <areaname> center <commandid> <commandstring>
 
-  #### list area commands:
+  #### List area commands:
 	
 	/fe command <AREANAME> list
 		
-  #### edit a command:
+  #### Edit command:
 	
 	/fe command <AREANAME> edit <COMMANDID> <COMMANDSTRING>
 	
-  #### change command event:
+  #### Change command event:
 	
 	/fe command <AREANAME> event <COMMANDID> <enter/center/leave>
 		
-  #### remove command from area:
+  #### Remove command:
 	
 	/fe command <AREANAME> del <COMMANDID>
 
@@ -262,8 +291,8 @@ The Festival plugin is in active development.
   - [x] Submit to poggit
   - [x] Testing expected possibilities; use as portals and shields, design a minigame park, create a quest/parcour.. 
   - [x] Passage flag; turning the area into a barrier, no one in, no one out.
-  - [x] /fe tp <areaname> now sends player to the area top-center and prevents fall damage
-    
+  - [x] /fe tp <areaname> now sends player to the area top-center and prevents fall damage  
+   
   Many ideas and necessities popped-up and more will be added to [the Bucketlist](https://github.com/genboy/Festival/issues/11)
  
 If you like to help improve this plugin;
@@ -276,7 +305,6 @@ or send an email to msg @ genboy.net
 	
 Thank you
 
- 
 ------
 
 
