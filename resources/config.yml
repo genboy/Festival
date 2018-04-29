@@ -3,24 +3,30 @@
 # Festival options
 Options:
   
-  # Messages (tip/pop) 
+  # Messages (tip/pop)  
   Msgtype: pop
   
   # Messages persist display to ops (off/op/on)
   Msgdisplay: off
+  
+  # Auto whitelist area creator (on/off)
+  AutoWhitelist: on
 
 # Settings for unprotected areas in worlds without specific settings:
 Default:
 
-  # Keep players from getting hurt? 
+  # Keep players from getting hurt?  
   God: false
 
   # Keep players from editing the world?
-  Edit: false 
+  Edit: false
 
   # Keep players from touching blocks and activating things like chests?
   Touch: false
   
+  # Keep players from having effects like speed or night vision?
+  Effects: false
+   
   # Keep players from seeing enter/leave/description messages?
   Msg: false
 
@@ -39,13 +45,16 @@ Worlds:
   DEFAULT:
 
     # Keep players from getting hurt? 
-    God: false 
+    God: false
 
     # Keep players from editing the world?
     Edit: false
 
     # Keep players from touching blocks and activating things like chests?
     Touch: false
+  
+    # Keep players from touching blocks and activating things like chests?
+    Effects: false
 
     # Keep players from seeing enter/leave/description messages?
     Msg: false
@@ -69,6 +78,9 @@ Worlds:
 
     # Keep players from touching blocks and activating things like chests?
     Touch: false
+  
+    # Keep players from touching blocks and activating things like chests?
+    Effects: false
 
     # Keep players from seeing enter/leave/description messages?
     Msg: false
