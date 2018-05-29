@@ -3,7 +3,7 @@ author: Genboy
 version: 1.0.5-12-dev 
 main: genboy\Festival\Main
 load: POSTWORLD
-api: [3.0.0-ALPHA10,3.0.0-ALPHA11,3.0.0-ALPHA12]
+api: [3.0.0-ALPHA10,3.0.0-ALPHA11,3.0.0-ALPHA12, 3.0.0-ALPHA13]
 website: "https://github.com/genboy/Festival"
 commands:
   fe:
