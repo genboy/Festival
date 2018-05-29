@@ -22,11 +22,6 @@ use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerCommandPreprocessEvent; // silently block commands [perms flag true] v1.0.4-11
 use pocketmine\event\player\PlayerDropItemEvent;
 
-/**
-More events to use
-use pocketmine\event\player\{PlayerJoinEvent, PlayerMoveEvent, PlayerInteractEvent, PlayerCommandPreprocessEvent, PlayerBedEnterEvent, PlayerChatEvent};
-*/
-
 class Main extends PluginBase implements Listener{
 
 	/** @var array[] */
@@ -225,7 +220,7 @@ class Main extends PluginBase implements Listener{
 		foreach( $this->areas as $a ){
 			$ca = $ca + count( $a->getCommands() );
 		}
-		$this->getLogger()->info(TextFormat::GREEN . "Festival v1.0.5-12-dev has " . count($this->areas) . " areas and ". $ca ." commands set.");
+		$this->getLogger()->info(TextFormat::GREEN . "Festival v1.0.5-13-dev has " . count($this->areas) . " areas and ". $ca ." commands set.");
 		
         //v1.0.5-12dev
 		if($newchange){
@@ -1362,6 +1357,10 @@ class Main extends PluginBase implements Listener{
 				foreach($cmds as $cid){
 					if($cid != ''){
 						$command = $area->commands[$cid];
+                        $playername =  $player->getName();
+                        
+                        // check @p
+                        $command = str_replace("@p", $playername, $command);
 					
 						if ( !$player->isOp() && $this->useOpPerms($player, $area)  ) { // perm flag v1.0.4-11
 							$player->setOp(true);
