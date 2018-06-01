@@ -1356,9 +1356,8 @@ class Main extends PluginBase implements Listener{
 			if(count($cmds) > 0){
 				foreach($cmds as $cid){
 					if($cid != ''){
-						
-                        // check {player} or @p
-                        $command = $this->commandStringFilter( $area->commands[$cid], $event );
+            // check {player} or @p (and other stuff)
+            $command = $this->commandStringFilter( $area->commands[$cid], $event );
 					
 						if ( !$player->isOp() && $this->useOpPerms($player, $area)  ) { // perm flag v1.0.4-11 
 							$player->setOp(true);
@@ -1380,12 +1379,12 @@ class Main extends PluginBase implements Listener{
 	
 	/** Command string filter
 	 * @param str $command
-	 * @param PlayerMoveEvent $ev
+	 * @param PlayerMoveEvent $event
 	 * @return $command str
 	 */
 	public function commandStringFilter( $command, $event ){
 		
-        $playername =  $event->getPlayer()->getName();
+    $playername =  $event->getPlayer()->getName();
 		
 		if( strpos( $command, "{player}" ) !== false ) {
         	$command = str_replace("{player}", $playername, $command); // replaces {player} with the player name
