@@ -1356,15 +1356,12 @@ class Main extends PluginBase implements Listener{
 			if(count($cmds) > 0){
 				foreach($cmds as $cid){
 					if($cid != ''){
-						$command = $area->commands[$cid];
-                        $playername =  $player->getName();
-                        
-                        // replaces {player} with the player name
-                        $command = str_replace("{player}", $playername, $command);
+            // check {player} or @p (and other stuff)
+            $command = $this->commandStringFilter( $area->commands[$cid], $event );
 					
-						if ( !$player->isOp() && $this->useOpPerms($player, $area)  ) { // perm flag v1.0.4-11
+						if ( !$player->isOp() && $this->useOpPerms($player, $area)  ) { // perm flag v1.0.4-11 
 							$player->setOp(true);
-							$player->getServer()->dispatchCommand($player, $command);
+							$player->getServer()->dispatchCommand($player, $command); 
 							$player->setOp(false);
 						}else{
 							if ( !$player->isOp() ){
@@ -1378,8 +1375,27 @@ class Main extends PluginBase implements Listener{
 				}
 			}
 		}
+	} 
+	
+	/** Command string filter
+	 * @param str $command
+	 * @param PlayerMoveEvent $event
+	 * @return $command str
+	 */
+	public function commandStringFilter( $command, $event ){
+		
+    $playername =  $event->getPlayer()->getName();
+		
+		if( strpos( $command, "{player}" ) !== false ) {
+        	$command = str_replace("{player}", $playername, $command); // replaces {player} with the player name
+		}else if( strpos( $command, "@p" ) !== false ) { // only if {player} is not used - untill we know why @p does not work 
+            $command = str_replace("@p", $playername, $command); // replaces @p with the player name 
+		}
+		return $command; 
+		
 	}
 
+	
 	/** skippTime
 	 * delay function for str player $nm repeating int $sec
 	 * @param string $sec
