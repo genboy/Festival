@@ -13,7 +13,7 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
-
+use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
@@ -912,6 +912,21 @@ class Main extends PluginBase implements Listener{
 		return true;
 	}
 
+
+    /** Hurt
+	 * @param Entity $entity
+	 * @return bool
+	 * true was false before v1.0.4-11
+	 */
+    public function onQuit(PlayerQuitEvent $event){
+
+        $playerName = strtolow($event->getPlayer()->getName());
+        $lvl = $player->getLevel()->getName();
+
+        unset($this->inArea[$playerName]);
+
+    }
+
 	/** Hurt
 	 * @param Entity $entity
 	 * @return bool
@@ -1656,10 +1671,17 @@ class Main extends PluginBase implements Listener{
         // Players in area
         $ap = [];
         foreach( $this->inArea as $p => $playerAreas ){
-            foreach( $playerAreas as $a ){
-                if( $a == strtolower( $area->getName() ) ){
-                    $ap[] = $p;
+
+            if( $this->getServer()->getPlayer($p) ){
+
+                foreach( $playerAreas as $a ){
+                    if( $a == strtolower( $area->getName() ) ){
+                        $ap[] = $p;
+                    }
                 }
+
+            }else{
+                unset( $this->inArea[$p] ); // remove player from inArea list
             }
         }
         if(count($ap) > 0 ){
