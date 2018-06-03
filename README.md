@@ -48,6 +48,8 @@ Flags
 
     - edit: area is save from building/breaking
     - god: players in the area are save in god mode
+    - pvp: players in the area are save from PVP
+    - flight: players in the area are not allowed to fly
     - touch: area is save from player interaction with chests/signs etc.
     - effects: player can not keep using effects in the area (v.1.0.5-12)
     - msg: do not display area enter/leave messages 
@@ -98,11 +100,9 @@ Credits for the area creation and protection code go to iProtector creator [LDX-
   
   
   ##### !Before update always copy your config.yml and areas.json files to a save place, with this you can revert your Festival installation
-  
-  
-  Since v1.0.3-11+
-  
   - after .phar install and first restart/reload plugins; check console info and your areas.json and config.yml; restart after adjusted correctly 
+  
+  **Since v1.0.3-11+**
   
   - pass(passage) flag replaces the barrier flag
   - configuration for area messages (taken out of chat)
@@ -112,17 +112,18 @@ Credits for the area creation and protection code go to iProtector creator [LDX-
         op = only ops see all area enter/leave messages
         on = all players see the area messages
   
-  Since v1.0.4-11
+  **Since v1.0.4-11**
 
   - areas are updated with the new flags, configuration should be updated manually; example [resources/config.yml](https://github.com/genboy/Festival/blob/master/resources/config.yml)
-  - after .phar install and first restart/reload config.yml; check console info and config.yml; restart after adjusted correctly 
 
-  Since v1.0.5-12
+  **Since v1.0.5-12**
 
   - configuration should be updated with AutoWhitelist option & new Effects flag; example [resources/config.yml](https://github.com/genboy/Festival/blob/master/resources/config.yml)
-  - after .phar install and first restart/reload config.yml; check console info and config.yml; restart after adjusted correctly 
 
-  
+  **Since v1.0.6-13**
+
+  - configuration should be updated with new PVP and Flight flag; example [resources/config.yml](https://github.com/genboy/Festival/blob/master/resources/config.yml)
+ 
 	
   #### Create area
   First command '/fe pos1' and tab a block for position 1, 
@@ -154,7 +155,7 @@ Credits for the area creation and protection code go to iProtector creator [LDX-
     Area flag defaults are set in the config.yml), server defaults and world specific default flag. 
     The basic command to control area flags:
   
-	  /fe flag(f) <AREANAME> <god/build/touch/effects/drop/msg/pass/perms> <true/false>
+	  /fe flag(f) <AREANAME> <god/pvp/flight/build/touch/effects/drop/msg/pass/perms> <true/false>
   
     Area flag listing
   

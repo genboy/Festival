@@ -18,6 +18,12 @@ Default:
   # Keep players from getting hurt?  
   God: false
 
+  # Keep players from getting hurt by other players?
+  PVP: false
+
+  # Keep players from flying?
+  Flight: false
+
   # Keep players from editing the world?
   Edit: false
 
@@ -47,8 +53,14 @@ Worlds:
     # Keep players from getting hurt? 
     God: false
 
+    # Keep players from getting hurt by other players?
+    PVP: false
+
+    # Keep players from getting hurt by other players?
+    Flight: false
+
     # Keep players from editing the world?
-    Edit: false
+    Edit: true
 
     # Keep players from touching blocks and activating things like chests?
     Touch: false
@@ -72,6 +84,12 @@ Worlds:
   
     # Keep players from getting hurt? 
     God: false
+
+    # Keep players from getting hurt by other players?
+    PVP: false
+
+    # Keep players from getting hurt by other players?
+    Flight: false
 
     # Keep players from editing the world?
     Edit: false

@@ -81,21 +81,18 @@ class Area{
 
 	/**
 	 * @param string $flag
-	 *
 	 * @return bool
 	 */
 	public function getFlag(string $flag) : bool{
 		if(isset($this->flags[$flag])){
 			return $this->flags[$flag];
 		}
-
 		return false;
 	}
 
 	/**
 	 * @param string $flag
 	 * @param bool   $value
-	 *
 	 * @return bool
 	 */
 	public function setFlag(string $flag, bool $value) : bool{
@@ -111,7 +108,6 @@ class Area{
 
 	/**
 	 * @return string[]
-	 *
 	 * @return array
 	 */
 	public function getCommands() : array{
@@ -130,7 +126,6 @@ class Area{
 
 	/**
 	 * @param string $flag
-	 *
 	 * @return bool
 	 */
 	public function getCommand(string $id) : bool{
@@ -144,7 +139,6 @@ class Area{
 
 	/**
 	 * @return string[]
-	 *
 	 * @return array
 	 */
 	public function getEvents() : array{
@@ -170,8 +164,7 @@ class Area{
 
 	/**
 	 * @param Vector3 $pos
-	 * @param string  $levelName 
-	 *
+	 * @param string  $levelName
 	 * @return bool
 	 */
 	public function contains(Vector3 $pos, string $levelName) : bool{
@@ -182,7 +175,6 @@ class Area{
 	/**
 	 * @param Vector3 $pos
 	 * @param string  $levelName
-	 *
 	 * @return bool
 	 */
 	public function centerContains(Vector3 $pos, string $levelName) : bool{
@@ -201,7 +193,6 @@ class Area{
 
 	/**
 	 * @param string $flag
-	 *
 	 * @return bool
 	 */
 	public function toggleFlag(string $flag) : bool{
@@ -231,7 +222,6 @@ class Area{
 
 	/**
 	 * @param string $playerName
-	 *
 	 * @return bool
 	 */
 	public function isWhitelisted(string $playerName) : bool{
@@ -245,7 +235,6 @@ class Area{
 	/**
 	 * @param string $name
 	 * @param bool   $value
-	 *
 	 * @return bool
 	 */
 	public function setWhitelisted(string $name, bool $value = true) : bool{
