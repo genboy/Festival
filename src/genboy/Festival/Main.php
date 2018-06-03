@@ -13,6 +13,7 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
+
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
@@ -981,48 +982,47 @@ class Main extends PluginBase implements Listener{
 		return $o;
     }
 
+    /** Player Damage Impact
+	 * @param EntityDamageEvent $event
+	 * @ignoreCancelled true
+     */
+	public function canDamage(EntityDamageEvent $ev) : bool{
+
+        if($ev->getEntity() instanceof Player){
+			$player = $ev->getEntity();
+			$playerName = strtolower($player->getName());
+			if(!$this->canGetHurt($player)){
+				$ev->setCancelled();
+                return false;
+			}
+            if(!$this->canPVP($ev)){ // v 1.0.6-13
+				$ev->setCancelled();
+                return false;
+			}
+			if( isset($this->playerTP[$playerName]) && $this->playerTP[$playerName] == true ){
+				unset( $this->playerTP[$playerName] ); //$this->areaMessage( 'Fall save off', $player );
+				$ev->setCancelled();
+                return false;
+			}
+		}
+        return true;
+
+    }
+
 	/** On hurt
 	 * @param EntityDamageEvent $event
 	 * @ignoreCancelled true
 	 */
 	public function onHurt(EntityDamageEvent $event) : void{
-		if($event->getEntity() instanceof Player){
-			$player = $event->getEntity();
-			$playerName = strtolower($player->getName());
-			if(!$this->canGetHurt($player)){
-				$event->setCancelled();
-			}
-            if(!$this->canPVP($event)){ // v 1.0.6-13
-				$event->setCancelled();
-			}
-			if( isset($this->playerTP[$playerName]) && $this->playerTP[$playerName] == true ){
-				unset( $this->playerTP[$playerName] );
-				//$this->areaMessage( 'Fall save off', $player );
-				$event->setCancelled();
-			}
-		}
+		$this->canDamage( $event );
 	}
-
 
 	/** On Damage
 	 * @param EntityDamageEvent $event
 	 * @ignoreCancelled true
 	 */
 	public function onDamage(EntityDamageEvent $event) : void{
-		if($event->getEntity() instanceof Player){
-			$player = $event->getEntity();
-			$playerName = strtolower($player->getName());
-			if(!$this->canGetHurt($player)){
-				$event->setCancelled();
-			}
-            if(!$this->canPVP($event)){ // v 1.0.6-13
-				$event->setCancelled();
-			}
-			if( isset($this->playerTP[$playerName]) && $this->playerTP[$playerName] == true ){
-				unset( $this->playerTP[$playerName] ); //$this->areaMessage( 'Fall save off', $player );
-				$event->setCancelled();
-			}
-		}
+		$this->canDamage( $event );
 	}
 
 	/** Edit
@@ -1202,8 +1202,8 @@ class Main extends PluginBase implements Listener{
 	}
 
 	/** Op Perms
-	 * @param Player   $player
-	 * @param Position $position
+	 * @param Player $player
+	 * @param Area $area
 	 * @return bool
 	 */
 	public function useOpPerms(Player $player, Area $area) : bool{
@@ -1227,6 +1227,47 @@ class Main extends PluginBase implements Listener{
 		return $o;
 	}
 
+    /** Flight
+	 * @param Player $player
+     */
+    public function checkPlayerFlying(Player $player){
+
+        $fly = true;
+
+        if( $this->flight ){
+            $fly = false; // flag default
+        }
+        if( $this->levels[ $player->getLevel()->getName() ]["Flight"]  ){
+            $fly = false; // level flag default
+        }
+        foreach($this->areas as $area){
+            if( $area->contains( $player->getPosition(), $player->getLevel()->getName() ) ){
+                if(  $area->getFlag("flight") && !$area->isWhitelisted( strtolower($player->getName())) ){
+                    $fly = false; // flag area
+                }else{
+                    $fly = true;
+                }
+            }
+        }
+        if( $player->isOp() ){
+            $fly = true; // ops can fly
+        }
+
+        $msg = '';
+        if( !$fly && $player->isFlying() ){
+            $this->playerTP[ strtolower( $player->getName() ) ] = true; // player tp active (fall save)
+            $player->setFlying(false);
+            $player->sendMessage(  TextFormat::RED . "NO Flying here!" );
+        }
+        if( $fly && !$player->isFlying() && !$player->getAllowFlight() ){
+            $player->sendMessage( TextFormat::GREEN . "Flying allowed here!" );
+        }
+        $player->setAllowFlight($fly);
+
+        return $fly;
+
+    }
+
 
 	/** On player move ..
 	 * @param PlayerMoveEvent $ev
@@ -1236,9 +1277,11 @@ class Main extends PluginBase implements Listener{
 	public function onMove(PlayerMoveEvent $ev) : void{
 		$player = $ev->getPlayer();
 		$playerName = strtolower( $player->getName() );
+
 		if( !isset( $this->inArea[$playerName] ) ){
 			$this->inArea[$playerName] = []; 
 		}
+
 		foreach($this->areas as $area){
 			
             if( $area->getFlag("passage") ){ // test passage flag
@@ -1287,9 +1330,12 @@ class Main extends PluginBase implements Listener{
 			}
             
             /** Area Player Monitor */
-            //$this->AreaPlayerMonitor($area, $ev); 
+            $this->AreaPlayerMonitor($area, $ev);
             
 		} 
+
+        $this->checkPlayerFlying( $player );
+
 		return;
 	}
 
@@ -1299,7 +1345,9 @@ class Main extends PluginBase implements Listener{
 	 * Set/refresh effects & status
 	 */
     public function AreaPlayerMonitor( Area $area, PlayerMoveEvent $ev ): void{
+
         $player = $ev->getPlayer();
+
         if( $area->contains( $player->getPosition(), $player->getLevel()->getName() ) ){ 
             if( $this->skippTime(5, strtolower($player->getName()) ) ){ 
                 // start / renew effects
@@ -1412,6 +1460,7 @@ class Main extends PluginBase implements Listener{
 		if( $msg != ''){
 			$this->areaMessage( $msg, $player );
 		}
+
 		$playerName = strtolower( $player->getName() );
 		
 		if (($key = array_search( strtolower( $area->getName() ), $this->inArea[$playerName] )) !== false) {
