@@ -10,7 +10,7 @@ Create a festival with this custom area events plugin for Pocketmine Server ALPH
 ### Manage area's and run commmands attachted to area events.
 
 
-![Festival command usage overview](https://genboy.net/wp-content/uploads/2018/04/festival_usage_1.0.5-12.png)
+![Festival command usage overview](https://genboy.net/wp-content/uploads/2018/06/festival_usage_1.0.6-13.png)
 
 ###### Copyright [Genboy](https://genboy.net) 2018
  
