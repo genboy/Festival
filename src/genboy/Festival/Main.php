@@ -919,7 +919,7 @@ class Main extends PluginBase implements Listener{
 	 */
     public function onQuit(PlayerQuitEvent $event){
 
-        $playerName = strtolow($event->getPlayer()->getName());
+        $playerName = strtolower($event->getPlayer()->getName());
         $lvl = $player->getLevel()->getName();
 
         unset($this->inArea[$playerName]);

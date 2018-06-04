@@ -16,7 +16,7 @@ Create a festival with this custom area events plugin for Pocketmine Server ALPH
  
 ---
 
-## Info
+## Info 
  
 # Festival
 
@@ -49,7 +49,7 @@ Flags
     - edit: area is save from building/breaking
     - god: players in the area are save in god mode
     - pvp: players in the area are save from PVP
-    - flight: players in the area are not allowed to fly
+    - flight: players in the area are not allowed to fly(1)
     - touch: area is save from player interaction with chests/signs etc.
     - effects: player can not keep using effects in the area (v.1.0.5-12)
     - msg: do not display area enter/leave messages 
@@ -58,7 +58,8 @@ Flags
     - drop: players can not drop things
 
     Default & world specific flags in config.yml
-
+    (1) if server allows flight, and level flag is true 
+    an area in that level has flight enabled untill flight flag is set false
 
 Events & Commands
 
@@ -71,8 +72,8 @@ Events & Commands
     - change event of area commands
 
     Area event commands are executed by default with op permission by players from the area.
-    In v1.0.4-11 an experimental perms flag is added, functionality may change in the future;
-    perms flag true: area uses the player permissions (= without permission no commands/messages are triggered)
+    In v1.0.4-11 an experimental perms flag is added, perms flag true: area uses the player permissions 
+    (= without permission no commands/messages are triggered)
 
 
 ###### Created by [Genboy](https://genboy.net) 2018
