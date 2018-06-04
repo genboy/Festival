@@ -1,6 +1,6 @@
 ---
 name: Error report
-about: Create a report to improve
+about: Create a report to improve Festival
 
 ---
 
