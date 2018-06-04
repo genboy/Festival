@@ -29,7 +29,7 @@ Create a festival with this custom area events plugin for Pocketmine Server ALPH
 
 #### Features
 
-Area
+**Area**
 
 - Create and manage area’s
   (like WorldGuard/iProtector)
@@ -42,14 +42,14 @@ Area
     - show area’s info at current position
 
 
-Flags
+**Flags**
 
 - Set area flags true means
 
     - edit: area is save from building/breaking
     - god: players in the area are save in god mode
     - pvp: players in the area are save from PVP
-    - flight: players in the area are not allowed to fly(1)
+    - flight: players in the area are not allowed to fly
     - touch: area is save from player interaction with chests/signs etc.
     - effects: player can not keep using effects in the area (v.1.0.5-12)
     - msg: do not display area enter/leave messages 
@@ -57,11 +57,8 @@ Flags
     - perms: player permissions are used to determine area command execution (experiment)
     - drop: players can not drop things
 
-    Default & world specific flags in config.yml
-    (1) if server allows flight, and level flag is true 
-    an area in that level has flight enabled untill flight flag is set false
 
-Events & Commands
+**Events & Commands**
 
 - Add commands to area events
 
@@ -71,14 +68,18 @@ Events & Commands
     - list area commands (ordered by event)
     - change event of area commands
 
-    Area event commands are executed by default with op permission by players from the area.
-    In v1.0.4-11 an experimental perms flag is added, perms flag true: area uses the player permissions 
-    (= without permission no commands/messages are triggered)
 
+**Specific**
+
+  - World: Default & world specific flags in config.yml
+  - Flight: if server allows flight, and level flight-flag is true, an area in that level has still flight enabled untill flight flag is set true
+  - Perms: Area event commands are executed by default with op-permissions by players from the area. In v1.0.4-11 an experimental perms flag is added, perms flag true: area uses the player permissions
+	
 
 ###### Created by [Genboy](https://genboy.net) 2018
 
-Credits for the area creation and protection code go to iProtector creator [LDX-MCPE](https://github.com/LDX-MCPE) and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
+Credits for the area creation and protection code go to iProtector creator [LDX-MCPE](https://github.com/LDX-MCPE) 
+and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 
 ---
 
