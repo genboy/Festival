@@ -912,16 +912,14 @@ class Main extends PluginBase implements Listener{
 	}
 
 
-    /** Hurt
-	 * @param Entity $entity
+    /** on quit
+	 * @param Event $event
 	 * @return bool
-	 * true was false before v1.0.4-11
 	 */
     public function onQuit(PlayerQuitEvent $event){
 
         $playerName = strtolower($event->getPlayer()->getName());
-        $lvl = $player->getLevel()->getName();
-
+        $lvl = $event->getPlayer()->getLevel()->getName();
         unset($this->inArea[$playerName]);
 
     }
@@ -929,7 +927,6 @@ class Main extends PluginBase implements Listener{
 	/** Hurt
 	 * @param Entity $entity
 	 * @return bool
-	 * true was false before v1.0.4-11
 	 */
 	public function canGetHurt(Entity $entity) : bool{
 		$o = true;
@@ -1230,7 +1227,7 @@ class Main extends PluginBase implements Listener{
 
 		$position = $player->getPosition();
 		$o = true;
-		$g = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Perms"] : $this->edit);
+		$g = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[ $position->getLevel()->getName() ]["Perms"] : $this->perms);
 		if($g){
 			$o = false;
 		}
