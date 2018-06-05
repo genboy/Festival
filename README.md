@@ -10,13 +10,13 @@ Create a festival with this custom area events plugin for Pocketmine Server ALPH
 ### Manage area's and run commmands attachted to area events.
 
 
-![Festival command usage overview](https://genboy.net/wp-content/uploads/2018/04/festival_usage_1.0.5-12.png)
+![Festival command usage overview](https://genboy.net/wp-content/uploads/2018/06/festival_usage_1.0.6-13.png)
 
 ###### Copyright [Genboy](https://genboy.net) 2018
  
 ---
 
-## Info
+## Info 
  
 # Festival
 
@@ -29,7 +29,7 @@ Create a festival with this custom area events plugin for Pocketmine Server ALPH
 
 #### Features
 
-Area
+**Area**
 
 - Create and manage area’s
   (like WorldGuard/iProtector)
@@ -42,7 +42,7 @@ Area
     - show area’s info at current position
 
 
-Flags
+**Flags**
 
 - Set area flags true means
 
@@ -57,10 +57,8 @@ Flags
     - perms: player permissions are used to determine area command execution (experiment)
     - drop: players can not drop things
 
-    Default & world specific flags in config.yml
 
-
-Events & Commands
+**Events & Commands**
 
 - Add commands to area events
 
@@ -70,14 +68,18 @@ Events & Commands
     - list area commands (ordered by event)
     - change event of area commands
 
-    Area event commands are executed by default with op permission by players from the area.
-    In v1.0.4-11 an experimental perms flag is added, functionality may change in the future;
-    perms flag true: area uses the player permissions (= without permission no commands/messages are triggered)
 
+**Specific**
+
+  - World: Default & world specific flags in config.yml
+  - Flight: if server allows flight, and level flight-flag is true, an area in that level has still flight enabled untill flight flag is set true
+  - Perms: Area event commands are executed by default with op-permissions by players from the area. In v1.0.4-11 an experimental perms flag is added, perms flag true: area uses the player permissions
+	
 
 ###### Created by [Genboy](https://genboy.net) 2018
 
-Credits for the area creation and protection code go to iProtector creator [LDX-MCPE](https://github.com/LDX-MCPE) and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
+Credits for the area creation and protection code go to iProtector creator [LDX-MCPE](https://github.com/LDX-MCPE) 
+and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 
 ---
 
@@ -149,13 +151,13 @@ Credits for the area creation and protection code go to iProtector creator [LDX-
   
     Festival v1.0.1-11 introduced a fast toggle for flags:
   
-      /fe <god/build/touch/effects/drop/msg/pass/perms> <AREANAME>
+      /fe <edit/god/pvp/flight/touch/effects/drop/msg/pass/perms> <AREANAME>
 
   
     Area flag defaults are set in the config.yml), server defaults and world specific default flag. 
     The basic command to control area flags:
   
-	  /fe flag(f) <AREANAME> <god/pvp/flight/build/touch/effects/drop/msg/pass/perms> <true/false>
+	  /fe flag(f) <AREANAME> <edit/god/pvp/flight/touch/effects/drop/msg/pass/perms> <true/false>
   
     Area flag listing
   
@@ -227,57 +229,16 @@ The Festival plugin is in active development.
 
  ##### Development on [github.com/genboy/Festival](https://github.com/genboy/Festival)
 
-### History
+If you like to help improve this plugin;
 
+- download/use the plugin and give your feedback
+- look at the code and give feedback
+- both by submitting [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival) 
 
-  - 2 3 2018
-    - update readme.md
-    - replace name 'barrier' flag with 'passage' (better name for the flag)
-    - Moving license content to own file
+or send an email to msg @ genboy.net
+	
+Thank you
 
-  - 27 2 2018
-    - No hurt, no damage after falling from /fe tp
-    - Area tp to center top & fall into area without damage!
-
-  - 26 2 2018
-    - Area messages now popup 
-    - Separate readme for poggit release template
-    - code clean up to much player instance references
-
-  - 22 2 2018
-    - Pre-release 
-      - version 1.0.2-11
-    - Fix multiplayer in Area
-    - Fix to many messages
-    - added new cover graphic
-    - added transparent infographic v1.0.2-11
-
-  - 21 2 2018
-    - Pre-release 
-      - version 1.0.1-11
-    - info updates
-      - readme restyled
-      - restyled /fe list and /fe here 
-      - added per world area list: /fe list <worldname> 
-      - added infographic v1.0.1-11
-    - new!: barrier flag 
-      - area act as barrier when flag is true
-      - whitelisted and ops allowed
-    - new!: short commands for flags
-      - f for flag: /fe f <AREANAME> <flag> <true/false>
-      - fast toggle: /fe <touch/edit/god/msg/barrier> <AREANAME>
-    - and some small tweaks
-
-  - 13 2 2018
-    - Pre-release 
-      - version 1.0.0-11
-      - submitted plugin to Poggit
-    - Festival area setup and protection based on iprotector
-      - area enter, leave en center event detection/messages
-      - area object extended with commandlist and eventlist
-    - Commands to add custom events
-      - add multiple commandstrings with id attachted to enter, leave or center area event
-      - list area extended info and manage event commands
 
 ### Milestones v1.0.0-11 - v1.0.3-11
 
@@ -294,18 +255,20 @@ The Festival plugin is in active development.
   - [x] Passage flag; turning the area into a barrier, no one in, no one out.
   - [x] /fe tp <areaname> now sends player to the area top-center and prevents fall damage  
    
-  Many ideas and necessities popped-up and more will be added to [the Bucketlist](https://github.com/genboy/Festival/issues/11)
- 
-If you like to help improve this plugin;
+### Milestones v1.0.3-11 - v1.0.6-13
 
-- download/use the plugin and give your feedback
-- look at the code and give feedback
-- both by submitting [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival) 
-
-or send an email to msg @ genboy.net
-	
-Thank you
-
+  - [x] Config options:
+    - Messages out of chat (tip/pop)  
+    - Messages persist display to ops (off/op/on)
+    - Auto whitelist area creator (on/off)
+  - [x] Effects flag: remove players effects in area
+  - [x] Perms flag: player perms used for area commands (vs OP pems) [experimental]
+  - [x] Drop flag: player can not drop things 
+  - [x] PVP flag: players can not PvP (warn message)
+  - [x] Flight flag: players can not fly (incl. no fall damage & allowed messages)
+  - [x] Area Commands: playerName can be used as **{player}** or **@p** in area event commands
+  
+  
 ------
 
 

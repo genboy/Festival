@@ -12,8 +12,6 @@ use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerInteractEvent;
-
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
@@ -21,8 +19,10 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
 use pocketmine\Server;
 use pocketmine\event\player\PlayerMoveEvent;
-use pocketmine\event\player\PlayerCommandPreprocessEvent; // silently block commands [perms flag true] v1.0.4-11
+use pocketmine\event\player\PlayerInteractEvent;
+use pocketmine\event\player\PlayerCommandPreprocessEvent;
 use pocketmine\event\player\PlayerDropItemEvent;
+use pocketmine\event\player\PlayerQuitEvent;
 
 class Main extends PluginBase implements Listener{
 
@@ -517,10 +517,9 @@ class Main extends PluginBase implements Listener{
 							$cy1 = min( $area->getSecondPosition()->getY(), $area->getFirstPosition()->getY());
 							$cy2 = max( $area->getSecondPosition()->getY(), $area->getFirstPosition()->getY());
 							$this->playerTP[$playerName] = true; // player tp active
-                            
-							$this->areaMessage( 'Fall save on!', $sender );
+                            //$this->areaMessage( 'Fall save on!', $sender );
 							$sender->sendMessage( $playerName );
-							$sender->teleport( new Position( $cx, $cy2 + 0.5, $cz, $area->getLevel() ) );
+							$sender->teleport( new Position( $cx, $cy2+ 0.5, $cz, $area->getLevel() ) );
                             
 						}else{
 							$o = TextFormat::RED . "The level " . $levelName . " for Area ". $args[1] ." cannot be found";
@@ -912,6 +911,21 @@ class Main extends PluginBase implements Listener{
 		return true;
 	}
 
+
+    /** Hurt
+	 * @param Entity $entity
+	 * @return bool
+	 * true was false before v1.0.4-11
+	 */
+    public function onQuit(PlayerQuitEvent $event){
+
+        $playerName = strtolower($event->getPlayer()->getName());
+        $lvl = $player->getLevel()->getName();
+
+        unset($this->inArea[$playerName]);
+
+    }
+
 	/** Hurt
 	 * @param Entity $entity
 	 * @return bool
@@ -947,6 +961,8 @@ class Main extends PluginBase implements Listener{
 	 */
 	public function canPVP(EntityDamageEvent $ev) : bool{
         $o = true;
+        $god = false;
+
         if($ev instanceof EntityDamageByEntityEvent){
             if($ev->getEntity() instanceof Player && $ev->getDamager() instanceof Player){
                 $entity = $ev->getEntity();
@@ -969,7 +985,7 @@ class Main extends PluginBase implements Listener{
                 }
             }
         }
-        if(!$o ){
+        if( !$o ){
             $player = $ev->getDamager();
             if( $this->skippTime( 2, strtolower($player->getName()) ) ){
                 if( $god ){
@@ -1218,10 +1234,10 @@ class Main extends PluginBase implements Listener{
 		if($g){
 			$o = false;
 		}
-		if($area->getFlag("perms")){
+		if( $area->getFlag("perms") ){
 			$o = false;
 		}
-		if($area->isWhitelisted(strtolower($player->getName()))){
+		if( $area->isWhitelisted( strtolower( $player->getName() ) ) ){
 			$o = true;
 		}
 		return $o;
@@ -1656,10 +1672,17 @@ class Main extends PluginBase implements Listener{
         // Players in area
         $ap = [];
         foreach( $this->inArea as $p => $playerAreas ){
-            foreach( $playerAreas as $a ){
-                if( $a == strtolower( $area->getName() ) ){
-                    $ap[] = $p;
+
+            if( $this->getServer()->getPlayer($p) ){
+
+                foreach( $playerAreas as $a ){
+                    if( $a == strtolower( $area->getName() ) ){
+                        $ap[] = $p;
+                    }
                 }
+
+            }else{
+                unset( $this->inArea[$p] ); // remove player from inArea list
             }
         }
         if(count($ap) > 0 ){
