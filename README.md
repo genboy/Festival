@@ -248,7 +248,8 @@ The Festival plugin is in active development.
    
 ### Milestones v1.0.3-11 - v1.0.6-13
 
-  - [x] Perms flag: player perms used (vs OP pems) [experimental]
+  - [x] Effects flag: remove players effects in area
+  - [x] Perms flag: player perms used for area commands (vs OP pems) [experimental]
   - [x] Drop flag: player can not drop things 
   - [x] PVP flag: players can not PvP (warn message)
   - [x] Flight flag: players can not fly (incl. no fall damage & allowed messages)
