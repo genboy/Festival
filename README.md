@@ -229,6 +229,15 @@ The Festival plugin is in active development.
 
  ##### Development on [github.com/genboy/Festival](https://github.com/genboy/Festival)
 
+If you like to help improve this plugin;
+
+- download/use the plugin and give your feedback
+- look at the code and give feedback
+- both by submitting [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival) 
+
+or send an email to msg @ genboy.net
+	
+Thank you
 
 
 ### Milestones v1.0.0-11 - v1.0.3-11
@@ -248,25 +257,18 @@ The Festival plugin is in active development.
    
 ### Milestones v1.0.3-11 - v1.0.6-13
 
+  - [x] Config options:
+    - Messages out of chat (tip/pop)  
+    - Messages persist display to ops (off/op/on)
+    - Auto whitelist area creator (on/off)
   - [x] Effects flag: remove players effects in area
   - [x] Perms flag: player perms used for area commands (vs OP pems) [experimental]
   - [x] Drop flag: player can not drop things 
   - [x] PVP flag: players can not PvP (warn message)
   - [x] Flight flag: players can not fly (incl. no fall damage & allowed messages)
-  - [x] playerName can be used as **{player}** or **@p** in area event commands
-  - [x] leave: when leaving the area 
+  - [x] Area Commands: playerName can be used as **{player}** or **@p** in area event commands
   
   
-If you like to help improve this plugin;
-
-- download/use the plugin and give your feedback
-- look at the code and give feedback
-- both by submitting [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival) 
-
-or send an email to msg @ genboy.net
-	
-Thank you
-
 ------
 
 
