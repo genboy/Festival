@@ -151,13 +151,13 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   
     Festival v1.0.1-11 introduced a fast toggle for flags:
   
-      /fe <god/build/touch/effects/drop/msg/pass/perms> <AREANAME>
+      /fe <edit/god/pvp/flight/touch/effects/drop/msg/pass/perms> <AREANAME>
 
   
     Area flag defaults are set in the config.yml), server defaults and world specific default flag. 
     The basic command to control area flags:
   
-	  /fe flag(f) <AREANAME> <god/pvp/flight/build/touch/effects/drop/msg/pass/perms> <true/false>
+	  /fe flag(f) <AREANAME> <edit/god/pvp/flight/touch/effects/drop/msg/pass/perms> <true/false>
   
     Area flag listing
   
@@ -229,57 +229,7 @@ The Festival plugin is in active development.
 
  ##### Development on [github.com/genboy/Festival](https://github.com/genboy/Festival)
 
-### History
 
-
-  - 2 3 2018
-    - update readme.md
-    - replace name 'barrier' flag with 'passage' (better name for the flag)
-    - Moving license content to own file
-
-  - 27 2 2018
-    - No hurt, no damage after falling from /fe tp
-    - Area tp to center top & fall into area without damage!
-
-  - 26 2 2018
-    - Area messages now popup 
-    - Separate readme for poggit release template
-    - code clean up to much player instance references
-
-  - 22 2 2018
-    - Pre-release 
-      - version 1.0.2-11
-    - Fix multiplayer in Area
-    - Fix to many messages
-    - added new cover graphic
-    - added transparent infographic v1.0.2-11
-
-  - 21 2 2018
-    - Pre-release 
-      - version 1.0.1-11
-    - info updates
-      - readme restyled
-      - restyled /fe list and /fe here 
-      - added per world area list: /fe list <worldname> 
-      - added infographic v1.0.1-11
-    - new!: barrier flag 
-      - area act as barrier when flag is true
-      - whitelisted and ops allowed
-    - new!: short commands for flags
-      - f for flag: /fe f <AREANAME> <flag> <true/false>
-      - fast toggle: /fe <touch/edit/god/msg/barrier> <AREANAME>
-    - and some small tweaks
-
-  - 13 2 2018
-    - Pre-release 
-      - version 1.0.0-11
-      - submitted plugin to Poggit
-    - Festival area setup and protection based on iprotector
-      - area enter, leave en center event detection/messages
-      - area object extended with commandlist and eventlist
-    - Commands to add custom events
-      - add multiple commandstrings with id attachted to enter, leave or center area event
-      - list area extended info and manage event commands
 
 ### Milestones v1.0.0-11 - v1.0.3-11
 
@@ -296,8 +246,16 @@ The Festival plugin is in active development.
   - [x] Passage flag; turning the area into a barrier, no one in, no one out.
   - [x] /fe tp <areaname> now sends player to the area top-center and prevents fall damage  
    
-  Many ideas and necessities popped-up and more will be added to [the Bucketlist](https://github.com/genboy/Festival/issues/11)
- 
+### Milestones v1.0.3-11 - v1.0.6-13
+
+  - [x] Perms flag: player perms used (vs OP pems) [experimental]
+  - [x] Drop flag: player can not drop things 
+  - [x] PVP flag: players can not PvP (warn message)
+  - [x] Flight flag: players can not fly (incl. no fall damage & allowed messages)
+  - [x] playerName can be used as **{player}** or **@p** in area event commands
+  - [x] leave: when leaving the area 
+  
+  
 If you like to help improve this plugin;
 
 - download/use the plugin and give your feedback
