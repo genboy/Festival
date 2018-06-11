@@ -504,32 +504,38 @@ class Main extends PluginBase implements Listener{
 					$o = TextFormat::RED . "You must specify an existing Area name";
 					break;
 				}
-				$area = $this->areas[strtolower($args[1])];
-                
-				if( $area->isWhitelisted($playerName) || $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.tp")){
-					 
-					if($area !== null){
-						$levelName = $area->getLevelName();
-						if(isset($levelName) && Server::getInstance()->loadLevel($levelName) != false){
-							$o = TextFormat::GREEN . "You are teleporting to Area " . $args[1];
-							$cx = $area->getSecondPosition()->getX() + ( ( $area->getFirstPosition()->getX() - $area->getSecondPosition()->getX() ) / 2 );
-							$cz = $area->getSecondPosition()->getZ() + ( ( $area->getFirstPosition()->getZ() - $area->getSecondPosition()->getZ() ) / 2 );
-							$cy1 = min( $area->getSecondPosition()->getY(), $area->getFirstPosition()->getY());
-							$cy2 = max( $area->getSecondPosition()->getY(), $area->getFirstPosition()->getY());
-							$this->playerTP[$playerName] = true; // player tp active
-                            //$this->areaMessage( 'Fall save on!', $sender );
-							$sender->sendMessage( $playerName );
-							$sender->teleport( new Position( $cx, $cy2+ 0.5, $cz, $area->getLevel() ) );
-                            
-						}else{
-							$o = TextFormat::RED . "The level " . $levelName . " for Area ". $args[1] ." cannot be found";
-						}
-					}else{
-						$o = TextFormat::RED . "The Area " . $args[1] . " could not be found ";
-					}
-				}else{
-					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
-				}
+                if( isset( $this->areas[strtolower($args[1])] ) ){
+
+                    $area = $this->areas[strtolower($args[1])];
+
+                    $position = $sender->getPosition();
+
+                    $perms = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[ $position->getLevel()->getName() ]["Perms"] : $this->perms);
+
+                    if( $perms || $area->isWhitelisted($playerName) || $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.tp")){
+
+                        $levelName = $area->getLevelName();
+                        if(isset($levelName) && Server::getInstance()->loadLevel($levelName) != false){
+                                $o = TextFormat::GREEN . "You are teleporting to Area " . $args[1];
+                                $cx = $area->getSecondPosition()->getX() + ( ( $area->getFirstPosition()->getX() - $area->getSecondPosition()->getX() ) / 2 );
+                                $cz = $area->getSecondPosition()->getZ() + ( ( $area->getFirstPosition()->getZ() - $area->getSecondPosition()->getZ() ) / 2 );
+                                $cy1 = min( $area->getSecondPosition()->getY(), $area->getFirstPosition()->getY());
+                                $cy2 = max( $area->getSecondPosition()->getY(), $area->getFirstPosition()->getY());
+                                $this->playerTP[$playerName] = true; // player tp active
+                                //$this->areaMessage( 'Fall save on!', $sender );
+                                $sender->sendMessage( $playerName );
+                                $sender->teleport( new Position( $cx, $cy2+ 0.5, $cz, $area->getLevel() ) );
+
+                        }else{
+                            $o = TextFormat::RED . "The level " . $levelName . " for Area ". $args[1] ." cannot be found";
+                        }
+                    }else{
+                        $o = TextFormat::RED . "You do not have permission to use this subcommand.";
+                    }
+                }else{
+                    $list = $this->listAllAreas();
+                    $o = TextFormat::RED . "The Area " . $args[1] . " could not be found. ". $list;
+                }
 			break;
 			case "f":
 			case "flag":
@@ -1659,6 +1665,22 @@ class Main extends PluginBase implements Listener{
 		 */
 	}
 
+    /** List all area's
+     * return
+     */
+    public function listAllAreas(){
+        if( count($this->areas) > 0 ){
+            $t = 'Area names: ';
+            foreach($this->areas as $area){
+                if( !empty( $area->getName() ) ){
+                    $t .= $area->getName().', ';
+                }
+            }
+            return rtrim($t,',');
+        }else{
+            return 'No area available..';
+        }
+    }
 	/** List Area Info
 	 * @var obj area
 	 */
