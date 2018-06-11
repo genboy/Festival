@@ -1246,13 +1246,12 @@ class Main extends PluginBase implements Listener{
     public function checkPlayerFlying(Player $player){
 
         $fly = true;
-
-        if( $this->flight ){
+		$position = $player->getPosition();
+        $f = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Flight"] : $this->flight);
+        if( $f ){
             $fly = false; // flag default
         }
-        if( $this->levels[ $player->getLevel()->getName() ]["Flight"]  ){
-            $fly = false; // level flag default
-        }
+
         foreach($this->areas as $area){
             if( $area->contains( $player->getPosition(), $player->getLevel()->getName() ) ){
                 if(  $area->getFlag("flight") && !$area->isWhitelisted( strtolower($player->getName())) ){
