@@ -22,10 +22,10 @@ Default:
   PVP: false
 
   # Keep players from flying?
-  Flight: false
+  Flight: true
 
   # Keep players from editing the world?
-  Edit: false
+  Edit: true
 
   # Keep players from touching blocks and activating things like chests?
   Touch: false
@@ -36,13 +36,13 @@ Default:
   # Keep players from seeing enter/leave/description messages?
   Msg: false
 
-  # Prevent players enter/leaving the area? Deny passage (previously barrier)
+  # Prevent players from enter/leaving the area? (barrier)
   Passage: false
 
-  # Prevent players drop items in the area? Deny drop
+  # Keep players from dropping items in the area?
   Drop: false
 
-  # Player permission overwrite for area event command execution
+  # Keep players from executing area event commands without specific perms
   Perms: false
 
 # Settings for unprotected areas in individual worlds:
@@ -56,8 +56,8 @@ Worlds:
     # Keep players from getting hurt by other players?
     PVP: false
 
-    # Keep players from getting hurt by other players?
-    Flight: false
+    # Keep players from flying?
+    Flight: true
 
     # Keep players from editing the world?
     Edit: true
@@ -71,16 +71,16 @@ Worlds:
     # Keep players from seeing enter/leave/description messages?
     Msg: false
 
-    # Prevent players from enter/leaving the area? (previously barrier)
+    # Prevent players from enter/leaving the area? (barrier)
     Passage: false
 
-    # Prevent players drop items in the area? Deny drop
+    # Keep players from dropping items in the area?
     Drop: false
 
-    # Player permission overwrite for area event command execution
+    # Keep players from executing area event commands without specific perms
     Perms: false
 
-  World:
+  world:
   
     # Keep players from getting hurt? 
     God: false
@@ -88,11 +88,11 @@ Worlds:
     # Keep players from getting hurt by other players?
     PVP: false
 
-    # Keep players from getting hurt by other players?
-    Flight: false
+    # Keep players from flying?
+    Flight: true
 
     # Keep players from editing the world?
-    Edit: false
+    Edit: true
 
     # Keep players from touching blocks and activating things like chests?
     Touch: false
@@ -103,11 +103,11 @@ Worlds:
     # Keep players from seeing enter/leave/description messages?
     Msg: false
 
-    # Prevent players from enter/leaving the area? (previously barrier)
+    # Prevent players from enter/leaving the area? (barrier)
     Passage: false
 
-    # Prevent players drop items in the area? Deny drop
+    # Keep players from dropping items in the area?
     Drop: false
  
-    # Player permission overwrite for area event command execution
+    # Keep players from executing area event commands without specific perms
     Perms: false
