@@ -1145,7 +1145,7 @@ class Main extends PluginBase implements Listener{
 			return true;
 		}
 		$o = true;
-		$g = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Drop"] : $this->edit);
+		$g = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Drop"] : $this->drop);
 		if($g){
 			$o = false;
 		}
@@ -1245,6 +1245,44 @@ class Main extends PluginBase implements Listener{
 		}
 		return $o;
 	}
+
+
+
+    /** Effects
+	 * @param Player $player
+	 * @param Areas $area
+     */
+    public function canUseEffects( Player $player ) : bool{
+
+		if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
+			return true;
+		}
+
+        $position = $player->getPosition();
+		$o = true;
+		$g = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Effects"] : $this->effects);
+		if($g){
+			$o = false;
+		}
+		foreach($this->areas as $area){
+			if($area->contains($position, $position->getLevel()->getName())){
+				if($area->getFlag("effects")){
+					$o = false;
+				}
+				if($area->isWhitelisted(strtolower($player->getName()))){
+					$o = true;
+					break;
+				}
+				if(!$area->getFlag("effects") && $g){
+					$o = true;
+					break;
+				}
+			}
+		}
+		return $o;
+	}
+
+
 
     /** Flight
 	 * @param Player $player
@@ -1369,8 +1407,8 @@ class Main extends PluginBase implements Listener{
         if( $area->contains( $player->getPosition(), $player->getLevel()->getName() ) ){ 
             if( $this->skippTime(5, strtolower($player->getName()) ) ){ 
                 // start / renew effects
-                $msg = TextFormat::YELLOW . "Time passing in area " . $area->getName();
-                $this->areaMessage( $msg, $player ); 
+                //$msg = TextFormat::YELLOW . "Time passing in area " . $area->getName();
+                //$this->areaMessage( $msg, $player );
             }
         }
         
@@ -1447,14 +1485,12 @@ class Main extends PluginBase implements Listener{
 			} 
 		}
         
-        // effects 
-        if( !$area->getFlag("effects") || $player->isOp() || $area->isWhitelisted( strtolower( $player->getName() ) ) || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+        // effects check
+        if( $this->canUseEffects( $player ) ){
             // use effects
         }else{
             foreach ($player->getEffects() as $effect) {
-            //if ($effect->getDuration() >= 999999) {
                 $player->removeEffect($effect->getId());
-            //}
             }
         }
         
@@ -1534,8 +1570,7 @@ class Main extends PluginBase implements Listener{
     
     
     /** area effect event
-     * while in area repeat effect event command ? check effects & re-innit them with (?) duration 
-     * (should also get a kill effect type flag or something )
+     * kill effects flag
      */ 
     
 	/** Run Area Event
