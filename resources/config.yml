@@ -51,7 +51,7 @@ Worlds:
   DEFAULT:
 
     # Keep players from getting hurt? 
-    God: false
+    God: true
 
     # Keep players from getting hurt by other players?
     PVP: false
