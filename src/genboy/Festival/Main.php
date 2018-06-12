@@ -168,7 +168,6 @@ class Main extends PluginBase implements Listener{
         /**
          * config default check and overwrite plugin defaults
          */
-
 		if(!isset($c["Default"]["God"])) {
 			$c["Default"]["God"] = false;
 		}
@@ -197,7 +196,6 @@ class Main extends PluginBase implements Listener{
 		if(!isset($c["Default"]["Effects"])) {
 			$c["Default"]["Effects"] = false;
 		}
-
 		// new in v1.0.6-13
 		if(!isset($c["Default"]["PVP"])) {
 			$c["Default"]["PVP"] = false;
@@ -263,11 +261,13 @@ class Main extends PluginBase implements Listener{
 		$this->saveAreas();
 
 		// console output
+        $this->codeSigned();
+
 		$ca = 0;
 		foreach( $this->areas as $a ){
 			$ca = $ca + count( $a->getCommands() );
 		}
-		$this->getLogger()->info(TextFormat::GREEN . "Festival v1.0.6-13-dev has " . count($this->areas) . " areas and ". $ca ." commands set.");
+		$this->getLogger()->info( "  ". $ca ." commands in " . count($this->areas) . " areas" );
 		
         //v1.0.6-13-dev
 		if( count($newchange) > 0 ){
@@ -275,7 +275,6 @@ class Main extends PluginBase implements Listener{
 			     $this->getLogger()->info( $ttl . ": " . $txt );
             }
 		}
-
 	}
 
     /** Flag check experimental (synonym to original name)
@@ -330,7 +329,6 @@ class Main extends PluginBase implements Listener{
         }
         return $flag;
     }
-
 
 	/** Commands
 	 * @param CommandSender $sender
@@ -917,7 +915,6 @@ class Main extends PluginBase implements Listener{
 		return true;
 	}
 
-
     /** on quit
 	 * @param Event $event
 	 * @return bool
@@ -1250,7 +1247,7 @@ class Main extends PluginBase implements Listener{
 
     /** Effects
 	 * @param Player $player
-	 * @param Areas $area
+	 * @return bool
      */
     public function canUseEffects( Player $player ) : bool{
 
@@ -1340,7 +1337,8 @@ class Main extends PluginBase implements Listener{
 
 		foreach($this->areas as $area){
 			
-            if( $area->getFlag("passage") ){ // test passage flag
+            // Player area passage
+            if( $area->getFlag("passage") ){
 				if( $player->isOp() || $area->isWhitelisted( strtolower( $player->getName() )  ) || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
 					if( ( $area->contains( $player->getPosition(), $player->getLevel()->getName() ) && !$area->contains( $ev->getFrom(), $player->getLevel()->getName() ) )
 					|| !$area->contains( $player->getPosition(), $player->getLevel()->getName() ) && $area->contains( $ev->getFrom(), $player->getLevel()->getName() ) ){
@@ -1361,23 +1359,27 @@ class Main extends PluginBase implements Listener{
 					}
 				} 
 			}
-            
-			if( !$area->contains( $player->getPosition(), $player->getLevel()->getName() ) ){ // no barrier
+            // Player enter or leave area
+			if( !$area->contains( $player->getPosition(), $player->getLevel()->getName() ) ){
+                // Player leave Area
 				if( in_array( strtolower( $area->getName() ) , $this->inArea[$playerName] ) ){
 					$this->leaveArea($area, $ev);
 					break;
 				}
 			}else{
-				if( !in_array( strtolower( $area->getName() ), $this->inArea[$playerName] ) ){ // Player enter in Area
+                // Player enter Area
+				if( !in_array( strtolower( $area->getName() ), $this->inArea[$playerName] ) ){
 					$this->enterArea($area, $ev);
 					break;
 				}
+                // Player enter Area Center
 				if( $area->centerContains( $player->getPosition(), $player->getLevel()->getName() ) ){
 					if( !in_array( strtolower( $area->getName() )."center", $this->inArea[$playerName] ) ){ // Player enter in Area
 						$this->enterAreaCenter($area, $ev);
 						break;
 					}
 				}else{
+                    // Player leave Area Center
 					if( in_array( strtolower( $area->getName()."center" ) , $this->inArea[$playerName] ) ){
 						$this->leaveAreaCenter($area, $ev);
 						break;
@@ -1386,7 +1388,7 @@ class Main extends PluginBase implements Listener{
 			}
             
             /** Area Player Monitor */
-            $this->AreaPlayerMonitor($area, $ev);
+            //$this->AreaPlayerMonitor($area, $ev);
             
 		} 
 
@@ -1395,7 +1397,7 @@ class Main extends PluginBase implements Listener{
 		return;
 	}
 
-	/** Area Player Monitor
+	/** Area Player Monitor/Task
 	 * @param area Area
 	 * @param PlayerMoveEvent $ev 
 	 * Set/refresh effects & status
@@ -1567,12 +1569,7 @@ class Main extends PluginBase implements Listener{
 		}
 		return;
 	}
-    
-    
-    /** area effect event
-     * kill effects flag
-     */ 
-    
+
 	/** Run Area Event
 	 * @param area Area
 	 * @param PlayerMoveEvent $ev
@@ -1787,4 +1784,17 @@ class Main extends PluginBase implements Listener{
 		file_put_contents($this->getDataFolder() . "areas.json", json_encode($areas));
 	}
 
+    /**  Festival Console Sign Flag for developers
+     *   makes it easy to find Festival console output fast
+     */
+    public function codeSigned(){
+
+        $this->getLogger()->info( "by            .            " );
+        $this->getLogger()->info( "  ,-. ,-. ,-. |-. ,-. . .  " );
+        $this->getLogger()->info( "  | | |-' | | | | | | | |  " );
+        $this->getLogger()->info( "  `-| `-' ' ' `-' `-' `-|  " );
+        $this->getLogger()->info( "   ,|                  /|  " );
+        $this->getLogger()->info( "   `'                 `-'  " );
+
+    }
 }
