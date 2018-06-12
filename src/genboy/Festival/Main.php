@@ -1789,12 +1789,11 @@ class Main extends PluginBase implements Listener{
      */
     public function codeSigned(){
 
-        $this->getLogger()->info( "by            .            " );
+        $this->getLogger()->info( "by -----------.------------" );
         $this->getLogger()->info( "  ,-. ,-. ,-. |-. ,-. . .  " );
         $this->getLogger()->info( "  | | |-' | | | | | | | |  " );
         $this->getLogger()->info( "  `-| `-' ' ' `-' `-' `-|  " );
-        $this->getLogger()->info( "   ,|                  /|  " );
-        $this->getLogger()->info( "   `'                 `-'  " );
+        $this->getLogger()->info( "--`-'-----------------`-'--" );
 
     }
 }
