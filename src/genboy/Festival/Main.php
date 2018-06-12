@@ -448,37 +448,77 @@ class Main extends PluginBase implements Listener{
 			break;
 			case "list":
 				if( $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.list")){
-					$lvls = $this->getServer()->getLevels();
+
+
+                    $levelNamesArray = scandir($this->getServer()->getDataPath() . "worlds/");
+                    foreach($levelNamesArray as $levelName) {
+                      if($levelName === "." || $levelName === "..") {
+                        continue;
+                      }
+                      $this->getServer()->loadLevel($levelName); //Note that this will return false if the world folder is not a valid level, and could not be loaded.
+                    }
+                    $lvls = $this->getServer()->getLevels();
+
 					$o = '';
+
 					$l = '';
+
 					if( isset( $args[1] )){
+
 						$l = $args[1];
+
 					}else{
+
 						$l = false;
-					}
-					foreach( $lvls as $lvl ){
-						$i = 0;
-						$t = '';
-						foreach($this->areas as $area){
-							if( $area->getLevelName() == $lvl->getName() ){
-								if( ( !empty($l) && $l == $lvl->getName() ) || $l == false ){
-								    $t .= $this->areaInfoList( $area );
-								    $i++;
-								}
-							}
-						}
-						if( $i > 0 ){
-							$o .= TextFormat::DARK_PURPLE ."---- Area list ----\n";
-							$o .= TextFormat::GRAY . "level " . TextFormat::YELLOW . $lvl->getName() .":\n". $t;
-						}
-					}
-					if($o != ''){
-						$o .= TextFormat::DARK_PURPLE ."----------------\n";
+
 					}
 
-					if($o == ''){
-						$o = "There are no areas that you can edit";
+					foreach( $lvls as $lvl ){
+
+						$i = 0;
+
+						$t = '';
+
+						foreach($this->areas as $area){
+
+							if( $area->getLevelName() == $lvl->getName() ){
+
+								if( ( !empty($l) && $l == $lvl->getName() ) || $l == false ){
+
+								    $t .= $this->areaInfoList( $area );
+
+								    $i++;
+
+								}
+
+							}
+
+						}
+
+						if( $i > 0 ){
+
+							$o .= TextFormat::DARK_PURPLE ."---- Area list ----\n";
+
+							$o .= TextFormat::GRAY . "level " . TextFormat::YELLOW . $lvl->getName() .":\n". $t;
+
+						}
+
 					}
+
+					if($o != ''){
+
+						$o .= TextFormat::DARK_PURPLE ."----------------\n";
+
+					}
+
+
+
+					if($o == ''){
+
+						$o = "There are no areas that you can edit";
+
+					}
+
 				}
             break;
 			case "here":
