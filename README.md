@@ -1,6 +1,6 @@
 ## Festival
 
-If you like Festival please leave a thumb up at [poggit](https://poggit.pmmp.io/p/Festival/1.0.5-12)  to help getting the Festival plugin approved, thank you!_
+If you like Festival please leave a thumb up at [poggit](https://poggit.pmmp.io/p/Festival/1.0.6-13)  to help getting the Festival plugin approved, thank you!_
 
 ![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png)
 
@@ -125,7 +125,10 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 
   **Since v1.0.6-13**
 
-  - configuration should be updated with new PVP and Flight flag; example [resources/config.yml](https://github.com/genboy/Festival/blob/master/resources/config.yml)
+  - new PVP flag
+  - new Flight flag
+  - /fe list LEVELNAME - Area list of all area's in all levels, or for specified level 
+  - configuration should be updated [resources/config.yml](https://github.com/genboy/Festival/blob/master/resources/config.yml)
  
 	
   #### Create area
@@ -215,7 +218,7 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 	/fe command <AREANAME> edit <COMMANDID> <COMMANDSTRING>
 	
   #### Change command event:
-	
+	 
 	/fe command <AREANAME> event <COMMANDID> <enter/center/leave>
 		
   #### Remove command:
