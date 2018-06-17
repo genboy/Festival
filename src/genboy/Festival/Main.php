@@ -1188,7 +1188,7 @@ class Main extends PluginBase implements Listener{
      * @return void
      */
     public function onEntityExplode(EntityExplodeEvent $event){
-        if (!$this->canExplode($event->getPosition(), $event->getEntity()->getLevel())) {
+        if (!$this->canExplode( $event->getPosition() )) {
             $event->setCancelled();
         }
     }
@@ -1200,14 +1200,14 @@ class Main extends PluginBase implements Listener{
      * @param pocketmine\level\Level $level
      * @return bool
      */
-    public function canExplode(Position $pos, Level $level): bool{
+    public function canExplode( Position $pos ): bool{
         $o = true;
-        $g = (isset($this->levels[$level->getName()]) ? $this->levels[$level->getName()]["TNT"] : $this->tnt);
+        $g = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["TNT"] : $this->tnt);
         if ($g) {
             $o = false;
         }
         foreach ($this->areas as $area) {
-            if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $level->getName())) {
+            if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
                 if ($area->getFlag("tnt")) {
                     $o = false;
                     break;
