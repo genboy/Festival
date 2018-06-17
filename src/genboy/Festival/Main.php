@@ -11,6 +11,7 @@ use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityExplodeEvent;
 use pocketmine\event\Listener;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
@@ -134,6 +135,11 @@ class Main extends PluginBase implements Listener{
 				$flags["flight"] = false;
 				$newchange['Flight'] = "! Area Flight flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
+             //new flags v 1.0.7
+			if( !isset($datum["flags"]["tnt"]) ){
+				$flags["tnt"] = false;
+				$newchange['TNT'] = "! Area TNT flag missing, now updated to 'false'; please see /resources/config.yml";
+			}
 
 			new Area($datum["name"], $datum["desc"], $flags, new Vector3($datum["pos1"]["0"], $datum["pos1"]["1"], $datum["pos1"]["2"]), new Vector3($datum["pos2"]["0"], $datum["pos2"]["1"], $datum["pos2"]["2"]), $datum["level"], $datum["whitelist"], $datum["commands"], $datum["events"], $this);
 		}
@@ -203,6 +209,13 @@ class Main extends PluginBase implements Listener{
 		if(!isset($c["Default"]["Flight"])) {
 			$c["Default"]["Flight"] = false;
 		}
+        // new in v1.0.7
+		if(!isset($c["Default"]["TNT"])) {
+			$c["Default"]["TNT"] = false;
+		}
+
+
+
 
 		$this->god = $c["Default"]["God"];
 		$this->edit = $c["Default"]["Edit"];
@@ -215,10 +228,13 @@ class Main extends PluginBase implements Listener{
 		$this->drop = $c["Default"]["Drop"];
         // new in v1.0.5-12
 		$this->effects = $c["Default"]["Effects"];
-        $this->flagset = $c['Default']; 
+        $this->flagset = $c['Default'];
 		// new in v1.0.6-13
 		$this->pvp = $c["Default"]["PVP"];
 		$this->flight = $c["Default"]["Flight"];
+		// new in v1.0.7
+		$this->tnt = $c["Default"]["TNT"];
+
         
         // world default flag settings
 		if(is_array( $c["Worlds"] )){
@@ -252,7 +268,10 @@ class Main extends PluginBase implements Listener{
 				if( !isset($flags["Flight"]) ){
 					$flags["Flight"] = $this->flight;
 				}
-
+                // new v1.0.7
+				if( !isset($flags["TNT"]) ){
+					$flags["TNT"] = $this->tnt;
+				}
 				$this->levels[$level] = $flags;
 			}
 		}
@@ -290,6 +309,7 @@ class Main extends PluginBase implements Listener{
             "edit","build","break","place",
             "touch","interact",
             "effects","magic","effect",
+            "tnt","explode",
             "drop",
             "msg","message",
             "passage","pass","barrier",
@@ -322,6 +342,9 @@ class Main extends PluginBase implements Listener{
             }
             if( $str == "pass" || $str == "barrier" ){
                 $flag = "passage";
+            }
+            if( $str == "tnt" || $str == "explode" ){
+                $flag = "tnt";
             }
             if( $str == "effect" || $str == "effects" ){
                 $flag = "effects";
@@ -591,6 +614,8 @@ class Main extends PluginBase implements Listener{
 			case "barrier":
 			case "perm":
 			case "perms":
+			case "tnt":
+			case "explode":
 			case "drop":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.flag")){
 					if(isset($args[1])){
@@ -1156,6 +1181,46 @@ class Main extends PluginBase implements Listener{
 			$event->setCancelled();
 		}
 	}
+
+    /** on Explode entity
+     * EntityExplodeEvent
+     * @param EntityExplodeEvent $event
+     * @return void
+     */
+    public function onEntityExplode(EntityExplodeEvent $event){
+        if (!$this->canExplode($event->getPosition(), $event->getEntity()->getLevel())) {
+            $event->setCancelled();
+        }
+    }
+
+    /**
+     * canExplode()
+     * Checks if entity can explode on given position
+     * @param pocketmine\level\Position $pos
+     * @param pocketmine\level\Level $level
+     * @return bool
+     */
+    public function canExplode(Position $pos, Level $level): bool{
+        $o = true;
+        $g = (isset($this->levels[$level->getName()]) ? $this->levels[$level->getName()]["TNT"] : $this->tnt);
+        if ($g) {
+            $o = false;
+        }
+        foreach ($this->areas as $area) {
+            if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $level->getName())) {
+                if ($area->getFlag("tnt")) {
+                    $o = false;
+                    break;
+                }
+                if ($area->getFlag("tnt") && $g) {
+                    $o = true;
+                    break;
+                }
+            }
+        }
+        return $o;
+    }
+
 
 	/** Item drop
 	 * @param itemDropEvent $event

@@ -55,8 +55,9 @@ Create a festival with this custom area events plugin for Pocketmine Server ALPH
     - effects: player can not keep using effects in the area (v.1.0.5-12)
     - msg: do not display area enter/leave messages 
     - passage: no passage for non-whitelisted players! (previously barrier flag)
-    - perms: player permissions are used to determine area command execution (experiment)
     - drop: players can not drop things
+    - tnt: entities can not exploded
+    - perms: player permissions are used to determine area command execution (experiment)
 
 
 **Events & Commands**
@@ -155,13 +156,13 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   
     Festival v1.0.1-11 introduced a fast toggle for flags:
   
-      /fe <edit/god/pvp/flight/touch/effects/drop/msg/pass/perms> <AREANAME>
+      /fe <edit/god/pvp/flight/touch/effects/tnt/drop/msg/pass/perms> <AREANAME>
 
   
     Area flag defaults are set in the config.yml), server defaults and world specific default flag. 
     The basic command to control area flags:
   
-	  /fe flag(f) <AREANAME> <edit/god/pvp/flight/touch/effects/drop/msg/pass/perms> <true/false>
+	  /fe flag(f) <AREANAME> <edit/god/pvp/flight/touch/effects/tnt/drop/msg/pass/perms> <true/false>
   
     Area flag listing
   
