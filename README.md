@@ -40,23 +40,24 @@ Create a festival with this custom area events plugin for Pocketmine Server ALPH
     - add area description
     - whitelist players for the area
     - tp to an area
-    - show area’s info at current position
+    - show area’s info at current position 
 
 
 **Flags**
 
 - Set area flags true means
 
-    - edit: area is save from building/breaking
+    - edit: the area is save from building/breaking
     - god: players in the area are save in god mode
     - pvp: players in the area are save from PVP
     - flight: players in the area are not allowed to fly
     - touch: area is save from player interaction with chests/signs etc.
-    - effects: player can not keep using effects in the area (v.1.0.5-12)
+    - effects: player can not keep using effects in the area 
     - msg: do not display area enter/leave messages 
     - passage: no passage for non-whitelisted players! (previously barrier flag)
     - drop: players can not drop things
     - tnt: entities can not exploded
+    - hunger: player can not exhaust / hunger
     - perms: player permissions are used to determine area command execution (experiment)
 
 
@@ -75,7 +76,7 @@ Create a festival with this custom area events plugin for Pocketmine Server ALPH
 
   - World: Default & world specific flags in config.yml
   - Flight: if server allows flight, and level flight-flag is true, an area in that level has still flight enabled untill flight flag is set true
-  - Perms: Area event commands are executed by default with op-permissions by players from the area. In v1.0.4-11 an experimental perms flag is added, perms flag true: area uses the player permissions
+  - Perms: Area event commands are executed by default with op-permissions by players or, if perms flag true: area uses the player permissions
 	
 
 ###### Created by [Genboy](https://genboy.net) 2018
@@ -108,7 +109,7 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   
   **Since v1.0.3-11+**
   
-  - pass(passage) flag replaces the barrier flag
+  - pass(passage) flag gives the area a barrier for non ops/whitelisted
   - configuration for area messages (taken out of chat)
     - Msgtype: tip or pop (prefer depend on other plugin message display) 
     - Msgdisplay: 
@@ -131,6 +132,9 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   - /fe list LEVELNAME - Area list of all area's in all levels, or for specified level 
   - configuration should be updated [resources/config.yml](https://github.com/genboy/Festival/blob/master/resources/config.yml)
  
+  **in progress v1.0.7**
+  - new TNT flag
+  - new Hunger flag
 	
   #### Create area
   First command '/fe pos1' and tab a block for position 1, 
@@ -156,13 +160,13 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   
     Festival v1.0.1-11 introduced a fast toggle for flags:
   
-      /fe <edit/god/pvp/flight/touch/effects/tnt/drop/msg/pass/perms> <AREANAME>
+      /fe <edit/god/pvp/flight/touch/effects/tnt/drop/msg/pass/hunger/perms> <AREANAME>
 
   
     Area flag defaults are set in the config.yml), server defaults and world specific default flag. 
     The basic command to control area flags:
   
-	  /fe flag(f) <AREANAME> <edit/god/pvp/flight/touch/effects/tnt/drop/msg/pass/perms> <true/false>
+	  /fe flag(f) <AREANAME> <edit/god/pvp/flight/touch/effects/tnt/drop/msg/pass/hunger/perms> <true/false>
   
     Area flag listing
   
@@ -267,7 +271,7 @@ Thank you
     - Messages persist display to ops (off/op/on)
     - Auto whitelist area creator (on/off)
   - [x] Effects flag: remove players effects in area
-  - [x] Perms flag: player perms used for area commands (vs OP pems) [experimental]
+  - [x] Perms flag: player perms used for area commands (vs OP pems)
   - [x] Drop flag: player can not drop things 
   - [x] PVP flag: players can not PvP (warn message)
   - [x] Flight flag: players can not fly (incl. no fall damage & allowed messages)
@@ -281,7 +285,5 @@ Thank you
 
 The area code derives from the [iProctector plugin](https://github.com/LDX-MCPE/iProtector). All credits for the area creation and protection code go to the iProtector creator [LDX-MCPE](https://github.com/LDX-MCPE) and [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 
-In a first fork from [poggit-orphanage](https://github.com/poggit-orphanage/iProtector) the new code was extending the area with enter and leave messages and adding options to attach separate event-objects to an area and trigger specific events with commands. These test versions kept the core iProtector areas unchanged (to be able to use excisting area's). 
-
-These first adjustments worked well being a test plugin but keeping iProtector area's while adding separate event data made me create a split command structure (wich isn't logical or handy) and separate event objects are only needed if the original area class should stay the same. So, for a better plugin command structure and performance the iProtector Area code was used to create the setup for what now has become the Festival Plugin.
+The Festival code is written and tested by Genboy and first released on 12 Feb 2018, first extendomg the area object with area events (enter and leave messages) and soon added functions and ingame commands to attach a commandstring to a area-event. Since v1.0.7 the area's and players can be protected with 12 flags, and trigger commands on areaEnter, areaCenter and areaLeave. 
 

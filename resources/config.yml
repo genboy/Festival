@@ -45,6 +45,9 @@ Default:
   # No explosions allowed in the area?
   TNT: false
 
+  # Keep players from hunger(exhaust) in the area?
+  Hunger: false
+
   # Keep players from executing area event commands without specific perms
   Perms: false
 
@@ -83,6 +86,8 @@ Worlds:
     # No explosions allowed in the area?
     TNT: false
 
+    # Keep players from hunger(exhaust) in the area?
+    Hunger: false
 
     # Keep players from executing area event commands without specific perms
     Perms: false
@@ -118,6 +123,9 @@ Worlds:
 
     # No explosions allowed in the area?
     TNT: false
+
+    # Keep players from hunger(exhaust) in the area?
+    Hunger: false
 
     # Keep players from executing area event commands without specific perms
     Perms: false
