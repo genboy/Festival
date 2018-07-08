@@ -11,6 +11,7 @@ use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityExplodeEvent;
 use pocketmine\event\Listener;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
@@ -21,6 +22,7 @@ use pocketmine\Server;
 use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerCommandPreprocessEvent;
+use pocketmine\event\player\PlayerExhaustEvent;
 use pocketmine\event\player\PlayerDropItemEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 
@@ -52,9 +54,13 @@ class Main extends PluginBase implements Listener{
 	/** @var bool */
 	private $passage = false;
 	/** @var bool */
-	private $perms = false;
-	/** @var bool */
 	private $drop = false;
+	/** @var bool */
+	private $tnt = false;
+	/** @var bool */
+	private $hunger = false;
+	/** @var bool */
+	private $perms = false;
 
 	/** @var bool[] */
 	private $selectingFirst = [];
@@ -134,6 +140,15 @@ class Main extends PluginBase implements Listener{
 				$flags["flight"] = false;
 				$newchange['Flight'] = "! Area Flight flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
+             //new flags v 1.0.7
+			if( !isset($datum["flags"]["tnt"]) ){
+				$flags["tnt"] = false;
+				$newchange['TNT'] = "! Area TNT flag missing, now updated to 'false'; please see /resources/config.yml";
+			}
+			if( !isset($datum["flags"]["hunger"]) ){
+				$flags["hunger"] = false;
+				$newchange['Hunger'] = "! Area Hunger flag missing, now updated to 'false'; please see /resources/config.yml";
+			}
 
 			new Area($datum["name"], $datum["desc"], $flags, new Vector3($datum["pos1"]["0"], $datum["pos1"]["1"], $datum["pos1"]["2"]), new Vector3($datum["pos2"]["0"], $datum["pos2"]["1"], $datum["pos2"]["2"]), $datum["level"], $datum["whitelist"], $datum["commands"], $datum["events"], $this);
 		}
@@ -203,6 +218,15 @@ class Main extends PluginBase implements Listener{
 		if(!isset($c["Default"]["Flight"])) {
 			$c["Default"]["Flight"] = false;
 		}
+        // new in v1.0.7
+		if(!isset($c["Default"]["TNT"])) {
+			$c["Default"]["TNT"] = false;
+		}
+		if(!isset($c["Default"]["Hunger"])) {
+			$c["Default"]["Hunger"] = false;
+		}
+
+
 
 		$this->god = $c["Default"]["God"];
 		$this->edit = $c["Default"]["Edit"];
@@ -215,10 +239,14 @@ class Main extends PluginBase implements Listener{
 		$this->drop = $c["Default"]["Drop"];
         // new in v1.0.5-12
 		$this->effects = $c["Default"]["Effects"];
-        $this->flagset = $c['Default']; 
+        $this->flagset = $c['Default'];
 		// new in v1.0.6-13
 		$this->pvp = $c["Default"]["PVP"];
 		$this->flight = $c["Default"]["Flight"];
+		// new in v1.0.7
+		$this->tnt = $c["Default"]["TNT"];
+		$this->tnt = $c["Default"]["Hunger"];
+
         
         // world default flag settings
 		if(is_array( $c["Worlds"] )){
@@ -252,7 +280,13 @@ class Main extends PluginBase implements Listener{
 				if( !isset($flags["Flight"]) ){
 					$flags["Flight"] = $this->flight;
 				}
-
+                // new v1.0.7
+				if( !isset($flags["TNT"]) ){
+					$flags["TNT"] = $this->tnt;
+				}
+				if( !isset($flags["Hunger"]) ){
+					$flags["Hunger"] = $this->hunger;
+				}
 				$this->levels[$level] = $flags;
 			}
 		}
@@ -260,16 +294,17 @@ class Main extends PluginBase implements Listener{
 		// all save :)
 		$this->saveAreas();
 
-		// console output
-        $this->codeSigned();
 
+		/** console output */
+        // codesign
+        $this->codeSigned();
+        // plugin area info
 		$ca = 0;
 		foreach( $this->areas as $a ){
 			$ca = $ca + count( $a->getCommands() );
 		}
 		$this->getLogger()->info( "  ". $ca ." commands in " . count($this->areas) . " areas" );
-		
-        //v1.0.6-13-dev
+		// warnings changes
 		if( count($newchange) > 0 ){
             foreach($newchange as $ttl => $txt){
 			     $this->getLogger()->info( $ttl . ": " . $txt );
@@ -290,6 +325,8 @@ class Main extends PluginBase implements Listener{
             "edit","build","break","place",
             "touch","interact",
             "effects","magic","effect",
+            "tnt","explode",
+            "hunger","starve",
             "drop",
             "msg","message",
             "passage","pass","barrier",
@@ -323,8 +360,14 @@ class Main extends PluginBase implements Listener{
             if( $str == "pass" || $str == "barrier" ){
                 $flag = "passage";
             }
+            if( $str == "tnt" || $str == "explode" ){
+                $flag = "tnt";
+            }
             if( $str == "effect" || $str == "effects" ){
                 $flag = "effects";
+            }
+            if( $str == "hunger" || $str == "starve" ){
+                $flag = "hunger";
             }
         }
         return $flag;
@@ -591,6 +634,10 @@ class Main extends PluginBase implements Listener{
 			case "barrier":
 			case "perm":
 			case "perms":
+			case "hunger":
+			case "starve":
+			case "tnt":
+			case "explode":
 			case "drop":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.flag")){
 					if(isset($args[1])){
@@ -1156,6 +1203,87 @@ class Main extends PluginBase implements Listener{
 			$event->setCancelled();
 		}
 	}
+
+    /** hunger
+     * PlayerExhaustEvent
+     * @param PlayerExhaustEvent $event
+     * @return void
+     */
+
+    public function Hunger(PlayerExhaustEvent $event){
+        if ( !$this->canHunger( $event->getPlayer()->getPosition() ) ) {
+            $event->setCancelled();
+        }
+    }
+
+    /**
+     * canhunger()
+     * Checks if player can exhaust  (hunger)
+     * @param pocketmine\level\Position $pos
+     * @param pocketmine\level\Level $level
+     * @return bool
+     */
+    public function canHunger( Position $pos ): bool{
+        $o = true;
+        $g = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Hunger"] : $this->hunger);
+        if ($g) {
+            $o = false;
+        }
+        foreach ($this->areas as $area) {
+            if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
+                if ($area->getFlag("hunger")) {
+                    $o = false;
+                    break;
+                }
+                if ($area->getFlag("hunger") && $g) {
+                    $o = true;
+                    break;
+                }
+            }
+        }
+        return $o;
+    }
+
+
+
+    /** on Explode entity
+     * EntityExplodeEvent
+     * @param EntityExplodeEvent $event
+     * @return void
+     */
+    public function onEntityExplode(EntityExplodeEvent $event){
+        if (!$this->canExplode( $event->getPosition() )) {
+            $event->setCancelled();
+        }
+    }
+
+    /**
+     * canExplode()
+     * Checks if entity can explode on given position
+     * @param pocketmine\level\Position $pos
+     * @param pocketmine\level\Level $level
+     * @return bool
+     */
+    public function canExplode( Position $pos ): bool{
+        $o = true;
+        $g = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["TNT"] : $this->tnt);
+        if ($g) {
+            $o = false;
+        }
+        foreach ($this->areas as $area) {
+            if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
+                if ($area->getFlag("tnt")) {
+                    $o = false;
+                    break;
+                }
+                if ($area->getFlag("tnt") && $g) {
+                    $o = true;
+                    break;
+                }
+            }
+        }
+        return $o;
+    }
 
 	/** Item drop
 	 * @param itemDropEvent $event
