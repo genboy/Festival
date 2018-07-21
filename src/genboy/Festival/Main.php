@@ -1095,6 +1095,9 @@ class Main extends PluginBase implements Listener{
 			$player = $ev->getEntity();
 			$playerName = strtolower($player->getName());
 			if(!$this->canGetHurt($player)){
+                if( $player->isOnFire() ){
+                    $player->extinguish(); // 1.0.7-dev
+                }
 				$ev->setCancelled();
                 return false;
 			}
@@ -1243,7 +1246,6 @@ class Main extends PluginBase implements Listener{
         }
         return $o;
     }
-
 
 
     /** on Explode entity
