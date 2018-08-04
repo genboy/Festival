@@ -10,7 +10,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 ### Manage area's and run commmands attachted to area events.
 
 
-![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/08/festival_usage_1.0.7.png)
+![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/08/festival_usage_1.0.7-1.png)
 
 
 ###### Copyright [Genboy](https://genboy.net) 2018
@@ -143,7 +143,7 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 
   ##### A visualisation of Festival command usage
   
-  ![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/08/festival_usage_1.0.7.png)
+  ![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/08/festival_usage_1.0.7-1.png)
   
   ###### Copyright [Genboy](https://genboy.net) 2018
   
