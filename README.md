@@ -301,7 +301,7 @@ Thank you
   - [x] Passage flag; turning the area into a barrier, no one in, no one out.
   - [x] /fe tp <areaname> now sends player to the area top-center and prevents fall damage  
    
-### Milestones v1.0.3-11 - v1.0.6-13
+### Milestones v1.0.3-11 - v1.0.7
 
   - [x] Config options:
     - Messages out of chat (tip/pop)  
@@ -313,6 +313,9 @@ Thank you
   - [x] PVP flag: players can not PvP (warn message)
   - [x] Flight flag: players can not fly (incl. no fall damage & allowed messages)
   - [x] Area Commands: playerName can be used as **{player}** or **@p** in area event commands
+  - [x] TNT flag: explosion free area's
+  - [x] Hunger flag: players do not exhaust 
+  - [x] Fire (animation) extinguished when player is save 
   
   
 ------
