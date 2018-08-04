@@ -42,6 +42,12 @@ Default:
   # Keep players from dropping items in the area?
   Drop: false
 
+  # No explosions allowed in the area?
+  TNT: false
+
+  # Keep players from hunger(exhaust) in the area?
+  Hunger: false
+
   # Keep players from executing area event commands without specific perms
   Perms: false
 
@@ -74,8 +80,14 @@ Worlds:
     # Prevent players from enter/leaving the area? (barrier)
     Passage: false
 
-    # Keep players from dropping items in the area?
+    # No explosions allowed in the area?
     Drop: false
+
+    # No explosions allowed in the area?
+    TNT: false
+
+    # Keep players from hunger(exhaust) in the area?
+    Hunger: false
 
     # Keep players from executing area event commands without specific perms
     Perms: false
@@ -108,6 +120,12 @@ Worlds:
 
     # Keep players from dropping items in the area?
     Drop: false
- 
+
+    # No explosions allowed in the area?
+    TNT: false
+
+    # Keep players from hunger(exhaust) in the area?
+    Hunger: false
+
     # Keep players from executing area event commands without specific perms
     Perms: false

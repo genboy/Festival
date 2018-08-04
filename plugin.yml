@@ -1,14 +1,14 @@
 name: Festival
 author: Genboy
-version: 1.0.6-13
+version: 1.0.7
 main: genboy\Festival\Main
 load: POSTWORLD
-api: [3.0.0-ALPHA10,3.0.0-ALPHA11,3.0.0-ALPHA12]
+api: [3.0.0-ALPHA10,3.0.0-ALPHA11,3.0.0-ALPHA12,3.0.0,4.0.0]
 website: "https://github.com/genboy/Festival"
 commands:
   fe:
     description: "Allows you to manage Festival area's and events."
-    usage: "See info: /fe <list/here>; Create area: select 2 positions /fe <pos1/pos2>, then /fe create <AREANAME>; Toggle flags: /fe <FLAGNAME> <AREANAME>; Set commands: /fe command <AREANAME> <add/enter/center/leave> <COMMANDID> <COMMANDSTRING>; (Edit)del command: /fe command <AREANAME> <(edit)/del> <COMMANDID> (<COMMANDSTRING>); Change command event: /fe command <AREANAME> event <COMMANDID> <enter/center/leave>"
+    usage: "See info: /fe <list/here>; Create area: select 2 positions /fe <pos1/pos2>, then /fe create <AREANAME>; Toggle flags: /fe <FLAGNAME> <AREANAME>; Set commands: /fe command <AREANAME> <add/enter/center/leave> <COMMANDID> <COMMANDSTRING>; (Edit)del command: /fe command <AREANAME> <(edit)/del> <COMMANDID> (<COMMANDSTRING>); Change event for command: /fe command <AREANAME> event <COMMANDID> <enter/center/leave>"
     permission: festival.command.fe
 permissions:
   festival:
