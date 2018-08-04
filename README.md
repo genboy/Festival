@@ -1,16 +1,16 @@
 ## Festival
 
-If you like Festival please leave a thumb up at [poggit](https://poggit.pmmp.io/p/Festival/1.0.6-13)  to help getting the Festival plugin approved, thank you!_
+If you like Festival please leave a thumb up at [poggit](https://poggit.pmmp.io/ci/genboy/Festival/Festival)  to help getting the Festival plugin approved, thank you!_
 
 ![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png)
 
 
-Create a festival with this custom area events plugin for Pocketmine Server ALPHA10+:
+Create a festival with this custom area events plugin for Pocketmine Server:
 
 ### Manage area's and run commmands attachted to area events.
 
 
-![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/06/festival_usage_1.0.6-13x.png)
+![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/08/festival_usage_1.0.7-1.png)
 
 
 ###### Copyright [Genboy](https://genboy.net) 2018
@@ -21,7 +21,7 @@ Create a festival with this custom area events plugin for Pocketmine Server ALPH
  
 # Festival
 
-[![](https://poggit.pmmp.io/shield.state/Festival)](https://poggit.pmmp.io/p/Festival)
+[![](https://poggit.pmmp.io/shield.state/Festival)](https://poggit.pmmp.io/p/Festival) 
 [![](https://poggit.pmmp.io/shield.api/Festival)](https://poggit.pmmp.io/p/Festival)
 [![](https://poggit.pmmp.io/shield.dl.total/Festival)](https://poggit.pmmp.io/p/Festival)
 [![](https://poggit.pmmp.io/shield.dl/Festival)](https://poggit.pmmp.io/p/Festival)
@@ -56,8 +56,8 @@ Create a festival with this custom area events plugin for Pocketmine Server ALPH
     - msg: do not display area enter/leave messages 
     - passage: no passage for non-whitelisted players! (previously barrier flag)
     - drop: players can not drop things
-    - tnt: entities can not exploded
-    - hunger: player can not exhaust / hunger
+    - tnt: explosions protected area
+    - hunger: player does not exhaust / hunger
     - perms: player permissions are used to determine area command execution (experiment)
 
 
@@ -102,7 +102,7 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   
   ### Updates
   
-  
+  Updates available at [poggit](https://poggit.pmmp.io/ci/genboy/Festival/Festival) and [github](https://github.com/genboy/Festival/releases)
   
   ##### !Before update always copy your config.yml and areas.json files to a save place, with this you can revert your Festival installation
   - after .phar install and first restart/reload plugins; check console info and your areas.json and config.yml; restart after adjusted correctly 
@@ -132,13 +132,28 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   - /fe list LEVELNAME - Area list of all area's in all levels, or for specified level 
   - configuration should be updated [resources/config.yml](https://github.com/genboy/Festival/blob/master/resources/config.yml)
  
-  **in progress v1.0.7**
+  **New in v1.0.7**
   - new TNT flag
   - new Hunger flag
-	
+  - Fire is now extinguished when player does not get damage (aka. in area with god flag on)
+
+
+
+  #### Usage Graphic
+
+  ##### A visualisation of Festival command usage
+  
+  ![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/08/festival_usage_1.0.7-1.png)
+  
+  ###### Copyright [Genboy](https://genboy.net) 2018
+  
+  
+
   #### Create area
   First command '/fe pos1' and tab a block for position 1, 
-  then command '/fe pos2' and ab a block to set position2, 
+  
+  then command '/fe pos2' and tab a block to set position2, 
+  
   these are the endpoints of the area longest diagonal.
 
 	/fe pos1
@@ -152,7 +167,7 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   Now the area is ready to use
   
   You might want to set or edit the area description line
-  
+   
     /fe desc <AREANAME> <description>
 
 
@@ -175,6 +190,8 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   
   #### Position info
 	
+    See area information at position
+    
 	/fe here
 
   #### List all area's
@@ -184,7 +201,10 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   #### Teleport to area
 	
 	/fe tp <AREANAME>
-  
+
+
+
+
   #### Set description
 		
 	/fe desc <AREANAME> <DESCRIPTION>
@@ -196,16 +216,32 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   #### Delete an area
 	
 	/fe delete(del,remove) <AREANAME> 
+    
+    
+    
+    
 
   #### Area event commands
 
-    /fe command <AREANAME> <add/list/edit/event*/del> <COMMANDID> <COMMANDSTRING/enter*/leave*/center*> 
- 
+    **This is the fun part of Festival: assign commands to area events**
+    
+    When an area is created 3 events are available;
+      - enter; when a player enters the area
+      - center; when a player reaches the center (3x3xareaHeight blocks)
+      - leave; when a player leaves the area
+
+
     To add a command you need at least;
       - an areaname, 
       - an unique id for the command 
-      - make sure the command works! (when you are op). 
+      - make sure the command works! (when you are op)
+      
+      
+    /fe command <AREANAME> <add/list/edit/event*/del> <COMMANDID> <COMMANDSTRING/enter*/leave*/center*> 
+ 
 	
+    
+    
   #### Add a command:
 
 	/fe command <AREANAME> add <COMMANDID> <COMMANDSTRING>
