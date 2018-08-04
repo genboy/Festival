@@ -167,7 +167,7 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   Now the area is ready to use
   
   You might want to set or edit the area description line
-  
+   
     /fe desc <AREANAME> <description>
 
 
