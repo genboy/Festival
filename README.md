@@ -2,12 +2,13 @@
 
 If you like Festival please leave a thumb up at [poggit](https://poggit.pmmp.io/p/Festival/1.0.7)  to help getting the Festival plugin approved, thank you!_
 
-![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png)
+
+![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png) 
 
 
 Create a festival with this custom area events plugin for Pocketmine Server:
 
-### Manage area's and run commmands attachted to area events.
+### Manage area's and run commmands attachted to area events. 
 
  
 ![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/08/festival_usage_1.0.7-1.png)
@@ -15,7 +16,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 
 ###### Copyright [Genboy](https://genboy.net) 2018
  
----
+--- 
 
 ## Info 
  
