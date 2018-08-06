@@ -1,21 +1,22 @@
 ## Festival
 
-If you like Festival please leave a thumb up at [poggit](https://poggit.pmmp.io/ci/genboy/Festival/Festival)  to help getting the Festival plugin approved, thank you!_
+If you like Festival please leave a thumb up at [poggit](https://poggit.pmmp.io/p/Festival/1.0.7)  to help getting the Festival plugin approved, thank you!_
 
-![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png)
+
+![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png) 
 
 
 Create a festival with this custom area events plugin for Pocketmine Server:
 
-### Manage area's and run commmands attachted to area events.
+### Manage area's and run commmands attachted to area events. 
 
-
+ 
 ![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/08/festival_usage_1.0.7-1.png)
 
 
 ###### Copyright [Genboy](https://genboy.net) 2018
  
----
+--- 
 
 ## Info 
  
@@ -300,7 +301,7 @@ Thank you
   - [x] Passage flag; turning the area into a barrier, no one in, no one out.
   - [x] /fe tp <areaname> now sends player to the area top-center and prevents fall damage  
    
-### Milestones v1.0.3-11 - v1.0.6-13
+### Milestones v1.0.3-11 - v1.0.7
 
   - [x] Config options:
     - Messages out of chat (tip/pop)  
@@ -312,6 +313,9 @@ Thank you
   - [x] PVP flag: players can not PvP (warn message)
   - [x] Flight flag: players can not fly (incl. no fall damage & allowed messages)
   - [x] Area Commands: playerName can be used as **{player}** or **@p** in area event commands
+  - [x] TNT flag: explosion free area's
+  - [x] Hunger flag: players do not exhaust 
+  - [x] Fire (animation) extinguished when player is save 
   
   
 ------
