@@ -604,7 +604,7 @@ class Main extends PluginBase implements Listener{
                                 $cy2 = max( $area->getSecondPosition()->getY(), $area->getFirstPosition()->getY());
                                 $this->playerTP[$playerName] = true; // player tp active
                                 //$this->areaMessage( 'Fall save on!', $sender );
-                                $sender->sendMessage( $playerName );
+                                //$sender->sendMessage( $playerName );
                                 $sender->teleport( new Position( $cx, $cy2+ 0.5, $cz, $area->getLevel() ) );
 
                         }else{
@@ -1463,12 +1463,18 @@ class Main extends PluginBase implements Listener{
             $fly = false; // flag default
         }
 
+        $sendmsg = false;
         foreach($this->areas as $area){
             if( $area->contains( $player->getPosition(), $player->getLevel()->getName() ) ){
                 if(  $area->getFlag("flight") && !$area->isWhitelisted( strtolower($player->getName())) ){
                     $fly = false; // flag area
                 }else{
                     $fly = true;
+                }
+                if( !$area->getFlag("msg") || $this->msgOpDsp( $area, $player  ) ){
+                    $sendmsg = true;
+                }else{
+                    $sendmsg = false;
                 }
             }
         }
@@ -1480,10 +1486,17 @@ class Main extends PluginBase implements Listener{
         if( !$fly && $player->isFlying() ){
             $this->playerTP[ strtolower( $player->getName() ) ] = true; // player tp active (fall save)
             $player->setFlying(false);
-            $player->sendMessage(  TextFormat::RED . "NO Flying here!" );
+            //$player->sendMessage(  TextFormat::RED . "NO Flying here!" );
+            if( $sendmsg ){
+                $msg = TextFormat::RED . "NO Flying here!";
+                $player->sendMessage( $msg );
+            }
         }
         if( $fly && !$player->isFlying() && !$player->getAllowFlight() ){
-            $player->sendMessage( TextFormat::GREEN . "Flying allowed here!" );
+            if( $sendmsg ){
+                $msg = TextFormat::GREEN . "Flying allowed here!";
+                $player->sendMessage( $msg );
+            }
         }
         $player->setAllowFlight($fly);
 
