@@ -151,6 +151,7 @@ class Main extends PluginBase implements Listener{
 				$flags["hunger"] = false;
 				$newchange['Hunger'] = "! Area Hunger flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
+			//new in v1.0.8
 			if( !isset($datum["flags"]["nofalldamage"]) ){
 				$flags["nofalldamage"] = false;
 				$newchange['NoFallDamage'] = "! Area NoFallDamage flag missing, now updated to 'false'; please see /resources/config.yml";
@@ -230,6 +231,7 @@ class Main extends PluginBase implements Listener{
 		if(!isset($c["Default"]["Hunger"])) {
 			$c["Default"]["Hunger"] = false;
 		}
+		// new in v1.0.8
 		if(!isset($c["Default"]["NoFallDamage"])) {
 			$c["Default"]["NoFallDamage"] = false;
 		}
@@ -252,6 +254,7 @@ class Main extends PluginBase implements Listener{
 		// new in v1.0.7
 		$this->tnt = $c["Default"]["TNT"];
 		$this->tnt = $c["Default"]["Hunger"];
+		// new in v1.0.8
 		$this->nofalldamage = $c["Default"]["NoFallDamage"];
         
         // world default flag settings
@@ -293,6 +296,7 @@ class Main extends PluginBase implements Listener{
 				if( !isset($flags["Hunger"]) ){
 					$flags["Hunger"] = $this->hunger;
 				}
+				// new in v1.0.8
 				if( !isset($flags["NoFallDamage"]) ){
 					$flags["NoFallDamage"] = $this->nofalldamage;
 				}
