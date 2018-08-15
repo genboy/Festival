@@ -50,7 +50,10 @@ Default:
 
   # Keep players from executing area event commands without specific perms
   Perms: false
-
+  
+  # Keep players from taking fall damage
+  NoFallDamage: false
+  
 # Settings for unprotected areas in individual worlds:
 Worlds:
  
@@ -92,6 +95,9 @@ Worlds:
     # Keep players from executing area event commands without specific perms
     Perms: false
 
+    # Keep players from taking fall damage
+    NoFallDamage: false
+	
   world:
   
     # Keep players from getting hurt? 
@@ -129,3 +135,6 @@ Worlds:
 
     # Keep players from executing area event commands without specific perms
     Perms: false
+
+    # Keep players from taking fall damage
+    NoFallDamage: false
