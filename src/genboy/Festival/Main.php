@@ -1,6 +1,9 @@
 <?php declare(strict_types = 1);
 
-/** src/genboy/Festival/Main.php */
+/** src/genboy/Festival/Main.php
+Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, hunger, perms, nofalldamage
+*/
+
 namespace genboy\Festival;
 
 use pocketmine\command\Command;
@@ -29,13 +32,13 @@ use pocketmine\event\player\PlayerQuitEvent;
 class Main extends PluginBase implements Listener{
 
 	/** @var array[] */
-	private $levels = [];
+	private $levels        = [];
 	/** @var Area[] */
-	public $areas = [];
+	public $areas          = [];
 	/** @var array[] */
-	public $flagset = [];
+	public $flagset        = [];
 	/** @var array[] */
-	public $options = [];
+	public $options        = [];
 
 	/** @var bool */
 	private $god = false;
@@ -95,11 +98,9 @@ class Main extends PluginBase implements Listener{
 		if(!is_dir($this->getDataFolder())){
 			mkdir($this->getDataFolder());
 		}
-
 		if(!file_exists($this->getDataFolder() . "areas.json")){
 			file_put_contents($this->getDataFolder() . "areas.json", "[]");
 		}
-
 		if(!file_exists($this->getDataFolder() . "config.yml")){
 			$c = $this->getResource("config.yml");
 			$o = stream_get_contents($c);
@@ -112,14 +113,12 @@ class Main extends PluginBase implements Listener{
 
 
 		foreach($data as $datum){
-            
 			$flags = $datum["flags"];
 			if( isset($datum["flags"]["barrier"]) ){
 				$flags["passage"] = $datum["flags"]["barrier"];
 				unset($flags["barrier"]);
 				$newchange['Passage'] = "! Old Barrier config was used, now set to 'false'; please rename 'Barrier' to 'Passage' in config.yml";
 			}
-            
 			if( !isset($datum["flags"]["perms"]) ){
 				$flags["perms"] = false;
 				$newchange['Perms'] = "! Area Perms flag missing, now updated to 'false';  please see /resources/config.yml";
@@ -128,31 +127,27 @@ class Main extends PluginBase implements Listener{
 				$flags["drop"] = false;
 				$newchange['Drop'] = "! Area Drop flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
-            //new flags v 1.0.5-12
-			if( !isset($datum["flags"]["effects"]) ){
+			if( !isset($datum["flags"]["effects"]) ){ // new flags v 1.0.5-12
 				$flags["effects"] = false;
 				$newchange['Effects'] = "! Area Effects flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
-            //new flags v 1.0.6-13
-			if( !isset($datum["flags"]["pvp"]) ){
+			if( !isset($datum["flags"]["pvp"]) ){ //new flags v 1.0.6-13
 				$flags["pvp"] = false;
 				$newchange['PVP'] = "! Area PVP flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
-			if( !isset($datum["flags"]["flight"]) ){
+			if( !isset($datum["flags"]["flight"]) ){ //new flags v 1.0.6-13
 				$flags["flight"] = false;
 				$newchange['Flight'] = "! Area Flight flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
-             //new flags v 1.0.7
-			if( !isset($datum["flags"]["tnt"]) ){
+			if( !isset($datum["flags"]["tnt"]) ){ // new flags v 1.0.7
 				$flags["tnt"] = false;
 				$newchange['TNT'] = "! Area TNT flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
-			if( !isset($datum["flags"]["hunger"]) ){
+			if( !isset($datum["flags"]["hunger"]) ){ // new flags v 1.0.7
 				$flags["hunger"] = false;
 				$newchange['Hunger'] = "! Area Hunger flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
-			//new in v1.0.8
-			if( !isset($datum["flags"]["nofalldamage"]) ){
+			if( !isset($datum["flags"]["nofalldamage"]) ){ / /new in v1.0.8
 				$flags["nofalldamage"] = false;
 				$newchange['NoFallDamage'] = "! Area NoFallDamage flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
@@ -161,7 +156,7 @@ class Main extends PluginBase implements Listener{
 
 		$c = yaml_parse_file($this->getDataFolder() . "config.yml");
 		
-		/* Config updating Code */
+		// Config updating Code
 		if( isset( $c["Options"] ) && is_array( $c["Options"] ) ){
 
 			if(!isset($c["Options"]["Msgtype"])){
@@ -171,13 +166,11 @@ class Main extends PluginBase implements Listener{
 			if(!isset($c["Options"]["Msgdisplay"])){
 				$c["Options"]["Msgdisplay"] = 'off';
 				$newchange['Msgdisplay'] = "! Msgdisplay option missing in config.yml, now set to 'off'; please see /resources/config.yml";
-			} //.. 1.0.3-11+ options check
-
-            // check since v1.0.5-12
-            if(!isset($c["Options"]["AutoWhitelist"])){
+			}
+            if(!isset($c["Options"]["AutoWhitelist"])){ // check since v1.0.5-12
 				$c["Options"]["AutoWhitelist"] = 'on';
 				$newchange['AutoWhitelist'] = "! AutoWhitelist option missing in config.yml, now set to 'on'; please see /resources/config.yml";
-			} //.. new options check
+			}
             
 			$this->options = $c["Options"];
 
@@ -186,9 +179,7 @@ class Main extends PluginBase implements Listener{
             $newchange['Options'] = "! Config Options missing in config.yml, defautls are set for now; please see /resources/config.yml";
 		}
 
-        /**
-         * config default check and overwrite plugin defaults
-         */
+        // config default check and overwrite plugin defaults
 		if(!isset($c["Default"]["God"])) {
 			$c["Default"]["God"] = false;
 		}
@@ -206,113 +197,92 @@ class Main extends PluginBase implements Listener{
 		}else if(!isset($c["Default"]["Passage"])) {
 			$c["Default"]["Passage"] = false;
 		}
-		// new in v1.0.4-11
-		if(!isset($c["Default"]["Perms"])) {
+		if(!isset($c["Default"]["Perms"])) { // new in v1.0.4-11
 			$c["Default"]["Perms"] = false;
 		}
-		if(!isset($c["Default"]["Drop"])) {
+		if(!isset($c["Default"]["Drop"])) { // new in v1.0.4-11
 			$c["Default"]["Drop"] = false;
 		}
-		// new in v1.0.5-12
-		if(!isset($c["Default"]["Effects"])) {
+		if(!isset($c["Default"]["Effects"])) { // new in v1.0.5-12
 			$c["Default"]["Effects"] = false;
 		}
-		// new in v1.0.6-13
-		if(!isset($c["Default"]["PVP"])) {
+		if(!isset($c["Default"]["PVP"])) { // new in v1.0.6-13
 			$c["Default"]["PVP"] = false;
 		}
 		if(!isset($c["Default"]["Flight"])) {
 			$c["Default"]["Flight"] = false;
 		}
-        // new in v1.0.7
-		if(!isset($c["Default"]["TNT"])) {
+		if(!isset($c["Default"]["TNT"])) { // new in v1.0.7
 			$c["Default"]["TNT"] = false;
 		}
-		if(!isset($c["Default"]["Hunger"])) {
+		if(!isset($c["Default"]["Hunger"])) { // new in v1.0.7
 			$c["Default"]["Hunger"] = false;
 		}
-		// new in v1.0.8
 		if(!isset($c["Default"]["NoFallDamage"])) {
-			$c["Default"]["NoFallDamage"] = false;
+			$c["Default"]["NoFallDamage"] = false; // new in v1.0.8
 		}
 
-		$this->god = $c["Default"]["God"];
-		$this->edit = $c["Default"]["Edit"];
-		$this->touch = $c["Default"]["Touch"];
-		$this->msg = $c["Default"]["Msg"];
-		// changed in v1.0.3-11
-		$this->passage = $c["Default"]["Passage"];
-		// new in v1.0.4-11
-		$this->perms = $c["Default"]["Perms"];
-		$this->drop = $c["Default"]["Drop"];
-        // new in v1.0.5-12
-		$this->effects = $c["Default"]["Effects"];
-        $this->flagset = $c['Default'];
-		// new in v1.0.6-13
-		$this->pvp = $c["Default"]["PVP"];
-		$this->flight = $c["Default"]["Flight"];
-		// new in v1.0.7
-		$this->tnt = $c["Default"]["TNT"];
-		$this->tnt = $c["Default"]["Hunger"];
-		// new in v1.0.8
-		$this->nofalldamage = $c["Default"]["NoFallDamage"];
+		$this->god            = $c["Default"]["God"];
+		$this->edit           = $c["Default"]["Edit"];
+		$this->touch          = $c["Default"]["Touch"];
+		$this->msg            = $c["Default"]["Msg"];
+		$this->passage        = $c["Default"]["Passage"]; // changed in v1.0.3-11
+		$this->perms          = $c["Default"]["Perms"]; // new in v1.0.4-11
+		$this->drop           = $c["Default"]["Drop"]; // new in v1.0.4-11
+		$this->effects        = $c["Default"]["Effects"]; // new in v1.0.5-12
+		$this->pvp            = $c["Default"]["PVP"]; // new in v1.0.6-13
+		$this->flight         = $c["Default"]["Flight"]; // new in v1.0.6-13
+		$this->tnt            = $c["Default"]["TNT"]; // new in v1.0.7
+		$this->hunger         = $c["Default"]["Hunger"]; // new in v1.0.7
+		$this->nofalldamage   = $c["Default"]["NoFallDamage"]; // new in  1.0.7.2-dev(1.0.8)
+
+        $this->flagset = $c['Default']; // new in v1.0.5-12
         
         // world default flag settings
 		if(is_array( $c["Worlds"] )){
 			foreach($c["Worlds"] as $level => $flags){
-
-				// check since v1.0.3-11
-				if( isset($flags["Barrier"]) ){
+				if( isset($flags["Barrier"]) ){ // check since v1.0.3-11
 					$flags["Passage"] = $flags["Barrier"];
 					unset($flags["Barrier"]);
 				}
 				if( !isset($flags["Passage"]) ){
 					$flags["Passage"] = $this->passage;
 				}
-
-				// new v1.0.4-11
-				if( !isset($flags["Perms"]) ){
+				if( !isset($flags["Perms"]) ){ // new v1.0.4-11
 					$flags["Perms"] = $this->perms;
 				}
-				if( !isset($flags["Drop"]) ){
+				if( !isset($flags["Drop"]) ){ // new v1.0.4-11
 					$flags["Drop"] = $this->drop;
 				}
-                // new v1.0.5-12
-				if( !isset($flags["Effects"]) ){
+				if( !isset($flags["Effects"]) ){ // new v1.0.5-12
 					$flags["Effects"] = $this->effects;
 				}
-
-                // new v1.0.6-13
-				if( !isset($flags["PVP"]) ){
+				if( !isset($flags["PVP"]) ){ // new v1.0.6-13
 					$flags["PVP"] = $this->pvp;
 				}
-				if( !isset($flags["Flight"]) ){
+				if( !isset($flags["Flight"]) ){ // new v1.0.6-13
 					$flags["Flight"] = $this->flight;
 				}
-                // new v1.0.7
-				if( !isset($flags["TNT"]) ){
+				if( !isset($flags["TNT"]) ){ // new v1.0.7
 					$flags["TNT"] = $this->tnt;
 				}
-				if( !isset($flags["Hunger"]) ){
+				if( !isset($flags["Hunger"]) ){ // new v1.0.7
 					$flags["Hunger"] = $this->hunger;
 				}
-				// new in v1.0.8
-				if( !isset($flags["NoFallDamage"]) ){
+				if( !isset($flags["NoFallDamage"]) ){ // new in v1.0.8
 					$flags["NoFallDamage"] = $this->nofalldamage;
 				}
 				$this->levels[$level] = $flags;
 			}
 		}
 
-		// all save :)
-		$this->saveAreas();
-
+		$this->saveAreas(); // all save :)
 
 		/** console output */
-        // codesign
-        $this->codeSigned();
-        // plugin area info
-		$ca = 0;
+        $this->codeSigned(); // codesign
+
+		$ca = 0; // plugin area info
+
 		foreach( $this->areas as $a ){
 			$ca = $ca + count( $a->getCommands() );
 		}
@@ -344,7 +314,7 @@ class Main extends PluginBase implements Listener{
             "msg","message",
             "passage","pass","barrier",
             "perms","perm",
-			"nofalldamage"
+			"nofalldamage","falldamage","nfd"
         ];
         $str = strtolower( $str );
         $flag = false;
@@ -383,7 +353,7 @@ class Main extends PluginBase implements Listener{
             if( $str == "hunger" || $str == "starve" ){
                 $flag = "hunger";
             }
-			if( $str == "nofalldamage" ){
+			if( $str == "nofalldamage" || $str == "falldamage" || $str == "nfd"){
 				$flag = "nofalldamage";
 			}
         }
@@ -657,6 +627,8 @@ class Main extends PluginBase implements Listener{
 			case "explode":
 			case "drop":
 			case "nofalldamage";
+			case "falldamage";
+			case "nfd";
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.flag")){
 					if(isset($args[1])){
                         
@@ -747,10 +719,11 @@ class Main extends PluginBase implements Listener{
 										}
 										$o = TextFormat::GREEN . "Flag " . $flag . " set to " . $status . " for area " . $area->getName() . "!";
 									}else{
-										$o = TextFormat::RED . "Flag not found. (Flags: edit, god, pvp, flight, touch, effects, msg, passage, perms, drop, nofalldamage)";
+										$o = TextFormat::RED . "Flag not found. (Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, hunger, perms, nofalldamage)";
 									}
+
 								}else{
-									$o = TextFormat::RED . "Please specify a flag. (Flags: edit, god, pvp, flight, touch, effects, msg, passage, perms, drop, nofalldamage)";
+									$o = TextFormat::RED . "Please specify a flag. (Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, hunger, perms, nofalldamage)";
 								}
 							}
 						}else{
@@ -1921,7 +1894,7 @@ class Main extends PluginBase implements Listener{
 		/** Todo:
 		 * 1. add sounds
 		 * 2. sound flag, config & command
-		 * 3. add config different sounds & specification 
+		 * 3. add config different sounds & specification
 		 */
 	}
 
