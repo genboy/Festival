@@ -15,6 +15,7 @@ use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityExplodeEvent;
+use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\Listener;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
@@ -60,6 +61,8 @@ class Main extends PluginBase implements Listener{
 	private $drop = false;
 	/** @var bool */
 	private $tnt = false;
+	/** @var bool */
+	private $shoot = false;
 	/** @var bool */
 	private $hunger = false;
 	/** @var bool */
@@ -118,6 +121,10 @@ class Main extends PluginBase implements Listener{
 				$flags["passage"] = $datum["flags"]["barrier"];
 				unset($flags["barrier"]);
 				$newchange['Passage'] = "! Old Barrier config was used, now set to 'false'; please rename 'Barrier' to 'Passage' in config.yml";
+			}
+			if( !isset($datum["flags"]["shoot"]) ){
+				$flags["shoot"] = false;
+				$newchange['Shoot'] = "! Area Shoot flag missing (alias launch), now updated to 'false';  please see /resources/config.yml";
 			}
 			if( !isset($datum["flags"]["perms"]) ){
 				$flags["perms"] = false;
@@ -215,6 +222,9 @@ class Main extends PluginBase implements Listener{
 		if(!isset($c["Default"]["TNT"])) { // new in v1.0.7
 			$c["Default"]["TNT"] = false;
 		}
+		if(!isset($c["Default"]["Shoot"])) { // new in v1.0.7
+			$c["Default"]["Shoot"] = false;
+		}
 		if(!isset($c["Default"]["Hunger"])) { // new in v1.0.7
 			$c["Default"]["Hunger"] = false;
 		}
@@ -235,6 +245,7 @@ class Main extends PluginBase implements Listener{
 		$this->tnt            = $c["Default"]["TNT"]; // new in v1.0.7
 		$this->hunger         = $c["Default"]["Hunger"]; // new in v1.0.7
 		$this->nofalldamage   = $c["Default"]["NoFallDamage"]; // new in  1.0.7.2-dev(1.0.8)
+		$this->shoot          = $c["Default"]["Shoot"]; // new in  1.0.7.2-dev(1.0.8)
 
         $this->flagset = $c['Default']; // new in v1.0.5-12
         
@@ -265,6 +276,9 @@ class Main extends PluginBase implements Listener{
 				}
 				if( !isset($flags["TNT"]) ){ // new v1.0.7
 					$flags["TNT"] = $this->tnt;
+				}
+				if( !isset($flags["Shoot"]) ){ // new v1.0.7
+					$flags["Shoot"] = $this->shoot;
 				}
 				if( !isset($flags["Hunger"]) ){ // new v1.0.7
 					$flags["Hunger"] = $this->hunger;
@@ -314,7 +328,8 @@ class Main extends PluginBase implements Listener{
             "msg","message",
             "passage","pass","barrier",
             "perms","perm",
-			"nofalldamage","falldamage","nfd"
+			"nofalldamage","falldamage","nfd",
+            "shoot", "launch",
         ];
         $str = strtolower( $str );
         $flag = false;
@@ -346,6 +361,9 @@ class Main extends PluginBase implements Listener{
             }
             if( $str == "tnt" || $str == "explode" ){
                 $flag = "tnt";
+            }
+            if( $str == "shoot" || $str == "launch" ){
+                $flag = "shoot";
             }
             if( $str == "effect" || $str == "effects" ){
                 $flag = "effects";
@@ -424,7 +442,21 @@ class Main extends PluginBase implements Listener{
                                 new Area(
                                     strtolower($args[1]),
                                     "",
-                                    ["edit" => $flags['Edit'], "god" => $flags['God'], "pvp" => $flags["PVP"], "flight"=> $flags["Flight"], "touch" => $flags['Touch'], "effects" => $flags['Effects'], "drop" => $flags['Drop'], "msg" => $flags['Msg'], "passage" => $flags['Passage'], "perms" => $flags['Perms'], "nofalldamage" => $flags['NoFallDamage']],
+                                    [   "edit" => $flags['Edit'],
+                                        "god" => $flags['God'],
+                                        "pvp" => $flags["PVP"],
+                                        "flight"=> $flags["Flight"],
+                                        "touch" => $flags['Touch'],
+                                        "effects" => $flags['Effects'],
+                                        "msg" => $flags['Msg'],
+                                        "passage" => $flags['Passage'],
+                                        "drop" => $flags['Drop'],
+                                        "tnt" => $flags['TNT'],
+                                        "shoot" => $flags['Shoot'],
+                                        "hunger" => $flags['Hunger'],
+                                        "perms" => $flags['Perms'],
+                                        "nofalldamage" => $flags['NoFallDamage']],
+
                                     $this->firstPosition[$playerName],
                                     $this->secondPosition[$playerName],
                                     $sender->getLevel()->getName(),
@@ -627,10 +659,13 @@ class Main extends PluginBase implements Listener{
 			case "starve":
 			case "tnt":
 			case "explode":
+			case "shoot";
+			case "launch";
 			case "drop":
 			case "nofalldamage";
 			case "falldamage";
 			case "nfd";
+
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.flag")){
 					if(isset($args[1])){
                         
@@ -721,11 +756,11 @@ class Main extends PluginBase implements Listener{
 										}
 										$o = TextFormat::GREEN . "Flag " . $flag . " set to " . $status . " for area " . $area->getName() . "!";
 									}else{
-										$o = TextFormat::RED . "Flag not found. (Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, hunger, perms, nofalldamage)";
+										$o = TextFormat::RED . "Flag not found. (Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, shoot, hunger, perms, nofalldamage)";
 									}
 
 								}else{
-									$o = TextFormat::RED . "Please specify a flag. (Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, hunger, perms, nofalldamage)";
+									$o = TextFormat::RED . "Please specify a flag. (Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, shoot, hunger, perms, nofalldamage)";
 								}
 							}
 						}else{
@@ -1108,13 +1143,6 @@ class Main extends PluginBase implements Listener{
 
     }
 
-	/** On hurt
-	 * @param EntityDamageEvent $event
-	 * @ignoreCancelled true
-	 */
-	public function onHurt(EntityDamageEvent $event) : void{
-		$this->canDamage( $event );
-	}
 	/** On No fall Damage
 	 * @param EntityDamageEvent $event
 	 * @ignoreCancelled true
@@ -1143,6 +1171,16 @@ class Main extends PluginBase implements Listener{
 		}
 		return $o;
 	}
+
+
+	/** On hurt
+	 * @param EntityDamageEvent $event
+	 * @ignoreCancelled true
+	 */
+	public function onHurt(EntityDamageEvent $event) : void{
+		$this->canDamage( $event );
+	}
+
 	/** On Damage
 	 * @param EntityDamageEvent $event
 	 * @ignoreCancelled true
@@ -1355,6 +1393,70 @@ class Main extends PluginBase implements Listener{
 	}
 
 
+    /** Shoot / Launch projectiles
+	 * @param EntityShootBowEvent $event
+	 * @ignoreCancelled true
+     */
+    public function onEntityShootBow( EntityShootBowEvent $event ){
+
+        $e = $event->getEntity();
+        if( $e instanceof Player){
+            if( !$this->canShoot($e) ){
+                $event->setCancelled();
+            }
+        }
+
+    }
+
+
+    /** onShoot
+	 * @param Player $player
+	 * @return bool
+     */
+    public function canShoot( Player $player ) : bool{
+
+		if( $player->isOp() || $player->hasPermission("festival") || $player->hasPermission("festival.access")){
+			return true;
+		}
+
+        $position = $player->getPosition();
+		$o = true;
+        $m = true;
+		$g = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Shoot"] : $this->shoot);
+		if($g){
+			$o = false;
+		}
+		foreach($this->areas as $area){
+			if($area->contains($position, $position->getLevel()->getName())){
+				if($area->getFlag("shoot")){
+					$o = false;
+				}
+				if($area->isWhitelisted(strtolower($player->getName()))){
+					$o = true;
+					break;
+				}
+				if(!$area->getFlag("shoot") && $g){
+					$o = true;
+					break;
+				}
+                if( $area->getFlag("msg") ){
+                    $m = false;
+                }
+			}
+
+		}
+
+        // new message method
+        if( $m && !$o ){
+                $msg = TextFormat::RED . "NO Shooting here!";
+                $player->sendMessage( $msg );
+        }
+
+		return $o;
+
+	}
+
+
 	/** Block Place
 	 * @param BlockPlaceEvent $event
 	 * @ignoreCancelled true
@@ -1534,6 +1636,7 @@ class Main extends PluginBase implements Listener{
 	 * @return true
 	 */
 	public function onMove(PlayerMoveEvent $ev) : void{
+
 		$player = $ev->getPlayer();
 		$playerName = strtolower( $player->getName() );
 
@@ -1955,7 +2058,7 @@ class Main extends PluginBase implements Listener{
 			}else{
 				$l .= TextFormat::RED . "off";
 			}
-		} 
+		}
 
 		// Area Commands by event
 		if( $cmds = $area->getCommands() && count( $area->getCommands() ) > 0 ){
