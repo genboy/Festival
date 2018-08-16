@@ -147,7 +147,7 @@ class Main extends PluginBase implements Listener{
 				$flags["hunger"] = false;
 				$newchange['Hunger'] = "! Area Hunger flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
-			if( !isset($datum["flags"]["nofalldamage"]) ){ / /new in v1.0.8
+			if( !isset($datum["flags"]["nofalldamage"]) ){ //new in v1.0.8
 				$flags["nofalldamage"] = false;
 				$newchange['NoFallDamage'] = "! Area NoFallDamage flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
@@ -424,7 +424,7 @@ class Main extends PluginBase implements Listener{
                                 new Area(
                                     strtolower($args[1]),
                                     "",
-                                    ["edit" => $flags['Edit'], "god" => $flags['God'], "pvp" => $flags["PVP"], "flight"=> $flags["Flight"], "touch" => $flags['Touch'], "effects" => $flags['Effects'], "drop" => $flags['Drop'], "msg" => $flags['Msg'], "passage" => $flags['Passage'], "perms" => $flags['Perms']],
+                                    ["edit" => $flags['Edit'], "god" => $flags['God'], "pvp" => $flags["PVP"], "flight"=> $flags["Flight"], "touch" => $flags['Touch'], "effects" => $flags['Effects'], "drop" => $flags['Drop'], "msg" => $flags['Msg'], "passage" => $flags['Passage'], "perms" => $flags['Perms'], "nofalldamage" => $flags['NoFallDamage']],
                                     $this->firstPosition[$playerName],
                                     $this->secondPosition[$playerName],
                                     $sender->getLevel()->getName(),
@@ -1475,13 +1475,14 @@ class Main extends PluginBase implements Listener{
     public function checkPlayerFlying(Player $player){
 
         $fly = true;
+        $sendmsg = false;
+        $nofalldamage = false;
 		$position = $player->getPosition();
+
         $f = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Flight"] : $this->flight);
         if( $f ){
             $fly = false; // flag default
         }
-
-        $sendmsg = false;
         foreach($this->areas as $area){
             if( $area->contains( $player->getPosition(), $player->getLevel()->getName() ) ){
                 if(  $area->getFlag("flight") && !$area->isWhitelisted( strtolower($player->getName())) ){
@@ -1489,20 +1490,23 @@ class Main extends PluginBase implements Listener{
                 }else{
                     $fly = true;
                 }
-                if( !$area->getFlag("msg") || $this->msgOpDsp( $area, $player  ) ){
+                if( !$area->getFlag("msg") ){
                     $sendmsg = true;
-                }else{
-                    $sendmsg = false;
+                }
+                if( $area->getFlag("nofalldamage") ){
+                    $nofalldamage = true;
                 }
             }
         }
         if( $player->isOp() ){
-            $fly = true; // ops can fly
+            $fly = true; // ops can fly ||
+            $sendmsg = $this->msgOpDsp( $area, $player );
         }
-
         $msg = '';
         if( !$fly && $player->isFlying() ){
+            if( $nofalldamage ){
             $this->playerTP[ strtolower( $player->getName() ) ] = true; // player tp active (fall save)
+            }
             $player->setFlying(false);
             //$player->sendMessage(  TextFormat::RED . "NO Flying here!" );
             if( $sendmsg ){
@@ -1517,7 +1521,6 @@ class Main extends PluginBase implements Listener{
             }
         }
         $player->setAllowFlight($fly);
-
         return $fly;
 
     }
