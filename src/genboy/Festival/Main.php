@@ -589,10 +589,12 @@ class Main extends PluginBase implements Listener{
                                 $cz = $area->getSecondPosition()->getZ() + ( ( $area->getFirstPosition()->getZ() - $area->getSecondPosition()->getZ() ) / 2 );
                                 $cy1 = min( $area->getSecondPosition()->getY(), $area->getFirstPosition()->getY());
                                 $cy2 = max( $area->getSecondPosition()->getY(), $area->getFirstPosition()->getY());
-                                $this->playerTP[$playerName] = true; // player tp active
-                                //$this->areaMessage( 'Fall save on!', $sender );
+                                if( $this->hasNoFallDamage($sender) ){
+                                    $this->playerTP[$playerName] = true; // player tp active
+                                    //$this->areaMessage( 'Fall save on!', $sender );
+                                }
+                                $sender->teleport( new Position( $cx, $cy2 - 2, $cz, $area->getLevel() ) );
                                 //$sender->sendMessage( $playerName );
-                                $sender->teleport( new Position( $cx, $cy2+ 0.5, $cz, $area->getLevel() ) );
 
                         }else{
                             $o = TextFormat::RED . "The level " . $levelName . " for Area ". $args[1] ." cannot be found";
@@ -1122,7 +1124,7 @@ class Main extends PluginBase implements Listener{
 	 *
 	 * @return bool
 	 */
-	public function nfdamage(Entity $entity) : bool{
+	public function hasNoFallDamage(Entity $entity) : bool{
 		$o = true;
 		$default = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["NoFallDamage"] : $this->nofalldamage);
 		if($default){
@@ -1983,7 +1985,7 @@ class Main extends PluginBase implements Listener{
 				$event->setCancelled();
 			}
 			
-			if($cause == EntityDamageEvent::CAUSE_FALL && !$this->nfdamage($player)){
+			if($cause == EntityDamageEvent::CAUSE_FALL && !$this->hasNoFallDamage($player)){
 				$event->setCancelled(true);
 			}
 		}
