@@ -45,12 +45,18 @@ Default:
   # No explosions allowed in the area?
   TNT: false
 
+  # No shooting allowed in the area?
+  Shoot: false
+
   # Keep players from hunger(exhaust) in the area?
   Hunger: false
 
   # Keep players from executing area event commands without specific perms
   Perms: false
-
+  
+  # Keep players from taking fall damage
+  NoFallDamage: false
+  
 # Settings for unprotected areas in individual worlds:
 Worlds:
  
@@ -86,11 +92,17 @@ Worlds:
     # No explosions allowed in the area?
     TNT: false
 
+    # No shooting allowed in the area?
+    Shoot: false
+
     # Keep players from hunger(exhaust) in the area?
     Hunger: false
 
     # Keep players from executing area event commands without specific perms
     Perms: false
+
+    # Keep players from taking fall damage
+    NoFallDamage: false
 
   world:
   
@@ -124,8 +136,14 @@ Worlds:
     # No explosions allowed in the area?
     TNT: false
 
+    # No shooting allowed in the area?
+    Shoot: false
+
     # Keep players from hunger(exhaust) in the area?
     Hunger: false
 
     # Keep players from executing area event commands without specific perms
     Perms: false
+
+    # Keep players from taking fall damage
+    NoFallDamage: false
