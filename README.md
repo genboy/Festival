@@ -2,7 +2,6 @@
 
 If you like Festival please leave a thumb up at [poggit](https://poggit.pmmp.io/p/Festival/1.0.7)  to help getting the Festival plugin approved, thank you!_
 
-
 ![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png) 
 
 
@@ -11,7 +10,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 ### Manage area's and run commmands attachted to area events. 
 
  
-![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/08/festival_usage_1.0.7-1.png)
+![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/08/festival_usage_1.0.7-2-dev.png)
 
 
 ###### Copyright [Genboy](https://genboy.net) 2018
@@ -19,7 +18,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 --- 
 
 ## Info 
- 
+  
 # Festival
 
 [![](https://poggit.pmmp.io/shield.state/Festival)](https://poggit.pmmp.io/p/Festival) 
@@ -58,8 +57,10 @@ Create a festival with this custom area events plugin for Pocketmine Server:
     - passage: no passage for non-whitelisted players! (previously barrier flag)
     - drop: players can not drop things
     - tnt: explosions protected area
-    - hunger: player does not exhaust / hunger
+    - shoot: player can not shoot (bow)
     - perms: player permissions are used to determine area command execution (experiment)
+    - hunger: player does not exhaust / hunger
+    - nfd: player will not have fall damage (no fall damage)
 
 
 **Events & Commands**
@@ -137,14 +138,17 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   - new TNT flag
   - new Hunger flag
   - Fire is now extinguished when player does not get damage (aka. in area with god flag on)
+  - new shoot flag (experimental no shooting/launching)
+  - new nofalldamage flag (nfd)
 
 
 
+ 
   #### Usage Graphic
 
   ##### A visualisation of Festival command usage
   
-  ![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/08/festival_usage_1.0.7-1.png)
+  ![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/08/festival_usage_1.0.7.2-dev.png)
   
   ###### Copyright [Genboy](https://genboy.net) 2018
   
@@ -176,13 +180,13 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   
     Festival v1.0.1-11 introduced a fast toggle for flags:
   
-      /fe <edit/god/pvp/flight/touch/effects/tnt/drop/msg/pass/hunger/perms> <AREANAME>
+      /fe <edit/god/pvp/flight/touch/effects/tnt/shoot/drop/msg/pass/hunger/perms> <AREANAME>
 
   
     Area flag defaults are set in the config.yml), server defaults and world specific default flag. 
     The basic command to control area flags:
   
-	  /fe flag(f) <AREANAME> <edit/god/pvp/flight/touch/effects/tnt/drop/msg/pass/hunger/perms> <true/false>
+	  /fe flag(f) <AREANAME> <edit/god/pvp/flight/touch/effects/tnt/shoot/drop/msg/pass/hunger/perms/nfd> <true/false>
   
     Area flag listing
   
@@ -281,7 +285,7 @@ If you like to help improve this plugin;
 - look at the code and give feedback
 - both by submitting [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival) 
 
-or send an email to msg @ genboy.net
+or send an email to msg @ genboy.net 
 	
 Thank you
 
@@ -316,6 +320,8 @@ Thank you
   - [x] TNT flag: explosion free area's
   - [x] Hunger flag: players do not exhaust 
   - [x] Fire (animation) extinguished when player is save 
+  - [x] No shooting (bow)
+  - [x] No Fall Damage flag (was implemented as effect for TP dropping and flight break)
   
   
 ------
