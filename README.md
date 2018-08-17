@@ -17,8 +17,8 @@ Create a festival with this custom area events plugin for Pocketmine Server:
  
 --- 
 
-## Info 
-  
+## Info
+
 # Festival
 
 [![](https://poggit.pmmp.io/shield.state/Festival)](https://poggit.pmmp.io/p/Festival) 

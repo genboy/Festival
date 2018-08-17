@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /** src/genboy/Festival/Main.php
-Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, hunger, perms, nofalldamage
+Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, shoot, hunger, perms, nofalldamage
 */
 
 namespace genboy\Festival;
@@ -328,7 +328,7 @@ class Main extends PluginBase implements Listener{
             "msg","message",
             "passage","pass","barrier",
             "perms","perm",
-			"nofalldamage","falldamage","nfd",
+			"nofalldamage","falldamage","nfd","fall",
             "shoot", "launch",
         ];
         $str = strtolower( $str );
@@ -371,7 +371,7 @@ class Main extends PluginBase implements Listener{
             if( $str == "hunger" || $str == "starve" ){
                 $flag = "hunger";
             }
-			if( $str == "nofalldamage" || $str == "falldamage" || $str == "nfd"){
+			if( $str == "nofalldamage" || $str == "falldamage" || $str == "nfd" || $str == "fall"){
 				$flag = "nofalldamage";
 			}
         }
@@ -664,6 +664,7 @@ class Main extends PluginBase implements Listener{
 			case "drop":
 			case "nofalldamage";
 			case "falldamage";
+			case "fall";
 			case "nfd";
 
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.flag")){
