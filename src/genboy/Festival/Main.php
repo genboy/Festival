@@ -550,7 +550,7 @@ class Main extends PluginBase implements Listener{
 
 								if( ( !empty($l) && $l == $lvl->getName() ) || $l == false ){
 
-								    $t .= $this->areaInfoList( $area );
+								    $t .= $this->areaInfoDisplayList( $area );
 
 								    $i++;
 
@@ -589,14 +589,24 @@ class Main extends PluginBase implements Listener{
 			case "here":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.here")){
 					$o = "";
+                    foreach($this->inArea[$playername] as $areaname){
+                        if( isset($this->areaList[ $areaname ]) ){
+                            $area = $this->areaList[$areaname];
+                            $o .= TextFormat::DARK_PURPLE ."---- Area here ----\n";
+                            $o .= $this->areaInfoDisplayList( $area );
+							$o .= TextFormat::DARK_PURPLE ."----------------\n";
+                        }
+                    }
+                    /*
 					foreach($this->areas as $area){
 
 						if($area->contains($sender->getPosition(), $sender->getLevel()->getName()) && $area->getWhitelist() !== null){
 							$o .= TextFormat::DARK_PURPLE ."---- Area here ----\n";
-							$o .= $this->areaInfoList( $area );
+							$o .= $this->areaInfoDisplayList( $area );
 							$o .= TextFormat::DARK_PURPLE ."----------------\n";
 						}
-					}
+					}*/
+
 					if($o === "") {
 						$o = TextFormat::RED . "You are in an unknown area";
 					}
@@ -2230,7 +2240,7 @@ class Main extends PluginBase implements Listener{
 	/** List Area Info
 	 * @var obj area
 	 */
-	public function areaInfoList( $area ){
+	public function areaInfoDisplayList( $area ){
 
 		$l = TextFormat::GRAY . "  area " . TextFormat::AQUA . $area->getName();
         // Players in area
