@@ -80,13 +80,16 @@ class Main extends PluginBase implements Listener{
 	/** @var Vector3[] */
 	private $secondPosition = [];
 
-	/** @var string[] */
+	/** @var array[] */
 	private $inArea = [];
+
+	/** @var array[] */
+	private $areaList = [];
 
 	/** @var array[] */
 	private $skipsec = [];
 
-	/** @var string[] */
+	/** @var array[] */
 	public $playerTP = [];
 
 	/** Enable
@@ -290,7 +293,7 @@ class Main extends PluginBase implements Listener{
 			}
 		}
 
-		$this->saveAreas(); // all save :)
+		$this->saveAreas(); // all save $this->areaList available :)
 
 		/** console output */
         $this->codeSigned(); // codesign
@@ -1049,10 +1052,28 @@ class Main extends PluginBase implements Listener{
 	 */
 	public function canGetHurt(Entity $entity) : bool{
 		$o = true;
-		$default = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["God"] : $this->god);
-		if($default){
-			$o = false; 
-		}
+
+        if( $entity instanceof Player){
+            $default = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["God"] : $this->god);
+            if($default){
+                $o = false;
+            }
+            $playername =  strtolower($entity->getName());
+
+            foreach($this->inArea[$playername] as $areaname){
+                if( isset($this->areaList[ $areaname ]) ){
+                    $area = $this->areaList[ $areaname ];
+                    if($default && !$area->getFlag("god")){
+                        $o = true;
+                        break;
+                    }
+                    if($area->getFlag("god")){
+                        $o = false;
+                    }
+                }
+            }
+        }
+        /* inarea replace
 		foreach($this->areas as $area){
             
 			if($area->contains(new Vector3($entity->getX(), $entity->getY(), $entity->getZ()), $entity->getLevel()->getName())){
@@ -1067,7 +1088,7 @@ class Main extends PluginBase implements Listener{
                 
 			}
             
-		}
+		}*/
 		return $o;
 	}
     
@@ -1086,6 +1107,22 @@ class Main extends PluginBase implements Listener{
                 if($default){
                     $o = false;
                 }
+                $playername = $entity->getName();
+                foreach($this->inArea[$playername] as $areaname){
+                    if( isset($this->areaList[ $areaname ]) ){
+                        $area = $this->areaList[$areaname];
+                        $god = $area->getFlag("god");
+                        if($default && !$area->getFlag("pvp")){
+                            $o = true;
+                            break;
+                        }
+                        if($area->getFlag("pvp")){
+                            $o = false;
+                            break;
+                        }
+                    }
+                }
+                /*
                 foreach($this->areas as $area){
                     if($area->contains(new Vector3($entity->getX(), $entity->getY(), $entity->getZ()), $entity->getLevel()->getName())){
                         $god = $area->getFlag("god");
@@ -1099,6 +1136,7 @@ class Main extends PluginBase implements Listener{
                         }
                     }
                 }
+                */
             }
         }
         if( !$o ){
@@ -1154,11 +1192,31 @@ class Main extends PluginBase implements Listener{
 	 * @return bool
 	 */
 	public function hasNoFallDamage(Entity $entity) : bool{
+
 		$o = true;
-		$default = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["NoFallDamage"] : $this->nofalldamage);
-		if($default){
-			$o = false;
-		}
+        if( $entity instanceof Player ){
+
+            $default = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["NoFallDamage"] : $this->nofalldamage);
+            if($default){
+                $o = false;
+            }
+
+            $playername = strtolower($entity->getName());
+            foreach($this->inArea[$playername] as $areaname){
+                if( isset($this->areaList[ $areaname ]) ){
+                    $area = $this->areaList[$areaname];
+                    if($default && !$area->getFlag("nofalldamage")){
+                        $o = true;
+                        break;
+                    }
+                    if($area->getFlag("nofalldamage")){
+                        $o = false;
+                    }
+                }
+            }
+
+        }
+        /*
 		foreach($this->areas as $area){
 			if($area->contains(new Vector3($entity->getX(), $entity->getY(), $entity->getZ()), $entity->getLevel()->getName())){
 				if($default && !$area->getFlag("nofalldamage")){
@@ -1170,6 +1228,7 @@ class Main extends PluginBase implements Listener{
 				}
 			}
 		}
+        */
 		return $o;
 	}
 
@@ -1204,6 +1263,25 @@ class Main extends PluginBase implements Listener{
 		if($g){
 			$o = false;
 		}
+
+        $playername = strtolower($player->getName());
+        foreach($this->inArea[$playername] as $areaname){
+            if( isset($this->areaList[ $areaname ]) ){
+                $area = $this->areaList[$areaname];
+                if($area->getFlag("edit")){
+                    $o = false;
+                }
+                if($area->isWhitelisted(strtolower($player->getName()))){
+                    $o = true;
+                    break;
+                }
+                if(!$area->getFlag("edit") && $g){
+                    $o = true;
+                    break;
+                }
+            }
+        }
+        /*
 		foreach($this->areas as $area){
 			if($area->contains($position, $position->getLevel()->getName())){
 				if($area->getFlag("edit")){
@@ -1219,6 +1297,7 @@ class Main extends PluginBase implements Listener{
 				}
 			}
 		}
+        */
 		return $o;
 	}
 
@@ -1231,11 +1310,29 @@ class Main extends PluginBase implements Listener{
 		if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
 			return true;
 		}
+        $playername = strtolower($player->getName());
 		$o = true;
 		$default = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Touch"] : $this->touch);
 		if($default){
 			$o = false;
 		}
+        foreach($this->inArea[$playername] as $areaname){
+            if( isset($this->areaList[ $areaname ]) ){
+                $area = $this->areaList[$areaname];
+                if($area->getFlag("touch")){
+                    $o = false;
+                }
+                if($area->isWhitelisted(strtolower($player->getName()))){
+                    $o = true;
+                    break;
+                }
+                if(!$area->getFlag("touch") && $default){
+                    $o = true;
+                    break;
+                }
+            }
+        }
+        /*
 		foreach($this->areas as $area){
 			if($area->contains(new Vector3($position->getX(), $position->getY(), $position->getZ()), $position->getLevel()->getName())){
 				if($area->getFlag("touch")){
@@ -1251,6 +1348,7 @@ class Main extends PluginBase implements Listener{
 				}
 			}
 		}
+        */
 		return $o;
 	}
 
@@ -1273,7 +1371,7 @@ class Main extends PluginBase implements Listener{
      */
 
     public function Hunger(PlayerExhaustEvent $event){
-        if ( !$this->canHunger( $event->getPlayer()->getPosition() ) ) {
+        if ( !$this->canHunger( $event ) ) {
             $event->setCancelled();
         }
     }
@@ -1285,12 +1383,28 @@ class Main extends PluginBase implements Listener{
      * @param pocketmine\level\Level $level
      * @return bool
      */
-    public function canHunger( Position $pos ): bool{
+    public function canHunger( PlayerExhaustEvent $event ): bool{
+        $pos = $event->getPlayer()->getPosition();
+        $playername = strtolower($event->getPlayer()->getName());
         $o = true;
         $g = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Hunger"] : $this->hunger);
         if ($g) {
             $o = false;
         }
+        foreach($this->inArea[$playername] as $areaname){
+            if( isset($this->areaList[ $areaname ]) ){
+                $area = $this->areaList[$areaname];
+                if ($area->getFlag("hunger")) {
+                    $o = false;
+                    break;
+                }
+                if ($area->getFlag("hunger") && $g) {
+                    $o = true;
+                       break;
+                }
+            }
+        }
+        /*
         foreach ($this->areas as $area) {
             if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
                 if ($area->getFlag("hunger")) {
@@ -1303,6 +1417,7 @@ class Main extends PluginBase implements Listener{
                 }
             }
         }
+        */
         return $o;
     }
 
@@ -1331,6 +1446,7 @@ class Main extends PluginBase implements Listener{
         if ($g) {
             $o = false;
         }
+        // including entities/mobs in any area
         foreach ($this->areas as $area) {
             if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
                 if ($area->getFlag("tnt")) {
@@ -1343,6 +1459,7 @@ class Main extends PluginBase implements Listener{
                 }
             }
         }
+
         return $o;
     }
 
@@ -1375,6 +1492,24 @@ class Main extends PluginBase implements Listener{
 		if($g){
 			$o = false;
 		}
+        $playername = strtolower($player->getName());
+        foreach($this->inArea[$playername] as $areaname){
+            if( isset($this->areaList[ $areaname ]) ){
+                $area = $this->areaList[$areaname];
+                if($area->getFlag("drop")){
+                    $o = false;
+                }
+                if($area->isWhitelisted(strtolower($player->getName()))){
+                    $o = true;
+                    break;
+                }
+                if(!$area->getFlag("drop") && $g){
+                    $o = true;
+                    break;
+                }
+            }
+        }
+        /*
 		foreach($this->areas as $area){
 			if($area->contains($position, $position->getLevel()->getName())){
 				if($area->getFlag("drop")){
@@ -1390,6 +1525,7 @@ class Main extends PluginBase implements Listener{
 				}
 			}
 		}
+        */
 		return $o;
 	}
 
@@ -1421,12 +1557,34 @@ class Main extends PluginBase implements Listener{
 		}
 
         $position = $player->getPosition();
+        $playername = strtolower($player->getName());
 		$o = true;
         $m = true;
 		$g = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Shoot"] : $this->shoot);
 		if($g){
 			$o = false;
 		}
+
+        foreach($this->inArea[$playername] as $areaname){
+            if( isset($this->areaList[ $areaname ]) ){
+                $area = $this->areaList[$areaname];
+                if($area->getFlag("shoot")){
+                    $o = false;
+                }
+                if($area->isWhitelisted(strtolower($player->getName()))){
+                    $o = true;
+                    break;
+                }
+                if(!$area->getFlag("shoot") && $g){
+                    $o = true;
+                    break;
+                }
+                if( $area->getFlag("msg") ){
+                   $m = false;
+                }
+            }
+        }
+        /*
 		foreach($this->areas as $area){
 			if($area->contains($position, $position->getLevel()->getName())){
 				if($area->getFlag("shoot")){
@@ -1446,6 +1604,7 @@ class Main extends PluginBase implements Listener{
 			}
 
 		}
+        */
 
         // new message method
         if( $m && !$o ){
@@ -1549,11 +1708,30 @@ class Main extends PluginBase implements Listener{
 		}
 
         $position = $player->getPosition();
+        $playername = strtolower($player->getName());
 		$o = true;
 		$g = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Effects"] : $this->effects);
 		if($g){
 			$o = false;
 		}
+
+        foreach($this->inArea[$playername] as $areaname){
+            if( isset($this->areaList[ $areaname ]) ){
+                $area = $this->areaList[$areaname];
+                if($area->getFlag("effects")){
+                    $o = false;
+                }
+                if($area->isWhitelisted(strtolower($player->getName()))){
+                    $o = true;
+                    break;
+                }
+                if(!$area->getFlag("effects") && $g){
+                    $o = true;
+                    break;
+                }
+            }
+        }
+        /*
 		foreach($this->areas as $area){
 			if($area->contains($position, $position->getLevel()->getName())){
 				if($area->getFlag("effects")){
@@ -1569,6 +1747,7 @@ class Main extends PluginBase implements Listener{
 				}
 			}
 		}
+        */
 		return $o;
 	}
 
@@ -1583,11 +1762,35 @@ class Main extends PluginBase implements Listener{
         $sendmsg = false;
         $nofalldamage = false;
 		$position = $player->getPosition();
+        $playername = strtolower($player->getName());
 
         $f = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Flight"] : $this->flight);
         if( $f ){
             $fly = false; // flag default
         }
+
+        foreach($this->inArea[$playername] as $areaname){
+            if( isset($this->areaList[ $areaname ]) ){
+                $area = $this->areaList[$areaname];
+                if(  $area->getFlag("flight") && !$area->isWhitelisted( $playername ) ){
+                    $fly = false; // flag area
+                }else{
+                    $fly = true;
+                }
+                if( !$area->getFlag("msg") ){
+                    $sendmsg = true;
+                }
+                if( $area->getFlag("nofalldamage") ){
+                    $nofalldamage = true;
+                }
+                if( $player->isOp() ){
+                    $fly = true; // ops can fly ||
+                    $sendmsg = $this->msgOpDsp( $area, $player );
+                }
+            }
+        }
+
+        /*
         foreach($this->areas as $area){
             if( $area->contains( $player->getPosition(), $player->getLevel()->getName() ) ){
                 if(  $area->getFlag("flight") && !$area->isWhitelisted( strtolower($player->getName())) ){
@@ -1601,12 +1804,13 @@ class Main extends PluginBase implements Listener{
                 if( $area->getFlag("nofalldamage") ){
                     $nofalldamage = true;
                 }
+                if( $player->isOp() ){
+                    $fly = true; // ops can fly ||
+                    $sendmsg = $this->msgOpDsp( $area, $player );
+                }
             }
         }
-        if( $player->isOp() ){
-            $fly = true; // ops can fly ||
-            $sendmsg = $this->msgOpDsp( $area, $player );
-        }
+        */
         $msg = '';
         if( !$fly && $player->isFlying() ){
             if( $nofalldamage ){
@@ -1702,7 +1906,7 @@ class Main extends PluginBase implements Listener{
             
 		} 
 
-        $this->checkPlayerFlying( $player );
+        $this->checkPlayerFlying( $ev->getPlayer() );
 
 		return;
 	}
@@ -2103,6 +2307,8 @@ class Main extends PluginBase implements Listener{
 		$areas = [];
 		foreach($this->areas as $area){
 			$areas[] = ["name" => $area->getName(), "desc" => $area->getDesc(), "flags" => $area->getFlags(), "pos1" => [$area->getFirstPosition()->getFloorX(), $area->getFirstPosition()->getFloorY(), $area->getFirstPosition()->getFloorZ()] , "pos2" => [$area->getSecondPosition()->getFloorX(), $area->getSecondPosition()->getFloorY(), $area->getSecondPosition()->getFloorZ()], "level" => $area->getLevelName(), "whitelist" => $area->getWhitelist(), "commands" => $area->getCommands(), "events" => $area->getEvents()];
+
+            $this->areaList[strtolower( $area->getName() )] = $area; // name associated area list for inArea check
 		}
 		file_put_contents($this->getDataFolder() . "areas.json", json_encode($areas));
 	}
