@@ -54,8 +54,8 @@ Default:
   # Keep players from executing area event commands without specific perms
   Perms: false
   
-  # Keep players from taking fall damage
-  NoFallDamage: false
+  # Keep players from taking fall damage (default for teleport/flying drop)
+  NoFallDamage: true
   
 # Settings for unprotected areas in individual worlds:
 Worlds:
@@ -63,7 +63,7 @@ Worlds:
   DEFAULT:
 
     # Keep players from getting hurt? 
-    God: true
+    God: false
 
     # Keep players from getting hurt by other players?
     PVP: false
@@ -102,7 +102,7 @@ Worlds:
     Perms: false
 
     # Keep players from taking fall damage
-    NoFallDamage: false
+    NoFallDamage: true
 
   world:
   
@@ -146,4 +146,4 @@ Worlds:
     Perms: false
 
     # Keep players from taking fall damage
-    NoFallDamage: false
+    NoFallDamage: true
