@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 /** src/genboy/Festival/Main.php
  * Options: Msgtype, Msgdisplay, AutoWhitelist
- * Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, shoot, hunger, perms, nofalldamage
+ * Flags: god, no-pvp, no-flight, no-edit, no-touch, effects, msg, passage, no-drop, no-tnt, no-shoot, no-hunger, perms, no-nofalldamage
  */
 namespace genboy\Festival;
 
@@ -67,7 +67,7 @@ class Main extends PluginBase implements Listener{
 	/** @var bool */
 	private $perms         = false;
 	/** @var bool */
-	private $nofalldamage  = false;
+	private $falldamage  = false;
 
 	/** @var bool[] */
 	private $selectingFirst    = [];
@@ -130,7 +130,7 @@ class Main extends PluginBase implements Listener{
 				$flags["perms"] = false;
 				$newchange['Perms'] = "! Area Perms flag missing, now updated to 'false';  please see /resources/config.yml";
 			}
-			if( !isset($datum["flags"]["drop"]) ){ // new flags v 1.0.5-12
+			if( !isset($datum["flags"]["no-drop"]) ){ // new flags v 1.0.5-12
 				$flags["drop"] = false;
 				$newchange['Drop'] = "! Area Drop flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
@@ -138,19 +138,19 @@ class Main extends PluginBase implements Listener{
 				$flags["effects"] = false;
 				$newchange['Effects'] = "! Area Effects flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
-			if( !isset($datum["flags"]["pvp"]) ){ //new flags v 1.0.6-13
+			if( !isset($datum["flags"]["no-pvp"]) ){ //new flags v 1.0.6-13
 				$flags["pvp"] = false;
 				$newchange['PVP'] = "! Area PVP flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
-			if( !isset($datum["flags"]["flight"]) ){ //new flags v 1.0.6-13
+			if( !isset($datum["flags"]["no-flight"]) ){ //new flags v 1.0.6-13
 				$flags["flight"] = false;
 				$newchange['Flight'] = "! Area Flight flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
-			if( !isset($datum["flags"]["tnt"]) ){ // new flags v 1.0.7
+			if( !isset($datum["flags"]["no-tnt"]) ){ // new flags v 1.0.7
 				$flags["tnt"] = false;
 				$newchange['TNT'] = "! Area TNT flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
-			if( !isset($datum["flags"]["hunger"]) ){ // new flags v 1.0.7
+			if( !isset($datum["flags"]["no-hunger"]) ){ // new flags v 1.0.7
 				$flags["hunger"] = false;
 				$newchange['Hunger'] = "! Area Hunger flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
@@ -158,7 +158,7 @@ class Main extends PluginBase implements Listener{
 				$flags["nofalldamage"] = false;
 				$newchange['NoFallDamage'] = "! Area NoFallDamage flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
-			if( !isset($datum["flags"]["shoot"]) ){ //new in v1.0.7.2
+			if( !isset($datum["flags"]["no-shoot"]) ){ //new in v1.0.7.2
 				$flags["shoot"] = false;
 				$newchange['Shoot'] = "! Area Shoot flag missing (alias launch), now updated to 'false';  please see /resources/config.yml";
 			}
@@ -192,11 +192,11 @@ class Main extends PluginBase implements Listener{
 		if(!isset($c["Default"]["God"])) {
 			$c["Default"]["God"] = false;
 		}
-		if(!isset($c["Default"]["Edit"])) {
-			$c["Default"]["Edit"] = true;
+		if(!isset($c["Default"]["No-Edit"])) {
+			$c["Default"]["No-Edit"] = true;
 		}
-		if(!isset($c["Default"]["Touch"])) {
-			$c["Default"]["Touch"] = false;
+		if(!isset($c["Default"]["No-Touch"])) {
+			$c["Default"]["No-Touch"] = false;
 		}
 		if(!isset($c["Default"]["Msg"])) { // new in v1.0.3
 			$c["Default"]["Msg"] = false;
@@ -209,45 +209,45 @@ class Main extends PluginBase implements Listener{
 		if(!isset($c["Default"]["Perms"])) { // new in v1.0.4-11
 			$c["Default"]["Perms"] = false;
 		}
-		if(!isset($c["Default"]["Drop"])) { // new in v1.0.4-11
-			$c["Default"]["Drop"] = false;
+		if(!isset($c["Default"]["No-Drop"])) { // new in v1.0.4-11
+			$c["Default"]["No-Drop"] = false;
 		}
 		if(!isset($c["Default"]["Effects"])) { // new in v1.0.5-12
 			$c["Default"]["Effects"] = false;
 		}
-		if(!isset($c["Default"]["PVP"])) { // new in v1.0.6-13
-			$c["Default"]["PVP"] = false;
+		if(!isset($c["Default"]["No-PVP"])) { // new in v1.0.6-13
+			$c["Default"]["No-PVP"] = false;
 		}
-		if(!isset($c["Default"]["Flight"])) { // new in v1.0.6-13
-			$c["Default"]["Flight"] = false;
+		if(!isset($c["Default"]["No-Flight"])) { // new in v1.0.6-13
+			$c["Default"]["No-Flight"] = false;
 		}
-		if(!isset($c["Default"]["TNT"])) { // new in v1.0.7
-			$c["Default"]["TNT"] = false;
+		if(!isset($c["Default"]["No-TNT"])) { // new in v1.0.7
+			$c["Default"]["No-TNT"] = false;
 		}
-		if(!isset($c["Default"]["Shoot"])) { // new in v1.0.7
-			$c["Default"]["Shoot"] = false;
+		if(!isset($c["Default"]["No-Shoot"])) { // new in v1.0.7
+			$c["Default"]["No-Shoot"] = false;
 		}
-		if(!isset($c["Default"]["Hunger"])) { // new in v1.0.7
-			$c["Default"]["Hunger"] = false;
+		if(!isset($c["Default"]["No-Hunger"])) { // new in v1.0.7
+			$c["Default"]["No-Hunger"] = false;
 		}
 		if(!isset($c["Default"]["NoFallDamage"])) {
 			$c["Default"]["NoFallDamage"] = false; // new in v1.0.8
 		}
 
 		$this->god            = $c["Default"]["God"];
-		$this->edit           = $c["Default"]["Edit"];
-		$this->touch          = $c["Default"]["Touch"];
+		$this->edit           = $c["Default"]["No-Edit"];
+		$this->touch          = $c["Default"]["No-Touch"];
 		$this->msg            = $c["Default"]["Msg"];
 		$this->passage        = $c["Default"]["Passage"]; // changed in v1.0.3-11
 		$this->perms          = $c["Default"]["Perms"]; // new in v1.0.4-11
-		$this->drop           = $c["Default"]["Drop"]; // new in v1.0.4-11
+		$this->drop           = $c["Default"]["No-Drop"]; // new in v1.0.4-11
 		$this->effects        = $c["Default"]["Effects"]; // new in v1.0.5-12
-		$this->pvp            = $c["Default"]["PVP"]; // new in v1.0.6-13
-		$this->flight         = $c["Default"]["Flight"]; // new in v1.0.6-13
-		$this->tnt            = $c["Default"]["TNT"]; // new in v1.0.7
-		$this->hunger         = $c["Default"]["Hunger"]; // new in v1.0.7
-		$this->nofalldamage   = $c["Default"]["NoFallDamage"]; // new in  1.0.7.2-dev(1.0.8)
-		$this->shoot          = $c["Default"]["Shoot"]; // new in  1.0.7.2-dev(1.0.8)
+		$this->pvp            = $c["Default"]["No-PVP"]; // new in v1.0.6-13
+		$this->flight         = $c["Default"]["No-Flight"]; // new in v1.0.6-13
+		$this->tnt            = $c["Default"]["No-TNT"]; // new in v1.0.7
+		$this->hunger         = $c["Default"]["No-Hunger"]; // new in v1.0.7
+		$this->nofalldamage   = $c["Default"]["No-NoFallDamage"]; // new in  1.0.7.2-dev(1.0.8)
+		$this->shoot          = $c["Default"]["No-Shoot"]; // new in  1.0.7.2-dev(1.0.8)
 
         $this->flagset = $c['Default']; // new in v1.0.5-12
         
@@ -270,22 +270,22 @@ class Main extends PluginBase implements Listener{
 				if( !isset($flags["Effects"]) ){ // new v1.0.5-12
 					$flags["Effects"] = $this->effects;
 				}
-				if( !isset($flags["PVP"]) ){ // new v1.0.6-13
+				if( !isset($flags["No-PVP"]) ){ // new v1.0.6-13
 					$flags["PVP"] = $this->pvp;
 				}
-				if( !isset($flags["Flight"]) ){ // new v1.0.6-13
+				if( !isset($flags["No-Flight"]) ){ // new v1.0.6-13
 					$flags["Flight"] = $this->flight;
 				}
-				if( !isset($flags["TNT"]) ){ // new v1.0.7
+				if( !isset($flags["No-TNT"]) ){ // new v1.0.7
 					$flags["TNT"] = $this->tnt;
 				}
-				if( !isset($flags["Hunger"]) ){ // new v1.0.7
+				if( !isset($flags["No-Hunger"]) ){ // new v1.0.7
 					$flags["Hunger"] = $this->hunger;
 				}
-				if( !isset($flags["NoFallDamage"]) ){ // new in v1.0.7.2
+				if( !isset($flags["No-NoFallDamage"]) ){ // new in v1.0.7.2
 					$flags["NoFallDamage"] = $this->nofalldamage;
 				}
-				if( !isset($flags["Shoot"]) ){ // new v1.0.7.2
+				if( !isset($flags["No-Shoot"]) ){ // new v1.0.7.2
 					$flags["Shoot"] = $this->shoot;
 				}
 				$this->levels[$level] = $flags;
@@ -317,19 +317,19 @@ class Main extends PluginBase implements Listener{
         // flag names
         $names = [
             "god","save",
-            "pvp",
-            "flight", "fly",
-            "edit","build","break","place",
-            "touch","interact",
+            "no-pvp",
+            "no-flight", "fly",
+            "no-edit","build","break","place",
+            "no-touch","interact",
             "effects","magic","effect",
-            "tnt","explode",
-            "hunger","starve",
-            "drop",
+            "no-tnt","explode",
+            "no-hunger","starve",
+            "no-drop",
             "msg","message",
             "passage","pass","barrier",
             "perms","perm",
 			"nofalldamage","falldamage","nfd","fall",
-            "shoot", "launch",
+            "no-shoot", "launch",
         ];
         $str = strtolower( $str );
         $flag = false;
@@ -339,13 +339,13 @@ class Main extends PluginBase implements Listener{
                 $flag = "god";
             }
             if( $str == "fly" ){
-                $flag = "flight";
+                $flag = "no-flight";
             }
             if( $str == "build" || $str == "break" || $str == "place" ){
-                $flag = "edit";
+                $flag = "no-edit";
             }
             if( $str == "interact" ){
-                $flag = "touch";
+                $flag = "no-touch";
             }
             if( $str == "magic" || $str == "effect" ){
                 $flag = "effects";
@@ -360,19 +360,19 @@ class Main extends PluginBase implements Listener{
                 $flag = "passage";
             }
             if( $str == "tnt" || $str == "explode" ){
-                $flag = "tnt";
+                $flag = "no-tnt";
             }
             if( $str == "shoot" || $str == "launch" ){
-                $flag = "shoot";
+                $flag = "no-shoot";
             }
             if( $str == "effect" || $str == "effects" ){
                 $flag = "effects";
             }
             if( $str == "hunger" || $str == "starve" ){
-                $flag = "hunger";
+                $flag = "no-hunger";
             }
 			if( $str == "nofalldamage" || $str == "falldamage" || $str == "nfd" || $str == "fall"){
-				$flag = "nofalldamage";
+				$flag = "no-nofalldamage";
 			}
         }
         return $flag;
@@ -442,18 +442,18 @@ class Main extends PluginBase implements Listener{
                                 new Area(
                                     strtolower($args[1]),
                                     "",
-                                    [   "edit" => $flags['Edit'],
+                                    [   "no-edit" => $flags['No-Edit'],
                                         "god" => $flags['God'],
-                                        "pvp" => $flags["PVP"],
-                                        "flight"=> $flags["Flight"],
-                                        "touch" => $flags['Touch'],
+                                        "no-pvp" => $flags["No-PVP"],
+                                        "no-flight"=> $flags["No-Flight"],
+                                        "no-touch" => $flags['No-Touch'],
                                         "effects" => $flags['Effects'],
                                         "msg" => $flags['Msg'],
                                         "passage" => $flags['Passage'],
-                                        "drop" => $flags['Drop'],
-                                        "tnt" => $flags['TNT'],
-                                        "shoot" => $flags['Shoot'],
-                                        "hunger" => $flags['Hunger'],
+                                        "no-drop" => $flags['No-Drop'],
+                                        "no-tnt" => $flags['No-TNT'],
+                                        "no-shoot" => $flags['No-Shoot'],
+                                        "no-hunger" => $flags['No-Hunger'],
                                         "perms" => $flags['Perms'],
                                         "nofalldamage" => $flags['NoFallDamage']],
 
@@ -611,12 +611,12 @@ class Main extends PluginBase implements Listener{
 			case "f":
 			case "flag":
 			case "touch":
-			case "pvp":
-			case "flight":
-			case "fly":
+			case "no-pvp":
+			case "no-flight":
+			case "no-fly":
 			case "effect":
 			case "effects":
-			case "edit":
+			case "no-edit":
 			case "god":
 			case "msg":
 			case "pass":
@@ -624,17 +624,17 @@ class Main extends PluginBase implements Listener{
 			case "barrier":
 			case "perm":
 			case "perms":
-			case "hunger":
-			case "starve":
-			case "tnt":
-			case "explode":
-			case "shoot";
-			case "launch";
-			case "drop":
+			case "no-hunger":
+			case "no-starve":
+			case "no-tnt":
+			case "no-explode":
+			case "no-shoot";
+			case "no-launch";
+			case "no-drop":
 			case "nofalldamage";
-			case "falldamage";
-			case "fall";
-			case "nfd";
+			case "no-falldamage";
+			case "no-fall";
+			case "no-nfd";
 
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.flag")){
 					if(isset($args[1])){
@@ -717,10 +717,10 @@ class Main extends PluginBase implements Listener{
 										}
 										$o = TextFormat::GREEN . "Flag " . $flag . " set to " . $status . " for area " . $area->getName() . "!";
 									}else{
-										$o = TextFormat::RED . "Flag not found. (Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, shoot, hunger, perms, nofalldamage)";
+										$o = TextFormat::RED . "Flag not found. (Flags: god, no-pvp, no-flight, no-edit, no-touch, effects, msg, passage, no-drop, no-tnt, no-shoot, no-hunger, perms, nofalldamage)";
 									}
 								}else{
-									$o = TextFormat::RED . "Please specify a flag. (Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, shoot, hunger, perms, nofalldamage)";
+									$o = TextFormat::RED . "Please specify a flag. (Flags: god, no-pvp, no-flight, no-edit, no-touch, effects, msg, passage, no-drop, no-tnt, no-shoot, no-hunger, perms, nofalldamage)";
 								}
 							}
 						}else{
@@ -1046,7 +1046,7 @@ class Main extends PluginBase implements Listener{
         if($ev instanceof EntityDamageByEntityEvent){
             if($ev->getEntity() instanceof Player && $ev->getDamager() instanceof Player){
                 $entity = $ev->getEntity();
-                $p = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["PVP"] : $this->pvp);
+                $p = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["No-PVP"] : $this->pvp);
                 if($p){
                     $o = false;
                 }
@@ -1055,7 +1055,7 @@ class Main extends PluginBase implements Listener{
                     if( isset($this->areaList[ $areaname ]) ){
                         $area = $this->areaList[$areaname];
                         $god = $area->getFlag("god");
-                        if($area->getFlag("pvp")){
+                        if($area->getFlag("no-pvp")){
                             $o = false;
                         }
                         if($area->isWhitelisted($playername)){
@@ -1168,7 +1168,7 @@ class Main extends PluginBase implements Listener{
 			return true;
 		}
 		$o = true;
-		$e = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Edit"] : $this->edit);
+		$e = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["No-Edit"] : $this->edit);
 		if($e){
 			$o = false;
 		}
@@ -1176,7 +1176,7 @@ class Main extends PluginBase implements Listener{
         foreach($this->inArea[$playername] as $areaname){
             if( isset($this->areaList[ $areaname ]) ){
                 $area = $this->areaList[$areaname];
-                if($area->getFlag("edit")){
+                if($area->getFlag("no-edit")){
                     $o = false;
                 }
                 if($area->isWhitelisted($playername)){
@@ -1198,14 +1198,14 @@ class Main extends PluginBase implements Listener{
 		}
         $playername = strtolower($player->getName());
 		$o = true;
-		$t = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Touch"] : $this->touch);
+		$t = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["No-Touch"] : $this->touch);
 		if($t){
 			$o = false;
 		}
         foreach($this->inArea[$playername] as $areaname){
             if( isset($this->areaList[ $areaname ]) ){
                 $area = $this->areaList[$areaname];
-                if($area->getFlag("touch")){
+                if($area->getFlag("no-touch")){
                     $o = false;
                 }
                 if($area->isWhitelisted($playername)){
@@ -1251,14 +1251,14 @@ class Main extends PluginBase implements Listener{
         $pos = $event->getPlayer()->getPosition();
         $playername = strtolower($event->getPlayer()->getName());
         $o = true;
-        $g = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Hunger"] : $this->hunger);
+        $g = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["No-Hunger"] : $this->hunger);
         if ($g) {
             $o = false;
         }
         foreach($this->inArea[$playername] as $areaname){
             if( isset($this->areaList[ $areaname ]) ){
                 $area = $this->areaList[$areaname];
-                if ($area->getFlag("hunger")) {
+                if ($area->getFlag("no-hunger")) {
                     $o = false;
                 }
                 if($area->isWhitelisted($playername)){
@@ -1290,17 +1290,17 @@ class Main extends PluginBase implements Listener{
      */
     public function canExplode( Position $pos ): bool{
         $o = true;
-        $g = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["TNT"] : $this->tnt);
+        $g = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["No-TNT"] : $this->tnt);
         if ($g) {
             $o = false;
         }
         // including entities/mobs in any area
         foreach ($this->areas as $area) {
             if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
-                if ($area->getFlag("tnt")) {
+                if ($area->getFlag("no-tnt")) {
                     $o = false;
                 }
-                if (!$area->getFlag("tnt") && $g) {
+                if (!$area->getFlag("no-tnt") && $g) {
                     $o = true;
                 }
             }
@@ -1333,7 +1333,7 @@ class Main extends PluginBase implements Listener{
 			return true;
 		}
 		$o = true;
-		$g = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Drop"] : $this->drop);
+		$g = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["No-Drop"] : $this->drop);
 		if($g){
 			$o = false;
 		}
@@ -1341,7 +1341,7 @@ class Main extends PluginBase implements Listener{
         foreach($this->inArea[$playername] as $areaname){
             if( isset($this->areaList[ $areaname ]) ){
                 $area = $this->areaList[$areaname];
-                if($area->getFlag("drop")){
+                if($area->getFlag("no-drop")){
                     $o = false;
                 }
                 if($area->isWhitelisted($playername)){
@@ -1389,7 +1389,7 @@ class Main extends PluginBase implements Listener{
         foreach($this->inArea[$playername] as $areaname){
             if( isset($this->areaList[ $areaname ]) ){
                 $area = $this->areaList[$areaname];
-                if($area->getFlag("shoot")){
+                if($area->getFlag("no-shoot")){
                     $o = false;
                 }
                 if($area->isWhitelisted($playername)){
@@ -1533,7 +1533,7 @@ class Main extends PluginBase implements Listener{
 		$position = $player->getPosition();
         $playername = strtolower($player->getName());
 
-        $f = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Flight"] : $this->flight);
+        $f = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["No-Flight"] : $this->flight);
         if( $f ){
             $fly = false; // flag default
         }
@@ -1541,7 +1541,7 @@ class Main extends PluginBase implements Listener{
         foreach($this->inArea[$playername] as $areaname){
             if( isset($this->areaList[ $areaname ]) ){
                 $area = $this->areaList[$areaname];
-                if(  $area->getFlag("flight") && !$area->isWhitelisted( $playername ) ){
+                if(  $area->getFlag("no-flight") && !$area->isWhitelisted( $playername ) ){
                     $fly = false; // flag area
                 }else{
                     $fly = true;
