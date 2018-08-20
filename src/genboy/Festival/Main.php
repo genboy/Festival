@@ -67,7 +67,7 @@ class Main extends PluginBase implements Listener{
 	/** @var bool */
 	private $perms         = false;
 	/** @var bool */
-	private $falldamage  = false;
+	private $nofalldamage  = false;
 
 	/** @var bool[] */
 	private $selectingFirst    = [];
