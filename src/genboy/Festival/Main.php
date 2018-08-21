@@ -601,7 +601,7 @@ class Main extends PluginBase implements Listener{
                             $cz = $area->getSecondPosition()->getZ() + ( ( $area->getFirstPosition()->getZ() - $area->getSecondPosition()->getZ() ) / 2 );
                             $cy1 = min( $area->getSecondPosition()->getY(), $area->getFirstPosition()->getY());
                             $cy2 = max( $area->getSecondPosition()->getY(), $area->getFirstPosition()->getY());
-                            if( $this->hasNoFallDamage($sender) ){
+                            if( !$this->hasFallDamage($sender) ){
                                 $this->playerTP[$playerName] = true; // player tp active $this->areaMessage( 'Fall save on!', $sender );
                             }
                             $sender->teleport( new Position( $cx, $cy2 - 2, $cz, $area->getLevel() ) );
@@ -1025,8 +1025,8 @@ class Main extends PluginBase implements Listener{
 	public function canGetHurt(Entity $entity) : bool{
 		$o = true;
         if( $entity instanceof Player){
-            $default = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["God"] : $this->god);
-            if($default){
+            $g = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["God"] : $this->god);
+            if($g){
                 $o = false;
             }
             $playername =  strtolower($entity->getName());
@@ -1035,6 +1035,9 @@ class Main extends PluginBase implements Listener{
                     $area = $this->areaList[ $areaname ];
                     if($area->getFlag("god")){
                         $o = false;
+                    }
+                    if(!$area->getFlag("god") && $g ){
+                        $o = true;
                     }
                     if($area->isWhitelisted($playername)){
                         $o = false;
@@ -1066,6 +1069,9 @@ class Main extends PluginBase implements Listener{
                         $god = $area->getFlag("god");
                         if($area->getFlag("pvp")){
                             $o = false;
+                        }
+                        if( !$area->getFlag("pvp") && $p){
+                            $o = true;
                         }
                         if($area->isWhitelisted($playername)){
                             $o = false;
@@ -1126,7 +1132,7 @@ class Main extends PluginBase implements Listener{
 	 *
 	 * @return bool
 	 */
-	public function hasNoFallDamage(Entity $entity) : bool{
+	public function hasFallDamage(Entity $entity) : bool{
 
 		$o = true;
         if( $entity instanceof Player ){
@@ -1140,6 +1146,9 @@ class Main extends PluginBase implements Listener{
                     $area = $this->areaList[$areaname];
                     if($area->getFlag("falldamage")){
                         $o = false;
+                    }
+                    if(!$area->getFlag("falldamage") && $f){
+                        $o = true;
                     }
                     if($area->isWhitelisted($playername)){
                         $o = false;
@@ -1188,6 +1197,9 @@ class Main extends PluginBase implements Listener{
                 if($area->getFlag("edit")){
                     $o = false;
                 }
+                if(!$area->getFlag("edit") && $e){
+                    $o = true;
+                }
                 if($area->isWhitelisted($playername)){
                     $o = true;
                 }
@@ -1216,6 +1228,9 @@ class Main extends PluginBase implements Listener{
                 $area = $this->areaList[$areaname];
                 if($area->getFlag("touch")){
                     $o = false;
+                }
+                if(!$area->getFlag("touch") && $t){
+                    $o = true;
                 }
                 if($area->isWhitelisted($playername)){
                     $o = true;
@@ -1260,8 +1275,8 @@ class Main extends PluginBase implements Listener{
         $pos = $event->getPlayer()->getPosition();
         $playername = strtolower($event->getPlayer()->getName());
         $o = true;
-        $g = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Hunger"] : $this->hunger);
-        if ($g) {
+        $h = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Hunger"] : $this->hunger);
+        if ($h) {
             $o = false;
         }
         foreach($this->inArea[$playername] as $areaname){
@@ -1269,6 +1284,9 @@ class Main extends PluginBase implements Listener{
                 $area = $this->areaList[$areaname];
                 if ($area->getFlag("hunger")) {
                     $o = false;
+                }
+                if(!$area->getFlag("hunger") && $h){
+                    $o = true;
                 }
                 if($area->isWhitelisted($playername)){
                     $o = false;
@@ -1299,8 +1317,8 @@ class Main extends PluginBase implements Listener{
      */
     public function canExplode( Position $pos ): bool{
         $o = true;
-        $g = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["TNT"] : $this->tnt);
-        if ($g) {
+        $e = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["TNT"] : $this->tnt);
+        if ($e) {
             $o = false;
         }
         // including entities/mobs in any area
@@ -1308,6 +1326,9 @@ class Main extends PluginBase implements Listener{
             if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
                 if ($area->getFlag("tnt")) {
                     $o = false;
+                }
+                if(!$area->getFlag("tnt") && $e){
+                    $o = true;
                 }
                 if (!$area->getFlag("tnt") && $g) {
                     $o = true;
@@ -1342,8 +1363,8 @@ class Main extends PluginBase implements Listener{
 			return true;
 		}
 		$o = true;
-		$g = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Drop"] : $this->drop);
-		if($g){
+		$d = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Drop"] : $this->drop);
+		if($d){
 			$o = false;
 		}
         $playername = strtolower($player->getName());
@@ -1352,6 +1373,9 @@ class Main extends PluginBase implements Listener{
                 $area = $this->areaList[$areaname];
                 if($area->getFlag("drop")){
                     $o = false;
+                }
+                if(!$area->getFlag("drop") && $d){
+                    $o = true;
                 }
                 if($area->isWhitelisted($playername)){
                     $o = true;
@@ -1390,8 +1414,8 @@ class Main extends PluginBase implements Listener{
         $playername = strtolower($player->getName());
 		$o = true;
         $m = true;
-		$g = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Shoot"] : $this->shoot);
-		if($g){
+		$s = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Shoot"] : $this->shoot);
+		if($s){
 			$o = false;
 		}
 
@@ -1400,6 +1424,9 @@ class Main extends PluginBase implements Listener{
                 $area = $this->areaList[$areaname];
                 if($area->getFlag("shoot")){
                     $o = false;
+                }
+                if(!$area->getFlag("shoot") && $s){
+                    $o = true;
                 }
                 if($area->isWhitelisted($playername)){
                     $o = true;
@@ -1481,13 +1508,16 @@ class Main extends PluginBase implements Listener{
 
 		$position = $player->getPosition();
 		$o = true;
-		$g = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[ $position->getLevel()->getName() ]["Perms"] : $this->perms);
-		if($g){
+		$p = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[ $position->getLevel()->getName() ]["Perms"] : $this->perms);
+		if($p){
 			$o = false;
 		}
 		if( $area->getFlag("perms") ){
 			$o = false;
 		}
+        if(!$area->getFlag("perms") && $p){
+            $o = true;
+        }
 		if( $area->isWhitelisted( strtolower( $player->getName() ) ) ){
 			$o = true;
 		}
@@ -1509,8 +1539,8 @@ class Main extends PluginBase implements Listener{
         $position = $player->getPosition();
         $playername = strtolower($player->getName());
 		$o = true;
-		$g = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Effects"] : $this->effects);
-		if($g){
+		$e = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Effects"] : $this->effects);
+		if($e){
 			$o = false;
 		}
 
@@ -1519,6 +1549,9 @@ class Main extends PluginBase implements Listener{
                 $area = $this->areaList[$areaname];
                 if($area->getFlag("effects")){
                     $o = false;
+                }
+                if(!$area->getFlag("effects") && $e){
+                    $o = true;
                 }
                 if( $area->isWhitelisted( $playername ) ){
                     $o = true;
@@ -1552,7 +1585,8 @@ class Main extends PluginBase implements Listener{
                 $area = $this->areaList[$areaname];
                 if(  $area->getFlag("flight") && !$area->isWhitelisted( $playername ) ){
                     $fly = false; // flag area
-                }else{
+                }
+                if(!$area->getFlag("flight") && $f){
                     $fly = true;
                 }
                 if( !$area->getFlag("msg") ){
@@ -2045,7 +2079,7 @@ class Main extends PluginBase implements Listener{
 			if(!$this->canGetHurt($player)){
 				$event->setCancelled();
 			}
-			if($cause == EntityDamageEvent::CAUSE_FALL && !$this->hasNoFallDamage($player)){
+			if($cause == EntityDamageEvent::CAUSE_FALL && $this->hasFallDamage($player)){
 				$event->setCancelled(true);
 			}
 		}
