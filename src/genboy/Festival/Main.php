@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 /** src/genboy/Festival/Main.php
  * Options: Msgtype, Msgdisplay, AutoWhitelist
- * Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, shoot, hunger, perms, nofalldamage
+ * Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage
  */
 namespace genboy\Festival;
 
@@ -67,7 +67,7 @@ class Main extends PluginBase implements Listener{
 	/** @var bool */
 	private $perms         = false;
 	/** @var bool */
-	private $nofalldamage  = false;
+	private $falldamage    = false;
 
 	/** @var bool[] */
 	private $selectingFirst    = [];
@@ -154,9 +154,14 @@ class Main extends PluginBase implements Listener{
 				$flags["hunger"] = false;
 				$newchange['Hunger'] = "! Area Hunger flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
-			if( !isset($datum["flags"]["nofalldamage"]) ){ //new in v1.0.7.2
-				$flags["nofalldamage"] = false;
-				$newchange['NoFallDamage'] = "! Area NoFallDamage flag missing, now updated to 'false'; please see /resources/config.yml";
+            if( isset($datum["flags"]["nofalldamage"]) ){
+				$flags["falldamage"] = $datum["flags"]["nofalldamage"]; // replaced in v1.0.5-11 can use both
+				unset($flags["nofalldamage"]);
+				$newchange['FallDamage'] = "! Old NoFallDamage config was used, now set to 'false'; please rename 'NoFallDamage' to 'FallDamage' in config.yml";
+			}
+			if( !isset($datum["flags"]["falldamage"]) ){ //new in v1.0.7.2
+				$flags["falldamage"] = false;
+				$newchange['FallDamage'] = "! Area FallDamage flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
 			if( !isset($datum["flags"]["shoot"]) ){ //new in v1.0.7.2
 				$flags["shoot"] = false;
@@ -230,8 +235,8 @@ class Main extends PluginBase implements Listener{
 		if(!isset($c["Default"]["Hunger"])) { // new in v1.0.7
 			$c["Default"]["Hunger"] = false;
 		}
-		if(!isset($c["Default"]["NoFallDamage"])) {
-			$c["Default"]["NoFallDamage"] = false; // new in v1.0.8
+		if(!isset($c["Default"]["FallDamage"])) {
+			$c["Default"]["FallDamage"] = false; // new in v1.0.8
 		}
 
 		$this->god            = $c["Default"]["God"];
@@ -246,7 +251,7 @@ class Main extends PluginBase implements Listener{
 		$this->flight         = $c["Default"]["Flight"]; // new in v1.0.6-13
 		$this->tnt            = $c["Default"]["TNT"]; // new in v1.0.7
 		$this->hunger         = $c["Default"]["Hunger"]; // new in v1.0.7
-		$this->nofalldamage   = $c["Default"]["NoFallDamage"]; // new in  1.0.7.2-dev(1.0.8)
+		$this->falldamage     = $c["Default"]["FallDamage"]; // new in  1.0.7.2-dev(1.0.8)
 		$this->shoot          = $c["Default"]["Shoot"]; // new in  1.0.7.2-dev(1.0.8)
 
         $this->flagset = $c['Default']; // new in v1.0.5-12
@@ -282,8 +287,8 @@ class Main extends PluginBase implements Listener{
 				if( !isset($flags["Hunger"]) ){ // new v1.0.7
 					$flags["Hunger"] = $this->hunger;
 				}
-				if( !isset($flags["NoFallDamage"]) ){ // new in v1.0.7.2
-					$flags["NoFallDamage"] = $this->nofalldamage;
+				if( !isset($flags["FallDamage"]) ){ // new in v1.0.7.2
+					$flags["FallDamage"] = $this->falldamage;
 				}
 				if( !isset($flags["Shoot"]) ){ // new v1.0.7.2
 					$flags["Shoot"] = $this->shoot;
@@ -328,7 +333,7 @@ class Main extends PluginBase implements Listener{
             "msg","message",
             "passage","pass","barrier",
             "perms","perm",
-			"nofalldamage","falldamage","nfd","fall",
+			"falldamage","nofalldamage","fd","nfd","fall",
             "shoot", "launch",
         ];
         $str = strtolower( $str );
@@ -371,8 +376,8 @@ class Main extends PluginBase implements Listener{
             if( $str == "hunger" || $str == "starve" ){
                 $flag = "hunger";
             }
-			if( $str == "nofalldamage" || $str == "falldamage" || $str == "nfd" || $str == "fall"){
-				$flag = "nofalldamage";
+			if( $str == "nofalldamage" || $str == "falldamage" || $str == "fd" || $str == "nfd" || $str == "fall"){
+				$flag = "falldamage";
 			}
         }
         return $flag;
@@ -425,58 +430,62 @@ class Main extends PluginBase implements Listener{
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.area") || $sender->hasPermission("festival.command.fe.create")){
 					if(isset($args[1])){
 						if(isset($this->firstPosition[$playerName], $this->secondPosition[$playerName])){
-							if(!isset($this->areas[strtolower($args[1])])){
-                                // get level default flags
-                                $flags = $this->flagset;
-                                if( isset($this->levels[$sender->getLevel()->getName()]) ){
-                                    if( is_array( $this->levels[$sender->getLevel()->getName()] ) ){
-                                        $flags = $this->levels[$sender->getLevel()->getName()];
+							if( $args[1] != '' && $args[1] != ' ' ){
+                                if( !isset($this->areas[strtolower($args[1])]) ){
+                                    // get level default flags
+                                    $flags = $this->flagset;
+                                    if( isset($this->levels[$sender->getLevel()->getName()]) ){
+                                        if( is_array( $this->levels[$sender->getLevel()->getName()] ) ){
+                                            $flags = $this->levels[$sender->getLevel()->getName()];
+                                        }
                                     }
-                                }
-                                // get default whitelisting
-                                $whitelist = []; 
-                                if( $this->options["AutoWhitelist"] == "on" ){ 
-                                    $whitelist = [$playerName];
-                                }
+                                    // get default whitelisting
+                                    $whitelist = [];
+                                    if( $this->options["AutoWhitelist"] == "on" ){
+                                        $whitelist = [$playerName];
+                                    }
                                   
-                                new Area(
-                                    strtolower($args[1]),
-                                    "",
-                                    [   "edit" => $flags['Edit'],
-                                        "god" => $flags['God'],
-                                        "pvp" => $flags["PVP"],
-                                        "flight"=> $flags["Flight"],
-                                        "touch" => $flags['Touch'],
-                                        "effects" => $flags['Effects'],
-                                        "msg" => $flags['Msg'],
-                                        "passage" => $flags['Passage'],
-                                        "drop" => $flags['Drop'],
-                                        "tnt" => $flags['TNT'],
-                                        "shoot" => $flags['Shoot'],
-                                        "hunger" => $flags['Hunger'],
-                                        "perms" => $flags['Perms'],
-                                        "nofalldamage" => $flags['NoFallDamage']],
+                                    new Area(
+                                        strtolower($args[1]),
+                                        "",
+                                        [   "edit" => $flags['Edit'],
+                                            "god" => $flags['God'],
+                                            "pvp" => $flags["PVP"],
+                                            "flight"=> $flags["Flight"],
+                                            "touch" => $flags['Touch'],
+                                            "effects" => $flags['Effects'],
+                                            "msg" => $flags['Msg'],
+                                            "passage" => $flags['Passage'],
+                                            "drop" => $flags['Drop'],
+                                            "tnt" => $flags['TNT'],
+                                            "shoot" => $flags['Shoot'],
+                                            "hunger" => $flags['Hunger'],
+                                            "perms" => $flags['Perms'],
+                                            "falldamage" => $flags['FallDamage']],
 
-                                    $this->firstPosition[$playerName],
-                                    $this->secondPosition[$playerName],
-                                    $sender->getLevel()->getName(),
-                                    $whitelist,
-                                    [],
-                                    [],
-                                    $this
-                                );
+                                        $this->firstPosition[$playerName],
+                                        $this->secondPosition[$playerName],
+                                        $sender->getLevel()->getName(),
+                                        $whitelist,
+                                        [],
+                                        [],
+                                        $this
+                                    );
 
-								$this->saveAreas();
-								unset($this->firstPosition[$playerName], $this->secondPosition[$playerName]);
-								$o = TextFormat::AQUA . "Area created!";
-							}else{
-								$o = TextFormat::RED . "An area with that name already exists.";
-							}
-						}else{
-							$o = TextFormat::RED . "Please select both positions first.";
-						}
+                                    $this->saveAreas();
+                                    unset($this->firstPosition[$playerName], $this->secondPosition[$playerName]);
+                                    $o = TextFormat::AQUA . "Area created!";
+                                }else{
+                                    $o = TextFormat::RED . "An area with that name already exists.";
+                                }
+                            }else{
+                                $o = TextFormat::RED . "Enter a name for the area (/fe create <name>).";
+                            }
+                        }else{
+                            $o = TextFormat::RED . "Please select both positions first.";
+                        }
 					}else{
-						$o = TextFormat::RED . "Please specify a name for this area.";
+						$o = TextFormat::RED . "Please specify a name for this area (/fe create <name>).";
 					}
 				}else{
 					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
@@ -628,13 +637,13 @@ class Main extends PluginBase implements Listener{
 			case "starve":
 			case "tnt":
 			case "explode":
-			case "shoot";
-			case "launch";
+            case "shoot":
+            case "launch":
 			case "drop":
-			case "nofalldamage";
-			case "falldamage";
-			case "fall";
-			case "nfd";
+            case "falldamage":
+            case "nofalldamage":
+            case "fall":
+            case "nfd":
 
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.flag")){
 					if(isset($args[1])){
@@ -717,10 +726,10 @@ class Main extends PluginBase implements Listener{
 										}
 										$o = TextFormat::GREEN . "Flag " . $flag . " set to " . $status . " for area " . $area->getName() . "!";
 									}else{
-										$o = TextFormat::RED . "Flag not found. (Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, shoot, hunger, perms, nofalldamage)";
+										$o = TextFormat::RED . "Flag not found. (Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)";
 									}
 								}else{
-									$o = TextFormat::RED . "Please specify a flag. (Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, shoot, hunger, perms, nofalldamage)";
+									$o = TextFormat::RED . "Please specify a flag. (Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)";
 								}
 							}
 						}else{
@@ -1121,7 +1130,7 @@ class Main extends PluginBase implements Listener{
 
 		$o = true;
         if( $entity instanceof Player ){
-            $f = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["NoFallDamage"] : $this->nofalldamage);
+            $f = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["FallDamage"] : $this->falldamage);
             if($f){
                 $o = false;
             }
@@ -1129,7 +1138,7 @@ class Main extends PluginBase implements Listener{
             foreach($this->inArea[$playername] as $areaname){
                 if( isset($this->areaList[ $areaname ]) ){
                     $area = $this->areaList[$areaname];
-                    if($area->getFlag("nofalldamage")){
+                    if($area->getFlag("falldamage")){
                         $o = false;
                     }
                     if($area->isWhitelisted($playername)){
@@ -1529,7 +1538,7 @@ class Main extends PluginBase implements Listener{
 
         $fly = true;
         $sendmsg = false;
-        $nofalldamage = false;
+        $falldamage = false;
 		$position = $player->getPosition();
         $playername = strtolower($player->getName());
 
@@ -1549,8 +1558,8 @@ class Main extends PluginBase implements Listener{
                 if( !$area->getFlag("msg") ){
                     $sendmsg = true;
                 }
-                if( $area->getFlag("nofalldamage") ){
-                    $nofalldamage = true;
+                if( $area->getFlag("falldamage") ){
+                    $falldamage = true;
                 }
             }
         }
@@ -1563,7 +1572,7 @@ class Main extends PluginBase implements Listener{
         }
         $msg = '';
         if( !$fly && $player->isFlying() ){
-            if( $nofalldamage ){
+            if( $falldamage ){
             $this->playerTP[ strtolower( $player->getName() ) ] = true; // player tp active (fall save)
             }
             $player->setFlying(false);
