@@ -32,6 +32,9 @@ Default:
   # Keep players from touching blocks and activating things like chests? (true = NoTouching)
   Touch: false
   
+  # Keep Entities from spawning? (true = NoMobs)
+  Mobs: false
+
   # Keep players from having effects like speed or night vision? (true = NoEffects)
   Effects: false
    
@@ -80,6 +83,9 @@ Worlds:
     # Keep players from touching blocks and activating things like chests? (true = NoTouching)
     Touch: false
   
+    # Keep Entities from spawning? (true = NoMobs)
+    Mobs: false
+
     # Keep players from having effects like speed or night vision? (true = NoEffects)
     Effects: false
 
@@ -124,6 +130,9 @@ Worlds:
     # Keep players from touching blocks and activating things like chests? (true = NoTouching)
     Touch: false
   
+    # Keep Entities from spawning? (true = NoMobs)
+    Mobs: false
+
     # Keep players from having effects like speed or night vision? (true = NoEffects)
     Effects: false
 
