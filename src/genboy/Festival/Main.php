@@ -9,6 +9,9 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\entity\Entity;
+use pocketmine\entity\object\ExperienceOrb;
+use pocketmine\entity\object\ItemEntity;
+
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\entity\EntitySpawnEvent;
@@ -1488,23 +1491,44 @@ class Main extends PluginBase implements Listener{
     public function canEntitySpawn( Entity $e ): bool{
 
         $o = true;
-        $pos = $e->getPosition();
-        $m = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Mobs"] : $this->mobs);
-        if ($m) {
-            $o = false;
+        $pos = false;
+
+        // Is entity a mob (animal = animmal flag, allow non living)
+        if( $e instanceof ExperienceOrb || $e instanceof ItemEntity){
+            return $o; // non living
         }
-        // including entities/mobs in any area
-        foreach ($this->areas as $area) {
-            if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
-                if ($area->getFlag("mobs")) {
-                    $o = false;
-                }
-                if(!$area->getFlag("mobs") && $m){
-                    $o = true;
+
+        if( null !== $e->getPosition() ){
+            $pos = $e->getPosition();
+        }
+
+        $nm = 'unknown';
+        if( null !== $e->getName() ){
+            $nm = $e->getName();
+        }
+        //$this->getLogger()->info( 'Spawn: '.$nm );
+        if($pos){
+            $m = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Mobs"] : $this->mobs);
+            if ($m) {
+                $o = false;
+            }
+            foreach ($this->areas as $area) {
+                if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
+
+
+                    if ($area->getFlag("mobs")) {
+                        $o = false;
+                    }
+                    if(!$area->getFlag("mobs") && $m){
+                        $o = true;
+                    }
                 }
             }
         }
         return $o;
+
+        // https://forums.pmmp.io/threads/mobs-spawn-event.6151/
+        // https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/entity/Entity.php
     }
 
 
