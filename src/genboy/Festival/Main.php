@@ -1517,9 +1517,14 @@ class Main extends PluginBase implements Listener{
         }
         if($pos && $nm != 'unknown'){
             // should extend - taken from PureEntitiesX
-            // animals bat,chicken,cow,horse,ocelot,parrot,pig,rabbit,sheep
+            // animals bat,chicken,cow,horse,squit,ocelot,parrot,pig,rabbit,sheep
             // mobs blaze,cavespider,spider,creeper,enderman,ghast,irongolem,magmacube,pigzombie,skeleton,slime,spider,wolf,zombie
-            $animals = [ 'bat','chicken','cow','horse','ocelot','parrot','pig','rabbit','sheep'];
+
+            // see pocketmine enitities id's
+            //https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/entity/EntityIds.php
+
+            $animals = [ 'bat','chicken','cow','horse','donkey','mule','ocelot','parrot','fish','dolphin','squit','pig','rabbit','sheep','pufferfish','salmon','tropical_fish','balloon'];
+
             if( in_array( strtolower($nm), $animals ) ){
                 // check animal flag
                 // check mob flag
@@ -1567,6 +1572,9 @@ class Main extends PluginBase implements Listener{
 
         // https://forums.pmmp.io/threads/mobs-spawn-event.6151/
         // https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/entity/Entity.php
+        // https://github.com/LeinneSW/EntityManager
+        //https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/entity/EntityIds.php
+
         //$this->getServer()->getPluginManager()->callEvent(new EntityDespawnEvent($e));
         //$e->close();
         //$event->setCancelled();
