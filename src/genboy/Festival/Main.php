@@ -9,9 +9,11 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\entity\Entity;
+use pocketmine\entity\Item;
 use pocketmine\entity\object\ExperienceOrb;
 use pocketmine\entity\object\ItemEntity;
-
+use pocketmine\entity\projectile\Arrow;
+use pocketmine\entity\projectile\Projectile;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\entity\EntitySpawnEvent;
@@ -58,7 +60,7 @@ class Main extends PluginBase implements Listener{
 	/** @var bool */
 	private $mobs          = false;
 	/** @var bool */
-	private $animals          = false;
+	private $animals       = false;
 	/** @var bool */
 	private $effects       = false;
 	/** @var bool */
@@ -72,7 +74,7 @@ class Main extends PluginBase implements Listener{
 	/** @var bool */
 	private $shoot         = false;
 	/** @var bool */
-	private $hunger         = false;
+	private $hunger        = false;
 	/** @var bool */
 	private $perms         = false;
 	/** @var bool */
@@ -1494,40 +1496,45 @@ class Main extends PluginBase implements Listener{
     public function onEntitySpawn( EntitySpawnEvent $event ): void{
         $e = $event->getEntity();
         if( !$e instanceof Player && !$this->canEntitySpawn( $e ) ){
-            $e->flagForDespawn();
+            //$e->flagForDespawn() to slow / ? $e->close(); private..
+            $this->getServer()->getPluginManager()->callEvent(new EntityDespawnEvent($e));
+            $e->despawnFromAll();
+            if($e->chunk !== null){
+                $e->chunk->removeEntity($e);
+                $e->chunk = null;
+            }
+            if($e->isValid()){
+                $e->level->removeEntity($e);
+                $e->setLevel(null);
+            }
         }
     }
 
     public function canEntitySpawn( Entity $e ): bool{
+        // see pocketmine & PureEntitiesX enitities id's
+        // https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/entity/EntityIds.php
+        // https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/entity/Entity.php
+        // https://forums.pmmp.io/threads/mobs-spawn-event.6151/
+        // https://github.com/LeinneSW/EntityManager
 
         $o = true;
-
-        if( $e instanceof ExperienceOrb || $e instanceof ItemEntity ){
+        if( $e instanceof ExperienceOrb || $e instanceof ItemEntity || $e instanceof Projectile){
             return $o; // allowed
         }
-
-        $nm = 'unknown';
+        $nm = 'unknown'; // $nm = $e instanceof Item ? $e->getItem()->getName() : $e->getName();
         if( null !== $e->getName() ){
           $nm = $e->getName();
         }
-
         $pos = false;
         if( null !== $e->getPosition() ){
             $pos = $e->getPosition();
         }
         if($pos && $nm != 'unknown'){
-            // should extend - taken from PureEntitiesX
-            // animals bat,chicken,cow,horse,squit,ocelot,parrot,pig,rabbit,sheep
-            // mobs blaze,cavespider,spider,creeper,enderman,ghast,irongolem,magmacube,pigzombie,skeleton,slime,spider,wolf,zombie
 
-            // see pocketmine enitities id's
-            //https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/entity/EntityIds.php
-
-            $animals = [ 'bat','chicken','cow','horse','donkey','mule','ocelot','parrot','fish','dolphin','squit','pig','rabbit','sheep','pufferfish','salmon','tropical_fish','balloon'];
+            $animals =[ 'bat','chicken','cow','horse','donkey','mule','ocelot','parrot','fish','dolphin','squit','pig','rabbit','sheep','pufferfish','salmon','tropical_fish','balloon'];
 
             if( in_array( strtolower($nm), $animals ) ){
                 // check animal flag
-                // check mob flag
                 $a = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Animals"] : $this->animals);
                 if ($a) {
                     $o = false;
@@ -1561,29 +1568,13 @@ class Main extends PluginBase implements Listener{
                 }
             }
         }
-        /*
-        if($o){
+        /* if($o){
             $this->getLogger()->info( 'Spawn '.$nm.' entity allowed' );
         }else{
             $this->getLogger()->info( 'Spawn '.$nm.' entity canceled' );
-        }
-        */
+        } */
         return $o;
-
-        // https://forums.pmmp.io/threads/mobs-spawn-event.6151/
-        // https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/entity/Entity.php
-        // https://github.com/LeinneSW/EntityManager
-        //https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/entity/EntityIds.php
-
-        //$this->getServer()->getPluginManager()->callEvent(new EntityDespawnEvent($e));
-        //$e->close();
-        //$event->setCancelled();
-        //EntityDespawnEvent(Entity $entity)
-
     }
-
-
-
 
 	/** Block Place
 	 * @param BlockPlaceEvent $event
@@ -1664,8 +1655,6 @@ class Main extends PluginBase implements Listener{
 		return $o;
 	}
 
-
-
     /** Effects
 	 * @param Player $player
 	 * @return bool
@@ -1701,7 +1690,6 @@ class Main extends PluginBase implements Listener{
 
 		return $o;
 	}
-
 
 
     /** Flight
