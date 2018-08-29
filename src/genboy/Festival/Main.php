@@ -236,10 +236,10 @@ class Main extends PluginBase implements Listener{
 		if(!isset($c["Default"]["Drop"])) { // new in v1.0.4-11
 			$c["Default"]["Drop"] = false;
 		}
-		if(!isset($c["Default"]["Animals"])) { // new in v1.0.7.4
+		if(!isset($c["Default"]["Animals"])) { // new in v1.0.7.5
 			$c["Default"]["Animals"] = false;
 		}
-		if(!isset($c["Default"]["Mobs"])) { // new in v1.0.7.4
+		if(!isset($c["Default"]["Mobs"])) { // new in v1.0.7.5
 			$c["Default"]["Mobs"] = false;
 		}
 		if(!isset($c["Default"]["Effects"])) { // new in v1.0.5-12
@@ -261,7 +261,7 @@ class Main extends PluginBase implements Listener{
 			$c["Default"]["Hunger"] = false;
 		}
 		if(!isset($c["Default"]["FallDamage"])) {
-			$c["Default"]["FallDamage"] = false; // new in v1.0.8
+			$c["Default"]["FallDamage"] = false; // new in v1.0.7.3
 		}
 
 		$this->god            = $c["Default"]["God"];
@@ -276,8 +276,8 @@ class Main extends PluginBase implements Listener{
 		$this->effects        = $c["Default"]["Effects"]; // new in v1.0.5-12
 		$this->pvp            = $c["Default"]["PVP"]; // new in v1.0.6-13
 		$this->flight         = $c["Default"]["Flight"]; // new in v1.0.6-13
-		$this->tnt            = $c["Default"]["TNT"]; // new in v1.0.7
-		$this->hunger         = $c["Default"]["Hunger"]; // new in v1.0.7
+		$this->tnt            = $c["Default"]["TNT"]; // new in v1.0.7.3
+		$this->hunger         = $c["Default"]["Hunger"]; // new in v1.0.7.3
 		$this->falldamage     = $c["Default"]["FallDamage"]; // new in  1.0.7.2-dev(1.0.8)
 		$this->shoot          = $c["Default"]["Shoot"]; // new in  1.0.7.2-dev(1.0.8)
 
@@ -1294,6 +1294,22 @@ class Main extends PluginBase implements Listener{
 	public function onBlockTouch(PlayerInteractEvent $event) : void{
 		$block = $event->getBlock();
 		$player = $event->getPlayer();
+        $item = $event->getItem();
+
+        //$player->sendMessage("TOUCHED " . $block->getName() . "(". $block->getID() . ") with ". $item->getName() ."(".$item->getID().") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]");
+
+        // touch & block events controlled by edit flag
+        $b = $block->getID();
+        $i = $item->getID();
+        if(
+            ( $b == 199 ) // item frame
+            || ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) // no farm event
+        ){
+            if(!$this->canEdit($player, $block)){
+				$event->setCancelled();
+			}
+        }
+
 		if(!$this->canTouch($player, $block)){
 			$event->setCancelled();
 		}
