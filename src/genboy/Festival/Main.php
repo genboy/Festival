@@ -111,9 +111,8 @@ class Main extends PluginBase implements Listener{
 	 */
 	public function onEnable() : void{
 
-        // Load data & configurations
+        $this->getServer()->getPluginManager()->registerEvents($this, $this); // Load data & configurations
         $newchange = []; // list of missing config flags/options
-		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		if(!is_dir($this->getDataFolder())){
 			mkdir($this->getDataFolder());
 		}
@@ -145,11 +144,11 @@ class Main extends PluginBase implements Listener{
 				$flags["drop"] = false;
 				$newchange['Drop'] = "! Area Drop flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
-			if( !isset($datum["flags"]["animals"]) ){ // new flags v 1.0.7.4
+			if( !isset($datum["flags"]["animals"]) ){ // new flags v 1.0.7.5-dev
 				$flags["animals"] = false;
 				$newchange['Animals'] = "! Area Animals flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
-			if( !isset($datum["flags"]["mobs"]) ){ // new flags v 1.0.7.4
+			if( !isset($datum["flags"]["mobs"]) ){ // new flags v 1.0.7.5-dev
 				$flags["mobs"] = false;
 				$newchange['Mobs'] = "! Area Mobs flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
@@ -178,11 +177,11 @@ class Main extends PluginBase implements Listener{
 				unset($flags["nofalldamage"]);
 				$newchange['FallDamage'] = "! Old NoFallDamage config was used, now set to 'false'; please rename 'NoFallDamage' to 'FallDamage' in config.yml";
 			}
-			if( !isset($datum["flags"]["falldamage"]) ){ //new in v1.0.7.2
+			if( !isset($datum["flags"]["falldamage"]) ){ //new in v1.0.7.3
 				$flags["falldamage"] = false;
 				$newchange['FallDamage'] = "! Area FallDamage flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
-			if( !isset($datum["flags"]["shoot"]) ){ //new in v1.0.7.2
+			if( !isset($datum["flags"]["shoot"]) ){ //new in v1.0.7.4
 				$flags["shoot"] = false;
 				$newchange['Shoot'] = "! Area Shoot flag missing (alias launch), now updated to 'false';  please see /resources/config.yml";
 			}
@@ -236,10 +235,10 @@ class Main extends PluginBase implements Listener{
 		if(!isset($c["Default"]["Drop"])) { // new in v1.0.4-11
 			$c["Default"]["Drop"] = false;
 		}
-		if(!isset($c["Default"]["Animals"])) { // new in v1.0.7.5
+		if(!isset($c["Default"]["Animals"])) { // new in v1.0.7.5-dev
 			$c["Default"]["Animals"] = false;
 		}
-		if(!isset($c["Default"]["Mobs"])) { // new in v1.0.7.5
+		if(!isset($c["Default"]["Mobs"])) { // new in v1.0.7.5-dev
 			$c["Default"]["Mobs"] = false;
 		}
 		if(!isset($c["Default"]["Effects"])) { // new in v1.0.5-12
@@ -271,8 +270,8 @@ class Main extends PluginBase implements Listener{
 		$this->passage        = $c["Default"]["Passage"]; // changed in v1.0.3-11
 		$this->perms          = $c["Default"]["Perms"]; // new in v1.0.4-11
 		$this->drop           = $c["Default"]["Drop"]; // new in v1.0.4-11
-		$this->animals        = $c["Default"]["Animals"]; // new in v1.0.7.5-dev(1.0.8)
-		$this->mobs           = $c["Default"]["Mobs"]; // new in v1.0.7.5-dev(1.0.8)
+		$this->animals        = $c["Default"]["Animals"]; // new in v1.0.7.5-dev
+		$this->mobs           = $c["Default"]["Mobs"]; // new in v1.0.7.5-dev
 		$this->effects        = $c["Default"]["Effects"]; // new in v1.0.5-12
 		$this->pvp            = $c["Default"]["PVP"]; // new in v1.0.6-13
 		$this->flight         = $c["Default"]["Flight"]; // new in v1.0.6-13
@@ -299,10 +298,10 @@ class Main extends PluginBase implements Listener{
 				if( !isset($flags["Drop"]) ){ // new v1.0.4-11
 					$flags["Drop"] = $this->drop;
 				}
-				if( !isset($flags["Animals"]) ){ // new v1.0.7.5
+				if( !isset($flags["Animals"]) ){ // new v1.0.7.5-dev
 					$flags["Animals"] = $this->animals;
 				}
-				if( !isset($flags["Mobs"]) ){ // new v1.0.7.5
+				if( !isset($flags["Mobs"]) ){ // new v1.0.7.5-dev
 					$flags["Mobs"] = $this->effects;
 				}
 				if( !isset($flags["Effects"]) ){ // new v1.0.5-12
@@ -2242,6 +2241,7 @@ class Main extends PluginBase implements Listener{
 		}
 		file_put_contents($this->getDataFolder() . "areas.json", json_encode($areas));
 	}
+
     /**  Festival Console Sign Flag for developers
      *   makes it easy to find Festival console output fast
      */
