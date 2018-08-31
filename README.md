@@ -10,7 +10,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 ### Manage area's and run commmands attachted to area events. 
 
  
-![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/08/festival_usage_1.0.7-2-dev.png)
+![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/08/festival_usage_1.0.7.5-dev.png)
 
 
 ###### Copyright [Genboy](https://genboy.net) 2018
@@ -52,6 +52,8 @@ Create a festival with this custom area events plugin for Pocketmine Server:
     - pvp: players in the area are save from PVP
     - flight: players in the area are not allowed to fly
     - touch: area is save from player interaction with chests/signs etc.
+    - animals: no animal spawning (including spawners & eggs)
+    - mobs: no mobs spawning (including spawners & eggs)
     - effects: player can not keep using effects in the area 
     - msg: do not display area enter/leave messages 
     - passage: no passage for non-whitelisted players! (previously barrier flag)
@@ -60,7 +62,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
     - shoot: player can not shoot (bow)
     - perms: player permissions are used to determine area command execution (experiment)
     - hunger: player does not exhaust / hunger
-    - nfd: player will not have fall damage (no fall damage)
+    - falldamage: player will not have fall damage (no fall damage)
 
 
 **Events & Commands**
@@ -69,7 +71,8 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 
     - assign commands to area events
     - enter, center or leave.
-    - add/edit/delete area event commands
+    - variable player in commands with {player} or @p
+    - add/edit/delete area event command
     - list area commands (ordered by event)
     - change event of area commands
 
@@ -95,7 +98,7 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 
   ### Install & Configure
 
-  - Standard Plugin installation; Upload .phar file (or .zip if you have latest devtools installed), restart the server, go to  folder plugins/Festival;
+  - Standard Plugin installation; Upload .phar file to server 'plugin' folder (or upload .zip if you have latest devtools installed), restart the server, go to  folder plugins/Festival;
 
   - Edit config.yml; set the defaults for options, default area flags and the default area flags for specific worlds.
   
@@ -139,9 +142,9 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   - new Hunger flag
   - Fire is now extinguished when player does not get damage (aka. in area with god flag on)
   - new shoot flag (experimental no shooting/launching)
-  - new nofalldamage flag (nfd)
-
-
+  - new falldamage flag
+  - new animals and mobs (spawning) flag 
+  - Fixes itemframe and farmland edit  
 
  
   #### Usage Graphic

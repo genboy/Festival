@@ -9,8 +9,15 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\entity\Entity;
+use pocketmine\entity\Item;
+use pocketmine\entity\object\ExperienceOrb;
+use pocketmine\entity\object\ItemEntity;
+use pocketmine\entity\projectile\Arrow;
+use pocketmine\entity\projectile\Projectile;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
+use pocketmine\event\entity\EntitySpawnEvent;
+use pocketmine\event\entity\EntityDespawnEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityExplodeEvent;
@@ -51,6 +58,10 @@ class Main extends PluginBase implements Listener{
 	/** @var bool */
 	private $touch         = false;
 	/** @var bool */
+	private $mobs          = false;
+	/** @var bool */
+	private $animals       = false;
+	/** @var bool */
 	private $effects       = false;
 	/** @var bool */
 	private $msg           = false;
@@ -63,7 +74,7 @@ class Main extends PluginBase implements Listener{
 	/** @var bool */
 	private $shoot         = false;
 	/** @var bool */
-	private $hunger         = false;
+	private $hunger        = false;
 	/** @var bool */
 	private $perms         = false;
 	/** @var bool */
@@ -100,9 +111,8 @@ class Main extends PluginBase implements Listener{
 	 */
 	public function onEnable() : void{
 
-        // Load data & configurations
+        $this->getServer()->getPluginManager()->registerEvents($this, $this); // Load data & configurations
         $newchange = []; // list of missing config flags/options
-		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		if(!is_dir($this->getDataFolder())){
 			mkdir($this->getDataFolder());
 		}
@@ -134,6 +144,14 @@ class Main extends PluginBase implements Listener{
 				$flags["drop"] = false;
 				$newchange['Drop'] = "! Area Drop flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
+			if( !isset($datum["flags"]["animals"]) ){ // new flags v 1.0.7.5-dev
+				$flags["animals"] = false;
+				$newchange['Animals'] = "! Area Animals flag missing, now updated to 'false'; please see /resources/config.yml";
+			}
+			if( !isset($datum["flags"]["mobs"]) ){ // new flags v 1.0.7.5-dev
+				$flags["mobs"] = false;
+				$newchange['Mobs'] = "! Area Mobs flag missing, now updated to 'false'; please see /resources/config.yml";
+			}
 			if( !isset($datum["flags"]["effects"]) ){ // new flags v 1.0.5-12
 				$flags["effects"] = false;
 				$newchange['Effects'] = "! Area Effects flag missing, now updated to 'false'; please see /resources/config.yml";
@@ -159,11 +177,11 @@ class Main extends PluginBase implements Listener{
 				unset($flags["nofalldamage"]);
 				$newchange['FallDamage'] = "! Old NoFallDamage config was used, now set to 'false'; please rename 'NoFallDamage' to 'FallDamage' in config.yml";
 			}
-			if( !isset($datum["flags"]["falldamage"]) ){ //new in v1.0.7.2
+			if( !isset($datum["flags"]["falldamage"]) ){ //new in v1.0.7.3
 				$flags["falldamage"] = false;
 				$newchange['FallDamage'] = "! Area FallDamage flag missing, now updated to 'false'; please see /resources/config.yml";
 			}
-			if( !isset($datum["flags"]["shoot"]) ){ //new in v1.0.7.2
+			if( !isset($datum["flags"]["shoot"]) ){ //new in v1.0.7.4
 				$flags["shoot"] = false;
 				$newchange['Shoot'] = "! Area Shoot flag missing (alias launch), now updated to 'false';  please see /resources/config.yml";
 			}
@@ -217,6 +235,12 @@ class Main extends PluginBase implements Listener{
 		if(!isset($c["Default"]["Drop"])) { // new in v1.0.4-11
 			$c["Default"]["Drop"] = false;
 		}
+		if(!isset($c["Default"]["Animals"])) { // new in v1.0.7.5-dev
+			$c["Default"]["Animals"] = false;
+		}
+		if(!isset($c["Default"]["Mobs"])) { // new in v1.0.7.5-dev
+			$c["Default"]["Mobs"] = false;
+		}
 		if(!isset($c["Default"]["Effects"])) { // new in v1.0.5-12
 			$c["Default"]["Effects"] = false;
 		}
@@ -236,7 +260,7 @@ class Main extends PluginBase implements Listener{
 			$c["Default"]["Hunger"] = false;
 		}
 		if(!isset($c["Default"]["FallDamage"])) {
-			$c["Default"]["FallDamage"] = false; // new in v1.0.8
+			$c["Default"]["FallDamage"] = false; // new in v1.0.7.3
 		}
 
 		$this->god            = $c["Default"]["God"];
@@ -246,11 +270,13 @@ class Main extends PluginBase implements Listener{
 		$this->passage        = $c["Default"]["Passage"]; // changed in v1.0.3-11
 		$this->perms          = $c["Default"]["Perms"]; // new in v1.0.4-11
 		$this->drop           = $c["Default"]["Drop"]; // new in v1.0.4-11
+		$this->animals        = $c["Default"]["Animals"]; // new in v1.0.7.5-dev
+		$this->mobs           = $c["Default"]["Mobs"]; // new in v1.0.7.5-dev
 		$this->effects        = $c["Default"]["Effects"]; // new in v1.0.5-12
 		$this->pvp            = $c["Default"]["PVP"]; // new in v1.0.6-13
 		$this->flight         = $c["Default"]["Flight"]; // new in v1.0.6-13
-		$this->tnt            = $c["Default"]["TNT"]; // new in v1.0.7
-		$this->hunger         = $c["Default"]["Hunger"]; // new in v1.0.7
+		$this->tnt            = $c["Default"]["TNT"]; // new in v1.0.7.3
+		$this->hunger         = $c["Default"]["Hunger"]; // new in v1.0.7.3
 		$this->falldamage     = $c["Default"]["FallDamage"]; // new in  1.0.7.2-dev(1.0.8)
 		$this->shoot          = $c["Default"]["Shoot"]; // new in  1.0.7.2-dev(1.0.8)
 
@@ -271,6 +297,12 @@ class Main extends PluginBase implements Listener{
 				}
 				if( !isset($flags["Drop"]) ){ // new v1.0.4-11
 					$flags["Drop"] = $this->drop;
+				}
+				if( !isset($flags["Animals"]) ){ // new v1.0.7.5-dev
+					$flags["Animals"] = $this->animals;
+				}
+				if( !isset($flags["Mobs"]) ){ // new v1.0.7.5-dev
+					$flags["Mobs"] = $this->effects;
 				}
 				if( !isset($flags["Effects"]) ){ // new v1.0.5-12
 					$flags["Effects"] = $this->effects;
@@ -326,6 +358,8 @@ class Main extends PluginBase implements Listener{
             "flight", "fly",
             "edit","build","break","place",
             "touch","interact",
+            "mobs","mob",
+            "animals","animal",
             "effects","magic","effect",
             "tnt","explode",
             "hunger","starve",
@@ -349,8 +383,14 @@ class Main extends PluginBase implements Listener{
             if( $str == "build" || $str == "break" || $str == "place" ){
                 $flag = "edit";
             }
-            if( $str == "interact" ){
+            if( $str == "touch" || $str == "interact" ){
                 $flag = "touch";
+            }
+            if( $str == "animals" || $str == "animal" ){
+                $flag = "animals";
+            }
+            if( $str == "mob" || $str == "mobs" ){
+                $flag = "mobs";
             }
             if( $str == "magic" || $str == "effect" ){
                 $flag = "effects";
@@ -453,6 +493,8 @@ class Main extends PluginBase implements Listener{
                                             "pvp" => $flags["PVP"],
                                             "flight"=> $flags["Flight"],
                                             "touch" => $flags['Touch'],
+                                            "animals" => $flags['Animals'],
+                                            "mobs" => $flags['Mobs'],
                                             "effects" => $flags['Effects'],
                                             "msg" => $flags['Msg'],
                                             "passage" => $flags['Passage'],
@@ -623,6 +665,10 @@ class Main extends PluginBase implements Listener{
 			case "pvp":
 			case "flight":
 			case "fly":
+			case "animal":
+			case "animals":
+			case "mob":
+			case "mobs":
 			case "effect":
 			case "effects":
 			case "edit":
@@ -726,10 +772,10 @@ class Main extends PluginBase implements Listener{
 										}
 										$o = TextFormat::GREEN . "Flag " . $flag . " set to " . $status . " for area " . $area->getName() . "!";
 									}else{
-										$o = TextFormat::RED . "Flag not found. (Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)";
+										$o = TextFormat::RED . "Flag not found. (Flags: god, pvp, flight, edit, touch, animals, mobs, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)";
 									}
 								}else{
-									$o = TextFormat::RED . "Please specify a flag. (Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)";
+									$o = TextFormat::RED . "Please specify a flag. (Flags: god, pvp, flight, edit, touch, animals, mobs, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)";
 								}
 							}
 						}else{
@@ -1247,6 +1293,22 @@ class Main extends PluginBase implements Listener{
 	public function onBlockTouch(PlayerInteractEvent $event) : void{
 		$block = $event->getBlock();
 		$player = $event->getPlayer();
+        $item = $event->getItem();
+
+        //$player->sendMessage("TOUCHED " . $block->getName() . "(". $block->getID() . ") with ". $item->getName() ."(".$item->getID().") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]");
+
+        // touch & block events controlled by edit flag
+        $b = $block->getID();
+        $i = $item->getID();
+        if(
+            ( $b == 199 ) // item frame
+            || ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) // no farm event
+        ){
+            if(!$this->canEdit($player, $block)){
+				$event->setCancelled();
+			}
+        }
+
 		if(!$this->canTouch($player, $block)){
 			$event->setCancelled();
 		}
@@ -1328,9 +1390,6 @@ class Main extends PluginBase implements Listener{
                     $o = false;
                 }
                 if(!$area->getFlag("tnt") && $e){
-                    $o = true;
-                }
-                if (!$area->getFlag("tnt") && $g) {
                     $o = true;
                 }
             }
@@ -1445,6 +1504,93 @@ class Main extends PluginBase implements Listener{
 
 	}
 
+    /** Mob spawning
+	 * @param EntitySpawnEvent $event
+	 * @ignoreCancelled true
+     */
+    public function onEntitySpawn( EntitySpawnEvent $event ): void{
+        $e = $event->getEntity();
+        if( !$e instanceof Player && !$this->canEntitySpawn( $e ) ){
+            //$e->flagForDespawn() to slow / ? $e->close(); private..
+            $this->getServer()->getPluginManager()->callEvent(new EntityDespawnEvent($e));
+            $e->despawnFromAll();
+            if($e->chunk !== null){
+                $e->chunk->removeEntity($e);
+                $e->chunk = null;
+            }
+            if($e->isValid()){
+                $e->level->removeEntity($e);
+                $e->setLevel(null);
+            }
+        }
+    }
+
+    public function canEntitySpawn( Entity $e ): bool{
+        // see pocketmine & PureEntitiesX enitities id's
+        // https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/entity/EntityIds.php
+        // https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/entity/Entity.php
+        // https://forums.pmmp.io/threads/mobs-spawn-event.6151/
+        // https://github.com/LeinneSW/EntityManager
+
+        $o = true;
+        if( $e instanceof ExperienceOrb || $e instanceof ItemEntity || $e instanceof Projectile){
+            return $o; // allowed
+        }
+        $nm = 'unknown'; // $nm = $e instanceof Item ? $e->getItem()->getName() : $e->getName();
+        if( null !== $e->getName() ){
+          $nm = $e->getName();
+        }
+        $pos = false;
+        if( null !== $e->getPosition() ){
+            $pos = $e->getPosition();
+        }
+        if($pos && $nm != 'unknown'){
+
+            $animals =[ 'bat','chicken','cow','horse','donkey','mule','ocelot','parrot','fish','dolphin','squit','pig','rabbit','sheep','pufferfish','salmon','tropical_fish','balloon'];
+
+            if( in_array( strtolower($nm), $animals ) ){
+                // check animal flag
+                $a = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Animals"] : $this->animals);
+                if ($a) {
+                    $o = false;
+                }
+                foreach ($this->areas as $area) {
+                    if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
+                        if ($area->getFlag("animals")) {
+                            $o = false;
+                        }
+                        if(!$area->getFlag("animals") && $a){
+                            $o = true;
+                        }
+                    }
+                }
+            }else{
+                // check mob flag
+                $m = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Mobs"] : $this->mobs);
+                if ($m) {
+                    $o = false;
+                }
+                foreach ($this->areas as $area) {
+                    if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
+
+                        if ($area->getFlag("mobs")) {
+                            $o = false;
+                        }
+                        if(!$area->getFlag("mobs") && $m){
+                            $o = true;
+                        }
+                    }
+                }
+            }
+        }
+        /* if($o){
+            $this->getLogger()->info( 'Spawn '.$nm.' entity allowed' );
+        }else{
+            $this->getLogger()->info( 'Spawn '.$nm.' entity canceled' );
+        } */
+        return $o;
+    }
+
 	/** Block Place
 	 * @param BlockPlaceEvent $event
 	 * @ignoreCancelled true
@@ -1524,8 +1670,6 @@ class Main extends PluginBase implements Listener{
 		return $o;
 	}
 
-
-
     /** Effects
 	 * @param Player $player
 	 * @return bool
@@ -1561,7 +1705,6 @@ class Main extends PluginBase implements Listener{
 
 		return $o;
 	}
-
 
 
     /** Flight
@@ -2098,6 +2241,7 @@ class Main extends PluginBase implements Listener{
 		}
 		file_put_contents($this->getDataFolder() . "areas.json", json_encode($areas));
 	}
+
     /**  Festival Console Sign Flag for developers
      *   makes it easy to find Festival console output fast
      */
