@@ -1296,23 +1296,16 @@ class Main extends PluginBase implements Listener{
         $item = $event->getItem();
 
         //$player->sendMessage("TOUCHED " . $block->getName() . "(". $block->getID() . ") with ". $item->getName() ."(".$item->getID().") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]");
-
-
         // https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/item/ItemIds.php
 
         // touch & block events controlled by edit flag
         $b = $block->getID();
         $i = $item->getID();
-
-
-            //|| ( $i == 259 ) // flint and steel
-
         if(
             ( $b == 199 ) // item frame
             || ( ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) ) // no farm event
         ){
             if(!$this->canEdit($player, $block)){
-                //$block->extinguish();
 				$event->setCancelled();
 			}
         }
