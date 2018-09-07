@@ -1109,9 +1109,9 @@ class Main extends PluginBase implements Listener{
                     $o = false;
                 }
                 $playername = $entity->getName();
-                foreach($this->inArea[$playername] as $areaname){
-                    if( isset($this->areaList[ $areaname ]) ){
-                        $area = $this->areaList[$areaname];
+                $pos = $entity->getPosition();
+                foreach ($this->areas as $area) {
+                    if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
                         $god = $area->getFlag("god");
                         if($area->getFlag("pvp")){
                             $o = false;
@@ -1297,14 +1297,22 @@ class Main extends PluginBase implements Listener{
 
         //$player->sendMessage("TOUCHED " . $block->getName() . "(". $block->getID() . ") with ". $item->getName() ."(".$item->getID().") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]");
 
+
+        // https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/item/ItemIds.php
+
         // touch & block events controlled by edit flag
         $b = $block->getID();
         $i = $item->getID();
+
+
+            //|| ( $i == 259 ) // flint and steel
+
         if(
             ( $b == 199 ) // item frame
-            || ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) // no farm event
+            || ( ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) ) // no farm event
         ){
             if(!$this->canEdit($player, $block)){
+                //$block->extinguish();
 				$event->setCancelled();
 			}
         }
@@ -1504,7 +1512,7 @@ class Main extends PluginBase implements Listener{
 
 	}
 
-    /** Mob spawning
+    /** Mob / Animal spawning
 	 * @param EntitySpawnEvent $event
 	 * @ignoreCancelled true
      */
@@ -1546,7 +1554,7 @@ class Main extends PluginBase implements Listener{
         }
         if($pos && $nm != 'unknown'){
 
-            $animals =[ 'bat','chicken','cow','horse','donkey','mule','ocelot','parrot','fish','dolphin','squit','pig','rabbit','sheep','pufferfish','salmon','tropical_fish','balloon'];
+            $animals =[ 'bat','chicken','cow','horse','llama','donkey','mule','ocelot','parrot','fish','dolphin','squit','pig','rabbit','sheep','pufferfish','salmon','turtle','tropical_fish','cod','balloon'];
 
             if( in_array( strtolower($nm), $animals ) ){
                 // check animal flag
