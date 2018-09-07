@@ -129,64 +129,70 @@ class Main extends PluginBase implements Listener{
 
         // innitialize default flags & update data
 		$data = json_decode(file_get_contents($this->getDataFolder() . "areas.json"), true);
-		foreach($data as $datum){
-			$flags = $datum["flags"];
-			if( isset($datum["flags"]["barrier"]) ){
-				$flags["passage"] = $datum["flags"]["barrier"]; // replaced in v1.0.5-11 can use both
-				unset($flags["barrier"]);
-				$newchange['Passage'] = "! Old Barrier config was used, now set to 'false'; please rename 'Barrier' to 'Passage' in config.yml";
-			}
-			if( !isset($datum["flags"]["perms"]) ){ // new flags v 1.0.5-12
-				$flags["perms"] = false;
-				$newchange['Perms'] = "! Area Perms flag missing, now updated to 'false';  please see /resources/config.yml";
-			}
-			if( !isset($datum["flags"]["drop"]) ){ // new flags v 1.0.5-12
-				$flags["drop"] = false;
-				$newchange['Drop'] = "! Area Drop flag missing, now updated to 'false'; please see /resources/config.yml";
-			}
-			if( !isset($datum["flags"]["animals"]) ){ // new flags v 1.0.7.5-dev
-				$flags["animals"] = false;
-				$newchange['Animals'] = "! Area Animals flag missing, now updated to 'false'; please see /resources/config.yml";
-			}
-			if( !isset($datum["flags"]["mobs"]) ){ // new flags v 1.0.7.5-dev
-				$flags["mobs"] = false;
-				$newchange['Mobs'] = "! Area Mobs flag missing, now updated to 'false'; please see /resources/config.yml";
-			}
-			if( !isset($datum["flags"]["effects"]) ){ // new flags v 1.0.5-12
-				$flags["effects"] = false;
-				$newchange['Effects'] = "! Area Effects flag missing, now updated to 'false'; please see /resources/config.yml";
-			}
-			if( !isset($datum["flags"]["pvp"]) ){ //new flags v 1.0.6-13
-				$flags["pvp"] = false;
-				$newchange['PVP'] = "! Area PVP flag missing, now updated to 'false'; please see /resources/config.yml";
-			}
-			if( !isset($datum["flags"]["flight"]) ){ //new flags v 1.0.6-13
-				$flags["flight"] = false;
-				$newchange['Flight'] = "! Area Flight flag missing, now updated to 'false'; please see /resources/config.yml";
-			}
-			if( !isset($datum["flags"]["tnt"]) ){ // new flags v 1.0.7
-				$flags["tnt"] = false;
-				$newchange['TNT'] = "! Area TNT flag missing, now updated to 'false'; please see /resources/config.yml";
-			}
-			if( !isset($datum["flags"]["hunger"]) ){ // new flags v 1.0.7
-				$flags["hunger"] = false;
-				$newchange['Hunger'] = "! Area Hunger flag missing, now updated to 'false'; please see /resources/config.yml";
-			}
-            if( isset($datum["flags"]["nofalldamage"]) ){
-				$flags["falldamage"] = $datum["flags"]["nofalldamage"]; // replaced in v1.0.5-11 can use both
-				unset($flags["nofalldamage"]);
-				$newchange['FallDamage'] = "! Old NoFallDamage config was used, now set to 'false'; please rename 'NoFallDamage' to 'FallDamage' in config.yml";
-			}
-			if( !isset($datum["flags"]["falldamage"]) ){ //new in v1.0.7.3
-				$flags["falldamage"] = false;
-				$newchange['FallDamage'] = "! Area FallDamage flag missing, now updated to 'false'; please see /resources/config.yml";
-			}
-			if( !isset($datum["flags"]["shoot"]) ){ //new in v1.0.7.4
-				$flags["shoot"] = false;
-				$newchange['Shoot'] = "! Area Shoot flag missing (alias launch), now updated to 'false';  please see /resources/config.yml";
-			}
-			new Area($datum["name"], $datum["desc"], $flags, new Vector3($datum["pos1"]["0"], $datum["pos1"]["1"], $datum["pos1"]["2"]), new Vector3($datum["pos2"]["0"], $datum["pos2"]["1"], $datum["pos2"]["2"]), $datum["level"], $datum["whitelist"], $datum["commands"], $datum["events"], $this);
-		}
+
+
+		if( isset( $data ) && is_array( $data ) ){
+
+            foreach($data as $datum){
+                $flags = $datum["flags"];
+                if( isset($datum["flags"]["barrier"]) ){
+                    $flags["passage"] = $datum["flags"]["barrier"]; // replaced in v1.0.5-11 can use both
+                    unset($flags["barrier"]);
+                    $newchange['Passage'] = "! Old Barrier config was used, now set to 'false'; please rename 'Barrier' to 'Passage' in config.yml";
+                }
+                if( !isset($datum["flags"]["perms"]) ){ // new flags v 1.0.5-12
+                    $flags["perms"] = false;
+                    $newchange['Perms'] = "! Area Perms flag missing, now updated to 'false';  please see /resources/config.yml";
+                }
+                if( !isset($datum["flags"]["drop"]) ){ // new flags v 1.0.5-12
+                    $flags["drop"] = false;
+                    $newchange['Drop'] = "! Area Drop flag missing, now updated to 'false'; please see /resources/config.yml";
+                }
+                if( !isset($datum["flags"]["animals"]) ){ // new flags v 1.0.7.5-dev
+                    $flags["animals"] = false;
+                    $newchange['Animals'] = "! Area Animals flag missing, now updated to 'false'; please see /resources/config.yml";
+                }
+                if( !isset($datum["flags"]["mobs"]) ){ // new flags v 1.0.7.5-dev
+                    $flags["mobs"] = false;
+                    $newchange['Mobs'] = "! Area Mobs flag missing, now updated to 'false'; please see /resources/config.yml";
+                }
+                if( !isset($datum["flags"]["effects"]) ){ // new flags v 1.0.5-12
+                    $flags["effects"] = false;
+                    $newchange['Effects'] = "! Area Effects flag missing, now updated to 'false'; please see /resources/config.yml";
+                }
+                if( !isset($datum["flags"]["pvp"]) ){ //new flags v 1.0.6-13
+                    $flags["pvp"] = false;
+                    $newchange['PVP'] = "! Area PVP flag missing, now updated to 'false'; please see /resources/config.yml";
+                }
+                if( !isset($datum["flags"]["flight"]) ){ //new flags v 1.0.6-13
+                    $flags["flight"] = false;
+                    $newchange['Flight'] = "! Area Flight flag missing, now updated to 'false'; please see /resources/config.yml";
+                }
+                if( !isset($datum["flags"]["tnt"]) ){ // new flags v 1.0.7
+                    $flags["tnt"] = false;
+                    $newchange['TNT'] = "! Area TNT flag missing, now updated to 'false'; please see /resources/config.yml";
+                }
+                if( !isset($datum["flags"]["hunger"]) ){ // new flags v 1.0.7
+                    $flags["hunger"] = false;
+                    $newchange['Hunger'] = "! Area Hunger flag missing, now updated to 'false'; please see /resources/config.yml";
+                }
+                if( isset($datum["flags"]["nofalldamage"]) ){
+                    $flags["falldamage"] = $datum["flags"]["nofalldamage"]; // replaced in v1.0.5-11 can use both
+                    unset($flags["nofalldamage"]);
+                    $newchange['FallDamage'] = "! Old NoFallDamage config was used, now set to 'false'; please rename 'NoFallDamage' to 'FallDamage' in config.yml";
+                }
+                if( !isset($datum["flags"]["falldamage"]) ){ //new in v1.0.7.3
+                    $flags["falldamage"] = false;
+                    $newchange['FallDamage'] = "! Area FallDamage flag missing, now updated to 'false'; please see /resources/config.yml";
+                }
+                if( !isset($datum["flags"]["shoot"]) ){ //new in v1.0.7.4
+                    $flags["shoot"] = false;
+                    $newchange['Shoot'] = "! Area Shoot flag missing (alias launch), now updated to 'false';  please see /resources/config.yml";
+                }
+                new Area($datum["name"], $datum["desc"], $flags, new Vector3($datum["pos1"]["0"], $datum["pos1"]["1"], $datum["pos1"]["2"]), new Vector3($datum["pos2"]["0"], $datum["pos2"]["1"], $datum["pos2"]["2"]), $datum["level"], $datum["whitelist"], $datum["commands"], $datum["events"], $this);
+            }
+
+        }
 
 		$c = yaml_parse_file($this->getDataFolder() . "config.yml");
 		
