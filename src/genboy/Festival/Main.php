@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 /** src/genboy/Festival/Main.php
  * Options: Msgtype, Msgdisplay, AutoWhitelist
- * Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage
+ * Flags: god, pvp, flight, edit, touch, mobs, animals, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage
  */
 namespace genboy\Festival;
 
@@ -16,6 +16,7 @@ use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\projectile\Projectile;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
+use pocketmine\event\block\BlockBurnEvent;
 use pocketmine\event\entity\EntitySpawnEvent;
 use pocketmine\event\entity\EntityDespawnEvent;
 use pocketmine\event\entity\EntityDamageEvent;
@@ -129,7 +130,6 @@ class Main extends PluginBase implements Listener{
 
         // innitialize default flags & update data
 		$data = json_decode(file_get_contents($this->getDataFolder() . "areas.json"), true);
-
 
 		if( isset( $data ) && is_array( $data ) ){
 
@@ -1299,34 +1299,43 @@ class Main extends PluginBase implements Listener{
 	public function onBlockTouch(PlayerInteractEvent $event) : void{
 		$block = $event->getBlock();
 		$player = $event->getPlayer();
-        $item = $event->getItem();
-
-        //$player->sendMessage("TOUCHED " . $block->getName() . "(". $block->getID() . ") with ". $item->getName() ."(".$item->getID().") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]");
-        // https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/item/ItemIds.php
-
-        // touch & block events controlled by edit flag
-        $b = $block->getID();
-        $i = $item->getID();
-        if(
-            ( $b == 199 ) // item frame
-            || ( ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) ) // no farm event
-        ){
-            if(!$this->canEdit($player, $block)){
-				$event->setCancelled();
-			}
-        }
-
 		if(!$this->canTouch($player, $block)){
 			$event->setCancelled();
 		}
 	}
+    
+    
+	/** on Interact
+	 * @param PlayerInteractEvent $event
+	 * @ignoreCancelled true
+	 */
+    public function onInteract( PlayerInteractEvent $event ): void{
+        
+        $item = $event->getItem();
+        $block = $event->getBlock();
+		$player = $event->getPlayer();
+        $b = $block->getID();
+        $i = $item->getID();
+		
+        /*
+        $player->sendMessage("Action on " . $block->getName() . "(". $block->getID() . ") with ". $item->getName() ."(".$item->getID().") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]");
+        */ 
+        if( 
+            $b == 199 // item frame
+            || ( ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) ) // no farm event
+            ||  $i == 259 // flint & steel
+        ){
+            if(!$this->canEdit($player, $block)){
+			 $event->setCancelled(true); 
+			}
+        }
+    } 
 
     /** hunger
      * PlayerExhaustEvent
      * @param PlayerExhaustEvent $event
      * @return void
      */
-
     public function Hunger(PlayerExhaustEvent $event){
         if ( !$this->canHunger( $event ) ) {
             $event->setCancelled();
@@ -1543,6 +1552,7 @@ class Main extends PluginBase implements Listener{
         if( $e instanceof ExperienceOrb || $e instanceof ItemEntity || $e instanceof Projectile){
             return $o; // allowed
         }
+        
         $nm = 'unknown'; // $nm = $e instanceof Item ? $e->getItem()->getName() : $e->getName();
         if( null !== $e->getName() ){
           $nm = $e->getName();
