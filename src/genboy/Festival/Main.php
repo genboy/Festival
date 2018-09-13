@@ -12,6 +12,7 @@ use pocketmine\entity\Entity;
 use pocketmine\entity\Item;
 use pocketmine\entity\object\ExperienceOrb;
 use pocketmine\entity\object\ItemEntity;
+use pocketmine\entity\object\PrimedTNT;
 use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\projectile\Projectile;
 use pocketmine\event\block\BlockBreakEvent;
@@ -1320,13 +1321,20 @@ class Main extends PluginBase implements Listener{
         /*
         $player->sendMessage("Action on " . $block->getName() . "(". $block->getID() . ") with ". $item->getName() ."(".$item->getID().") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]");
         */ 
+        if( $b == 46 // tnt
+           && $i == 259 // flint & steel
+           && !$this->canExplode( $player->getPosition() ) ){
+			 $event->setCancelled(true);
+             $player->sendMessage("TNT explosions not allowed in this area");
+        }
+
         if( 
             $b == 199 // item frame
             || ( ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) ) // no farm event
-            ||  $i == 259 // flint & steel
+            ||  $i == 259 // flint & steel fire
         ){
             if(!$this->canEdit($player, $block)){
-			 $event->setCancelled(true); 
+			 $event->setCancelled(true);
 			}
         }
     } 
@@ -1553,15 +1561,20 @@ class Main extends PluginBase implements Listener{
             return $o; // allowed
         }
         
-        $nm = 'unknown'; // $nm = $e instanceof Item ? $e->getItem()->getName() : $e->getName();
-        if( null !== $e->getName() ){
+        if( $e instanceof PrimedTNT && !$this->canExplode( $e->getPosition() )){ // Prevent PrimedTNT (experiment)
+             return false;
+        }
+
+        $nm = ''; // $nm = $e instanceof Item ? $e->getItem()->getName() : $e->getName();
+        if( isset($e->getName()) && null !== $e->getName() ){
           $nm = $e->getName();
         }
+
         $pos = false;
-        if( null !== $e->getPosition() ){
+        if( isset( $e->getPosition() ) && null !== $e->getPosition() ){
             $pos = $e->getPosition();
         }
-        if($pos && $nm != 'unknown'){
+        if($pos && $nm != ''){
 
             $animals =[ 'bat','chicken','cow','horse','llama','donkey','mule','ocelot','parrot','fish','dolphin','squit','pig','rabbit','sheep','pufferfish','salmon','turtle','tropical_fish','cod','balloon'];
 
@@ -1616,20 +1629,32 @@ class Main extends PluginBase implements Listener{
 		$block = $event->getBlock();
 		$player = $event->getPlayer();
 		$playerName = strtolower($player->getName());
+
 		if(isset($this->selectingFirst[$playerName])){
+
 			unset($this->selectingFirst[$playerName]);
 			$this->firstPosition[$playerName] = $block->asVector3();
 			$player->sendMessage(TextFormat::GREEN . "Position 1 set to: (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
 			$event->setCancelled();
+
 		}elseif(isset($this->selectingSecond[$playerName])){
+
 			unset($this->selectingSecond[$playerName]);
 			$this->secondPosition[$playerName] = $block->asVector3();
 			$player->sendMessage(TextFormat::GREEN . "Position 2 set to: (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
 			$event->setCancelled();
+
 		}else{
+            // tnt block
+            if( $block->getID() == 46  && !$this->canExplode( $player->getPosition() ) ){
+                $event->setCancelled();
+                $player->sendMessage("TNT explosions not allowed in this area");
+            }
+
 			if(!$this->canEdit($player, $block)){
 				$event->setCancelled();
 			}
+
 		}
 	}
 
