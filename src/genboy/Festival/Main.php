@@ -1315,17 +1315,37 @@ class Main extends PluginBase implements Listener{
         $item = $event->getItem();
         $block = $event->getBlock();
 		$player = $event->getPlayer();
+        $playername = strtolower($player->getName());
         $b = $block->getID();
         $i = $item->getID();
 		
         /*
         $player->sendMessage("Action on " . $block->getName() . "(". $block->getID() . ") with ". $item->getName() ."(".$item->getID().") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]");
         */ 
+
+        /*
+                  if( $player->isOp() || $player->hasPermission("festival") || $player->hasPermission("festival.access")){
+			         return true;
+		          }
+
+                */
+         foreach($this->inArea[$playername] as $areaname){
+            if( isset($this->areaList[ $areaname ]) ){
+                $area = $this->areaList[$areaname];
+            }
+         }
+
+
         if( $b == 46 // tnt
            && $i == 259 // flint & steel
-           && !$this->canExplode( $player->getPosition() ) ){
-			 $event->setCancelled(true);
-             $player->sendMessage("TNT explosions not allowed in this area");
+           && !$this->canExplode( $player->getPosition() )
+           && !$player->isOp() ){
+           $event->setCancelled(true);
+
+            if( isset($area) && ( !$area->getFlag("msg")  || $this->msgOpDsp( $area, $player ) ) ){
+                $player->sendMessage("TNT explosions not allowed in this area");
+            }
+
         }
 
         if( 
@@ -1335,6 +1355,9 @@ class Main extends PluginBase implements Listener{
         ){
             if(!$this->canEdit($player, $block)){
 			 $event->setCancelled(true);
+                if( isset($area) && ( !$area->getFlag("msg")  || $this->msgOpDsp( $area, $player ) ) ){
+                    $player->sendMessage("Can not use this block or item in this area");
+                }
 			}
         }
     } 
@@ -1647,6 +1670,18 @@ class Main extends PluginBase implements Listener{
 		}else{
             // tnt block
             if( $block->getID() == 46  && !$this->canExplode( $player->getPosition() ) ){
+
+                /*
+                  if( $player->isOp() || $player->hasPermission("festival") || $player->hasPermission("festival.access")){
+			         return true;
+		          }
+
+                if( $area->getFlag("msg") ){
+                   $m = false;
+                }*/
+
+
+
                 $event->setCancelled();
                 $player->sendMessage("TNT explosions not allowed in this area");
             }
