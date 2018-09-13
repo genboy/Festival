@@ -1566,12 +1566,12 @@ class Main extends PluginBase implements Listener{
         }
 
         $nm = ''; // $nm = $e instanceof Item ? $e->getItem()->getName() : $e->getName();
-        if( isset($e->getName()) && null !== $e->getName() ){
+        if( null !== $e->getName() ){
           $nm = $e->getName();
         }
 
         $pos = false;
-        if( isset( $e->getPosition() ) && null !== $e->getPosition() ){
+        if( null !== $e->getPosition() ){
             $pos = $e->getPosition();
         }
         if($pos && $nm != ''){
