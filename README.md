@@ -51,7 +51,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
     - god: players in the area are save in god mode
     - pvp: players in the area are save from PVP
     - flight: players in the area are not allowed to fly
-    - touch: area is save from player interaction with chests/signs etc.
+    - touch: area is save from player interaction with doors/chests/signs etc.
     - animals: no animal spawning (including spawners & eggs)
     - mobs: no mobs spawning (including spawners & eggs)
     - effects: player can not keep using effects in the area 

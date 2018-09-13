@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 /** src/genboy/Festival/Main.php
  * Options: Msgtype, Msgdisplay, AutoWhitelist
- * Flags: god, pvp, flight, edit, touch, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage
+ * Flags: god, pvp, flight, edit, touch, mobs, animals, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage
  */
 namespace genboy\Festival;
 
@@ -12,10 +12,12 @@ use pocketmine\entity\Entity;
 use pocketmine\entity\Item;
 use pocketmine\entity\object\ExperienceOrb;
 use pocketmine\entity\object\ItemEntity;
+use pocketmine\entity\object\PrimedTNT;
 use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\projectile\Projectile;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
+use pocketmine\event\block\BlockBurnEvent;
 use pocketmine\event\entity\EntitySpawnEvent;
 use pocketmine\event\entity\EntityDespawnEvent;
 use pocketmine\event\entity\EntityDamageEvent;
@@ -129,64 +131,69 @@ class Main extends PluginBase implements Listener{
 
         // innitialize default flags & update data
 		$data = json_decode(file_get_contents($this->getDataFolder() . "areas.json"), true);
-		foreach($data as $datum){
-			$flags = $datum["flags"];
-			if( isset($datum["flags"]["barrier"]) ){
-				$flags["passage"] = $datum["flags"]["barrier"]; // replaced in v1.0.5-11 can use both
-				unset($flags["barrier"]);
-				$newchange['Passage'] = "! Old Barrier config was used, now set to 'false'; please rename 'Barrier' to 'Passage' in config.yml";
-			}
-			if( !isset($datum["flags"]["perms"]) ){ // new flags v 1.0.5-12
-				$flags["perms"] = false;
-				$newchange['Perms'] = "! Area Perms flag missing, now updated to 'false';  please see /resources/config.yml";
-			}
-			if( !isset($datum["flags"]["drop"]) ){ // new flags v 1.0.5-12
-				$flags["drop"] = false;
-				$newchange['Drop'] = "! Area Drop flag missing, now updated to 'false'; please see /resources/config.yml";
-			}
-			if( !isset($datum["flags"]["animals"]) ){ // new flags v 1.0.7.5-dev
-				$flags["animals"] = false;
-				$newchange['Animals'] = "! Area Animals flag missing, now updated to 'false'; please see /resources/config.yml";
-			}
-			if( !isset($datum["flags"]["mobs"]) ){ // new flags v 1.0.7.5-dev
-				$flags["mobs"] = false;
-				$newchange['Mobs'] = "! Area Mobs flag missing, now updated to 'false'; please see /resources/config.yml";
-			}
-			if( !isset($datum["flags"]["effects"]) ){ // new flags v 1.0.5-12
-				$flags["effects"] = false;
-				$newchange['Effects'] = "! Area Effects flag missing, now updated to 'false'; please see /resources/config.yml";
-			}
-			if( !isset($datum["flags"]["pvp"]) ){ //new flags v 1.0.6-13
-				$flags["pvp"] = false;
-				$newchange['PVP'] = "! Area PVP flag missing, now updated to 'false'; please see /resources/config.yml";
-			}
-			if( !isset($datum["flags"]["flight"]) ){ //new flags v 1.0.6-13
-				$flags["flight"] = false;
-				$newchange['Flight'] = "! Area Flight flag missing, now updated to 'false'; please see /resources/config.yml";
-			}
-			if( !isset($datum["flags"]["tnt"]) ){ // new flags v 1.0.7
-				$flags["tnt"] = false;
-				$newchange['TNT'] = "! Area TNT flag missing, now updated to 'false'; please see /resources/config.yml";
-			}
-			if( !isset($datum["flags"]["hunger"]) ){ // new flags v 1.0.7
-				$flags["hunger"] = false;
-				$newchange['Hunger'] = "! Area Hunger flag missing, now updated to 'false'; please see /resources/config.yml";
-			}
-            if( isset($datum["flags"]["nofalldamage"]) ){
-				$flags["falldamage"] = $datum["flags"]["nofalldamage"]; // replaced in v1.0.5-11 can use both
-				unset($flags["nofalldamage"]);
-				$newchange['FallDamage'] = "! Old NoFallDamage config was used, now set to 'false'; please rename 'NoFallDamage' to 'FallDamage' in config.yml";
-			}
-			if( !isset($datum["flags"]["falldamage"]) ){ //new in v1.0.7.3
-				$flags["falldamage"] = false;
-				$newchange['FallDamage'] = "! Area FallDamage flag missing, now updated to 'false'; please see /resources/config.yml";
-			}
-			if( !isset($datum["flags"]["shoot"]) ){ //new in v1.0.7.4
-				$flags["shoot"] = false;
-				$newchange['Shoot'] = "! Area Shoot flag missing (alias launch), now updated to 'false';  please see /resources/config.yml";
-			}
-			new Area($datum["name"], $datum["desc"], $flags, new Vector3($datum["pos1"]["0"], $datum["pos1"]["1"], $datum["pos1"]["2"]), new Vector3($datum["pos2"]["0"], $datum["pos2"]["1"], $datum["pos2"]["2"]), $datum["level"], $datum["whitelist"], $datum["commands"], $datum["events"], $this);
-		}
+
+		if( isset( $data ) && is_array( $data ) ){
+
+            foreach($data as $datum){
+                $flags = $datum["flags"];
+                if( isset($datum["flags"]["barrier"]) ){
+                    $flags["passage"] = $datum["flags"]["barrier"]; // replaced in v1.0.5-11 can use both
+                    unset($flags["barrier"]);
+                    $newchange['Passage'] = "! Old Barrier config was used, now set to 'false'; please rename 'Barrier' to 'Passage' in config.yml";
+                }
+                if( !isset($datum["flags"]["perms"]) ){ // new flags v 1.0.5-12
+                    $flags["perms"] = false;
+                    $newchange['Perms'] = "! Area Perms flag missing, now updated to 'false';  please see /resources/config.yml";
+                }
+                if( !isset($datum["flags"]["drop"]) ){ // new flags v 1.0.5-12
+                    $flags["drop"] = false;
+                    $newchange['Drop'] = "! Area Drop flag missing, now updated to 'false'; please see /resources/config.yml";
+                }
+                if( !isset($datum["flags"]["animals"]) ){ // new flags v 1.0.7.5-dev
+                    $flags["animals"] = false;
+                    $newchange['Animals'] = "! Area Animals flag missing, now updated to 'false'; please see /resources/config.yml";
+                }
+                if( !isset($datum["flags"]["mobs"]) ){ // new flags v 1.0.7.5-dev
+                    $flags["mobs"] = false;
+                    $newchange['Mobs'] = "! Area Mobs flag missing, now updated to 'false'; please see /resources/config.yml";
+                }
+                if( !isset($datum["flags"]["effects"]) ){ // new flags v 1.0.5-12
+                    $flags["effects"] = false;
+                    $newchange['Effects'] = "! Area Effects flag missing, now updated to 'false'; please see /resources/config.yml";
+                }
+                if( !isset($datum["flags"]["pvp"]) ){ //new flags v 1.0.6-13
+                    $flags["pvp"] = false;
+                    $newchange['PVP'] = "! Area PVP flag missing, now updated to 'false'; please see /resources/config.yml";
+                }
+                if( !isset($datum["flags"]["flight"]) ){ //new flags v 1.0.6-13
+                    $flags["flight"] = false;
+                    $newchange['Flight'] = "! Area Flight flag missing, now updated to 'false'; please see /resources/config.yml";
+                }
+                if( !isset($datum["flags"]["tnt"]) ){ // new flags v 1.0.7
+                    $flags["tnt"] = false;
+                    $newchange['TNT'] = "! Area TNT flag missing, now updated to 'false'; please see /resources/config.yml";
+                }
+                if( !isset($datum["flags"]["hunger"]) ){ // new flags v 1.0.7
+                    $flags["hunger"] = false;
+                    $newchange['Hunger'] = "! Area Hunger flag missing, now updated to 'false'; please see /resources/config.yml";
+                }
+                if( isset($datum["flags"]["nofalldamage"]) ){
+                    $flags["falldamage"] = $datum["flags"]["nofalldamage"]; // replaced in v1.0.5-11 can use both
+                    unset($flags["nofalldamage"]);
+                    $newchange['FallDamage'] = "! Old NoFallDamage config was used, now set to 'false'; please rename 'NoFallDamage' to 'FallDamage' in config.yml";
+                }
+                if( !isset($datum["flags"]["falldamage"]) ){ //new in v1.0.7.3
+                    $flags["falldamage"] = false;
+                    $newchange['FallDamage'] = "! Area FallDamage flag missing, now updated to 'false'; please see /resources/config.yml";
+                }
+                if( !isset($datum["flags"]["shoot"]) ){ //new in v1.0.7.4
+                    $flags["shoot"] = false;
+                    $newchange['Shoot'] = "! Area Shoot flag missing (alias launch), now updated to 'false';  please see /resources/config.yml";
+                }
+                new Area($datum["name"], $datum["desc"], $flags, new Vector3($datum["pos1"]["0"], $datum["pos1"]["1"], $datum["pos1"]["2"]), new Vector3($datum["pos2"]["0"], $datum["pos2"]["1"], $datum["pos2"]["2"]), $datum["level"], $datum["whitelist"], $datum["commands"], $datum["events"], $this);
+            }
+
+        }
 
 		$c = yaml_parse_file($this->getDataFolder() . "config.yml");
 		
@@ -1109,9 +1116,9 @@ class Main extends PluginBase implements Listener{
                     $o = false;
                 }
                 $playername = $entity->getName();
-                foreach($this->inArea[$playername] as $areaname){
-                    if( isset($this->areaList[ $areaname ]) ){
-                        $area = $this->areaList[$areaname];
+                $pos = $entity->getPosition();
+                foreach ($this->areas as $area) {
+                    if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
                         $god = $area->getFlag("god");
                         if($area->getFlag("pvp")){
                             $o = false;
@@ -1293,33 +1300,57 @@ class Main extends PluginBase implements Listener{
 	public function onBlockTouch(PlayerInteractEvent $event) : void{
 		$block = $event->getBlock();
 		$player = $event->getPlayer();
-        $item = $event->getItem();
-
-        //$player->sendMessage("TOUCHED " . $block->getName() . "(". $block->getID() . ") with ". $item->getName() ."(".$item->getID().") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]");
-
-        // touch & block events controlled by edit flag
-        $b = $block->getID();
-        $i = $item->getID();
-        if(
-            ( $b == 199 ) // item frame
-            || ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) // no farm event
-        ){
-            if(!$this->canEdit($player, $block)){
-				$event->setCancelled();
-			}
-        }
-
 		if(!$this->canTouch($player, $block)){
 			$event->setCancelled();
 		}
 	}
+    
+    
+	/** on Interact
+	 * @param PlayerInteractEvent $event
+	 * @ignoreCancelled true
+	 */
+    public function onInteract( PlayerInteractEvent $event ): void{
+        
+        $item = $event->getItem();
+        $block = $event->getBlock();
+		$player = $event->getPlayer();
+        $playername = strtolower($player->getName());
+        $b = $block->getID();
+        $i = $item->getID();
+		
+        /*
+        $player->sendMessage("Action on " . $block->getName() . "(". $block->getID() . ") with ". $item->getName() ."(".$item->getID().") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]");
+        */ 
+        if( $player->isOp() || $player->hasPermission("festival") || $player->hasPermission("festival.access")){
+
+        }else{
+
+            if( $b == 46 // tnt
+               && $i == 259 // flint & steel
+               && !$this->canExplode( $player->getPosition() )
+               && !$player->isOp() ){
+               $event->setCancelled(true);
+            }
+
+            if(
+                $b == 199 // item frame
+                || ( ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) ) // no farm event
+                ||  $i == 259 // flint & steel fire
+            ){
+                if(!$this->canEdit($player, $block)){
+                    $event->setCancelled(true);
+                }
+            }
+
+        }
+    } 
 
     /** hunger
      * PlayerExhaustEvent
      * @param PlayerExhaustEvent $event
      * @return void
      */
-
     public function Hunger(PlayerExhaustEvent $event){
         if ( !$this->canHunger( $event ) ) {
             $event->setCancelled();
@@ -1504,7 +1535,7 @@ class Main extends PluginBase implements Listener{
 
 	}
 
-    /** Mob spawning
+    /** Mob / Animal spawning
 	 * @param EntitySpawnEvent $event
 	 * @ignoreCancelled true
      */
@@ -1536,7 +1567,17 @@ class Main extends PluginBase implements Listener{
         if( $e instanceof ExperienceOrb || $e instanceof ItemEntity || $e instanceof Projectile){
             return $o; // allowed
         }
-        $nm = 'unknown'; // $nm = $e instanceof Item ? $e->getItem()->getName() : $e->getName();
+        
+        // catch more spawning entities without (get)Name
+        if( $e instanceof PrimedTNT ){
+            if( $this->canExplode( $e->getPosition() )){ // Prevent PrimedTNT (experiment)
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        $nm = ''; //$nm = $e instanceof Item ? $e->getItem()->getName() : $e->getName();
         if( null !== $e->getName() ){
           $nm = $e->getName();
         }
@@ -1544,9 +1585,9 @@ class Main extends PluginBase implements Listener{
         if( null !== $e->getPosition() ){
             $pos = $e->getPosition();
         }
-        if($pos && $nm != 'unknown'){
+        if($pos && $nm != ''){
 
-            $animals =[ 'bat','chicken','cow','horse','donkey','mule','ocelot','parrot','fish','dolphin','squit','pig','rabbit','sheep','pufferfish','salmon','tropical_fish','balloon'];
+            $animals =[ 'bat','chicken','cow','horse','llama','donkey','mule','ocelot','parrot','fish','dolphin','squit','pig','rabbit','sheep','pufferfish','salmon','turtle','tropical_fish','cod','balloon'];
 
             if( in_array( strtolower($nm), $animals ) ){
                 // check animal flag
@@ -1599,20 +1640,38 @@ class Main extends PluginBase implements Listener{
 		$block = $event->getBlock();
 		$player = $event->getPlayer();
 		$playerName = strtolower($player->getName());
+
 		if(isset($this->selectingFirst[$playerName])){
+
 			unset($this->selectingFirst[$playerName]);
 			$this->firstPosition[$playerName] = $block->asVector3();
 			$player->sendMessage(TextFormat::GREEN . "Position 1 set to: (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
 			$event->setCancelled();
+
 		}elseif(isset($this->selectingSecond[$playerName])){
+
 			unset($this->selectingSecond[$playerName]);
 			$this->secondPosition[$playerName] = $block->asVector3();
 			$player->sendMessage(TextFormat::GREEN . "Position 2 set to: (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
 			$event->setCancelled();
+
 		}else{
+
+            // tnt block
+            if( $block->getID() == 46  && !$this->canExplode( $player->getPosition() ) ){
+
+                if( $player->isOp() || $player->hasPermission("festival") || $player->hasPermission("festival.access")){
+
+		        }else{
+                    $event->setCancelled();
+                    //$player->sendMessage("TNT not allowed here");
+                }
+            }
+
 			if(!$this->canEdit($player, $block)){
 				$event->setCancelled();
 			}
+
 		}
 	}
 
