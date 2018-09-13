@@ -1322,43 +1322,27 @@ class Main extends PluginBase implements Listener{
         /*
         $player->sendMessage("Action on " . $block->getName() . "(". $block->getID() . ") with ". $item->getName() ."(".$item->getID().") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]");
         */ 
+        if( $player->isOp() || $player->hasPermission("festival") || $player->hasPermission("festival.access")){
 
-        /*
-                  if( $player->isOp() || $player->hasPermission("festival") || $player->hasPermission("festival.access")){
-			         return true;
-		          }
+        }else{
 
-                */
-         foreach($this->inArea[$playername] as $areaname){
-            if( isset($this->areaList[ $areaname ]) ){
-                $area = $this->areaList[$areaname];
-            }
-         }
-
-
-        if( $b == 46 // tnt
-           && $i == 259 // flint & steel
-           && !$this->canExplode( $player->getPosition() )
-           && !$player->isOp() ){
-           $event->setCancelled(true);
-
-            if( isset($area) && ( !$area->getFlag("msg")  || $this->msgOpDsp( $area, $player ) ) ){
-                $player->sendMessage("TNT not allowed here");
+            if( $b == 46 // tnt
+               && $i == 259 // flint & steel
+               && !$this->canExplode( $player->getPosition() )
+               && !$player->isOp() ){
+               $event->setCancelled(true);
             }
 
-        }
-
-        if( 
-            $b == 199 // item frame
-            || ( ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) ) // no farm event
-            ||  $i == 259 // flint & steel fire
-        ){
-            if(!$this->canEdit($player, $block)){
-			 $event->setCancelled(true);
-                if( isset($area) && ( !$area->getFlag("msg")  || $this->msgOpDsp( $area, $player ) ) ){
-                    $player->sendMessage("Can not do this here");
+            if(
+                $b == 199 // item frame
+                || ( ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) ) // no farm event
+                ||  $i == 259 // flint & steel fire
+            ){
+                if(!$this->canEdit($player, $block)){
+                    $event->setCancelled(true);
                 }
-			}
+            }
+
         }
     } 
 
@@ -1593,12 +1577,10 @@ class Main extends PluginBase implements Listener{
             }
         }
 
-        $nm = '';
-        //$nm = $e instanceof Item ? $e->getItem()->getName() : $e->getName();
+        $nm = ''; //$nm = $e instanceof Item ? $e->getItem()->getName() : $e->getName();
         if( null !== $e->getName() ){
           $nm = $e->getName();
         }
-
         $pos = false;
         if( null !== $e->getPosition() ){
             $pos = $e->getPosition();
@@ -1674,8 +1656,6 @@ class Main extends PluginBase implements Listener{
 			$event->setCancelled();
 
 		}else{
-
-
 
             // tnt block
             if( $block->getID() == 46  && !$this->canExplode( $player->getPosition() ) ){
