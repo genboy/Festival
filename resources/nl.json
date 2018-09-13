@@ -1,0 +1,15 @@
+{
+    "language-name": "Nederlands",
+	"language-selected": "Nederlands geselecteerd.",
+
+    "enabled-console-msg": "Festival opgestart, test in het Nederlands.",
+
+    "cmd-ingameonly-msg": "Commando alleen voor gebruik in het spel.",
+    "cmd-unknown-msg": "Onbekend Festival commando",
+    "cmd-noperms-msg": "Jij mag dit Festival commando niet gebruiken",
+
+    "area-no-area-available": "Geen gebied beschikbaar",
+
+    "select-yes": "Yes",
+    "select-no": "No"
+}

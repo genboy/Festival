@@ -1,0 +1,77 @@
+{
+    "language-name": "English",
+	"language-selected": "Now selected English.",
+
+    "enabled-console-msg": "Festival now enabled, testing in English.",
+
+    "cmd-ingameonly-msg": "Festival command only to be used in-game.",
+    "cmd-unknown-msg": "Unknown Festival command",
+    "cmd-noperms-msg": "You can not use this Festival command",
+    "cmd-noperms-subcommand": "You do not have permission to use this subcommand.",
+
+
+    "pos-select-active": "You're already selecting a position!",
+    "select-both-pos-first":"Please select both positions first.",
+    "pos1": "position 1",
+    "pos2": "position 2",
+    "make-pos1": "Please place or break the first position.",
+    "make-pos2": "Please place or break the first position.",
+    "give-area-name": "Please specify a name for this area.",
+
+    "in-unknown-area": "You are in an unknown area",
+
+    "area": "Area",
+    "area": "areas",
+    "level": "level",
+    "level": "levels",
+    "the-area": "The area",
+    "the-level": "The level",
+    "area-created": "Area created!",
+    "created-by":"created by",
+    "area-no-area-available": "No area available",
+    "area-no-area-to-edit": "There are no areas that you can edit",
+    "area-name-excist": "An area with that name already exists.",
+    "area-not-excist": "Area does not exist.",
+    "cannot-be-found": "cannot be found.",
+    "area-list" : "Area list",
+
+    "desc-saved": "description saved.",
+    "desc-write-usage": "Please write the description. Usage /fe desc <areaname> <..>",
+    "desc-specify-area": "Please specify an area to edit the description. Usage: /fe desc <areaname> <desc>",
+
+    "area-deleted": "Area deleted!",
+    "deleted-by":"deleted by",
+    "specify-to-delete":"Please specify an area to delete.",
+
+
+    "flag": "Flag",
+    "flags": "flags",
+    "flag-not-found-list": "Flag not found. (Flags: edit, god, touch, effects, msg, passage, perms, drop)",
+    "specify-to-flag": "Please specify the area you would like to flag.",
+
+    "tp-to-area-active": "You are teleporting to Area",
+    "specify-excisting-area-name": "Please specify an existing Area name.",
+
+    "cmd": "Command",
+    "cmds": "Commands",
+    "cmd-id": "Command id",
+    "cmd-list": "Command list",
+    "-event": "-event",
+	"set-for-area": "set for area",
+    "added-to-area": "added to area",
+	"allready-used-for": "allready used for",
+    "allready-set-for-area": "allready set for area",
+    "edit-id-or-other": ", edit this id or use another id",
+	"cmd-specify-id-and-command-usage": "Please specify the command ID and command string to add. Usage: /fe command <areaname> add <COMMANDID> <COMMANDSTRING>",
+
+    "event": "event",
+    "event-is-now": "event is now",
+    "change-failed": "change-failed!",
+
+    "select-yes": "Yes",
+    "select-no": "No",
+    "status-on": "on",
+    "status-off": "off",
+    "set-to": "set to",
+    "for-area": "for area"
+}

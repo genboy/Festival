@@ -5,6 +5,8 @@
  */
 namespace genboy\Festival;
 
+use genboy\Festival\lang\Language;
+
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
@@ -199,7 +201,10 @@ class Main extends PluginBase implements Listener{
 		
 		// innitialize configurations & update options
 		if( isset( $c["Options"] ) && is_array( $c["Options"] ) ){
-
+            if(!isset($c["Options"]["Language"])){
+				$c["Options"]["Language"] = 'en';
+				$newchange['Language'] = "! Language option missing in config.yml, now set to 'en' (english); please see latest version of /resources/config.yml";
+			}
 			if(!isset($c["Options"]["Msgtype"])){
 				$c["Options"]["Msgtype"] = 'pop';
 				$newchange['Msgtype'] = "! Msgtype option missing in config.yml, now set to 'pop'; please see /resources/config.yml";
@@ -214,8 +219,8 @@ class Main extends PluginBase implements Listener{
 			}
 			$this->options = $c["Options"];
 		}else{
-			$this->options = array("Msgtype"=>"pop", "Msgdisplay"=>"off", "AutoWhitelist"=>"on"); // Fallback defaults
-            $newchange['Options'] = "! Config Options missing in config.yml, defautls are set for now; please see /resources/config.yml";
+			$this->options = array("Language"=>"en", "Msgtype"=>"pop", "Msgdisplay"=>"off", "AutoWhitelist"=>"on"); // Fallback defaults
+            $newchange['Options'] = "! Config Options missing in config.yml, defaults are set for now; please see /resources/config.yml";
 		}
 
         // set defaults
@@ -339,12 +344,18 @@ class Main extends PluginBase implements Listener{
 		$this->saveAreas(); // all save $this->areaList available :)
 
 		/** console output */
+        $this->loadLanguage();
+
+        $this->getLogger()->info( Language::translate("enabled-console-msg") );
+
         $this->codeSigned(); // codesign
 		$ca = 0; // plugin area info
 		foreach( $this->areas as $a ){
 			$ca = $ca + count( $a->getCommands() );
 		}
+
 		$this->getLogger()->info( "  ". $ca ." commands in " . count($this->areas) . " areas" );
+
 		// warnings changes
 		if( count($newchange) > 0 ){
             foreach($newchange as $ttl => $txt){
@@ -352,6 +363,45 @@ class Main extends PluginBase implements Listener{
             }
 		}
 	}
+
+
+
+    /** load language ( experiment v1.0.7.7-dev )
+	 * @var plugin config[]
+     * @file resources en.json
+     * @file resources nl.json
+	 * @var obj Language
+	 */
+    public function loadLanguage(){
+      $languageCode = $this->options["language"];
+      $resources = $this->getResources(); // read files in resources folder
+      foreach($resources as $resource){
+        if($resource->getFilename() === "en.json"){
+          $default = json_decode(file_get_contents($resource->getPathname(), true), true);
+        }
+        if($resource->getFilename() === $languageCode.".json"){
+          $setting = json_decode(file_get_contents($resource->getPathname(), true), true);
+        }
+      }
+      if(isset($setting)){
+        $langJson = $setting;
+      }else{
+        $langJson = $default;
+      }
+      new Language($this, $langJson);
+    }
+
+
+    public function setLanguage( $lang, $player ){
+
+        $this->options["language"] = $lang;
+        $this->loadLanguage();
+        // Area Flag text colors GREEN, AQUA, BLUE, RED, WHITE, YELLOW, LIGHT_PURPLE, DARK_PURPLE, GOLD, GRAY
+        $msg = TextFormat::AQUA . Language::translate("language-selected");
+        $player->sendMessage( $msg );
+
+    }
+
 
     /** Flag check experimental (synonym to original name)
 	 * @param string $flag
@@ -438,10 +488,13 @@ class Main extends PluginBase implements Listener{
 	 * @return bool 
 	 */
 	public function onCommand(CommandSender $sender, Command $cmd, string $label, array $args) : bool{
+
 		if(!($sender instanceof Player)){
-			$sender->sendMessage(TextFormat::RED . "Command must be used in-game.");  
+			//$sender->sendMessage(TextFormat::RED . "Command must be used in-game.");
+            $sender->sendMessage( TextFormat::RED . Language::translate("cmd-ingameonly-msg") );
 			return true;
 		}
+
 		if(!isset($args[0])){
 			return false;
 		}
@@ -449,8 +502,19 @@ class Main extends PluginBase implements Listener{
 		$action = strtolower($args[0]);
 		$o = "";
 		switch($action){
+
+
+            case "lang": // experiment v1.0.7.7-dev
+                if( isset($args[1]) ){
+                    if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.lang")){
+                        $lang = $args[1];
+                        $this->setLanguage( $lang, $sender );
+                    }
+                }
+            break;
+
 			case "pos1":
-				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.pos1")){
+				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.pos1")){
 					if(isset($this->selectingFirst[$playerName]) || isset($this->selectingSecond[$playerName])){
 						$o = TextFormat::RED . "You're already selecting a position!";
 					}else{
@@ -462,7 +526,7 @@ class Main extends PluginBase implements Listener{
 				}
 			break;
 			case "pos2":
-				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.pos2")){
+				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.pos2")){
 					if(isset($this->selectingFirst[$playerName]) || isset($this->selectingSecond[$playerName])){
 						$o = TextFormat::RED . "You're already selecting a position!";
 					}else{
@@ -542,7 +606,7 @@ class Main extends PluginBase implements Listener{
                 break;
 
 			case "desc":
-				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.desc")){
+				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.desc")){
 					if(isset($args[1])){
 						if(isset($this->areas[strtolower($args[1])])){
 							if(isset($args[2])){
@@ -569,7 +633,7 @@ class Main extends PluginBase implements Listener{
                 break;
 
 			case "list":
-				if( $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.list")){
+				if( $sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.list")){
                     $levelNamesArray = scandir($this->getServer()->getDataPath() . "worlds/");
                     foreach($levelNamesArray as $levelName) {
                         if($levelName === "." || $levelName === "..") {
@@ -613,7 +677,7 @@ class Main extends PluginBase implements Listener{
                 break;
 
 			case "here":
-				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.here")){
+				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.here")){
 					$o = "";
                     $playername = strtolower($sender->getName());
                     foreach($this->inArea[$playername] as $areaname){
@@ -641,7 +705,7 @@ class Main extends PluginBase implements Listener{
                     $position = $sender->getPosition();
                     $perms = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[ $position->getLevel()->getName() ]["Perms"] : $this->perms);
 
-                    if( $perms || $area->isWhitelisted($playerName) || $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.tp")){
+                    if( $perms || $area->isWhitelisted($playerName) || $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe.tp")){
 
                         $levelName = $area->getLevelName();
                         if(isset($levelName) && Server::getInstance()->loadLevel($levelName) != false){
@@ -698,7 +762,7 @@ class Main extends PluginBase implements Listener{
             case "fall":
             case "nfd":
 
-				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.flag")){
+				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.flag")){
 					if(isset($args[1])){
                         
 						/**
@@ -799,7 +863,7 @@ class Main extends PluginBase implements Listener{
 			case "del":
 			case "delete":
 			case "remove":
-				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.delete")){
+				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe.delete")){
 					if(isset($args[1])){
 						if(isset($this->areas[strtolower($args[1])])){
 							$area = $this->areas[strtolower($args[1])];
@@ -817,7 +881,7 @@ class Main extends PluginBase implements Listener{
                 break;
 
 			case "whitelist":
-				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.whitelist")){
+				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.whitelist")){
 					if(isset($args[1], $this->areas[strtolower($args[1])])){
 						$area = $this->areas[strtolower($args[1])];
 						if(isset($args[2])){
@@ -867,7 +931,7 @@ class Main extends PluginBase implements Listener{
 			case "c":
 			case "cmd":
 			case "command": /** /fe command <areaname> <add|list|edit|del> <commandindex> <commandstring>  */
-				if( isset($args[1]) && (  $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe") || $sender->hasPermission("festival.command.fe.command") ) ){
+				if( isset($args[1]) && (  $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe.command") ) ){
 					if( isset( $this->areas[strtolower($args[1])] ) ){
 						if( isset($args[2]) ){
 							$do = strtolower($args[2]);
