@@ -343,18 +343,20 @@ class Main extends PluginBase implements Listener{
 
 		$this->saveAreas(); // all save $this->areaList available :)
 
-		/** console output */
+		/** load language translation class */
         $this->loadLanguage();
 
+        /** console output */
         $this->getLogger()->info( Language::translate("enabled-console-msg") );
 
         $this->codeSigned(); // codesign
+
 		$ca = 0; // plugin area info
 		foreach( $this->areas as $a ){
 			$ca = $ca + count( $a->getCommands() );
 		}
-
-		$this->getLogger()->info( "  ". $ca ." commands in " . count($this->areas) . " areas" );
+        $this->getLogger()->info( $ca .' '. Language::translate("cmds") .' in '. count($this->areas)  .' '.  Language::translate("areas"));
+		//$this->getLogger()->info( "  ". $ca ." commands in " . count($this->areas) . " areas" );
 
 		// warnings changes
 		if( count($newchange) > 0 ){
@@ -373,7 +375,7 @@ class Main extends PluginBase implements Listener{
 	 * @var obj Language
 	 */
     public function loadLanguage(){
-      $languageCode = $this->options["language"];
+      $languageCode = $this->options["Language"];
       $resources = $this->getResources(); // read files in resources folder
       foreach($resources as $resource){
         if($resource->getFilename() === "en.json"){
@@ -394,7 +396,7 @@ class Main extends PluginBase implements Listener{
 
     public function setLanguage( $lang, $player ){
 
-        $this->options["language"] = $lang;
+        $this->options["Language"] = $lang;
         $this->loadLanguage();
         // Area Flag text colors GREEN, AQUA, BLUE, RED, WHITE, YELLOW, LIGHT_PURPLE, DARK_PURPLE, GOLD, GRAY
         $msg = TextFormat::AQUA . Language::translate("language-selected");
@@ -516,25 +518,31 @@ class Main extends PluginBase implements Listener{
 			case "pos1":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.pos1")){
 					if(isset($this->selectingFirst[$playerName]) || isset($this->selectingSecond[$playerName])){
-						$o = TextFormat::RED . "You're already selecting a position!";
+						//$o = TextFormat::RED . "You're already selecting a position!";
+                        $o = TextFormat::RED . Language::translate("pos-select-active");
 					}else{
 						$this->selectingFirst[$playerName] = true;
-						$o = TextFormat::GREEN . "Please place or break the first position.";
+						//$o = TextFormat::GREEN . "Please place or break the first position.";
+                        $o = TextFormat::GREEN . Language::translate("make-pos1");
 					}
 				}else{
-					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+					//$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand");
 				}
 			break;
 			case "pos2":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.pos2")){
 					if(isset($this->selectingFirst[$playerName]) || isset($this->selectingSecond[$playerName])){
-						$o = TextFormat::RED . "You're already selecting a position!";
+						//$o = TextFormat::RED . "You're already selecting a position!";
+                        $o = TextFormat::RED . Language::translate("pos-select-active");
 					}else{
 						$this->selectingSecond[$playerName] = true;
-						$o = TextFormat::GREEN . "Please place or break the second position.";
+						//$o = TextFormat::GREEN . "Please place or break the second position.";
+                        $o = TextFormat::GREEN . Language::translate("make-pos2");
 					}
 				}else{
-					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+					//$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand");
 				}
 			break;
 			case "create":
@@ -587,21 +595,27 @@ class Main extends PluginBase implements Listener{
 
                                     $this->saveAreas();
                                     unset($this->firstPosition[$playerName], $this->secondPosition[$playerName]);
-                                    $o = TextFormat::AQUA . "Area created!";
+                                    //$o = TextFormat::AQUA . "Area created!";
+                                    $o = TextFormat::AQUA . Language::translate("area-created");
                                 }else{
-                                    $o = TextFormat::RED . "An area with that name already exists.";
+                                    //$o = TextFormat::RED . "An area with that name already exists.";
+                                    $o = TextFormat::RED . Language::translate("area-name-excist");
                                 }
                             }else{
-                                $o = TextFormat::RED . "Enter a name for the area (/fe create <name>).";
+                                //$o = TextFormat::RED . "Enter a name for the area (/fe create <name>).";
+                                $o = TextFormat::RED . Language::translate("give-area-name") . ' (/fe create <name>)' ;
                             }
                         }else{
-                            $o = TextFormat::RED . "Please select both positions first.";
+                            //$o = TextFormat::RED . "Please select both positions first.";
+                            $o = TextFormat::RED . Language::translate("select-both-pos-first");
                         }
 					}else{
-						$o = TextFormat::RED . "Please specify a name for this area (/fe create <name>).";
+						//$o = TextFormat::RED . "Please specify a name for this area (/fe create <name>).";
+                        $o = TextFormat::RED . Language::translate("give-area-name") . ' (/fe create <name>)';
 					}
 				}else{
-					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+					//$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand");
 				}
                 break;
 
@@ -610,6 +624,7 @@ class Main extends PluginBase implements Listener{
 					if(isset($args[1])){
 						if(isset($this->areas[strtolower($args[1])])){
 							if(isset($args[2])){
+
 				                $ar = $args[1];
 								unset($args[0]);
 								unset($args[1]);
@@ -617,18 +632,24 @@ class Main extends PluginBase implements Listener{
 								$area = $this->areas[strtolower($ar)];
 								$area->desc = $desc;
 								$this->saveAreas();
-								$o = TextFormat::GREEN . "Area ". TextFormat::LIGHT_PURPLE . $area->getName() . TextFormat::GREEN . " description saved";
+								//$o = TextFormat::GREEN . "Area ". TextFormat::LIGHT_PURPLE . $area->getName() . TextFormat::GREEN . " description saved";
+                                $o = TextFormat::GREEN . Language::translate("area") . ' ' . TextFormat::LIGHT_PURPLE . $area->getName() . ' ' . TextFormat::GREEN . Language::translate("desc-saved");
+
 							}else{
-								$o = TextFormat::RED . "Please write the description. Usage /fe desc <areaname> <..>";
+								//$o = TextFormat::RED . "Please write the description. Usage /fe desc <areaname> <..>";
+                                $o = TextFormat::RED . Language::translate("desc-write-usage");
 							}
 						}else{
-							$o = TextFormat::RED . "Area does not exist.";
+							//$o = TextFormat::RED . "Area does not exist.";
+                            $o = TextFormat::RED . Language::translate("area-not-excist");
 						}
 					}else{
-						$o = TextFormat::RED . "Please specify an area to edit the description. Usage: /fe desc <areaname> <desc>";
+						//$o = TextFormat::RED . "Please specify an area to edit the description. Usage: /fe desc <areaname> <desc>";
+                        $o = TextFormat::RED . Language::translate("desc-specify-area");
 					}
 				}else{  
-					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+					//$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand");
 				}
                 break;
 
@@ -664,14 +685,15 @@ class Main extends PluginBase implements Listener{
                         }
                         if( $i > 0 ){
                             $o .= TextFormat::DARK_PURPLE ."---- Area list ----\n";
-                            $o .= TextFormat::GRAY . "level " . TextFormat::YELLOW . $lvl->getName() .":\n". $t;
+                            $o .= TextFormat::GRAY . Language::translate("level") .' ' . TextFormat::YELLOW . $lvl->getName() .":\n". $t;
                         }
                     }
                     if($o != ''){
                         $o .= TextFormat::DARK_PURPLE ."----------------\n";
                     }
                     if($o == ''){
-                        $o = "There are no areas that you can edit";
+                        //$o = "There are no areas that you can edit";
+                        $o = TextFormat::GRAY . Language::translate("area-no-area-to-edit");
                     }
                 }
                 break;
@@ -689,14 +711,16 @@ class Main extends PluginBase implements Listener{
                         }
                     }
 					if($o === "") {
-						$o = TextFormat::RED . "You are in an unknown area";
+						//$o = TextFormat::RED . "You are in an unknown area";
+                        $o = TextFormat::RED . Language::translate("in-unknown-area");
 					}
 				}
                 break;
 
 			case "tp":
 				if (!isset($args[1])){
-					$o = TextFormat::RED . "You must specify an existing Area name";
+					//$o = TextFormat::RED . "You must specify an existing Area name";
+                    $o = TextFormat::RED . Language::translate("specify-excisting-area-name");
 					break;
 				}
                 if( isset( $this->areas[strtolower($args[1])] ) ){
@@ -709,7 +733,7 @@ class Main extends PluginBase implements Listener{
 
                         $levelName = $area->getLevelName();
                         if(isset($levelName) && Server::getInstance()->loadLevel($levelName) != false){
-                            $o = TextFormat::GREEN . "You are teleporting to Area " . $args[1];
+                            $o = TextFormat::GREEN . Language::translate("tp-to-area-active") .' ' . $args[1];
                             $cx = $area->getSecondPosition()->getX() + ( ( $area->getFirstPosition()->getX() - $area->getSecondPosition()->getX() ) / 2 );
                             $cz = $area->getSecondPosition()->getZ() + ( ( $area->getFirstPosition()->getZ() - $area->getSecondPosition()->getZ() ) / 2 );
                             $cy1 = min( $area->getSecondPosition()->getY(), $area->getFirstPosition()->getY());
@@ -719,14 +743,14 @@ class Main extends PluginBase implements Listener{
                             }
                             $sender->teleport( new Position( $cx, $cy2 - 2, $cz, $area->getLevel() ) );
                         }else{
-                            $o = TextFormat::RED . "The level " . $levelName . " for Area ". $args[1] ." cannot be found";
+                            $o = TextFormat::RED . Language::translate("the-level") . " " . $levelName . " " . Language::translate("for-area") ." ".  $args[1] ." ". Language::translate("cannot-be-found");
                         }
                     }else{
-                        $o = TextFormat::RED . "You do not have permission to use this subcommand.";
+                        $o = TextFormat::RED .Language::translate("cmd-noperms-subcommand");
                     }
                 }else{
                     $list = $this->listAllAreas();
-                    $o = TextFormat::RED . "The Area " . $args[1] . " could not be found. ". $list;
+                    $o = TextFormat::RED . Language::translate("the-area"). " " . $args[1] . " ". Language::translate("cannot-be-found"). $list;
                 }
                 break;
 
@@ -806,20 +830,20 @@ class Main extends PluginBase implements Listener{
 								}else{
 									$status = "off"; 
 								}
-								$o = TextFormat::GREEN . "Flag " . $flag . " set to " . $status . " for area " . $area->getName() . "!";
+								$o = TextFormat::GREEN . Language::translate("flag") . " " . $flag . " ". Language::translate("set-to") . " " . $status . " ". Language::translate("for-area") . " " . $area->getName() . "!";
                                 
 							}else{
 
 								if(isset($args[2])){ // excute long (old) notation
                                     if( $args[2] == "list" ){
                                         $flgs = $area->getFlags(); 
-                                        $l = $area->getName() . TextFormat::GRAY . " flags:";
+                                        $l = $area->getName() . TextFormat::GRAY . " " . Language::translate("flags"). ":";
                                         foreach($flgs as $fi => $flg){
                                             $l .= "\n". TextFormat::GOLD . "    ". $fi . ": ";
                                             if( $flg ){
-                                                $l .= TextFormat::GREEN . "on";
+                                                $l .= TextFormat::GREEN . Language::translate("status-on");
                                             }else{
-                                                $l .= TextFormat::RED . "off";
+                                                $l .= TextFormat::RED . Language::translate("status-off");
                                             }
                                         } 
                                         $o = $l;
@@ -841,22 +865,29 @@ class Main extends PluginBase implements Listener{
 										}else{
 											$status = "off";
 										}
-										$o = TextFormat::GREEN . "Flag " . $flag . " set to " . $status . " for area " . $area->getName() . "!";
+										//$o = TextFormat::GREEN . "Flag " . $flag . " set to " . $status . " for area " . $area->getName() . "!";
+                                        $o = TextFormat::GREEN . Language::translate("flag") . " " . $flag . " ". Language::translate("set-to") . " " . $status . " ". Language::translate("for-area") . " " . $area->getName() . "!";
 									}else{
-										$o = TextFormat::RED . "Flag not found. (Flags: god, pvp, flight, edit, touch, animals, mobs, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)";
+
+										//$o = TextFormat::RED . "Flag not found. (Flags: god, pvp, flight, edit, touch, animals, mobs, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)";
+                                        $o = TextFormat::RED . Language::translate("flag-not-found-list");
 									}
 								}else{
-									$o = TextFormat::RED . "Please specify a flag. (Flags: god, pvp, flight, edit, touch, animals, mobs, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)";
+									//$o = TextFormat::RED . "Please specify a flag. (Flags: god, pvp, flight, edit, touch, animals, mobs, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)";
+                                    $o = TextFormat::RED . Language::translate("flag-not-found-list");
 								}
 							}
 						}else{
-							$o = TextFormat::RED . "Area doesn't exist.";
+							//$o = TextFormat::RED . "Area doesn't exist.";
+                            $o = TextFormat::RED . Language::translate("area-not-excist");
 						}
 					}else{
-						$o = TextFormat::RED . "Please specify the area you would like to flag.";
+						//$o = TextFormat::RED . "Please specify the area you would like to flag.";
+                        $o = TextFormat::RED . Language::translate("specify-to-flag");
 					}
 				}else{
-					$o = TextFormat::RED . "You do not have permission to use this subcommand."; 
+					//$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand");
 				}
                 break;
 
@@ -868,15 +899,19 @@ class Main extends PluginBase implements Listener{
 						if(isset($this->areas[strtolower($args[1])])){
 							$area = $this->areas[strtolower($args[1])];
 							$area->delete();
-							$o = TextFormat::GREEN . "Area deleted!";
+							//$o = TextFormat::GREEN . "Area deleted!";
+                            $o = TextFormat::GREEN . Language::translate("area-deleted");
 						}else{
-							$o = TextFormat::RED . "Area does not exist.";
+							//$o = TextFormat::RED . "Area does not exist.";
+                            $o = TextFormat::RED . Language::translate("area-not-excist");
 						}
 					}else{
-						$o = TextFormat::RED . "Please specify an area to delete.";
+						//$o = TextFormat::RED . "Please specify an area to delete.";
+                        $o = TextFormat::RED . Language::translate("specify-to-delete");
 					}
 				}else{
-					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+					//$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand");
 				}
                 break;
 
@@ -924,7 +959,8 @@ class Main extends PluginBase implements Listener{
 						$o = TextFormat::RED . "Area doesn't exist. Usage: /area whitelist <area> <add/list/remove> [player]";
 					}
 				}else{
-					$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+					//$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand");
 				}
                 break;
 
@@ -955,35 +991,36 @@ class Main extends PluginBase implements Listener{
 											if( isset($area->events[$do]) ){
 												$eventarr = explode(",", $area->events[$do] );
 												if(in_array($cid,$eventarr)){
-													$o = TextFormat::RED .'Command id:'.$cid.' allready set for area '.$do.'-event.';
+													$o = TextFormat::RED . Language::translate("cmd-id").': ' . $cid . ' ' . Language::translate("allready-set-for-area") . ' ' . $do . Language::translate("-event") ;
 												}else{
 													$eventarr[] = $cid;
 													$eventstr = implode(",", $eventarr );
 													$area->events[$do] = $eventstr;
-													$o = TextFormat::RED .'Command id:'.$cid.' set for area '.$do.'-event';
+													$o = TextFormat::GREEN . Language::translate("cmd-id") .': ' . $cid . ' ' . Language::translate("set-for-area") . ' ' . $do . Language::translate("-event");
 												}
 											}else{
 												$area->events[$do] = $cid;
-												$o = TextFormat::RED .'Command id:'.$cid.' set for area '.$do.'-event';
+												$o = TextFormat::RED .Language::translate("cmd-id").': ' . $cid . ' ' . Language::translate("set-for-area") . ' ' . $do . Language::translate("-event");
 											}
+
 											$area->commands[$cid] = $commandstring;
 											$this->saveAreas();
-											$o = TextFormat::GREEN .'Command (id:'.$cid.') added to area '.$ar;
+											$o = TextFormat::GREEN . Language::translate("cmd-id") .' ' . $cid . ' ' . Language::translate("added-to-area") . ' ' .$ar;
 										}else{
-											$o = TextFormat::RED .'Command id:'.$cid.' allready used for '.$ar.', edit this id or use another id.';
+											$o = TextFormat::RED . Language::translate("cmd-id").': ' . $cid . ' ' . Language::translate("allready-set-for-area") . ' ' . $ar. ', ' . Language::translate("edit-id-or-other");
 										}
 									}else{
-										$o = TextFormat::RED .'Please specify the command ID and command string to add. Usage: /fe command <areaname> add <COMMANDID> <COMMANDSTRING>';
+										$o = TextFormat::RED . Language::translate("cmd-specify-id-and-command-usage");
 									}
                                     break;
 
 								case "list":
 									$ar = $this->areas[strtolower($args[1])];
 									if( isset($ar->commands) ){
-										$o = TextFormat::WHITE . $args[1] . TextFormat::AQUA .' command list:';
+										$o = TextFormat::WHITE . $args[1] . TextFormat::AQUA .' '. Language::translate("cmd-list").': ';
 										foreach($ar->events as $type => $list){
 											if( trim($list,",") != "" ){
-												$o .= "\n". TextFormat::YELLOW ."On ". $type . ":";
+												$o .= "\n". TextFormat::YELLOW  . $type . ": ";
 												$cmds = explode(",", trim($list,",") );
 												foreach($cmds as $cmdid){
 													if(isset($ar->commands[$cmdid])){
@@ -1032,9 +1069,9 @@ class Main extends PluginBase implements Listener{
 											}
 											if($ts == 1){
 												$this->saveAreas();
-												$o = TextFormat::GREEN .'Command (id:'.$cid.') event is now '.$evt;
+												$o = TextFormat::GREEN . Language::translate("cmd-id") .' '.$cid.' '. Language::translate("event-is-now").' '.$evt;
 											}else{
-												$o = TextFormat::RED .'Command (id:'.$cid.') event '.$evt.' change failed';
+												$o = TextFormat::RED . Language::translate("cmd-id") .' '.$cid.' '.Language::translate("event").' '.$evt.' '. Language::translate("change-failed");
 											}
 										}
 									}
@@ -1054,12 +1091,12 @@ class Main extends PluginBase implements Listener{
 										if( isset($cmds[$cid]) ){
 											$area->commands[$cid] = $commandstring;
 											$this->saveAreas();
-											$o = TextFormat::GREEN .'Command (id:'.$cid.') edited';
+											$o = TextFormat::GREEN . Language::translate("cmd-id"). ' '.$cid.' edited';
 										}else{
-											$o = TextFormat::RED .'Command id:'.$cid.' could not be found. Check the command id with /fe command <areaname> list';
+											$o = TextFormat::RED .Language::translate("cmd-id"). ' '.$cid.' '. Language::tranlate("cannot-be-found") .' ( /fe command <areaname> list)';
 										}
 									}else{
-										$o = TextFormat::RED .'Please specify the command ID and command string to add. Usage: /fe command <areaname> add <COMMANDID> <COMMANDSTRING>';
+										$o = TextFormat::RED .Language::tranlate("cmd-specify-id-and-command-usage");
 									}
                                     break;
 

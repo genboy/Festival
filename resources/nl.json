@@ -6,10 +6,72 @@
 
     "cmd-ingameonly-msg": "Commando alleen voor gebruik in het spel.",
     "cmd-unknown-msg": "Onbekend Festival commando",
-    "cmd-noperms-msg": "Jij mag dit Festival commando niet gebruiken",
+    "cmd-noperms-msg": "Je kunt dit commando niet gebruiken",
+    "cmd-noperms-subcommand": "Je hebt geen toestemming om dit subcommando te gebruiken.",
 
+
+    "pos-select-active": "Je bent al een coordinaat aan het selecteren!",
+    "select-both-pos-first":"Je moet eerst allebei de coordinaten selecteren.",
+    "pos1": "coordinaat 1",
+    "pos2": "coordinaat 2",
+    "make-pos1": "Breek of plaats een blok voor het eerste coordinaat.",
+    "make-pos2": "Breek of plaats een blok voor het tweede coordinaat.",
+    "give-area-name": "Geef het gebied een naam.",
+
+    "in-unknown-area": "Je ben in onbekend gebied",
+
+    "area": "gebied",
+    "areas": "gebieden",
+    "level": "level",
+    "level": "levels",
+    "the-area": "Het gebied",
+    "the-level": "Het level",
+    "area-created": "Gebied gemaakt!",
+    "created-by":"gemaakt door",
     "area-no-area-available": "Geen gebied beschikbaar",
+    "area-no-area-to-edit": "Er zijn geen gebieden die je kunt bewerken",
+    "area-name-excist": "Een gebied met die naam bestaat al.",
+    "area-not-excist": "Gebied bestaat niet.",
+    "cannot-be-found": "kan niet gevonden worden.",
+    "area-list" : "Lijst met gebieden",
 
-    "select-yes": "Yes",
-    "select-no": "No"
+    "desc-saved": "omschrijving opgeslagen.",
+    "desc-write-usage": "Schrijf de beschrijving. Gebruik /fe desc <areaname> <..>",
+    "desc-specify-area": "Geef een gebied aan om de omschrijving aan te passen. Gebruik: /fe desc <areaname> <desc>",
+
+    "area-deleted": "Geied verwijderd!",
+    "deleted-by":"verwijderd door",
+    "specify-to-delete":"Geef een gebied aan om te verwijderen.",
+
+
+    "flag": "Flag",
+    "flags": "flaggen",
+    "flag-not-found-list": "Flag niet gevonden. (Flaggen: edit, god, touch, effects, msg, passage, perms, drop)",
+    "specify-to-flag": "Geef het geid aan om te vlaggen.",
+
+    "tp-to-area-active": "Je teleporteerd naar gebied",
+    "specify-excisting-area-name": "Geef een bestaande naam van een gebied.",
+
+    "cmd": "Commando",
+    "cmds": "Commando's",
+    "cmd-id": "Commanod id",
+    "cmd-list": "Commando lijst",
+    "-event": "-event",
+	"set-for-area": "gebruikt vor gebied",
+    "added-to-area": "toegevoegd aan gebied",
+	"allready-used-for": "al in gebruik voor",
+    "allready-set-for-area": "al toegevoegd aan gebied",
+    "edit-id-or-other": ", bewerk deze id of bewerk een andere id",
+	"cmd-specify-id-and-command-usage": "Geef een uniek id en commando regel om toe te voegen. Gebruik: /fe command <areaname> add <COMMANDID> <COMMANDSTRING>",
+
+    "event": "event",
+    "event-is-now": "event is nu",
+    "change-failed": "change-failed!",
+
+    "select-yes": "Ja",
+    "select-no": "Nee",
+    "status-on": "aan",
+    "status-off": "uit",
+    "set-to": "aangepast naar",
+    "for-area": "voor gebied"
 }

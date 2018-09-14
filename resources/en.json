@@ -15,13 +15,13 @@
     "pos1": "position 1",
     "pos2": "position 2",
     "make-pos1": "Please place or break the first position.",
-    "make-pos2": "Please place or break the first position.",
+    "make-pos2": "Please place or break the second position.",
     "give-area-name": "Please specify a name for this area.",
 
     "in-unknown-area": "You are in an unknown area",
 
     "area": "Area",
-    "area": "areas",
+    "areas": "areas",
     "level": "level",
     "level": "levels",
     "the-area": "The area",
@@ -52,9 +52,9 @@
     "tp-to-area-active": "You are teleporting to Area",
     "specify-excisting-area-name": "Please specify an existing Area name.",
 
-    "cmd": "Command",
-    "cmds": "Commands",
-    "cmd-id": "Command id",
+    "cmd": "command",
+    "cmds": "commands",
+    "cmd-id": "command id",
     "cmd-list": "Command list",
     "-event": "-event",
 	"set-for-area": "set for area",
