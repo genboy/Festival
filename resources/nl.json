@@ -2,13 +2,12 @@
     "language-name": "Nederlands",
 	"language-selected": "Nederlands geselecteerd.",
 
-    "enabled-console-msg": "Festival opgestart, test in het Nederlands.",
+    "enabled-console-msg": "Festival opgestart, Nederlands geselecteerd (pas aan met /fe lang <en/nl>)",
 
     "cmd-ingameonly-msg": "Commando alleen voor gebruik in het spel.",
     "cmd-unknown-msg": "Onbekend Festival commando",
     "cmd-noperms-msg": "Je kunt dit commando niet gebruiken",
     "cmd-noperms-subcommand": "Je hebt geen toestemming om dit subcommando te gebruiken.",
-
 
     "pos-select-active": "Je bent al een coordinaat aan het selecteren!",
     "select-both-pos-first":"Je moet eerst allebei de coordinaten selecteren.",
@@ -24,33 +23,44 @@
     "areas": "gebieden",
     "level": "level",
     "level": "levels",
+    "player": "speler",
+    "players": "spelers",
     "the-area": "Het gebied",
     "the-level": "Het level",
     "area-created": "Gebied gemaakt!",
     "created-by":"gemaakt door",
+    "area-here": "Gebied hier",
     "area-no-area-available": "Geen gebied beschikbaar",
     "area-no-area-to-edit": "Er zijn geen gebieden die je kunt bewerken",
     "area-name-excist": "Een gebied met die naam bestaat al.",
     "area-not-excist": "Gebied bestaat niet.",
     "cannot-be-found": "kan niet gevonden worden.",
     "area-list" : "Lijst met gebieden",
+    "players-in-area": "spelers in gebied",
+    "area-whitelist": "whitelist",
+    "area-no-commands": "geen commando's gekoppeld",
+    "player-has-been-whitelisted": "is whitelisted in gebied",
+    "player-allready-whitelisted": "is al whitelisted in gebied",
+    "player-has-been-unwhitelisted": "is unwhitelisted van gebied",
+    "player-allready-unwhitelisted": "is al unwhitelisted van gebied",
+    "whitelist-specify-action": "Geef een actie op. Gebruik: /area whitelist <areaname> <add/list/remove> <playername>",
 
     "desc-saved": "omschrijving opgeslagen.",
     "desc-write-usage": "Schrijf de beschrijving. Gebruik /fe desc <areaname> <..>",
     "desc-specify-area": "Geef een gebied aan om de omschrijving aan te passen. Gebruik: /fe desc <areaname> <desc>",
 
-    "area-deleted": "Geied verwijderd!",
+    "area-deleted": "Gebied verwijderd!",
     "deleted-by":"verwijderd door",
-    "specify-to-delete":"Geef een gebied aan om te verwijderen.",
-
+    "specify-to-delete":"Geef de naam van het gebied aan om te verwijderen. (zie /fe list)",
 
     "flag": "Flag",
     "flags": "flaggen",
-    "flag-not-found-list": "Flag niet gevonden. (Flaggen: edit, god, touch, effects, msg, passage, perms, drop)",
-    "specify-to-flag": "Geef het geid aan om te vlaggen.",
+    "flag-not-found-list": "Flag niet gevonden. (Flaggen: god, pvp, flight, edit, touch, animals, mobs, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)",
+    "flag-not-specified-list": "Specificeer een vlag. (Flaggen: god, pvp, flight, edit, touch, animals, mobs, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)",
+    "specify-to-flag": "Geef de naam van het gebied op om te vlaggen.",
 
     "tp-to-area-active": "Je teleporteerd naar gebied",
-    "specify-excisting-area-name": "Geef een bestaande naam van een gebied.",
+    "specify-excisting-area-name": "Geef een bestaande naam van een gebied. (zie /fe list)",
 
     "cmd": "Commando",
     "cmds": "Commando's",
@@ -64,6 +74,11 @@
     "edit-id-or-other": ", bewerk deze id of bewerk een andere id",
 	"cmd-specify-id-and-command-usage": "Geef een uniek id en commando regel om toe te voegen. Gebruik: /fe command <areaname> add <COMMANDID> <COMMANDSTRING>",
 
+    "cmd-valid-areaname": "Gebier niet gevinden, geef een bestande naam op. Gebruik: /fe command <areaname> <add/list/edit/del> <commandID> <commandstring>.",
+    "cmd-id-not-found": "Command ID niet gevonden. Bekijk de commando's met /fe event command <areaname> list",
+    "cmd-specify-id-to-delete": "Geef het comando ID om het te verwijderen. Gebruik /fe event command <areaname> del <COMMANDID>",
+    "cmd-specify-action": "Voeg een actie toe voor het commando.  Geruik: /fe command <areaname> <add/list/edit/del> <commandID> <commandstring>.",
+
     "event": "event",
     "event-is-now": "event is nu",
     "change-failed": "change-failed!",
@@ -73,5 +88,25 @@
     "status-on": "aan",
     "status-off": "uit",
     "set-to": "aangepast naar",
-    "for-area": "voor gebied"
+    "for-area": "voor gebied",
+
+    "all-players-are-god": "Alle spelers zajin in god-mode in dit gebied!",
+    "no-pvp-area": "Dit is geen PVP area!",
+    "no-flight-area": "Vliegen is hier niet toegstaan!",
+    "flight-area": "Vliegen is hier toegestaand!",
+
+    "leaving-area": "verlaat",
+    "enter-area": "betreedt",
+    "leaving-center-area": "Verlaat het midden van gebied",
+    "enter-center-area": "Betreedt het midden van gebied",
+    "cannot-enter-area": "Je kunt dit gebied niet betreden",
+    "cannot-leave-area": "Je kunt dit gebied niet verlaten",
+    "enter-barrier-area": "passeerde net een grens van een geblokeerd gebied!",
+
+    "option-missing-in-config": "optie mist in config.yml, nu aangepast naar",
+    "flag-missing-in-config": "vlag default ontbreekt, nu aangepast naar",
+    "barrier-is-passage-flag": "Oude Barrier config gebruikt, nu aangepast naar 'false'; Hernoem 'Barrier' naar 'Passage' in config.yml",
+    "no-is-falldamage-flag": "Oude Nofalldamge config gebruikt, nu aangepast naar 'false'; Hernoem 'Nofalldamage' naar 'falldamage' in config.yml",
+    "option-see-configfile": "zie originele configs in /resources/config.yml"
+
 }

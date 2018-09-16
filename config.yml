@@ -3,14 +3,14 @@
 # Festival options
 Options:
   # select a language: English = en, Dutch = nl, translate please !
-  language: en
-  
+  Language: en
+
   # Area Messages Display position (msg/title/tip/pop)
   Msgtype: msg
-  
+
   # Area Messages persist display to ops (off/op/on)
   Msgdisplay: off
-  
+
   # Auto whitelist area creator (on/off)
   AutoWhitelist: on
 
@@ -33,7 +33,7 @@ Default:
 
   # Keep players from touching blocks and activating things like chests? (true = NoTouching)
   Touch: false
-  
+
   # Prevent Animal Entities from spawning? (true = NoAnimals)
   Animals: false
 
@@ -42,7 +42,7 @@ Default:
 
   # Keep players from having effects like speed or night vision? (true = NoEffects)
   Effects: false
-   
+
   # Keep players from seeing enter/leave/description messages? (true = NoMessages)
   Msg: false
 
@@ -63,10 +63,10 @@ Default:
 
   # Keep players from executing area event commands without specific perms (true = No Op Permissons)
   Perms: false
-  
+
   # Keep players from taking fall damage (true = NoFallDamage)
   FallDamage: true
-  
+
 # Settings for unprotected areas in individual worlds:
 Worlds:
 
@@ -87,7 +87,7 @@ Worlds:
 
     # Keep players from touching blocks and activating things like chests? (true = NoTouching)
     Touch: false
-  
+
     # Prevent Animal Entities from spawning? (true = NoAnimals)
     Animals: false
 
@@ -122,7 +122,7 @@ Worlds:
     FallDamage: true
 
   world:
-  
+
     # Keep players from getting hurt? (true = Player god mode)
     God: false
 
@@ -137,7 +137,7 @@ Worlds:
 
     # Keep players from touching blocks and activating things like chests? (true = NoTouching)
     Touch: false
-  
+
     # Prevent Animal Entities from spawning? (true = NoAnimals)
     Animals: false
 
