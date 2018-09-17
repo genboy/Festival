@@ -26,6 +26,8 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityExplodeEvent;
 use pocketmine\event\entity\EntityShootBowEvent;
+use pocketmine\event\entity\EntityLevelChangeEvent;
+use pocketmine\level\particle\FloatingTextParticle;
 use pocketmine\event\Listener;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
@@ -33,6 +35,7 @@ use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
 use pocketmine\Server;
+use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerCommandPreprocessEvent;
@@ -493,6 +496,8 @@ class Main extends PluginBase implements Listener{
         }
         return $flag;
     }
+
+
 
 	/** Commands
 	 * @param CommandSender $sender
@@ -1683,7 +1688,7 @@ class Main extends PluginBase implements Listener{
         // https://github.com/LeinneSW/EntityManager
 
         $o = true;
-        if( $e instanceof ExperienceOrb || $e instanceof ItemEntity || $e instanceof Projectile){
+        if( $e instanceof ExperienceOrb || $e instanceof ItemEntity || $e instanceof Projectile || $e instanceof FloatingTextParticle){
             return $o; // allowed
         }
         
@@ -2425,6 +2430,46 @@ class Main extends PluginBase implements Listener{
 		file_put_contents($this->getDataFolder() . "areas.json", json_encode($areas));
 	}
 
+
+
+    /** onJoin Area Titles for Player ( FloatingTextParticle )
+	 * @param PlayerJoinEvent $event
+	 */
+    public function onJoin(PlayerJoinEvent $event){
+        $player = $event->getPlayer();
+        $level = $this->getServer()->getDefaultLevel();
+        $this->placeAreaTitles( $player,  $level  );
+    }
+
+    /** levelChange Area Titles for Player ( FloatingTextParticle )
+	 * @param EntityLevelChangeEvent $event
+	 */
+    public function levelChange(EntityLevelChangeEvent $event) {
+        $entity = $event->getEntity();
+        if ($entity instanceof Player) {
+            $level = $event->getTarget();
+            $this->placeAreaTitles( $entity, $level );
+        }
+    }
+
+
+    /** Set Floating Area Title ( FloatingTextParticle )
+	 * @param Vector3 $pos
+	 * @param string  $text
+	 * @param string  $title
+	 */
+    public function placeAreaTitles( $player, $level ) : void{
+        foreach($this->areas as $area){
+        $cx = $area->getSecondPosition()->getFloorX() + ( ( $area->getFirstPosition()->getFloorX() - $area->getSecondPosition()->getFloorX() ) / 2 );
+		$cz = $area->getSecondPosition()->getFloorZ() + ( ( $area->getFirstPosition()->getFloorZ() - $area->getSecondPosition()->getFloorZ() ) / 2 );
+		$cy = max( $area->getSecondPosition()->getFloorY(), $area->getFirstPosition()->getFloorY()) - 2;
+            // area set title pos (off, number)
+            // color TextFormat::DARK_PURPLE .
+             $areainfotext = new FloatingTextParticle( new Position($cx, $cy, $cz, $area->getLevel() ), "",  $area->getName() );
+
+            $level->addParticle($areainfotext, [$player]);
+        }
+    }
     /**  Festival Console Sign Flag for developers
      *   makes it easy to find Festival console output fast
      */
