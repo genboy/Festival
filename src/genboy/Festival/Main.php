@@ -2470,8 +2470,8 @@ class Main extends PluginBase implements Listener{
     public function placeAreaTitles( $player, $level ) : void{
         foreach($this->areas as $area){
 
-            if( ( $this->options["Areadisplay"] == 'on' && !$area->getFlag("msg") ) ||
-                  ( $this->options["Areadisplay"] == 'op' && $player->isOp() ) ){
+            if( ( $this->options["Areadisplay"] == 'on' && ( !$area->getFlag("msg") || $area->isWhitelisted( strtolower( $player->getName() ) ) ) ) ||
+                  ( $this->options["Areadisplay"] == 'op' && ( $player->isOp() || $area->isWhitelisted( strtolower( $player->getName() ) ) ) ) ){
 
                     $cx = $area->getSecondPosition()->getFloorX() + ( ( $area->getFirstPosition()->getFloorX() - $area->getSecondPosition()->getFloorX() ) / 2 );
                     $cz = $area->getSecondPosition()->getFloorZ() + ( ( $area->getFirstPosition()->getFloorZ() - $area->getSecondPosition()->getFloorZ() ) / 2 );
