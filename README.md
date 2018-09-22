@@ -27,12 +27,22 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 [![](https://poggit.pmmp.io/shield.dl/Festival)](https://poggit.pmmp.io/p/Festival)
 
 [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
+	
+!Please before asking first double-check your server basic world configurations, other plugins configurations (ie. worldguard) and the used player permissions incl. Festival whitelistings.
 
 #### Features
 
+**Config**
+- set default options in config.yml;
+  - language: en - select language English = en, Dutch = nl, translate please !
+  - Msgtype: msg - Area Messages Display position (msg/title/tip/pop)
+  - Msgdisplay: off - Area Messages persist display to ops (off/op/on)
+  - Areadisplay: op - Area Floating Title display to ops (off/op/on)
+  - AutoWhitelist: on - Auto whitelist area creator (on/off)
+  
 **Area**
 
-- Create and manage area’s
+- Create and manage area’s ingame
   (like WorldGuard/iProtector)
 
     - Define cuboid area by tapping 2 positions
@@ -42,11 +52,12 @@ Create a festival with this custom area events plugin for Pocketmine Server:
     - tp to an area
     - show area’s info at current position 
 
-
 **Flags**
 
-- Set area flags true means
-
+- Set area flags ingame 
+  Flags: Any flag true will protect the area and the players in it. 
+  ie. edit: true (on) means no breaking/building by players. shoot: true (on) means no shooting by players. 
+  
     - edit: the area is save from building/breaking
     - god: players in the area are save in god mode
     - pvp: players in the area are save from PVP
@@ -83,6 +94,9 @@ Create a festival with this custom area events plugin for Pocketmine Server:
   - Flight: if server allows flight, and level flight-flag is true, an area in that level has still flight enabled untill flight flag is set true
   - Perms: Area event commands are executed by default with op-permissions by players or, if perms flag true: area uses the player permissions
 	
+!Please first check festival and other plugins configs (ie. worldguard) and the used player permissions incl. Festival whitelistings.
+
+  
 
 ###### Created by [Genboy](https://genboy.net) 2018
 
@@ -99,6 +113,8 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   ### Install & Configure
 
   - Standard Plugin installation; Upload .phar file to server 'plugin' folder (or upload .zip if you have latest devtools installed), restart the server, go to  folder plugins/Festival;
+
+  - read [wiki on configurations](https://github.com/genboy/Festival/wiki/2.-Install,-Configure-&-Update)
 
   - Edit config.yml; set the defaults for options, default area flags and the default area flags for specific worlds.
   
@@ -146,7 +162,14 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   - new animals and mobs (spawning) flag 
   - Fixes itemframe and farmland edit  
 
- 
+  **New in v1.0.8**
+  - /fe lang <en/nl/..> - set  Festival language
+  - Edit flag includes No Farmland creation
+  - Edit flag includes No Fire from Flint & Steel 
+  - Edit flag includes No TNT placing
+  - Edit flag includes No TNT ignition with Flint & Steel
+  - Edit flag includes protect item in frame use
+
   #### Usage Graphic
 
   ##### A visualisation of Festival command usage
@@ -186,10 +209,12 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
       /fe <edit/god/pvp/flight/touch/effects/tnt/shoot/drop/msg/pass/hunger/perms> <AREANAME>
 
   
-    Area flag defaults are set in the config.yml), server defaults and world specific default flag. 
+    Area flag defaults are set in the config.yml, server defaults and world specific default flag. 
+    
+    
     The basic command to control area flags:
   
-	  /fe flag(f) <AREANAME> <edit/god/pvp/flight/touch/effects/tnt/shoot/drop/msg/pass/hunger/perms/nfd> <true/false>
+	  /fe flag(f) <AREANAME> <edit/god/pvp/flight/touch/mobs/animals/effects/tnt/shoot/drop/msg/pass/hunger/perms/falldamage> <true/false>
   
     Area flag listing
   

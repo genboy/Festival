@@ -6,6 +6,7 @@
 namespace genboy\Festival;
 
 use genboy\Festival\lang\Language;
+use genboy\Festival\settings;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
@@ -162,6 +163,13 @@ class Main extends PluginBase implements Listener{
 				$c["Options"]["Msgdisplay"] = 'off';
 				$newchange['Msgtype'] = "! Msgdisplay ".Language::translate("option-missing-in-config")." 'off'; ". Language::translate("option-see-configfile");
 			}
+
+
+			if(!isset($c["Options"]["Areadisplay"])){
+				$c["Options"]["Areadisplay"] = 'off';
+				$newchange['Areadisplay'] = "! Areadisplay ".Language::translate("option-missing-in-config")." 'off'; ". Language::translate("option-see-configfile");
+			}
+
             if(!isset($c["Options"]["AutoWhitelist"])){ // check since v1.0.5-12
 				$c["Options"]["AutoWhitelist"] = 'on';
 				$newchange['Msgtype'] = "! AutoWhitelist ".Language::translate("option-missing-in-config")." 'on'; ". Language::translate("option-see-configfile");
@@ -352,6 +360,7 @@ class Main extends PluginBase implements Listener{
                     $flags["shoot"] = false;
 				    $newchange['Msgtype'] = "! Shoot ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
                 }
+
                 new Area($datum["name"], $datum["desc"], $flags, new Vector3($datum["pos1"]["0"], $datum["pos1"]["1"], $datum["pos1"]["2"]), new Vector3($datum["pos2"]["0"], $datum["pos2"]["1"], $datum["pos2"]["2"]), $datum["level"], $datum["whitelist"], $datum["commands"], $datum["events"], $this);
             }
 
@@ -701,7 +710,7 @@ class Main extends PluginBase implements Listener{
                             }
                         }
                         if( $i > 0 ){
-                            $o .= TextFormat::DARK_PURPLE ."---- ".Language::tanslate("area-list")." ----\n";
+                            $o .= TextFormat::DARK_PURPLE ."---- ".Language::translate("area-list")." ----\n";
                             $o .= TextFormat::GRAY . Language::translate("level") .' ' . TextFormat::YELLOW . $lvl->getName() .":\n". $t;
                         }
                     }
@@ -2460,14 +2469,20 @@ class Main extends PluginBase implements Listener{
 	 */
     public function placeAreaTitles( $player, $level ) : void{
         foreach($this->areas as $area){
-        $cx = $area->getSecondPosition()->getFloorX() + ( ( $area->getFirstPosition()->getFloorX() - $area->getSecondPosition()->getFloorX() ) / 2 );
-		$cz = $area->getSecondPosition()->getFloorZ() + ( ( $area->getFirstPosition()->getFloorZ() - $area->getSecondPosition()->getFloorZ() ) / 2 );
-		$cy = max( $area->getSecondPosition()->getFloorY(), $area->getFirstPosition()->getFloorY()) - 2;
-            // area set title pos (off, number)
-            // color TextFormat::DARK_PURPLE .
-             $areainfotext = new FloatingTextParticle( new Position($cx, $cy, $cz, $area->getLevel() ), "",  $area->getName() );
 
-            $level->addParticle($areainfotext, [$player]);
+            if( ( $this->options["Areadisplay"] == 'on' && !$area->getFlag("msg") ) ||
+                  ( $this->options["Areadisplay"] == 'op' && $player->isOp() ) ){
+
+                    $cx = $area->getSecondPosition()->getFloorX() + ( ( $area->getFirstPosition()->getFloorX() - $area->getSecondPosition()->getFloorX() ) / 2 );
+                    $cz = $area->getSecondPosition()->getFloorZ() + ( ( $area->getFirstPosition()->getFloorZ() - $area->getSecondPosition()->getFloorZ() ) / 2 );
+                    $cy = max( $area->getSecondPosition()->getFloorY(), $area->getFirstPosition()->getFloorY()) - 2;
+
+                    // area set title pos
+                    $areainfotext = new FloatingTextParticle( new Position($cx, $cy, $cz, $area->getLevel() ), "",  TextFormat::AQUA . $area->getName() );
+
+                    $level->addParticle($areainfotext, [$player]);
+
+            }
         }
     }
     /**  Festival Console Sign Flag for developers
