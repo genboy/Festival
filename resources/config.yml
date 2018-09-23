@@ -2,10 +2,15 @@
 
 # Festival options
 Options:
+  # select a language: English = en, Dutch = nl, translate please !
+  language: en
   
-  # Area Messages Display position (tip/pop)
-  Msgtype: pop
+  # Area Messages Display position (msg/title/tip/pop)
+  Msgtype: msg
   
+  # Area Floatingtext title display (off/op/on)
+  Areadisplay: op
+
   # Area Messages persist display to ops (off/op/on)
   Msgdisplay: off
   

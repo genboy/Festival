@@ -1,6 +1,6 @@
 name: Festival
 author: Genboy
-version: 1.0.7.6-dev
+version: 1.0.7.8-dev
 main: genboy\Festival\Main
 load: POSTWORLD
 api: [3.0.0-ALPHA10,3.0.0-ALPHA11,3.0.0-ALPHA12,3.0.0,4.0.0]
@@ -24,8 +24,11 @@ permissions:
         children:
           festival.command.fe:
             description: "Allows access to the Festival area command."
-            default: op
+            default: true
             children:
+              festival.command.fe.lang:
+                description: "Allows access to the Festival lang subcommand."
+                default: true
               festival.command.fe.pos1:
                 description: "Allows access to the Festival pos1 subcommand."
                 default: op
