@@ -106,6 +106,10 @@ class Main extends PluginBase implements Listener{
      */
 	private $areaList  = [];
 	/** @var array[]
+     * list of areanames with active floatingtextparticle objects
+     */
+	private $areaTitles  = [];
+	/** @var array[]
      * list of playernames in a global delay counter per player (skipptime)
      */
 	private $skipsec   = [];
@@ -541,6 +545,28 @@ class Main extends PluginBase implements Listener{
                 }
             break;
 
+            case "titles":
+				if( $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->isOp() || $this->isWhitelisted($sender) ){
+                    if( $this->options["Areadisplay"] == 'op' ||  $this->options["Areadisplay"] == 'on' ){
+                        if( isset($this->areaTitles[strtolower($sender->getName())]) && count($this->areaTitles[strtolower($sender->getName())]) > 0 ){
+                            foreach($this->areas as $area){
+                                $this->hideAreaTitle( $sender, $sender->getPosition()->getLevel(), $area );
+                            }
+                            $this->areaTitles = [];
+                            $o = TextFormat::RED .  "Area floating titles off!";
+                        }else{
+                            $this->checkAreaTitles(  $sender, $sender->getPosition()->getLevel() );
+                            $o = TextFormat::GREEN .  "Area floating titles on!";
+                        }
+                    }else{
+                        $o = TextFormat::YELLOW .  "Area floating titles not available";
+                    }
+				}else{
+					//$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand");
+                }
+
+			break;
 			case "pos1":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.pos1")){
 					if(isset($this->selectingFirst[$playerName]) || isset($this->selectingSecond[$playerName])){
@@ -1899,6 +1925,7 @@ class Main extends PluginBase implements Listener{
 	}
 
 
+
     /** Flight
 	 * @param Player $player
      */
@@ -2447,7 +2474,8 @@ class Main extends PluginBase implements Listener{
     public function onJoin(PlayerJoinEvent $event){
         $player = $event->getPlayer();
         $level = $this->getServer()->getDefaultLevel();
-        $this->placeAreaTitles( $player,  $level  );
+        $this->areaTitles[strtolower($player->getName())] = [];
+        $this->checkAreaTitles( $player,  $level  );
     }
 
     /** levelChange Area Titles for Player ( FloatingTextParticle )
@@ -2457,34 +2485,85 @@ class Main extends PluginBase implements Listener{
         $entity = $event->getEntity();
         if ($entity instanceof Player) {
             $level = $event->getTarget();
-            $this->placeAreaTitles( $entity, $level );
+            $this->checkAreaTitles( $entity, $level );
         }
     }
 
 
-    /** Set Floating Area Title ( FloatingTextParticle )
+    /** Check Floating Area Title placement( FloatingTextParticle )
 	 * @param Vector3 $pos
 	 * @param string  $text
 	 * @param string  $title
 	 */
-    public function placeAreaTitles( $player, $level ) : void{
+    public function checkAreaTitles( $player, $level ) : void{
         foreach($this->areas as $area){
 
             if( ( $this->options["Areadisplay"] == 'on' && ( !$area->getFlag("msg") || $area->isWhitelisted( strtolower( $player->getName() ) ) ) ) ||
                   ( $this->options["Areadisplay"] == 'op' && ( $player->isOp() || $area->isWhitelisted( strtolower( $player->getName() ) ) ) ) ){
 
-                    $cx = $area->getSecondPosition()->getFloorX() + ( ( $area->getFirstPosition()->getFloorX() - $area->getSecondPosition()->getFloorX() ) / 2 );
-                    $cz = $area->getSecondPosition()->getFloorZ() + ( ( $area->getFirstPosition()->getFloorZ() - $area->getSecondPosition()->getFloorZ() ) / 2 );
-                    $cy = max( $area->getSecondPosition()->getFloorY(), $area->getFirstPosition()->getFloorY()) - 2;
-
-                    // area set title pos
-                    $areainfotext = new FloatingTextParticle( new Position($cx, $cy, $cz, $area->getLevel() ), "",  TextFormat::AQUA . $area->getName() );
-
-                    $level->addParticle($areainfotext, [$player]);
+                    $this->placeAreaTitle( $player, $level, $area );
 
             }
         }
+		return;
     }
+
+
+    /** isWhitelisted global or specific area
+	 * @param Player $player
+	 * @param Area $area
+     */
+    public function isWhitelisted( $player, $area = false ): bool{
+
+        if( $area instanceof Area && $area->isWhitelisted( strtolower( $player->getName() ) ) && $area->getLevel() == $player->getPosition()->getLevel() ){
+           return true;
+        }else{
+            foreach($this->areas as $area){
+                if( $area->isWhitelisted( strtolower( $player->getName() ) ) && $area->getLevel() == $player->getPosition()->getLevel() ){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /** Set Floating Area Title ( FloatingTextParticle )
+	 * @param Player $player
+     * @param Level $level
+	 * @param Area  $area
+	 */
+    public function placeAreaTitle( $player, $level, $area ) : void{
+
+        if( isset($this->areaTitles[strtolower($player->getName())][ $area->getName() ]) ){
+            // activate particle
+            $this->areaTitles[strtolower($player->getName())][ $area->getName() ]->setInvisible(false);
+        }else{
+            $cx = $area->getSecondPosition()->getFloorX() + ( ( $area->getFirstPosition()->getFloorX() - $area->getSecondPosition()->getFloorX() ) / 2 );
+            $cz = $area->getSecondPosition()->getFloorZ() + ( ( $area->getFirstPosition()->getFloorZ() - $area->getSecondPosition()->getFloorZ() ) / 2 );
+            $cy = max( $area->getSecondPosition()->getFloorY(), $area->getFirstPosition()->getFloorY()) - 2;
+            // area set title pos
+            $this->areaTitles[strtolower($player->getName())][ $area->getName() ] = new FloatingTextParticle( new Position($cx, $cy, $cz, $area->getLevel() ), "",  TextFormat::AQUA . $area->getName() );
+        }
+        $level->addParticle( $this->areaTitles[strtolower($player->getName())][ $area->getName() ], [$player]);
+		return;
+    }
+
+     /** Hide Floating Area Title ( FloatingTextParticle )
+	 * @param Player $player
+     * @param Level $level
+	 * @param Area  $area
+	 */
+    public function hideAreaTitle( $player, $level, $area ) : void{
+
+        if( isset($this->areaTitles[strtolower($player->getName())][ $area->getName() ]) ){
+            // hide particle
+            $this->areaTitles[strtolower($player->getName())][ $area->getName() ]->setInvisible(true);
+            $level->addParticle( $this->areaTitles[strtolower($player->getName())][ $area->getName() ], [$player]);
+        }
+		return;
+    }
+
+
     /**  Festival Console Sign Flag for developers
      *   makes it easy to find Festival console output fast
      */
