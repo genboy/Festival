@@ -428,7 +428,7 @@ class Main extends PluginBase implements Listener{
         $this->loadLanguage();
         // Area Flag text colors GREEN, AQUA, BLUE, RED, WHITE, YELLOW, LIGHT_PURPLE, DARK_PURPLE, GOLD, GRAY
         $msg = TextFormat::AQUA . Language::translate("language-selected");
-        $player->areaMessage( $msg );
+        $this->areaMessage( $msg, $player );
 
     }
 
@@ -552,7 +552,7 @@ class Main extends PluginBase implements Listener{
                             foreach($this->areas as $area){
                                 $this->hideAreaTitle( $sender, $sender->getPosition()->getLevel(), $area );
                             }
-                            $this->areaTitles = [];
+                            $this->areaTitles[strtolower($sender->getName())] = [];
                             $o = TextFormat::RED .  "Area floating titles off!";
                         }else{
                             $this->checkAreaTitles(  $sender, $sender->getPosition()->getLevel() );
@@ -1227,6 +1227,11 @@ class Main extends PluginBase implements Listener{
         $playerName = strtolower($event->getPlayer()->getName());
         $lvl = $event->getPlayer()->getLevel()->getName();
         unset($this->inArea[$playerName]);
+
+        foreach($this->areas as $area){
+            $this->hideAreaTitle( $event->getPlayer(), $event->getPlayer()->getPosition()->getLevel(), $area );
+        }
+        unset( $this->areaTitles[$playerName] );
 
     }
 
@@ -2498,11 +2503,12 @@ class Main extends PluginBase implements Listener{
     public function checkAreaTitles( $player, $level ) : void{
         foreach($this->areas as $area){
 
-            if( ( $this->options["Areadisplay"] == 'on' && ( !$area->getFlag("msg") || $area->isWhitelisted( strtolower( $player->getName() ) ) ) ) ||
-                  ( $this->options["Areadisplay"] == 'op' && ( $player->isOp() || $area->isWhitelisted( strtolower( $player->getName() ) ) ) ) ){
+            if( $level->getName() == $area->getLevelName() &&
+               (( $this->options["Areadisplay"] == 'on' && ( !$area->getFlag("msg") || $area->isWhitelisted( strtolower( $player->getName() ) ) ) ) ||
+                ( $this->options["Areadisplay"] == 'op' && ( $player->isOp() || $area->isWhitelisted( strtolower( $player->getName() ) ) )
+                ))){
 
-                    $this->placeAreaTitle( $player, $level, $area );
-
+                $this->placeAreaTitle( $player, $level, $area );
             }
         }
 		return;
