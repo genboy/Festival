@@ -69,6 +69,9 @@ Default:
   
   # Keep players from taking fall damage (true = NoFallDamage)
   FallDamage: true
+
+  # Keep area event commands from executing for non-ops (command test mode)
+  CMDmode: false
   
 # Settings for unprotected areas in individual worlds:
 Worlds:
@@ -124,6 +127,10 @@ Worlds:
     # Keep players from taking fall damage (true = NoFallDamage)
     FallDamage: true
 
+    # Keep area event commands from executing for non-ops (command test mode)
+    CMDmode: false
+
+  # Example specific level default flags  (copy and replace 'world' with your levelname)
   world:
   
     # Keep players from getting hurt? (true = Player god mode)
@@ -173,3 +180,6 @@ Worlds:
 
     # Keep players from taking fall damage (true = NoFallDamage)
     FallDamage: true
+
+    # Keep area event commands from executing for non-ops (command test mode)
+    CMDmode: false
