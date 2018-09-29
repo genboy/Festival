@@ -74,6 +74,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
     - perms: player permissions are used to determine area command execution (experiment)
     - hunger: player does not exhaust / hunger
     - falldamage: player will not have fall damage (no fall damage)
+    - cmdmode: area event commands are only executed for ops (for testing commands)
 
 
 **Events & Commands**
@@ -90,9 +91,11 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 
 **Specific**
 
-  - World: Default & world specific flags in config.yml
+  - World flags: Default & level(world) specific flags in config.yml are used for level default flag settings and new area flags settings
   - Flight: if server allows flight, and level flight-flag is true, an area in that level has still flight enabled untill flight flag is set true
   - Perms: Area event commands are executed by default with op-permissions by players or, if perms flag true: area uses the player permissions
+  - Area Titles: Set area titles to display, for ops or any player (in config.yml), ops can select display ingame with /fe titles
+  - CMDmode: The cmdmode flag disables event commands for (whitelisted)players, allows ops to test area event commands.
 	
 !Please first check festival and other plugins configs (ie. worldguard) and the used player permissions incl. Festival whitelistings.
 
@@ -141,9 +144,10 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   
 
   #### Create area
-  First command '/fe pos1' and tab a block for position 1, 
   
-  then command '/fe pos2' and tab a block to set position2, 
+  First command '/fe pos1' and tab or break a block for position 1 (holding a block, not an item), 
+  
+  then command '/fe pos2' and tab or break a block to set position2, 
   
   these are the endpoints of the area longest diagonal.
 
@@ -166,7 +170,7 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   
     Festival v1.0.1-11 introduced a fast toggle for flags:
   
-      /fe <edit/god/pvp/flight/touch/effects/tnt/shoot/drop/msg/pass/hunger/perms> <AREANAME>
+      /fe <edit/god/pvp/flight/touch/mobs/animals/effects/tnt/shoot/drop/msg/pass/hunger/perms/falldamage/cmdmode> <AREANAME>
 
   
     Area flag defaults are set in the config.yml, server defaults and world specific default flag. 
@@ -174,7 +178,7 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
     
     The basic command to control area flags:
   
-	  /fe flag(f) <AREANAME> <edit/god/pvp/flight/touch/mobs/animals/effects/tnt/shoot/drop/msg/pass/hunger/perms/falldamage> <true/false>
+	  /fe flag(f) <AREANAME> <edit/god/pvp/flight/touch/mobs/animals/effects/tnt/shoot/drop/msg/pass/hunger/perms/falldamage/cmdmode> <true/false>
   
     Area flag listing
   
@@ -189,11 +193,21 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 
   #### List all area's
 	
-	/fe list
+    See all area info, optional per level
+    
+	/fe list (<LEVELNAME>)
 
   #### Teleport to area
 	
+    Teleporting to area center top, drop with no falldamage (if falldamage flag true)
+    
 	/fe tp <AREANAME>
+
+  #### Toggle level area's floating title display
+	
+    Area floating title display (default set in config.yml)
+    
+	/fe titles 
 
 
 
