@@ -4,10 +4,10 @@ about: Ask questions and share suggestions
 
 ---
 
-Hi, i have Festival version **{your version)**
-running with Pocketmine version **{pmmp version}**
+Hi, i have **Festival version** { your version )
+running with **Pocketmine version** { pmmp version }
 Befor making this issue I read the [wiki pages](https://github.com/genboy/Festival/wiki)
 
-I wonder: **{describe your question or suggestion}**
+**I wonder**: { describe your question or suggestion }
 
-This involves: **{related plugins including version}**
+This involves: { related plugins including version }
