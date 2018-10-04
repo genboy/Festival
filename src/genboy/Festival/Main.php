@@ -2478,7 +2478,7 @@ class Main extends PluginBase implements Listener{
 	 */
     public function onJoin(PlayerJoinEvent $event){
         $player = $event->getPlayer();
-        $level = $this->getServer()->getDefaultLevel();
+        $level = $player->getLevel(); //  $this->getServer()->getDefaultLevel();
         $this->areaTitles[strtolower($player->getName())] = [];
         $this->checkAreaTitles( $player,  $level  );
     }
@@ -2502,12 +2502,11 @@ class Main extends PluginBase implements Listener{
 	 */
     public function checkAreaTitles( $player, $level ) : void{
         foreach($this->areas as $area){
-
+            $this->hideAreaTitle( $player, $level, $area );
             if( $level->getName() == $area->getLevelName() &&
                (( $this->options["Areadisplay"] == 'on' && ( !$area->getFlag("msg") || $area->isWhitelisted( strtolower( $player->getName() ) ) ) ) ||
                 ( $this->options["Areadisplay"] == 'op' && ( $player->isOp() || $area->isWhitelisted( strtolower( $player->getName() ) ) )
                 ))){
-
                 $this->placeAreaTitle( $player, $level, $area );
             }
         }
