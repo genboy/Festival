@@ -1436,6 +1436,23 @@ class Main extends PluginBase implements Listener{
 		return $o;
 	}
 
+
+
+	/** Block Touch
+	 * @param PlayerInteractEvent $event
+	 * @ignoreCancelled true
+	 */
+	public function onBlockTouch(PlayerInteractEvent $event) : void{
+
+		$block = $event->getBlock();
+		$player = $event->getPlayer();
+
+		if(!$this->canTouch($player, $block)){
+			$event->setCancelled();
+		}
+
+	}
+
 	/** Touch
 	 * @param Player   $player
 	 * @param Position $position
@@ -1468,17 +1485,6 @@ class Main extends PluginBase implements Listener{
 		return $o;
 	}
 
-	/** Block Touch
-	 * @param PlayerInteractEvent $event
-	 * @ignoreCancelled true
-	 */
-	public function onBlockTouch(PlayerInteractEvent $event) : void{
-		$block = $event->getBlock();
-		$player = $event->getPlayer();
-		if(!$this->canTouch($player, $block)){
-			$event->setCancelled();
-		}
-	}
     
     
 	/** on Interact
@@ -1490,6 +1496,7 @@ class Main extends PluginBase implements Listener{
         $item = $event->getItem();
         $block = $event->getBlock();
 		$player = $event->getPlayer();
+        $position = $player->getPosition();
         $playername = strtolower($player->getName());
         $b = $block->getID();
         $i = $item->getID();
@@ -1504,17 +1511,17 @@ class Main extends PluginBase implements Listener{
             if( $b == 46 // tnt
                && $i == 259 // flint & steel
                && !$this->canExplode( $player->getPosition() )
-               && !$player->isOp() ){
-               $event->setCancelled(true);
+              ){
+               $event->setCancelled();
             }
 
             if(
                 $b == 199 // item frame
                 || ( ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) ) // no farm event
-                ||  $i == 259 // flint & steel fire
+                || $i == 259 // apart for fire flag
             ){
                 if(!$this->canEdit($player, $block)){
-                    $event->setCancelled(true);
+                    $event->setCancelled();
                 }
             }
 
