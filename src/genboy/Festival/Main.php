@@ -1,8 +1,38 @@
-<?php declare(strict_types = 1);
-/** src/genboy/Festival/Main.php
- * Options: Msgtype, Msgdisplay, AutoWhitelist
- * Flags: god, pvp, flight, edit, touch, mobs, animals, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage
+<?php
+/** Festival 1.0
+ *
+ *                          |~
+ *                .___---^^^ ^^^---___.
+ *         ___|~_/_____________________\___|~___
+ *        |______\        _____        |________\
+ *       |   |\   |      |  F  \      \    |\   \
+ *  _________________________________________________
+ *  .  ____   ___         _    |_|               _  .
+ *  . |  __| | -_|  ___  | |_  | |   _  _  ___  | | .
+ *  . |  _|  |___| |_ -| |  _| | |  | | | | .'| | | .
+ *  . |_|          |___| |_|   |_|  \__/  |__,| |_| .
+ *  _________________________________________________
+ *                                        GENBOY 2018
+ *
+ * src/genboy/Festival/Main.php
+ *
+ * Options in config.yml
+ * language: en/nl, Msgtype: msg/title/tip/pop, Areadisplay: off/op/on, Msgdisplay: off/op/on
+ * Flags: god, pvp, flight, edit, touch, mobs, animals, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage, cmdmode
+ *
+ * Development Notes
+ * text colors GREEN, AQUA, BLUE, RED, WHITE, YELLOW, LIGHT_PURPLE, DARK_PURPLE, GOLD, GRAY
+ * enitities id's
+ * https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/entity/EntityIds.php
+ * https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/entity/Entity.php
+ * https://forums.pmmp.io/threads/mobs-spawn-event.6151/
+ * https://github.com/LeinneSW/EntityManager
+ * player action
+ * http://forums.pocketmine.net/threads/get-the-player-who-fired-tnt.14640/
  */
+
+declare(strict_types = 1);
+
 namespace genboy\Festival;
 
 use genboy\Festival\lang\Language;
@@ -12,6 +42,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Item;
+use pocketmine\block\Block;
 use pocketmine\entity\object\ExperienceOrb;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\entity\object\PrimedTNT;
@@ -379,11 +410,17 @@ class Main extends PluginBase implements Listener{
 
         $this->codeSigned(); // codesign
 
-		$ca = 0; // plugin area info
+		$ca = 0; // plugin area command count
+		$fa = 0; // plugin area flag count
 		foreach( $this->areas as $a ){
+            foreach($a->flags as $flag){
+                if($flag){
+                    $fa++;
+                }
+            }
 			$ca = $ca + count( $a->getCommands() );
 		}
-        $this->getLogger()->info( $ca .' '. Language::translate("cmds") .' in '. count($this->areas)  .' '.  Language::translate("areas"));
+        $this->getLogger()->info( $fa.' '.Language::translate("flags").' '.Language::translate("select-and").' '. $ca .' '. Language::translate("cmds") .' '.Language::translate("select-in").' '. count($this->areas)  .' '.  Language::translate("areas"));
 
 		// warnings changes
 		if( count($newchange) > 0 ){
@@ -393,7 +430,7 @@ class Main extends PluginBase implements Listener{
 		}
 	}
 
-    /** load language ( experiment v1.0.7.7-dev )
+    /** load language ( v1.0.7.7-dev )
 	 * @var plugin config[]
      * @file resources en.json
      * @file resources nl.json
@@ -428,7 +465,7 @@ class Main extends PluginBase implements Listener{
         $this->areaMessage( $msg, $player );
     }
 
-    /** Flag check experimental (synonym to original name)
+    /** Flag check (synonym to original name)
 	 * @param string $flag
 	 * @return str $flag
      */
@@ -509,7 +546,8 @@ class Main extends PluginBase implements Listener{
         return $flag;
     }
 
-	/** Commands
+
+    /** COMMANDS
 	 * @param CommandSender $sender
 	 * @param Command $cmd
 	 * @param string $label 
@@ -518,8 +556,7 @@ class Main extends PluginBase implements Listener{
 	 */
 	public function onCommand(CommandSender $sender, Command $cmd, string $label, array $args) : bool{
 		if(!($sender instanceof Player)){
-			//$sender->sendMessage(TextFormat::RED . "Command must be used in-game.");
-            $sender->sendMessage( TextFormat::RED . Language::translate("cmd-ingameonly-msg") );
+            $sender->sendMessage( TextFormat::RED . Language::translate("cmd-ingameonly-msg") ); //$sender->sendMessage(TextFormat::RED . "Command must be used in-game.");
 			return true;
 		}
 		if(!isset($args[0])){
@@ -529,7 +566,6 @@ class Main extends PluginBase implements Listener{
 		$action = strtolower($args[0]);
 		$o = "";
 		switch($action){
-
             case "lang": // experiment v1.0.7.7-dev
                 if( isset($args[1]) ){
                     if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.lang")){
@@ -538,7 +574,6 @@ class Main extends PluginBase implements Listener{
                     }
                 }
             break;
-
             case "titles":
 				if( $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->isOp() || $this->isWhitelisted($sender) ){
                     if( $this->options["Areadisplay"] == 'op' ||  $this->options["Areadisplay"] == 'on' ){
@@ -556,43 +591,33 @@ class Main extends PluginBase implements Listener{
                         $o = TextFormat::YELLOW .  "Area floating titles not available";
                     }
 				}else{
-					//$o = TextFormat::RED . "You do not have permission to use this subcommand.";
-                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand");
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); //$o = TextFormat::RED . "You do not have permission to use this subcommand.";
                 }
 			break;
-
 			case "pos1":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.pos1")){
 					if(isset($this->selectingFirst[$playerName]) || isset($this->selectingSecond[$playerName])){
-						//$o = TextFormat::RED . "You're already selecting a position!";
-                        $o = TextFormat::RED . Language::translate("pos-select-active");
+                        $o = TextFormat::RED . Language::translate("pos-select-active"); //$o = TextFormat::RED . "You're already selecting a position!";
 					}else{
 						$this->selectingFirst[$playerName] = true;
-						//$o = TextFormat::GREEN . "Please place or break the first position.";
-                        $o = TextFormat::GREEN . Language::translate("make-pos1");
+                        $o = TextFormat::GREEN . Language::translate("make-pos1"); //$o = TextFormat::GREEN . "Please place or break the first position.";
 					}
 				}else{
-					//$o = TextFormat::RED . "You do not have permission to use this subcommand.";
-                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand");
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); //$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
 			break;
-
 			case "pos2":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.pos2")){
 					if(isset($this->selectingFirst[$playerName]) || isset($this->selectingSecond[$playerName])){
-						//$o = TextFormat::RED . "You're already selecting a position!";
-                        $o = TextFormat::RED . Language::translate("pos-select-active");
+                        $o = TextFormat::RED . Language::translate("pos-select-active"); //$o = TextFormat::RED . "You're already selecting a position!";
 					}else{
 						$this->selectingSecond[$playerName] = true;
-						//$o = TextFormat::GREEN . "Please place or break the second position.";
-                        $o = TextFormat::GREEN . Language::translate("make-pos2");
+						$o = TextFormat::GREEN . Language::translate("make-pos2"); //$o = TextFormat::GREEN . "Please place or break the second position.";
 					}
 				}else{
-					//$o = TextFormat::RED . "You do not have permission to use this subcommand.";
-                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand");
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); //$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
 			break;
-
 			case "create":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.area") || $sender->hasPermission("festival.command.fe.create")){
 					if(isset($args[1])){
@@ -606,8 +631,7 @@ class Main extends PluginBase implements Listener{
                                             $flags = $this->levels[$sender->getLevel()->getName()];
                                         }
                                     }
-                                    // get default whitelisting
-                                    $whitelist = [];
+                                    $whitelist = []; // get default whitelisting
                                     if( $this->options["AutoWhitelist"] == "on" ){
                                         $whitelist = [$playerName];
                                     }
@@ -643,30 +667,23 @@ class Main extends PluginBase implements Listener{
 
                                     $this->saveAreas();
                                     unset($this->firstPosition[$playerName], $this->secondPosition[$playerName]);
-                                    //$o = TextFormat::AQUA . "Area created!";
-                                    $o = TextFormat::AQUA . Language::translate("area-created");
+                                    $o = TextFormat::AQUA . Language::translate("area-created"); //$o = TextFormat::AQUA . "Area created!";
                                 }else{
-                                    //$o = TextFormat::RED . "An area with that name already exists.";
-                                    $o = TextFormat::RED . Language::translate("area-name-excist");
+                                    $o = TextFormat::RED . Language::translate("area-name-excist"); //$o = TextFormat::RED . "An area with that name already exists.";
                                 }
                             }else{
-                                //$o = TextFormat::RED . "Enter a name for the area (/fe create <name>).";
-                                $o = TextFormat::RED . Language::translate("give-area-name") . ' (/fe create <name>)' ;
+                                $o = TextFormat::RED . Language::translate("give-area-name") . ' (/fe create <name>)' ; //$o = TextFormat::RED . "Enter a name for the area (/fe create <name>).";
                             }
                         }else{
-                            //$o = TextFormat::RED . "Please select both positions first.";
-                            $o = TextFormat::RED . Language::translate("select-both-pos-first");
+                            $o = TextFormat::RED . Language::translate("select-both-pos-first"); //$o = TextFormat::RED . "Please select both positions first.";
                         }
 					}else{
-						//$o = TextFormat::RED . "Please specify a name for this area (/fe create <name>).";
-                        $o = TextFormat::RED . Language::translate("give-area-name") . ' (/fe create <name>)';
+                        $o = TextFormat::RED . Language::translate("give-area-name") . ' (/fe create <name>)'; //$o = TextFormat::RED . "Please specify a name for this area (/fe create <name>).";
 					}
 				}else{
-					//$o = TextFormat::RED . "You do not have permission to use this subcommand.";
-                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand");
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); //$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
             break;
-
 			case "desc":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.desc")){
 					if(isset($args[1])){
@@ -695,7 +712,6 @@ class Main extends PluginBase implements Listener{
                     $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); // You do not have permission to use this subcommand
 				}
             break;
-
 			case "list":
 				if( $sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.list")){
                     $levelNamesArray = scandir($this->getServer()->getDataPath() . "worlds/");
@@ -740,7 +756,6 @@ class Main extends PluginBase implements Listener{
                     }
                 }
             break;
-
 			case "here":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.here")){
 					$o = "";
@@ -759,7 +774,6 @@ class Main extends PluginBase implements Listener{
 					}
 				}
             break;
-
 			case "tp":
 				if (!isset($args[1])){
 					//$o = TextFormat::RED . "You must specify an existing Area name";
@@ -924,16 +938,13 @@ class Main extends PluginBase implements Listener{
 								}
 							}
 						}else{
-							//$o = TextFormat::RED . "Area doesn't exist.";
-                            $o = TextFormat::RED . Language::translate("area-not-excist");
+                            $o = TextFormat::RED . Language::translate("area-not-excist"); //$o = TextFormat::RED . "Area doesn't exist.";
 						}
 					}else{
-						//$o = TextFormat::RED . "Please specify the area you would like to flag.";
-                        $o = TextFormat::RED . Language::translate("specify-to-flag");
+                        $o = TextFormat::RED . Language::translate("specify-to-flag");  //$o = TextFormat::RED . "Please specify the area you would like to flag.";
 					}
 				}else{
-					//$o = TextFormat::RED . "You do not have permission to use this subcommand.";
-                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand");
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); //$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
                 break;
 
@@ -945,19 +956,15 @@ class Main extends PluginBase implements Listener{
 						if(isset($this->areas[strtolower($args[1])])){
 							$area = $this->areas[strtolower($args[1])];
 							$area->delete();
-							//$o = TextFormat::GREEN . "Area deleted!";
-                            $o = TextFormat::GREEN . Language::translate("area-deleted");
+                            $o = TextFormat::GREEN . Language::translate("area-deleted"); //$o = TextFormat::GREEN . "Area deleted!";
 						}else{
-							//$o = TextFormat::RED . "Area does not exist.";
-                            $o = TextFormat::RED . Language::translate("area-not-excist");
+                            $o = TextFormat::RED . Language::translate("area-not-excist"); //$o = TextFormat::RED . "Area does not exist.";
 						}
 					}else{
-						//$o = TextFormat::RED . "Please specify an area to delete.";
-                        $o = TextFormat::RED . Language::translate("specify-to-delete");
+                        $o = TextFormat::RED . Language::translate("specify-to-delete"); //$o = TextFormat::RED . "Please specify an area to delete.";
 					}
 				}else{
-					//$o = TextFormat::RED . "You do not have permission to use this subcommand.";
-                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand");
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); //$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
                 break;
 
@@ -1005,8 +1012,7 @@ class Main extends PluginBase implements Listener{
 						$o = TextFormat::RED . Language::translate("area-not-excist") . " ( /area whitelist <area> <add/list/remove> [player] )";
 					}
 				}else{
-					//$o = TextFormat::RED . "You do not have permission to use this subcommand.";
-                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand");
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); //$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
                 break;
 
@@ -1082,8 +1088,7 @@ class Main extends PluginBase implements Listener{
                                     break;
 
 								case "event":
-									//$o = '/fe command <eventname> event <COMMANDID> <EVENTTYPE>';
-									if( isset($args[3]) && isset($args[4]) ){
+									if( isset($args[3]) && isset($args[4]) ){ //$o = '/fe command <eventname> event <COMMANDID> <EVENTTYPE>';
 										$ar = $args[1];
 										$area = $this->areas[strtolower($ar)];
 										$cid = $args[3];
@@ -1212,7 +1217,262 @@ class Main extends PluginBase implements Listener{
 		return true;
 	}
 
-    /** on quit
+    /** onJoin
+      * set Area Titles for Player ( FloatingTextParticle )
+	 * @param PlayerJoinEvent $event
+	 */
+    public function onJoin(PlayerJoinEvent $event){
+        $player = $event->getPlayer();
+        $level = $player->getLevel(); //  $this->getServer()->getDefaultLevel();
+        $this->areaTitles[strtolower($player->getName())] = [];
+        $this->checkAreaTitles( $player,  $level  );
+    }
+
+    /** levelChange
+     * change Area Titles for Player ( FloatingTextParticle )
+	 * @param EntityLevelChangeEvent $event
+	 */
+    public function levelChange(EntityLevelChangeEvent $event) {
+        $entity = $event->getEntity();
+        if ($entity instanceof Player) {
+            $level = $event->getTarget();
+            $this->checkAreaTitles( $entity, $level );
+        }
+    }
+    
+	/** onMove
+	 * @param PlayerMoveEvent $ev
+	 * @var string inArea
+	 * @return true
+	 */
+	public function onMove(PlayerMoveEvent $ev) : void{
+		$player = $ev->getPlayer();
+		$playerName = strtolower( $player->getName() );
+		if( !isset( $this->inArea[$playerName] ) ){
+			$this->inArea[$playerName] = [];
+		}
+		foreach($this->areas as $area){
+            if( $area->getFlag("passage") ){ // Player area passage
+				if( $player->isOp() || $area->isWhitelisted( strtolower( $player->getName() )  ) || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+					if( ( $area->contains( $player->getPosition(), $player->getLevel()->getName() ) && !$area->contains( $ev->getFrom(), $player->getLevel()->getName() ) )
+					|| !$area->contains( $player->getPosition(), $player->getLevel()->getName() ) && $area->contains( $ev->getFrom(), $player->getLevel()->getName() ) ){
+						// ops & whitelist players pass
+						$this->barrierCrossByOp($area, $ev);
+						break;
+					}
+				}else{
+					if( $area->contains( $player->getPosition(), $player->getLevel()->getName() )
+					&& !$area->contains( $ev->getFrom(), $player->getLevel()->getName() ) ){
+						$this->barrierEnterArea($area, $ev);
+						break;
+					}
+					if( !$area->contains( $player->getPosition(), $player->getLevel()->getName() )
+					&& $area->contains( $ev->getFrom(), $player->getLevel()->getName() ) ){
+						$this->barrierLeaveArea($area, $ev);
+						break;
+					}
+				}
+			}
+            // Player enter or leave area
+			if( !$area->contains( $player->getPosition(), $player->getLevel()->getName() ) ){
+                // Player leave Area
+				if( in_array( strtolower( $area->getName() ) , $this->inArea[$playerName] ) ){
+					$this->leaveArea($area, $ev);
+					break;
+				}
+			}else{
+                // Player enter Area
+				if( !in_array( strtolower( $area->getName() ), $this->inArea[$playerName] ) ){
+					$this->enterArea($area, $ev);
+					break;
+				}
+                // Player enter Area Center
+				if( $area->centerContains( $player->getPosition(), $player->getLevel()->getName() ) ){
+					if( !in_array( strtolower( $area->getName() )."center", $this->inArea[$playerName] ) ){ // Player enter in Area
+						$this->enterAreaCenter($area, $ev);
+						break;
+					}
+				}else{
+                    // Player leave Area Center
+					if( in_array( strtolower( $area->getName()."center" ) , $this->inArea[$playerName] ) ){
+						$this->leaveAreaCenter($area, $ev);
+						break;
+					}
+				}
+			}
+            // Area Player Monitor  $this->AreaPlayerMonitor($area, $ev);
+		}
+        $this->checkPlayerFlying( $ev->getPlayer() );
+		return;
+	}
+
+	/** Block Place
+	 * @param BlockPlaceEvent $event
+	 * @ignoreCancelled true
+	 */
+	public function onBlockPlace(BlockPlaceEvent $event) : void{
+		$block = $event->getBlock();
+		$player = $event->getPlayer();
+		$playerName = strtolower($player->getName());
+		if(isset($this->selectingFirst[$playerName])){
+			unset($this->selectingFirst[$playerName]);
+			$this->firstPosition[$playerName] = $block->asVector3();
+			$player->sendMessage(TextFormat::GREEN . language::translate("pos1")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
+			$event->setCancelled();
+		}elseif(isset($this->selectingSecond[$playerName])){
+			unset($this->selectingSecond[$playerName]);
+			$this->secondPosition[$playerName] = $block->asVector3();
+			$player->sendMessage(TextFormat::GREEN . language::translate("pos2")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
+			$event->setCancelled();
+		}else{
+            //  .. canUseTNT( $player, $block )
+            if( $block->getID() == Block::TNT && !$this->canExplode( $player->getPosition() ) ){
+                if( $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+		        }else{
+                    $event->setCancelled();
+                    //$player->sendMessage("TNT not allowed here");
+                }
+            }
+			if(!$this->canEdit($player, $block)){
+				$event->setCancelled();
+			}
+		}
+	}
+
+	/** Block break
+	 * @param BlockBreakEvent $event
+	 * @ignoreCancelled true
+	 */
+	public function onBlockBreak(BlockBreakEvent $event) : void{
+		$block = $event->getBlock();
+		$player = $event->getPlayer();
+		$playerName = strtolower($player->getName());
+		if(isset($this->selectingFirst[$playerName])){
+			unset($this->selectingFirst[$playerName]);
+			$this->firstPosition[$playerName] = $block->asVector3();
+			$player->sendMessage(TextFormat::GREEN . language::translate("pos1")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
+			$event->setCancelled();
+		}elseif(isset($this->selectingSecond[$playerName])){
+			unset($this->selectingSecond[$playerName]);
+			$this->secondPosition[$playerName] = $block->asVector3();
+			$player->sendMessage(TextFormat::GREEN . language::translate("pos2")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
+			$event->setCancelled();
+		}else{
+			if(!$this->canEdit($player, $block)){
+				$event->setCancelled();
+			}
+		}
+	}
+
+	/** onBlockTouch
+	 * @param PlayerInteractEvent $event
+	 * @ignoreCancelled true
+	 */
+	public function onBlockTouch(PlayerInteractEvent $event) : void{
+		$block = $event->getBlock();
+		$player = $event->getPlayer();
+		if(!$this->canTouch($player, $block)){
+			$event->setCancelled();
+		}
+	}
+
+	/** onInteract
+	 * @param PlayerInteractEvent $event
+	 * @ignoreCancelled true
+	 */
+    public function onInteract( PlayerInteractEvent $event ): void{
+        if ( !$this->canInteract( $event ) ) {
+            $event->setCancelled();
+        }
+    }
+
+	/** onHurt
+	 * @param EntityDamageEvent $event
+	 * @ignoreCancelled true
+	 */
+	public function onHurt(EntityDamageEvent $event) : void{
+		$this->canDamage( $event );
+	}
+
+	/** onDamage
+	 * @param EntityDamageEvent $event
+	 * @ignoreCancelled true
+	 */
+	public function onDamage(EntityDamageEvent $event) : void{
+		$this->canDamage( $event );
+	}
+
+    /** Mob / Animal spawning
+	 * @param EntitySpawnEvent $event
+	 * @ignoreCancelled true
+     */
+    public function onEntitySpawn( EntitySpawnEvent $event ): void{
+        $e = $event->getEntity();
+        if( !$e instanceof Player && !$this->canEntitySpawn( $e ) ){
+            //$e->flagForDespawn() to slow / ? $e->close(); private..
+            $this->getServer()->getPluginManager()->callEvent(new EntityDespawnEvent($e));
+            $e->despawnFromAll();
+            if($e->chunk !== null){
+                $e->chunk->removeEntity($e);
+                $e->chunk = null;
+            }
+            if($e->isValid()){
+                $e->level->removeEntity($e);
+                $e->setLevel(null);
+            }
+        }
+    }
+
+	/** Item drop
+	 * @param itemDropEvent $event
+	 * @ignoreCancelled true
+	 */
+	public function onDrop(PlayerDropItemEvent $event){
+		$player = $event->getPlayer();
+		$position = $player->getPosition();
+		if(!$this->canDrop($player, $position)){
+			$event->setCancelled();
+			return;
+		}
+	}
+
+    /** Shoot / Launch projectiles
+	 * @param EntityShootBowEvent $event
+	 * @ignoreCancelled true
+     */
+    public function onEntityShootBow( EntityShootBowEvent $event ){
+        $e = $event->getEntity();
+        if( $e instanceof Player){
+            if( !$this->canShoot($e) ){
+                $event->setCancelled();
+            }
+        }
+    }
+
+    /** on Explode entity
+     * EntityExplodeEvent
+     * @param EntityExplodeEvent $event
+     * @return void
+     */
+    public function onEntityExplode(EntityExplodeEvent $event){
+        if (!$this->canExplode( $event->getPosition() )) {
+            $event->setCancelled();
+        }
+    }
+
+    /** Hunger
+     * PlayerExhaustEvent
+     * @param PlayerExhaustEvent $event
+     * @return void
+     */
+    public function Hunger(PlayerExhaustEvent $event){
+        if ( !$this->canHunger( $event ) ) {
+            $event->setCancelled();
+        }
+    }
+
+
+    /** onQuit
 	 * @param Event $event
 	 * @return bool
 	 */
@@ -1226,6 +1486,117 @@ class Main extends PluginBase implements Listener{
             $this->hideAreaTitle( $event->getPlayer(), $event->getPlayer()->getPosition()->getLevel(), $area );
         }
         unset( $this->areaTitles[$playerName] );
+
+    }
+
+
+
+
+
+    /** OUTBOUND ACTION */
+
+	/** canEdit
+	 * @param Player   $player
+	 * @param Position $position
+	 * @return bool
+	 */
+	public function canEdit(Player $player, Position $position) : bool{
+		if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
+			return true;
+		}
+		$o = true;
+		$e = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Edit"] : $this->edit);
+		if($e){
+			$o = false;
+		}
+        $playername = strtolower($player->getName());
+        foreach($this->inArea[$playername] as $areaname){
+            if( isset($this->areaList[ $areaname ]) ){
+                $area = $this->areaList[$areaname];
+                if($area->getFlag("edit")){
+                    $o = false;
+                }
+                if(!$area->getFlag("edit") && $e){
+                    $o = true;
+                }
+                if($area->isWhitelisted($playername)){
+                    $o = true;
+                }
+            }
+        }
+		return $o;
+	}
+
+	/** canTouch
+	 * @param Player   $player
+	 * @param Position $position
+	 * @return bool
+	 */
+	public function canTouch(Player $player, Position $position) : bool{
+		if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
+			return true;
+		}
+        $playername = strtolower($player->getName());
+		$o = true;
+		$t = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Touch"] : $this->touch);
+		if($t){
+			$o = false;
+		}
+        foreach($this->inArea[$playername] as $areaname){
+            if( isset($this->areaList[ $areaname ]) ){
+                $area = $this->areaList[$areaname];
+                if($area->getFlag("touch")){
+                    $o = false;
+                }
+                if(!$area->getFlag("touch") && $t){
+                    $o = true;
+                }
+                if($area->isWhitelisted($playername)){
+                    $o = true;
+                }
+            }
+        }
+		return $o;
+	}
+
+    /** canInteract
+     * @param PlayerInteractEvent $event
+     * @return bool
+     */
+    public function canInteract( PlayerInteractEvent $event ): bool{
+        
+        $item = $event->getItem();
+        $block = $event->getBlock();
+		$player = $event->getPlayer();
+        $position = $player->getPosition();
+        $playername = strtolower($player->getName());
+        $b = $block->getID();
+        $i = $item->getID();
+
+        /*
+        $player->sendMessage("Action on " . $block->getName() . "(". $block->getID() . ") with ". $item->getName() ."(".$item->getID().") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]");
+        */ 
+        if( $player->isOp() || $player->hasPermission("festival") || $player->hasPermission("festival.access")){
+            return true;
+        }
+
+        $o = true;
+        // 46 // tnt //259 // flint & steel
+        //.. canUseTNT( $player, $b )
+        if( $b == Block::TNT && $i == Item::FLINT_AND_STEEL && !$this->canExplode( $player->getPosition() ) ){
+            $o = false;
+        }
+        if(
+            $b == 199 // item frame
+            || ( ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) ) // no farm event
+            || $i == 259 // apart for fire flag
+                //.. canBurn( $player->getPosition() )
+        ){
+            if(!$this->canEdit($player, $block)){
+                $o = false;
+            }
+        }
+        return $o;
 
     }
 
@@ -1258,7 +1629,54 @@ class Main extends PluginBase implements Listener{
         }
 		return $o;
 	}
-    
+
+	/** On No fall Damage
+	 * @param Entity $entity
+	 * @return bool
+	 */
+	public function hasFallDamage(Entity $entity) : bool{
+
+		$o = true;
+        if( $entity instanceof Player ){
+            $f = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["FallDamage"] : $this->falldamage);
+            if($f){
+                $o = false;
+            }
+            $playername = strtolower($entity->getName());
+            foreach($this->inArea[$playername] as $areaname){
+                if( isset($this->areaList[ $areaname ]) ){
+                    $area = $this->areaList[$areaname];
+                    if($area->getFlag("falldamage")){
+                        $o = false;
+                    }
+                    if(!$area->getFlag("falldamage") && $f){
+                        $o = true;
+                    }
+                    if($area->isWhitelisted($playername)){
+                        $o = false;
+                    }
+                }
+            }
+        }
+		return $o;
+	}
+
+    /*
+	public function onFallDisable(EntityDamageEvent $event) : void{
+		$player = $event->getEntity();
+    	$level = $player->getLevel()->getFolderName();
+		$cause = $event->getCause();
+		if($event->getEntity() instanceof Player){
+			if(!$this->canGetHurt($player)){
+				$event->setCancelled();
+			}
+			if($cause == EntityDamageEvent::CAUSE_FALL && $this->hasFallDamage($player)){
+				$event->setCancelled(true);
+			}
+		}
+	}
+    */
+
     /** PVP
 	 * @param Event $ev
 	 * @return bool
@@ -1334,438 +1752,90 @@ class Main extends PluginBase implements Listener{
 
     }
 
-	/** On No fall Damage
-	 * @param EntityDamageEvent $event
-	 * @ignoreCancelled true
-	 */
-	/**
-	 * @param Entity $entity
-	 *
-	 * @return bool
-	 */
-	public function hasFallDamage(Entity $entity) : bool{
-
-		$o = true;
-        if( $entity instanceof Player ){
-            $f = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["FallDamage"] : $this->falldamage);
-            if($f){
-                $o = false;
-            }
-            $playername = strtolower($entity->getName());
-            foreach($this->inArea[$playername] as $areaname){
-                if( isset($this->areaList[ $areaname ]) ){
-                    $area = $this->areaList[$areaname];
-                    if($area->getFlag("falldamage")){
-                        $o = false;
-                    }
-                    if(!$area->getFlag("falldamage") && $f){
-                        $o = true;
-                    }
-                    if($area->isWhitelisted($playername)){
-                        $o = false;
-                    }
-                }
-            }
-        }
-		return $o;
-	}
-
-    /*
-	public function onFallDisable(EntityDamageEvent $event) : void{
-		$player = $event->getEntity();
-    	$level = $player->getLevel()->getFolderName();
-		$cause = $event->getCause();
-		if($event->getEntity() instanceof Player){
-			if(!$this->canGetHurt($player)){
-				$event->setCancelled();
-			}
-			if($cause == EntityDamageEvent::CAUSE_FALL && $this->hasFallDamage($player)){
-				$event->setCancelled(true);
-			}
-		}
-	}
-    */
-
-
-
-	/** On hurt
-	 * @param EntityDamageEvent $event
-	 * @ignoreCancelled true
-	 */
-	public function onHurt(EntityDamageEvent $event) : void{
-		$this->canDamage( $event );
-	}
-
-	/** On Damage
-	 * @param EntityDamageEvent $event
-	 * @ignoreCancelled true
-	 */
-	public function onDamage(EntityDamageEvent $event) : void{
-		$this->canDamage( $event );
-	}
-
-	/** Edit
-	 * @param Player   $player
-	 * @param Position $position
-	 * @return bool
-	 */
-	public function canEdit(Player $player, Position $position) : bool{
-		if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
-			return true;
-		}
-		$o = true;
-		$e = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Edit"] : $this->edit);
-		if($e){
-			$o = false;
-		}
-        $playername = strtolower($player->getName());
-        foreach($this->inArea[$playername] as $areaname){
-            if( isset($this->areaList[ $areaname ]) ){
-                $area = $this->areaList[$areaname];
-                if($area->getFlag("edit")){
-                    $o = false;
-                }
-                if(!$area->getFlag("edit") && $e){
-                    $o = true;
-                }
-                if($area->isWhitelisted($playername)){
-                    $o = true;
-                }
-            }
-        }
-		return $o;
-	}
-
-
-
-	/** Block Touch
-	 * @param PlayerInteractEvent $event
-	 * @ignoreCancelled true
-	 */
-	public function onBlockTouch(PlayerInteractEvent $event) : void{
-
-		$block = $event->getBlock();
-		$player = $event->getPlayer();
-
-		if(!$this->canTouch($player, $block)){
-			$event->setCancelled();
-		}
-
-	}
-
-	/** Touch
-	 * @param Player   $player
-	 * @param Position $position
-	 * @return bool
-	 */
-	public function canTouch(Player $player, Position $position) : bool{
-		if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
-			return true;
-		}
-        $playername = strtolower($player->getName());
-		$o = true;
-		$t = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Touch"] : $this->touch);
-		if($t){
-			$o = false;
-		}
-        foreach($this->inArea[$playername] as $areaname){
-            if( isset($this->areaList[ $areaname ]) ){
-                $area = $this->areaList[$areaname];
-                if($area->getFlag("touch")){
-                    $o = false;
-                }
-                if(!$area->getFlag("touch") && $t){
-                    $o = true;
-                }
-                if($area->isWhitelisted($playername)){
-                    $o = true;
-                }
-            }
-        }
-		return $o;
-	}
-
-    
-    
-	/** on Interact
-	 * @param PlayerInteractEvent $event
-	 * @ignoreCancelled true
-	 */
-    public function onInteract( PlayerInteractEvent $event ): void{
-        
-        $item = $event->getItem();
-        $block = $event->getBlock();
-		$player = $event->getPlayer();
-        $position = $player->getPosition();
-        $playername = strtolower($player->getName());
-        $b = $block->getID();
-        $i = $item->getID();
-		
-        /*
-        $player->sendMessage("Action on " . $block->getName() . "(". $block->getID() . ") with ". $item->getName() ."(".$item->getID().") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]");
-        */ 
-        if( $player->isOp() || $player->hasPermission("festival") || $player->hasPermission("festival.access")){
-
-        }else{
-
-            if( $b == 46 // tnt
-               && $i == 259 // flint & steel
-               && !$this->canExplode( $player->getPosition() )
-              ){
-               $event->setCancelled();
-            }
-
-            if(
-                $b == 199 // item frame
-                || ( ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) ) // no farm event
-                || $i == 259 // apart for fire flag
-            ){
-                if(!$this->canEdit($player, $block)){
-                    $event->setCancelled();
-                }
-            }
-
-        }
-    } 
-
-    /** hunger
-     * PlayerExhaustEvent
-     * @param PlayerExhaustEvent $event
-     * @return void
-     */
-    public function Hunger(PlayerExhaustEvent $event){
-        if ( !$this->canHunger( $event ) ) {
-            $event->setCancelled();
-        }
-    }
-
-    /**
-     * canhunger()
-     * Checks if player can exhaust  (hunger)
-     * @param pocketmine\level\Position $pos
-     * @param pocketmine\level\Level $level
-     * @return bool
-     */
-    public function canHunger( PlayerExhaustEvent $event ): bool{
-        $pos = $event->getPlayer()->getPosition();
-        $playername = strtolower($event->getPlayer()->getName());
-        $o = true;
-        $h = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Hunger"] : $this->hunger);
-        if ($h) {
-            $o = false;
-        }
-        foreach($this->inArea[$playername] as $areaname){
-            if( isset($this->areaList[ $areaname ]) ){
-                $area = $this->areaList[$areaname];
-                if ($area->getFlag("hunger")) {
-                    $o = false;
-                }
-                if(!$area->getFlag("hunger") && $h){
-                    $o = true;
-                }
-                if($area->isWhitelisted($playername)){
-                    $o = false;
-                }
-            }
-        }
-        return $o;
-    }
-
-    /** on Explode entity
-     * EntityExplodeEvent
-     * @param EntityExplodeEvent $event
-     * @return void
-     */
-    public function onEntityExplode(EntityExplodeEvent $event){
-        if (!$this->canExplode( $event->getPosition() )) {
-            $event->setCancelled();
-        }
-    }
-
-    /**
-     * canExplode()
-     * Checks if entity can explode on given position
-     * @param pocketmine\level\Position $pos
-     * @param pocketmine\level\Level $level
-     * @return bool
-     */
-    public function canExplode( Position $pos ): bool{
-        $o = true;
-        $e = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["TNT"] : $this->tnt);
-        if ($e) {
-            $o = false;
-        }
-        // including entities/mobs in any area
-        foreach ($this->areas as $area) {
-            if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
-                if ($area->getFlag("tnt")) {
-                    $o = false;
-                }
-                if(!$area->getFlag("tnt") && $e){
-                    $o = true;
-                }
-            }
-        }
-        return $o;
-    }
-
-	/** Item drop
-	 * @param itemDropEvent $event
-	 * @ignoreCancelled true
-	 */
-	public function onDrop(PlayerDropItemEvent $event)
-	{
-		$player = $event->getPlayer();
-		$position = $player->getPosition();
-
-		if(!$this->canDrop($player, $position)){
-			$event->setCancelled();
-			return;
-		}
-	}
-
-	/** on Drop
-	 * @param Player   $player
-	 * @param Position $position
-	 * @return bool
-	 */
-	public function canDrop(Player $player, Position $position) : bool{
-		if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
-			return true;
-		}
-		$o = true;
-		$d = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Drop"] : $this->drop);
-		if($d){
-			$o = false;
-		}
-        $playername = strtolower($player->getName());
-        foreach($this->inArea[$playername] as $areaname){
-            if( isset($this->areaList[ $areaname ]) ){
-                $area = $this->areaList[$areaname];
-                if($area->getFlag("drop")){
-                    $o = false;
-                }
-                if(!$area->getFlag("drop") && $d){
-                    $o = true;
-                }
-                if($area->isWhitelisted($playername)){
-                    $o = true;
-                }
-            }
-        }
-		return $o;
-	}
-
-    /** Shoot / Launch projectiles
-	 * @param EntityShootBowEvent $event
-	 * @ignoreCancelled true
-     */
-    public function onEntityShootBow( EntityShootBowEvent $event ){
-
-        $e = $event->getEntity();
-        if( $e instanceof Player){
-            if( !$this->canShoot($e) ){
-                $event->setCancelled();
-            }
-        }
-
-    }
-
-    /** onShoot
+    /** Flight
 	 * @param Player $player
-	 * @return bool
      */
-    public function canShoot( Player $player ) : bool{
+    public function checkPlayerFlying(Player $player){
 
-		if( $player->isOp() || $player->hasPermission("festival") || $player->hasPermission("festival.access")){
-			return true;
-		}
-
-        $position = $player->getPosition();
+        $fly = true;
+        $sendmsg = false;
+        $falldamage = false;
+		$position = $player->getPosition();
         $playername = strtolower($player->getName());
-		$o = true;
-        $m = true;
-		$s = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Shoot"] : $this->shoot);
-		if($s){
-			$o = false;
-		}
+
+        $f = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Flight"] : $this->flight);
+        if( $f ){
+            $fly = false; // flag default
+        }
 
         foreach($this->inArea[$playername] as $areaname){
             if( isset($this->areaList[ $areaname ]) ){
                 $area = $this->areaList[$areaname];
-                if($area->getFlag("shoot")){
-                    $o = false;
+                if(  $area->getFlag("flight") && !$area->isWhitelisted( $playername ) ){
+                    $fly = false; // flag area
                 }
-                if(!$area->getFlag("shoot") && $s){
-                    $o = true;
+                if(!$area->getFlag("flight") && $f){
+                    $fly = true;
                 }
-                if($area->isWhitelisted($playername)){
-                    $o = true;
+                if( !$area->getFlag("msg") ){
+                    $sendmsg = true;
                 }
-                if( $area->getFlag("msg") ){
-                   $m = false;
+                if( $area->getFlag("falldamage") ){
+                    $falldamage = true;
                 }
             }
         }
-
-        if( $m && !$o ){ // 'ínline' message method
-            $msg = TextFormat::RED . "NO Shooting here!";
-            $player->areaMessage( $msg );
+        // ! if( $player->isOp() ){
+        if( $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+            $fly = true;
+            $player->setAllowFlight(true);
+            return $fly;
         }
-		return $o;
 
-	}
-
-    /** Mob / Animal spawning
-	 * @param EntitySpawnEvent $event
-	 * @ignoreCancelled true
-     */
-    public function onEntitySpawn( EntitySpawnEvent $event ): void{
-        $e = $event->getEntity();
-        if( !$e instanceof Player && !$this->canEntitySpawn( $e ) ){
-            //$e->flagForDespawn() to slow / ? $e->close(); private..
-            $this->getServer()->getPluginManager()->callEvent(new EntityDespawnEvent($e));
-            $e->despawnFromAll();
-            if($e->chunk !== null){
-                $e->chunk->removeEntity($e);
-                $e->chunk = null;
+        $msg = '';
+        if( !$fly && $player->isFlying() ){
+            if( $falldamage ){
+            $this->playerTP[ strtolower( $player->getName() ) ] = true; // player tp active (fall save)
             }
-            if($e->isValid()){
-                $e->level->removeEntity($e);
-                $e->setLevel(null);
+            $player->setFlying(false);
+            //$player->sendMessage(  TextFormat::RED . "NO Flying here!" );
+            if( $sendmsg ){
+                $msg = TextFormat::RED . Language::translate("no-flight-area");
+                $player->sendMessage( $msg );
             }
         }
+        if( $fly && !$player->isFlying() && !$player->getAllowFlight() ){
+            if( $sendmsg ){
+                $msg = TextFormat::GREEN . Language::translate("flight-area");
+                $player->sendMessage( $msg );
+            }
+        }
+        $player->setAllowFlight($fly);
+        return $fly;
+
     }
 
+    /** canEntitySpawn
+	 * @param Entity $e
+	 * @return bool
+    */
     public function canEntitySpawn( Entity $e ): bool{
-        // see pocketmine & PureEntitiesX enitities id's
-        // https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/entity/EntityIds.php
-        // https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/entity/Entity.php
-        // https://forums.pmmp.io/threads/mobs-spawn-event.6151/
-        // https://github.com/LeinneSW/EntityManager
 
         $o = true;
-        if( $e instanceof ExperienceOrb || $e instanceof ItemEntity || $e instanceof Projectile || $e instanceof FloatingTextParticle){
-            return $o; // allowed
+        if( $e instanceof PrimedTNT || $e instanceof ExperienceOrb || $e instanceof ItemEntity || $e instanceof Projectile || $e instanceof FloatingTextParticle){
+            return $o; // might be allowed to spawn under different flag
         }
         
-        // catch more spawning entities without (get)Name
-        if( $e instanceof PrimedTNT ){
-            if( $this->canExplode( $e->getPosition() )){ // Prevent PrimedTNT (experiment)
-                return true;
-            }else{
-                return false;
-            }
-        }
-
-        $nm = ''; //$nm = $e instanceof Item ? $e->getItem()->getName() : $e->getName();
+        $nm =  ''; //
         if( null !== $e->getName() ){
-          $nm = $e->getName();
+          $nm = $e instanceof Item ? $e->getItem()->getName() : $e->getName();
         }
         $pos = false;
         if( null !== $e->getPosition() ){
             $pos = $e->getPosition();
         }
+
+
         if($pos && $nm != ''){
 
             $animals =[ 'bat','chicken','cow','horse','llama','donkey','mule','ocelot','parrot','fish','dolphin','squit','pig','rabbit','sheep','pufferfish','salmon','turtle','tropical_fish','cod','balloon'];
@@ -1813,103 +1883,6 @@ class Main extends PluginBase implements Listener{
         return $o;
     }
 
-	/** Block Place
-	 * @param BlockPlaceEvent $event
-	 * @ignoreCancelled true
-	 */
-	public function onBlockPlace(BlockPlaceEvent $event) : void{
-		$block = $event->getBlock();
-		$player = $event->getPlayer();
-		$playerName = strtolower($player->getName());
-
-		if(isset($this->selectingFirst[$playerName])){
-
-			unset($this->selectingFirst[$playerName]);
-			$this->firstPosition[$playerName] = $block->asVector3();
-			$player->sendMessage(TextFormat::GREEN . language::translate("pos1")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
-			$event->setCancelled();
-
-		}elseif(isset($this->selectingSecond[$playerName])){
-
-			unset($this->selectingSecond[$playerName]);
-			$this->secondPosition[$playerName] = $block->asVector3();
-			$player->sendMessage(TextFormat::GREEN . language::translate("pos2")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
-			$event->setCancelled();
-
-		}else{
-
-            // tnt block
-            if( $block->getID() == 46  && !$this->canExplode( $player->getPosition() ) ){
-
-                if( $player->isOp() || $player->hasPermission("festival") || $player->hasPermission("festival.access")){
-
-		        }else{
-                    $event->setCancelled();
-                    //$player->sendMessage("TNT not allowed here");
-                }
-            }
-
-			if(!$this->canEdit($player, $block)){
-				$event->setCancelled();
-			}
-
-		}
-	}
-
-	/** Block break
-	 * @param BlockBreakEvent $event
-	 * @ignoreCancelled true
-	 */
-	public function onBlockBreak(BlockBreakEvent $event) : void{
-		$block = $event->getBlock();
-		$player = $event->getPlayer();
-		$playerName = strtolower($player->getName());
-		if(isset($this->selectingFirst[$playerName])){
-			unset($this->selectingFirst[$playerName]);
-			$this->firstPosition[$playerName] = $block->asVector3();
-			$player->sendMessage(TextFormat::GREEN . language::translate("pos1")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
-			$event->setCancelled();
-		}elseif(isset($this->selectingSecond[$playerName])){
-			unset($this->selectingSecond[$playerName]);
-			$this->secondPosition[$playerName] = $block->asVector3();
-			$player->sendMessage(TextFormat::GREEN . language::translate("pos2")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
-			$event->setCancelled();
-		}else{
-			if(!$this->canEdit($player, $block)){
-				$event->setCancelled();
-			}
-		}
-	}
-
-	/** Op Perms
-	 * @param Player $player
-	 * @param Area $area
-	 * @return bool
-	 */
-	public function useOpPerms(Player $player, Area $area) : bool{
-
-		if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
-			return true; // festival ops..
-		}
-
-		$position = $player->getPosition();
-		$o = true;
-		$p = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[ $position->getLevel()->getName() ]["Perms"] : $this->perms);
-		if($p){
-			$o = false;
-		}
-		if( $area->getFlag("perms") ){
-			$o = false;
-		}
-        if(!$area->getFlag("perms") && $p){
-            $o = true;
-        }
-		if( $area->isWhitelisted( strtolower( $player->getName() ) ) ){
-			$o = true;
-		}
-		return $o;
-	}
-
     /** Effects
 	 * @param Player $player
 	 * @return bool
@@ -1946,144 +1919,237 @@ class Main extends PluginBase implements Listener{
 		return $o;
 	}
 
-
-
-    /** Flight
-	 * @param Player $player
-     */
-    public function checkPlayerFlying(Player $player){
-
-        $fly = true;
-        $sendmsg = false;
-        $falldamage = false;
-		$position = $player->getPosition();
+	/** canDrop
+	 * @param Player   $player
+	 * @param Position $position
+	 * @return bool
+	 */
+	public function canDrop(Player $player, Position $position) : bool{
+		if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
+			return true;
+		}
+		$o = true;
+		$d = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Drop"] : $this->drop);
+		if($d){
+			$o = false;
+		}
         $playername = strtolower($player->getName());
-
-        $f = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Flight"] : $this->flight);
-        if( $f ){
-            $fly = false; // flag default
+        foreach($this->inArea[$playername] as $areaname){
+            if( isset($this->areaList[ $areaname ]) ){
+                $area = $this->areaList[$areaname];
+                if($area->getFlag("drop")){
+                    $o = false;
+                }
+                if(!$area->getFlag("drop") && $d){
+                    $o = true;
+                }
+                if($area->isWhitelisted($playername)){
+                    $o = true;
+                }
+            }
         }
+		return $o;
+	}
+
+    /**
+     * canBurn()
+     * Checks if fire is allowed on given position
+     * @param flag $this->fire
+     * @param pocketmine\level\Position $pos
+     * @param pocketmine\level\Level $level
+     * @return bool
+
+    public function canBurn( Position $pos ): bool{
+        $o = true;
+        $e = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Fire"] : $this->fire);
+        if ($e) {
+            $o = false;
+        }
+        // including entities/mobs in any area
+        foreach ($this->areas as $area) {
+            if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
+                if ($area->getFlag("fire")) {
+                    $o = false;
+                }
+                if(!$area->getFlag("fire") && $e){
+                    $o = true;
+                }
+            }
+        }
+        return $o;
+    }
+    */
+
+    /**
+     * canExplode()
+     * Checks if entity can explode on given position
+     * @param pocketmine\level\Position $pos
+     * @param pocketmine\level\Level $level
+     * @return bool
+     */
+    public function canExplode( Position $pos ): bool{
+        $o = true;
+        $e = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["TNT"] : $this->tnt);
+        if ($e) {
+            $o = false;
+        }
+        // including entities/mobs in any area
+        foreach ($this->areas as $area) {
+            if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
+                if ($area->getFlag("tnt")) {
+                    $o = false;
+                }
+                if(!$area->getFlag("tnt") && $e){
+                    $o = true;
+                }
+            }
+        }
+        return $o;
+    }
+
+	/** canUseTNT()
+     * Checks if TNT is allowed to be used by player on given position
+     * @param flag $this->tnt
+	 * @param Player   $player
+	 * @param Position $position
+	 * @return bool
+
+	public function canUseTNT(Player $player, Position $position) : bool{
+		if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
+			return true;
+		}
+		$o = true;
+		$d = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["TNT"] : $this->tnt);
+		if($d){
+			$o = false;
+		}
+        $playername = strtolower($player->getName());
+        foreach($this->inArea[$playername] as $areaname){
+            if( isset($this->areaList[ $areaname ]) ){
+                $area = $this->areaList[$areaname];
+                if($area->getFlag("tnt")){
+                    $o = false;
+                }
+                if(!$area->getFlag("tnt") && $d){
+                    $o = true;
+                }
+                if($area->isWhitelisted($playername)){
+                    $o = true;
+                }
+            }
+        }
+		return $o;
+	}
+    */
+
+    /** canShoot
+	 * @param Player $player
+	 * @return bool
+     */
+    public function canShoot( Player $player ) : bool{
+
+		if( $player->hasPermission("festival") || $player->hasPermission("festival.access")){
+			return true;
+		}
+
+        $position = $player->getPosition();
+        $playername = strtolower($player->getName());
+		$o = true;
+        $m = true;
+		$s = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Shoot"] : $this->shoot);
+		if($s){
+			$o = false;
+		}
 
         foreach($this->inArea[$playername] as $areaname){
             if( isset($this->areaList[ $areaname ]) ){
                 $area = $this->areaList[$areaname];
-                if(  $area->getFlag("flight") && !$area->isWhitelisted( $playername ) ){
-                    $fly = false; // flag area
+                if($area->getFlag("shoot")){
+                    $o = false;
                 }
-                if(!$area->getFlag("flight") && $f){
-                    $fly = true;
+                if(!$area->getFlag("shoot") && $s){
+                    $o = true;
                 }
-                if( !$area->getFlag("msg") ){
-                    $sendmsg = true;
+                if($area->isWhitelisted($playername)){
+                    $o = true;
                 }
-                if( $area->getFlag("falldamage") ){
-                    $falldamage = true;
+                if( $area->getFlag("msg") ){
+                   $m = false;
                 }
             }
         }
-        if( $player->isOp() ){
-            $fly = true; // ops can fly ||
-            $sendmsg = true;
-            if( isset($area) ){
-                $sendmsg = $this->msgOpDsp( $area, $player );
-            }
-        }
-        $msg = '';
-        if( !$fly && $player->isFlying() ){
-            if( $falldamage ){
-            $this->playerTP[ strtolower( $player->getName() ) ] = true; // player tp active (fall save)
-            }
-            $player->setFlying(false);
-            //$player->sendMessage(  TextFormat::RED . "NO Flying here!" );
-            if( $sendmsg ){
-                $msg = TextFormat::RED . Language::translate("no-flight-area");
-                $player->sendMessage( $msg );
-            }
-        }
-        if( $fly && !$player->isFlying() && !$player->getAllowFlight() ){
-            if( $sendmsg ){
-                $msg = TextFormat::GREEN . Language::translate("flight-area");
-                $player->sendMessage( $msg );
-            }
-        }
-        $player->setAllowFlight($fly);
-        return $fly;
 
+        if( $m && !$o ){ // 'ínline' message method
+            $msg = TextFormat::RED . "NO Shooting here!";
+            $player->areaMessage( $msg );
+        }
+		return $o;
+
+	}
+
+
+	/** useOpPerms
+	 * @param Player $player
+	 * @param Area $area
+	 * @return bool
+	 */
+	public function useOpPerms(Player $player, Area $area) : bool{
+
+		if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
+			return true; // festival ops..
+		}
+
+		$position = $player->getPosition();
+		$o = true;
+		$p = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[ $position->getLevel()->getName() ]["Perms"] : $this->perms);
+		if($p){
+			$o = false;
+		}
+		if( $area->getFlag("perms") ){
+			$o = false;
+		}
+        if(!$area->getFlag("perms") && $p){
+            $o = true;
+        }
+		if( $area->isWhitelisted( strtolower( $player->getName() ) ) ){
+			$o = true;
+		}
+		return $o;
+	}
+
+    /**
+     * canhunger()
+     * Checks if player can exhaust  (hunger)
+     * @param pocketmine\level\Position $pos
+     * @param pocketmine\level\Level $level
+     * @return bool
+     */
+    public function canHunger( PlayerExhaustEvent $event ): bool{
+        $pos = $event->getPlayer()->getPosition();
+        $playername = strtolower($event->getPlayer()->getName());
+        $o = true;
+        $h = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Hunger"] : $this->hunger);
+        if ($h) {
+            $o = false;
+        }
+        foreach($this->inArea[$playername] as $areaname){
+            if( isset($this->areaList[ $areaname ]) ){
+                $area = $this->areaList[$areaname];
+                if ($area->getFlag("hunger")) {
+                    $o = false;
+                }
+                if(!$area->getFlag("hunger") && $h){
+                    $o = true;
+                }
+                if($area->isWhitelisted($playername)){
+                    $o = false;
+                }
+            }
+        }
+        return $o;
     }
 
 
-	/** On player move ..
-	 * @param PlayerMoveEvent $ev
-	 * @var string inArea
-	 * @return true
-	 */
-	public function onMove(PlayerMoveEvent $ev) : void{
-
-		$player = $ev->getPlayer();
-		$playerName = strtolower( $player->getName() );
-
-		if( !isset( $this->inArea[$playerName] ) ){
-			$this->inArea[$playerName] = []; 
-		}
-
-		foreach($this->areas as $area){
-			
-            // Player area passage
-            if( $area->getFlag("passage") ){
-				if( $player->isOp() || $area->isWhitelisted( strtolower( $player->getName() )  ) || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
-					if( ( $area->contains( $player->getPosition(), $player->getLevel()->getName() ) && !$area->contains( $ev->getFrom(), $player->getLevel()->getName() ) )
-					|| !$area->contains( $player->getPosition(), $player->getLevel()->getName() ) && $area->contains( $ev->getFrom(), $player->getLevel()->getName() ) ){
-						// ops & whitelist players pass
-						$this->barrierCrossByOp($area, $ev);
-						break;
-					}
-				}else{
-					if( $area->contains( $player->getPosition(), $player->getLevel()->getName() )
-					&& !$area->contains( $ev->getFrom(), $player->getLevel()->getName() ) ){
-						$this->barrierEnterArea($area, $ev);
-						break;
-					}
-					if( !$area->contains( $player->getPosition(), $player->getLevel()->getName() )
-					&& $area->contains( $ev->getFrom(), $player->getLevel()->getName() ) ){
-						$this->barrierLeaveArea($area, $ev);
-						break;
-					}
-				} 
-			}
-            // Player enter or leave area
-			if( !$area->contains( $player->getPosition(), $player->getLevel()->getName() ) ){
-                // Player leave Area
-				if( in_array( strtolower( $area->getName() ) , $this->inArea[$playerName] ) ){
-					$this->leaveArea($area, $ev);
-					break;
-				}
-			}else{
-                // Player enter Area
-				if( !in_array( strtolower( $area->getName() ), $this->inArea[$playerName] ) ){
-					$this->enterArea($area, $ev);
-					break;
-				}
-                // Player enter Area Center
-				if( $area->centerContains( $player->getPosition(), $player->getLevel()->getName() ) ){
-					if( !in_array( strtolower( $area->getName() )."center", $this->inArea[$playerName] ) ){ // Player enter in Area
-						$this->enterAreaCenter($area, $ev);
-						break;
-					}
-				}else{
-                    // Player leave Area Center
-					if( in_array( strtolower( $area->getName()."center" ) , $this->inArea[$playerName] ) ){
-						$this->leaveAreaCenter($area, $ev);
-						break;
-					}
-				}
-			}
-            /** Area Player Monitor */
-            //$this->AreaPlayerMonitor($area, $ev);
-		} 
-
-        $this->checkPlayerFlying( $ev->getPlayer() );
-		return;
-	}
 
 	/** Area Player Monitor/Task
 	 * @param area Area
@@ -2429,7 +2495,7 @@ class Main extends PluginBase implements Listener{
             $l .=  "\n". TextFormat::GRAY . "  - ". Language::translate("players-in-area") .": \n " . TextFormat::GOLD . implode(", ", $ap );
         }
         
-        // Area Flag text colors GREEN, AQUA, BLUE, RED, WHITE, YELLOW, LIGHT_PURPLE, DARK_PURPLE, GOLD, GRAY
+        // Area Flag
 		$flgs = $area->getFlags(); 
 		$l .= "\n". TextFormat::GRAY . "  - ". Language::translate("flags")  ." :";
 		foreach($flgs as $fi => $flg){
@@ -2461,7 +2527,6 @@ class Main extends PluginBase implements Listener{
 
 	}
 
-
     /** isWhitelisted global or specific area
 	 * @param Player $player
 	 * @param Area $area
@@ -2479,28 +2544,6 @@ class Main extends PluginBase implements Listener{
         }
         return false;
     }
-
-    /** onJoin Area Titles for Player ( FloatingTextParticle )
-	 * @param PlayerJoinEvent $event
-	 */
-    public function onJoin(PlayerJoinEvent $event){
-        $player = $event->getPlayer();
-        $level = $player->getLevel(); //  $this->getServer()->getDefaultLevel();
-        $this->areaTitles[strtolower($player->getName())] = [];
-        $this->checkAreaTitles( $player,  $level  );
-    }
-
-    /** levelChange Area Titles for Player ( FloatingTextParticle )
-	 * @param EntityLevelChangeEvent $event
-	 */
-    public function levelChange(EntityLevelChangeEvent $event) {
-        $entity = $event->getEntity();
-        if ($entity instanceof Player) {
-            $level = $event->getTarget();
-            $this->checkAreaTitles( $entity, $level );
-        }
-    }
-
 
     /** Check Floating Area Title placement( FloatingTextParticle )
 	 * @param Vector3 $pos
@@ -2574,12 +2617,18 @@ class Main extends PluginBase implements Listener{
      *   makes it easy to find Festival console output fast
      */
     public function codeSigned(){
-
-        $this->getLogger()->info( "by -----------.------------" );
-        $this->getLogger()->info( "  ,-. ,-. ,-. |-. ,-. . .  " );
-        $this->getLogger()->info( "  | | |-' | | | | | | | |  " );
-        $this->getLogger()->info( "  `-| `-' ' ' `-' `-' `-|  " );
-        $this->getLogger()->info( "--`-'-----------------`-'--" );
-
+        $this->getLogger()->info( "                                            " );
+        $this->getLogger()->info( "                     |~                     " );
+        $this->getLogger()->info( "           .___---^^^ ^^^---___.            " );
+        $this->getLogger()->info( "   ___|~__/_____________________\___|~__    " );
+        $this->getLogger()->info( "  /_______\       ._____.       /_______\   " );
+        $this->getLogger()->info( "  /   |\  /       |  F  |       \   |\  \   " );
+        $this->getLogger()->info( "------------------'-----'-------------------" );
+        $this->getLogger()->info( "   ____  ___       _   |_|            _     " );
+        $this->getLogger()->info( "  |  __|| -_| ___ | |_ | |  _  _ ___ | |    " );
+        $this->getLogger()->info( "  |  _| |___||_ -||  _ | | | | || .'|| |    " );
+        $this->getLogger()->info( "  |_|        |___||_|  |_| \__/ |__,||_|    " );
+        $this->getLogger()->info( "                             GENBOY 2018    " );
     }
+
 }

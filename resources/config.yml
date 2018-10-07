@@ -29,7 +29,7 @@ Default:
   PVP: false
 
   # Keep players from flying? (true = NoFlight)
-  Flight: true
+  Flight: false
 
   # Keep players from editing the world? (true = NoEdit)
   Edit: true
@@ -86,7 +86,7 @@ Worlds:
     PVP: false
 
     # Keep players from flying? (true = NoFlight)
-    Flight: true
+    Flight: false
 
     # Keep players from editing the world? (true = NoEdit)
     Edit: true
@@ -140,7 +140,7 @@ Worlds:
     PVP: false
 
     # Keep players from flying? (true = NoFlight)
-    Flight: true
+    Flight: false
 
     # Keep players from editing the world? (true = NoEdit)
     Edit: true
