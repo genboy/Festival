@@ -10,7 +10,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 ### Manage area's and run commmands attachted to area events. 
 
  
-![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/08/festival_usage_1.0.7.5-dev.png)
+![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/10/festival_usage_1.0.7.9-dev.png)
 
 
 ###### Copyright [Genboy](https://genboy.net) 2018
@@ -28,6 +28,8 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 
 [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
 	
+More info also available at [the Festival Wiki](https://github.com/genboy/Festival/wiki) 
+
 !Please before asking first double-check your server basic world configurations, other plugins configurations (ie. worldguard) and the used player permissions incl. Festival whitelistings.
 
 #### Features
@@ -56,7 +58,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 
 - Set area flags ingame 
   Flags: Any flag true will protect the area and the players in it. 
-  ie. edit: true (on) means no breaking/building by players. shoot: true (on) means no shooting by players. 
+  ie. edit: true (on) means no breaking/building by players. shoot: true (on) means no shooting by players.
   
     - edit: the area is save from building/breaking
     - god: players in the area are save in god mode
@@ -66,7 +68,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
     - animals: no animal spawning (including spawners & eggs)
     - mobs: no mobs spawning (including spawners & eggs)
     - effects: player can not keep using effects in the area 
-    - msg: do not display area enter/leave messages 
+    - msg: do not display area enter/leave messages
     - passage: no passage for non-whitelisted players! (previously barrier flag)
     - drop: players can not drop things
     - tnt: explosions protected area
@@ -86,7 +88,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
     - variable player in commands with {player} or @p
     - add/edit/delete area event command
     - list area commands (ordered by event)
-    - change event of area commands
+    - change event of area commands 
 
 
 **Specific**
@@ -138,9 +140,18 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 
   ##### A visualisation of Festival command usage
   
-  ![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/08/festival_usage_1.0.7.5-dev.png)
+  ![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/10/festival_usage_1.0.7.9-dev.png)
   
   ###### Copyright [Genboy](https://genboy.net) 2018
+  
+
+
+  #### Language
+  
+  Set Festival language en/nl for area and command returned messages. 
+  en = english
+  nl = nederlands 
+  __ = your language, please help [translate __.js](https://github.com/genboy/Festival/blob/master/resources/en.json)
   
 
   #### Create area
@@ -183,7 +194,12 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
     Area flag listing
   
       /fe flag <AREANAME> list
+      
   
+  #### Delete an area
+	
+	/fe delete(del,remove) <AREANAME>   
+    
   
   #### Position info
 	
@@ -191,11 +207,13 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
     
 	/fe here
 
+
   #### List all area's
 	
     See all area info, optional per level
     
 	/fe list (<LEVELNAME>)
+
 
   #### Teleport to area
 	
@@ -203,30 +221,23 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
     
 	/fe tp <AREANAME>
 
+
   #### Toggle level area's floating title display
 	
     Area floating title display (default set in config.yml)
     
-	/fe titles 
-
-
+	/fe titles
 
 
   #### Set description
 		
 	/fe desc <AREANAME> <DESCRIPTION>
+
   
   #### Manage  whitelist
 	
     /fe whitelist <AREANAME> <add/list/remove(del,delete)> <PLAYERNAME>
-  
-  #### Delete an area
-	
-	/fe delete(del,remove) <AREANAME> 
-    
-    
-    
-    
+
 
   #### Area event commands
 
@@ -285,6 +296,7 @@ If you like to help improve this plugin;
 
 - download/use the plugin and give your feedback
 - look at the code and give feedback
+- help translating [__.js](https://github.com/genboy/Festival/blob/master/resources/en.json)
 - both by submitting [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival) 
 
 or send an email to msg @ genboy.net 
@@ -325,8 +337,35 @@ Thank you
   - [x] No shooting (bow)
   - [x] No Fall Damage flag (was implemented as effect for TP dropping and flight break)
  
+### Milestones v1.0.7 - v1.0.7.9
 
-
+  - [x] Areas floating title
+    - set config option Areadisplay (off/op/on)
+    - never or on command (off)
+    - for ops only always (op)
+    - for all players if msg flag true (on)
+    - display toggle /fe titles for ops
+  - [x] Add translation options
+    - set config option language (en/nl/..)
+    - ops change language  /fe lang <en/nl/..>
+    - English en
+    - Nederlands nl
+  - [x] Enhancements Edit Flag 
+    - No Farmland creation
+    - No Fire from Flint & Steel 
+    - protect item in frame use
+  - [x] Enhancements TNT Flag (experimental)
+    - No TNT placing
+    - No TNT ignition with Flint & Steel
+  - [x] Spawning: Prevent mob spawning (and spawners/eggs) in area's 
+    - Prevent spawn (incl. spawners/eggs) (EntitySpawnEvent)!
+      - Mobs flag prevent mobs from spawning in area
+      - Animals flag prevent animals from spawning in area
+  - [x] Area messages display in chat with config option Msgtype 'msg' 
+  - [x] cmd flag: area event commands for ops or whitelisted players only
+ 
+ 
+ 
  ### History
   
   **Since v1.0.3-11+**
@@ -363,15 +402,22 @@ Thank you
   - new animals and mobs (spawning) flag 
   - Fixes itemframe and farmland edit  
 
-  **Since v1.0.8**
+  **Since v1.0.7.9**
   - /fe lang <en/nl/..> - set  Festival language
   - Edit flag includes No Farmland creation
   - Edit flag includes No Fire from Flint & Steel 
   - Edit flag includes No TNT placing
   - Edit flag includes No TNT ignition with Flint & Steel
   - Edit flag includes protect item in frame use
+  - Areas floating title
+  - Add translation options (en/nl/..)
+  - Spawning: Prevent mob/animal spawning (and spawners/eggs) in area's 
+  - Mobs flag prevent mobs from spawning in area
+  - Animals flag prevent animals from spawning in area
+  - Area messages display in chat with config option Msgtype 'msg' 
+  - cmd flag: area event commands for ops or whitelisted players only
 
-------
+------ 
 
 
 ## Credits
