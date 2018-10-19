@@ -45,6 +45,8 @@ use pocketmine\entity\Item;
 use pocketmine\block\Block;
 use pocketmine\entity\object\ExperienceOrb;
 use pocketmine\entity\object\ItemEntity;
+use pocketmine\entity\object\FallingBlock;
+use pocketmine\entity\object\FallingSand;
 use pocketmine\entity\object\PrimedTNT;
 use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\projectile\Projectile;
@@ -1822,7 +1824,7 @@ class Main extends PluginBase implements Listener{
     public function canEntitySpawn( Entity $e ): bool{
 
         $o = true;
-        if( $e instanceof PrimedTNT || $e instanceof ExperienceOrb || $e instanceof ItemEntity || $e instanceof Projectile || $e instanceof FloatingTextParticle){
+        if( $e instanceof FallingBlock || $e instanceof FallingSand || $e instanceof PrimedTNT || $e instanceof ExperienceOrb || $e instanceof ItemEntity || $e instanceof Projectile || $e instanceof FloatingTextParticle){
             return $o; // might be allowed to spawn under different flag
         }
         
