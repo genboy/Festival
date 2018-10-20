@@ -1,6 +1,6 @@
 name: Festival
 author: Genboy
-version: 1.0.7.7-dev
+version: 1.0.7.9-dev
 main: genboy\Festival\Main
 load: POSTWORLD
 api: [3.0.0-ALPHA10,3.0.0-ALPHA11,3.0.0-ALPHA12,3.0.0,4.0.0]
@@ -8,7 +8,7 @@ website: "https://github.com/genboy/Festival"
 commands:
   fe:
     description: "Allows you to manage Festival area's and events."
-    usage: "See info: /fe <list/here>; Create area: select 2 positions /fe <pos1/pos2>, then /fe create <AREANAME>; Toggle flags: /fe <FLAGNAME> <AREANAME>; Set commands: /fe command <AREANAME> <add/enter/center/leave> <COMMANDID> <COMMANDSTRING>; (Edit)del command: /fe command <AREANAME> <(edit)/del> <COMMANDID> (<COMMANDSTRING>); Change event for command: /fe command <AREANAME> event <COMMANDID> <enter/center/leave>"
+    usage: "\n§bChoose language: §f/fe lang <en/nl> §bToggle floating area titles: §f/fe titles §bSee area info at location: §f/fe <list/here> \n§5How to create an area: §6select 2 corner positions §f/fe <pos1/pos2>§6, then name the area by using: §f/fe create <AREANAME> \n§9Toggle area flags: §f/fe <FLAGNAME> <AREANAME> §9Flags: §fgod, pvp, flight, edit, touch, mobs, animals, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage \n§5Add an area event command: \n§f/fe command <AREANAME> <add/enter/center/leave> <COMMANDID> <COMMANDSTRING> \n§5Edit or delete command: \n§f/fe command <AREANAME> <(edit)/del> <COMMANDID> (<COMMANDSTRING>) \n§5Change command event: \n§f/fe command <AREANAME> event <COMMANDID> <enter/center/leave> \n§5Whitelist players: \n§f/fe whitelist <AREANAME> <add/remove> <PLAYERNAME>"
     permission: festival.command.fe
 permissions:
   festival:
@@ -24,11 +24,14 @@ permissions:
         children:
           festival.command.fe:
             description: "Allows access to the Festival area command."
-            default: true
+            default: op
             children:
               festival.command.fe.lang:
                 description: "Allows access to the Festival lang subcommand."
-                default: true
+                default: op
+              festival.command.fe.titles:
+                description: "Allows access to the Festival titles subcommand."
+                default: op
               festival.command.fe.pos1:
                 description: "Allows access to the Festival pos1 subcommand."
                 default: op

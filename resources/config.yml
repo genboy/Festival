@@ -5,9 +5,12 @@ Options:
   # select a language: English = en, Dutch = nl, translate please !
   language: en
   
-  # Area Messages Display position (tip/pop)
-  Msgtype: pop
+  # Area Messages Display position (msg/title/tip/pop)
+  Msgtype: msg
   
+  # Area Floatingtext title display (off/op/on)
+  Areadisplay: op
+
   # Area Messages persist display to ops (off/op/on)
   Msgdisplay: off
   
@@ -26,7 +29,7 @@ Default:
   PVP: false
 
   # Keep players from flying? (true = NoFlight)
-  Flight: true
+  Flight: false
 
   # Keep players from editing the world? (true = NoEdit)
   Edit: true
@@ -66,6 +69,9 @@ Default:
   
   # Keep players from taking fall damage (true = NoFallDamage)
   FallDamage: true
+
+  # Keep area event commands from executing for non-ops (command test mode)
+  CMDmode: false
   
 # Settings for unprotected areas in individual worlds:
 Worlds:
@@ -80,7 +86,7 @@ Worlds:
     PVP: false
 
     # Keep players from flying? (true = NoFlight)
-    Flight: true
+    Flight: false
 
     # Keep players from editing the world? (true = NoEdit)
     Edit: true
@@ -121,6 +127,10 @@ Worlds:
     # Keep players from taking fall damage (true = NoFallDamage)
     FallDamage: true
 
+    # Keep area event commands from executing for non-ops (command test mode)
+    CMDmode: false
+
+  # Example specific level default flags  (copy and replace 'world' with your levelname)
   world:
   
     # Keep players from getting hurt? (true = Player god mode)
@@ -130,7 +140,7 @@ Worlds:
     PVP: false
 
     # Keep players from flying? (true = NoFlight)
-    Flight: true
+    Flight: false
 
     # Keep players from editing the world? (true = NoEdit)
     Edit: true
@@ -170,3 +180,6 @@ Worlds:
 
     # Keep players from taking fall damage (true = NoFallDamage)
     FallDamage: true
+
+    # Keep area event commands from executing for non-ops (command test mode)
+    CMDmode: false

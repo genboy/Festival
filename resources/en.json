@@ -2,7 +2,7 @@
     "language-name": "English",
 	"language-selected": "Now selected English.",
 
-    "enabled-console-msg": "Festival now enabled, testing in English.",
+    "enabled-console-msg": "Festival now enabled, English selected (adjust with /fe lang <en/nl>).",
 
     "cmd-ingameonly-msg": "Festival command only to be used in-game.",
     "cmd-unknown-msg": "Unknown Festival command",
@@ -24,20 +24,32 @@
     "areas": "areas",
     "level": "level",
     "level": "levels",
+    "player": "player",
+    "players": "players",
     "the-area": "The area",
     "the-level": "The level",
     "area-created": "Area created!",
     "created-by":"created by",
+    "area-here": "Area here",
     "area-no-area-available": "No area available",
     "area-no-area-to-edit": "There are no areas that you can edit",
     "area-name-excist": "An area with that name already exists.",
     "area-not-excist": "Area does not exist.",
     "cannot-be-found": "cannot be found.",
     "area-list" : "Area list",
+    "players-in-area": "players in area",
+    "area-whitelist": "whitelist",
+    "area-no-commands": "no commands attachted",
+    "player-has-been-whitelisted": "has been whitelisted in area",
+    "player-allready-whitelisted": "is allready whitelisted in area",
+    "player-has-been-unwhitelisted": "has been unwhitelisted from area",
+    "player-allready-unwhitelisted": "is allready unwhitelisted from area",
+    "whitelist-specify-action": "Please specify a valid action. Usage: /area whitelist <areaname> <add/list/remove> <playername>",
 
     "desc-saved": "description saved.",
     "desc-write-usage": "Please write the description. Usage /fe desc <areaname> <..>",
     "desc-specify-area": "Please specify an area to edit the description. Usage: /fe desc <areaname> <desc>",
+
 
     "area-deleted": "Area deleted!",
     "deleted-by":"deleted by",
@@ -46,7 +58,8 @@
 
     "flag": "Flag",
     "flags": "flags",
-    "flag-not-found-list": "Flag not found. (Flags: edit, god, touch, effects, msg, passage, perms, drop)",
+    "flag-not-found-list": "Flag not found. (Flags: god, pvp, flight, edit, touch, animals, mobs, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)",
+    "flag-not-specified-list": "Please specify a flag. (Flags: god, pvp, flight, edit, touch, animals, mobs, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)",
     "specify-to-flag": "Please specify the area you would like to flag.",
 
     "tp-to-area-active": "You are teleporting to Area",
@@ -54,7 +67,7 @@
 
     "cmd": "command",
     "cmds": "commands",
-    "cmd-id": "command id",
+    "cmd-id": "Command id",
     "cmd-list": "Command list",
     "-event": "-event",
 	"set-for-area": "set for area",
@@ -63,15 +76,42 @@
     "allready-set-for-area": "allready set for area",
     "edit-id-or-other": ", edit this id or use another id",
 	"cmd-specify-id-and-command-usage": "Please specify the command ID and command string to add. Usage: /fe command <areaname> add <COMMANDID> <COMMANDSTRING>",
+    "cmd-valid-areaname": "Area not found, please submit a valid name. Usage: /fe command <areaname> <add/list/edit/del> <commandID> <commandstring>.",
+
+    "cmd-id-not-found": "Command ID not found. See the commands with /fe event command <areaname> list'",
+    "cmd-specify-id-to-delete": "Please specify the command ID to delete. Usage /fe event command <areaname> del <COMMANDID>",
+    "cmd-specify-action": "Please add an action to perform with command.  Usage: /fe command <areaname> <add/list/edit/del> <commandID> <commandstring>.",
 
     "event": "event",
     "event-is-now": "event is now",
     "change-failed": "change-failed!",
 
+    "select-and": "and",
+    "select-in": "in",
     "select-yes": "Yes",
     "select-no": "No",
     "status-on": "on",
     "status-off": "off",
     "set-to": "set to",
-    "for-area": "for area"
+    "for-area": "for area",
+
+    "all-players-are-god": "All players are God in this Area!",
+    "no-pvp-area": "You are in a No-PVP Area!",
+    "no-flight-area": "NO Flying here!",
+    "flight-area": "Flying allowed here!",
+
+    "leaving-area": "leaving",
+    "enter-area": "enter",
+    "leaving-center-area": "Leaving the center of area",
+    "enter-center-area": "Enter the center of area",
+    "cannot-enter-area": "You can not enter area",
+    "cannot-leave-area": "You can not leave area",
+    "enter-barrier-area": "just past a barrier!",
+
+    "option-missing-in-config": "option missing in config.yml, now set to",
+    "flag-missing-in-config": "flag defaults missing, now set to",
+    "barrier-is-passage-flag": "Old Barrier config was used, now set to 'false'; please rename 'Barrier' to 'Passage' in config.yml",
+    "no-is-falldamage-flag": "Old Barrier config was used, now set to 'false'; please rename 'Barrier' to 'Passage' in config.yml",
+    "option-see-configfile": "please see original configs in /resources/config.yml"
+
 }

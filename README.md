@@ -10,7 +10,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 ### Manage area's and run commmands attachted to area events. 
 
  
-![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/08/festival_usage_1.0.7.5-dev.png)
+![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/10/festival_usage_1.0.7.9-dev.png)
 
 
 ###### Copyright [Genboy](https://genboy.net) 2018
@@ -27,12 +27,24 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 [![](https://poggit.pmmp.io/shield.dl/Festival)](https://poggit.pmmp.io/p/Festival)
 
 [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
+	
+More info also available at [the Festival Wiki](https://github.com/genboy/Festival/wiki) 
+
+!Please before asking first double-check your server basic world configurations, other plugins configurations (ie. worldguard) and the used player permissions incl. Festival whitelistings.
 
 #### Features
 
+**Config**
+- set default options in config.yml;
+  - language: en - select language English = en, Dutch = nl, translate please !
+  - Msgtype: msg - Area Messages Display position (msg/title/tip/pop)
+  - Msgdisplay: off - Area Messages persist display to ops (off/op/on)
+  - Areadisplay: op - Area Floating Title display to ops (off/op/on)
+  - AutoWhitelist: on - Auto whitelist area creator (on/off)
+  
 **Area**
 
-- Create and manage area’s
+- Create and manage area’s ingame
   (like WorldGuard/iProtector)
 
     - Define cuboid area by tapping 2 positions
@@ -42,11 +54,12 @@ Create a festival with this custom area events plugin for Pocketmine Server:
     - tp to an area
     - show area’s info at current position 
 
-
 **Flags**
 
-- Set area flags true means
-
+- Set area flags ingame 
+  Flags: Any flag true will protect the area and the players in it. 
+  ie. edit: true (on) means no breaking/building by players. shoot: true (on) means no shooting by players.
+  
     - edit: the area is save from building/breaking
     - god: players in the area are save in god mode
     - pvp: players in the area are save from PVP
@@ -55,7 +68,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
     - animals: no animal spawning (including spawners & eggs)
     - mobs: no mobs spawning (including spawners & eggs)
     - effects: player can not keep using effects in the area 
-    - msg: do not display area enter/leave messages 
+    - msg: do not display area enter/leave messages
     - passage: no passage for non-whitelisted players! (previously barrier flag)
     - drop: players can not drop things
     - tnt: explosions protected area
@@ -63,6 +76,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
     - perms: player permissions are used to determine area command execution (experiment)
     - hunger: player does not exhaust / hunger
     - falldamage: player will not have fall damage (no fall damage)
+    - cmdmode: area event commands are only executed for ops (for testing commands)
 
 
 **Events & Commands**
@@ -74,15 +88,20 @@ Create a festival with this custom area events plugin for Pocketmine Server:
     - variable player in commands with {player} or @p
     - add/edit/delete area event command
     - list area commands (ordered by event)
-    - change event of area commands
+    - change event of area commands 
 
 
 **Specific**
 
-  - World: Default & world specific flags in config.yml
+  - World flags: Default & level(world) specific flags in config.yml are used for level default flag settings and new area flags settings
   - Flight: if server allows flight, and level flight-flag is true, an area in that level has still flight enabled untill flight flag is set true
   - Perms: Area event commands are executed by default with op-permissions by players or, if perms flag true: area uses the player permissions
+  - Area Titles: Set area titles to display, for ops or any player (in config.yml), ops can select display ingame with /fe titles
+  - CMDmode: The cmdmode flag disables event commands for (whitelisted)players, allows ops to test area event commands.
 	
+!Please first check festival and other plugins configs (ie. worldguard) and the used player permissions incl. Festival whitelistings.
+
+  
 
 ###### Created by [Genboy](https://genboy.net) 2018
 
@@ -100,6 +119,8 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 
   - Standard Plugin installation; Upload .phar file to server 'plugin' folder (or upload .zip if you have latest devtools installed), restart the server, go to  folder plugins/Festival;
 
+  - read [wiki on configurations](https://github.com/genboy/Festival/wiki/2.-Install,-Configure-&-Update)
+
   - Edit config.yml; set the defaults for options, default area flags and the default area flags for specific worlds.
   
   - ##### Read the config comments carefully about how the flags work!
@@ -112,55 +133,32 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   ##### !Before update always copy your config.yml and areas.json files to a save place, with this you can revert your Festival installation
   - after .phar install and first restart/reload plugins; check console info and your areas.json and config.yml; restart after adjusted correctly 
   
-  **Since v1.0.3-11+**
+
   
-  - pass(passage) flag gives the area a barrier for non ops/whitelisted
-  - configuration for area messages (taken out of chat)
-    - Msgtype: tip or pop (prefer depend on other plugin message display) 
-    - Msgdisplay: 
-        off = hidden for all players
-        op = only ops see all area enter/leave messages
-        on = all players see the area messages
-  
-  **Since v1.0.4-11**
 
-  - areas are updated with the new flags, configuration should be updated manually; example [resources/config.yml](https://github.com/genboy/Festival/blob/master/resources/config.yml)
-
-  **Since v1.0.5-12**
-
-  - configuration should be updated with AutoWhitelist option & new Effects flag; example [resources/config.yml](https://github.com/genboy/Festival/blob/master/resources/config.yml)
-
-  **Since v1.0.6-13**
-
-  - new PVP flag
-  - new Flight flag
-  - /fe list LEVELNAME - Area list of all area's in all levels, or for specified level 
-  - configuration should be updated [resources/config.yml](https://github.com/genboy/Festival/blob/master/resources/config.yml)
- 
-  **New in v1.0.7**
-  - new TNT flag
-  - new Hunger flag
-  - Fire is now extinguished when player does not get damage (aka. in area with god flag on)
-  - new shoot flag (experimental no shooting/launching)
-  - new falldamage flag
-  - new animals and mobs (spawning) flag 
-  - Fixes itemframe and farmland edit  
-
- 
   #### Usage Graphic
 
   ##### A visualisation of Festival command usage
   
-  ![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/08/festival_usage_1.0.7.2-dev.png)
+  ![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/10/festival_usage_1.0.7.9-dev.png)
   
   ###### Copyright [Genboy](https://genboy.net) 2018
   
+
+
+  #### Language
+  
+  Set Festival language en/nl for area and command returned messages. 
+  en = english
+  nl = nederlands 
+  __ = your language, please help [translate __.js](https://github.com/genboy/Festival/blob/master/resources/en.json)
   
 
   #### Create area
-  First command '/fe pos1' and tab a block for position 1, 
   
-  then command '/fe pos2' and tab a block to set position2, 
+  First command '/fe pos1' and tab or break a block for position 1 (holding a block, not an item), 
+  
+  then command '/fe pos2' and tab or break a block to set position2, 
   
   these are the endpoints of the area longest diagonal.
 
@@ -183,18 +181,25 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   
     Festival v1.0.1-11 introduced a fast toggle for flags:
   
-      /fe <edit/god/pvp/flight/touch/effects/tnt/shoot/drop/msg/pass/hunger/perms> <AREANAME>
+      /fe <edit/god/pvp/flight/touch/mobs/animals/effects/tnt/shoot/drop/msg/pass/hunger/perms/falldamage/cmdmode> <AREANAME>
 
   
-    Area flag defaults are set in the config.yml), server defaults and world specific default flag. 
+    Area flag defaults are set in the config.yml, server defaults and world specific default flag. 
+    
+    
     The basic command to control area flags:
   
-	  /fe flag(f) <AREANAME> <edit/god/pvp/flight/touch/effects/tnt/shoot/drop/msg/pass/hunger/perms/nfd> <true/false>
+	  /fe flag(f) <AREANAME> <edit/god/pvp/flight/touch/mobs/animals/effects/tnt/shoot/drop/msg/pass/hunger/perms/falldamage/cmdmode> <true/false>
   
     Area flag listing
   
       /fe flag <AREANAME> list
+      
   
+  #### Delete an area
+	
+	/fe delete(del,remove) <AREANAME>   
+    
   
   #### Position info
 	
@@ -202,32 +207,37 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
     
 	/fe here
 
+
   #### List all area's
 	
-	/fe list
+    See all area info, optional per level
+    
+	/fe list (<LEVELNAME>)
+
 
   #### Teleport to area
 	
+    Teleporting to area center top, drop with no falldamage (if falldamage flag true)
+    
 	/fe tp <AREANAME>
 
 
+  #### Toggle level area's floating title display
+	
+    Area floating title display (default set in config.yml)
+    
+	/fe titles
 
 
   #### Set description
 		
 	/fe desc <AREANAME> <DESCRIPTION>
+
   
   #### Manage  whitelist
 	
     /fe whitelist <AREANAME> <add/list/remove(del,delete)> <PLAYERNAME>
-  
-  #### Delete an area
-	
-	/fe delete(del,remove) <AREANAME> 
-    
-    
-    
-    
+
 
   #### Area event commands
 
@@ -286,6 +296,7 @@ If you like to help improve this plugin;
 
 - download/use the plugin and give your feedback
 - look at the code and give feedback
+- help translating [__.js](https://github.com/genboy/Festival/blob/master/resources/en.json)
 - both by submitting [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival) 
 
 or send an email to msg @ genboy.net 
@@ -325,9 +336,88 @@ Thank you
   - [x] Fire (animation) extinguished when player is save 
   - [x] No shooting (bow)
   - [x] No Fall Damage flag (was implemented as effect for TP dropping and flight break)
+ 
+### Milestones v1.0.7 - v1.0.7.9
+
+  - [x] Areas floating title
+    - set config option Areadisplay (off/op/on)
+    - never or on command (off)
+    - for ops only always (op)
+    - for all players if msg flag true (on)
+    - display toggle /fe titles for ops
+  - [x] Add translation options
+    - set config option language (en/nl/..)
+    - ops change language  /fe lang <en/nl/..>
+    - English en
+    - Nederlands nl
+  - [x] Enhancements Edit Flag 
+    - No Farmland creation
+    - No Fire from Flint & Steel 
+    - protect item in frame use
+  - [x] Enhancements TNT Flag (experimental)
+    - No TNT placing
+    - No TNT ignition with Flint & Steel
+  - [x] Spawning: Prevent mob spawning (and spawners/eggs) in area's 
+    - Prevent spawn (incl. spawners/eggs) (EntitySpawnEvent)!
+      - Mobs flag prevent mobs from spawning in area
+      - Animals flag prevent animals from spawning in area
+  - [x] Area messages display in chat with config option Msgtype 'msg' 
+  - [x] cmd flag: area event commands for ops or whitelisted players only
+ 
+ 
+ 
+ ### History
   
+  **Since v1.0.3-11+**
   
-------
+  - pass(passage) flag gives the area a barrier for non ops/whitelisted
+  - configuration for area messages (taken out of chat)
+    - Msgtype: tip or pop (prefer depend on other plugin message display) 
+    - Msgdisplay: 
+        off = hidden for all players
+        op = only ops see all area enter/leave messages
+        on = all players see the area messages
+  
+  **Since v1.0.4-11**
+
+  - areas are updated with the new flags, configuration should be updated manually; example [resources/config.yml](https://github.com/genboy/Festival/blob/master/resources/config.yml)
+
+  **Since v1.0.5-12**
+
+  - configuration should be updated with AutoWhitelist option & new Effects flag; example [resources/config.yml](https://github.com/genboy/Festival/blob/master/resources/config.yml)
+
+  **Since v1.0.6-13**
+
+  - new PVP flag
+  - new Flight flag
+  - /fe list LEVELNAME - Area list of all area's in all levels, or for specified level 
+  - configuration should be updated [resources/config.yml](https://github.com/genboy/Festival/blob/master/resources/config.yml)
+ 
+  **Since v1.0.7**
+  - new TNT flag
+  - new Hunger flag
+  - Fire is now extinguished when player does not get damage (aka. in area with god flag on)
+  - new shoot flag (experimental no shooting/launching)
+  - new falldamage flag
+  - new animals and mobs (spawning) flag 
+  - Fixes itemframe and farmland edit  
+
+  **Since v1.0.7.9**
+  - /fe lang <en/nl/..> - set  Festival language
+  - Edit flag includes No Farmland creation
+  - Edit flag includes No Fire from Flint & Steel 
+  - Edit flag includes No TNT placing
+  - Edit flag includes No TNT ignition with Flint & Steel
+  - Edit flag includes protect item in frame use
+  - Areas floating title
+  - Add translation options (en/nl/..)
+  - Spawning: Prevent mob/animal spawning (and spawners/eggs) in area's 
+  - Mobs flag prevent mobs from spawning in area
+  - Animals flag prevent animals from spawning in area
+  - Area messages display in chat with config option Msgtype 'msg' 
+  - cmd flag: area event commands for ops or whitelisted players only
+
+------ 
 
 
 ## Credits
