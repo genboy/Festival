@@ -20,15 +20,6 @@
  * language: en/nl, Msgtype: msg/title/tip/pop, Areadisplay: off/op/on, Msgdisplay: off/op/on
  * Flags: god, pvp, flight, edit, touch, mobs, animals, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage, cmdmode
  *
- * Development Notes
- * text colors GREEN, AQUA, BLUE, RED, WHITE, YELLOW, LIGHT_PURPLE, DARK_PURPLE, GOLD, GRAY
- * enitities id's
- * https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/entity/EntityIds.php
- * https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/entity/Entity.php
- * https://forums.pmmp.io/threads/mobs-spawn-event.6151/
- * https://github.com/LeinneSW/EntityManager
- * player action
- * http://forums.pocketmine.net/threads/get-the-player-who-fired-tnt.14640/
  */
 
 declare(strict_types = 1);
@@ -52,6 +43,7 @@ use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\projectile\Projectile;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
+use pocketmine\event\block\BlockUpdateEvent;
 use pocketmine\event\block\BlockBurnEvent;
 use pocketmine\event\entity\EntitySpawnEvent;
 use pocketmine\event\entity\EntityDespawnEvent;
@@ -110,7 +102,11 @@ class Main extends PluginBase implements Listener{
 	/** @var bool */
 	private $drop          = false;
 	/** @var bool */
+	private $explode       = false;
+	/** @var bool */
 	private $tnt           = false;
+	/** @var bool */
+	private $fire          = false;
 	/** @var bool */
 	private $shoot         = false;
 	/** @var bool */
@@ -247,8 +243,14 @@ class Main extends PluginBase implements Listener{
 		if(!isset($c["Default"]["Flight"])) { // new in v1.0.6-13
 			$c["Default"]["Flight"] = false;
 		}
-		if(!isset($c["Default"]["TNT"])) { // new in v1.0.7
+		if(!isset($c["Default"]["Explode"])) { // new in v1.0.7.9
+			$c["Default"]["Explode"] = false;
+		}
+		if(!isset($c["Default"]["TNT"])) { // new in v1.0.7.3
 			$c["Default"]["TNT"] = false;
+		}
+		if(!isset($c["Default"]["Fire"])) { // new in v1.0.7.9
+			$c["Default"]["Fire"] = false;
 		}
 		if(!isset($c["Default"]["Shoot"])) { // new in v1.0.7
 			$c["Default"]["Shoot"] = false;
@@ -276,7 +278,9 @@ class Main extends PluginBase implements Listener{
 		$this->effects        = $c["Default"]["Effects"]; // new in v1.0.5-12
 		$this->pvp            = $c["Default"]["PVP"]; // new in v1.0.6-13
 		$this->flight         = $c["Default"]["Flight"]; // new in v1.0.6-13
+		$this->explode        = $c["Default"]["Explode"]; // new in v1.0.7.9
 		$this->tnt            = $c["Default"]["TNT"]; // new in v1.0.7.3
+		$this->fire           = $c["Default"]["Fire"]; // new in v1.0.7.9
 		$this->hunger         = $c["Default"]["Hunger"]; // new in v1.0.7.3
 		$this->falldamage     = $c["Default"]["FallDamage"]; // new in  1.0.7.2-dev(1.0.8)
 		$this->shoot          = $c["Default"]["Shoot"]; // new in  1.0.7.2-dev(1.0.8)
@@ -315,8 +319,14 @@ class Main extends PluginBase implements Listener{
 				if( !isset($flags["Flight"]) ){ // new v1.0.6-13
 					$flags["Flight"] = $this->flight;
 				}
-				if( !isset($flags["TNT"]) ){ // new v1.0.7
+				if( !isset($flags["Explode"]) ){ // new v1.0.7.9
+					$flags["Explode"] = $this->explode;
+				}
+				if( !isset($flags["TNT"]) ){ // new v1.0.7.3
 					$flags["TNT"] = $this->tnt;
+				}
+				if( !isset($flags["Fire"]) ){ // new v1.0.7.9
+					$flags["Fire"] = $this->fire;
 				}
 				if( !isset($flags["Hunger"]) ){ // new v1.0.7
 					$flags["Hunger"] = $this->hunger;
@@ -347,39 +357,47 @@ class Main extends PluginBase implements Listener{
                 }
                 if( !isset($datum["flags"]["perms"]) ){ // new flags v 1.0.5-12
                     $flags["perms"] = false;
-				    $newchange['Msgtype'] = "! Perms ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
+				    $newchange['Perms'] = "! Perms ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
                 }
                 if( !isset($datum["flags"]["drop"]) ){ // new flags v 1.0.5-12
                     $flags["drop"] = false;
-				    $newchange['Msgtype'] = "! Drop ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
+				    $newchange['canInteract'] = "! Drop ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
                 }
                 if( !isset($datum["flags"]["animals"]) ){ // new flags v 1.0.7.5-dev
                     $flags["animals"] = false;
-				    $newchange['Msgtype'] = "! Animals ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
+				    $newchange['Animals'] = "! Animals ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
                 }
                 if( !isset($datum["flags"]["mobs"]) ){ // new flags v 1.0.7.5-dev
                     $flags["mobs"] = false;
-				    $newchange['Msgtype'] = "! Mobs ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
+				    $newchange['Mobs'] = "! Mobs ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
                 }
                 if( !isset($datum["flags"]["effects"]) ){ // new flags v 1.0.5-12
                     $flags["effects"] = false;
-				    $newchange['Msgtype'] = "! Effects ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
+				    $newchange['Effects'] = "! Effects ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
                 }
                 if( !isset($datum["flags"]["pvp"]) ){ //new flags v 1.0.6-13
                     $flags["pvp"] = false;
-				    $newchange['Msgtype'] = "! PVP ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
+				    $newchange['PVP'] = "! PVP ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
                 }
                 if( !isset($datum["flags"]["flight"]) ){ //new flags v 1.0.6-13
                     $flags["flight"] = false;
-				    $newchange['Msgtype'] = "! Flight ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
+				    $newchange['Flight'] = "! Flight ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
                 }
-                if( !isset($datum["flags"]["tnt"]) ){ // new flags v 1.0.7
+                if( !isset($datum["flags"]["explode"]) ){ // new flags v 1.0.7.9
+                    $flags["explode"] = false;
+				    $newchange['Explode'] = "! Explode ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
+                }
+                if( !isset($datum["flags"]["tnt"]) ){ // new flags v 1.0.7.3
                     $flags["tnt"] = false;
-				    $newchange['Msgtype'] = "! TNT ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
+				    $newchange['TNT'] = "! TNT ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
+                }
+                if( !isset($datum["flags"]["fire"]) ){ // new flags v 1.0.7.9
+                    $flags["fire"] = false;
+				    $newchange['Fire'] = "! Fire ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
                 }
                 if( !isset($datum["flags"]["hunger"]) ){ // new flags v 1.0.7
                     $flags["hunger"] = false;
-				    $newchange['Msgtype'] = "! Hunger ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
+				    $newchange['Hunger'] = "! Hunger ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
                 }
                 if( isset($datum["flags"]["nofalldamage"]) ){
                     $flags["falldamage"] = $datum["flags"]["nofalldamage"]; // replaced in v1.0.5-11 can use both
@@ -388,11 +406,11 @@ class Main extends PluginBase implements Listener{
                 }
                 if( !isset($datum["flags"]["falldamage"]) ){ //new in v1.0.7.3
                     $flags["falldamage"] = false;
-				    $newchange['Msgtype'] = "! FallDamage ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
+				    $newchange['FallDamage'] = "! FallDamage ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
                 }
                 if( !isset($datum["flags"]["shoot"]) ){ //new in v1.0.7.4
                     $flags["shoot"] = false;
-				    $newchange['Msgtype'] = "! Shoot ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
+				    $newchange['Shoot'] = "! Shoot ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
                 }
                 if( !isset($datum["flags"]["cmdmode"]) ){ //new in v1.0.7.4
                     $flags["cmdmode"] = false;
@@ -482,7 +500,9 @@ class Main extends PluginBase implements Listener{
             "mobs","mob",
             "animals","animal",
             "effects","magic","effect",
-            "tnt","explode",
+            "tnt",
+            "explode","explosion","explosions",
+            "fire","fires","burn",
             "hunger","starve",
             "drop",
             "msg","message",
@@ -526,8 +546,14 @@ class Main extends PluginBase implements Listener{
             if( $str == "pass" || $str == "barrier" ){
                 $flag = "passage";
             }
-            if( $str == "tnt" || $str == "explode" ){
+            if( $str == "explosion" || $str == "explosions" || $str == "explode" ){
+                $flag = "explode";
+            }
+            if( $str == "tnt"  ){
                 $flag = "tnt";
+            }
+            if( $str == "fire" || $str == "fires" || $str == "burn" ){
+                $flag = "fire";
             }
             if( $str == "shoot" || $str == "launch" ){
                 $flag = "shoot";
@@ -835,8 +861,13 @@ class Main extends PluginBase implements Listener{
 			case "perms":
 			case "hunger":
 			case "starve":
+            case "fire":
+            case "fires":
+            case "burn":
 			case "tnt":
 			case "explode":
+			case "explosion":
+			case "explosions":
             case "shoot":
             case "launch":
 			case "drop":
@@ -855,7 +886,7 @@ class Main extends PluginBase implements Listener{
 						* Revert a flag in all area's (v1.0.4-11)
 						*/
 						if($args[1] == 'swappall'){
-                            $flag = $this->isFlag( $args[0] ); // v1.0.6-13
+                            $flag = $this->isFlag( $args[0] ); // since v1.0.6-13
                             if( $flag ){
 								foreach($this->areas as $area){
 									if($area->getFlag($flag)){
@@ -1328,7 +1359,7 @@ class Main extends PluginBase implements Listener{
 			$event->setCancelled();
 		}else{
             //  .. canUseTNT( $player, $block )
-            if( $block->getID() == Block::TNT && !$this->canExplode( $player->getPosition() ) ){
+            if( $block->getID() == Block::TNT && !$this->canUseTNT( $player, $block ) ){
                 if( $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
 		        }else{
                     $event->setCancelled();
@@ -1388,6 +1419,30 @@ class Main extends PluginBase implements Listener{
         }
     }
 
+
+    /** onBlockUpdate
+     * BlockUpdateEvent
+     * @param BlockUpdateEvent $event
+     * @return void
+
+    public function onBlockUpdate( BlockUpdateEvent $event ): void{
+
+        $block = $event->getBlock();
+        $position = new Position($block->getFloorX(), $block->getFloorY(), $block->getFloorZ(), $block->getLevel());
+        $levelname = $block->getLevel()->getName();
+        // fire
+        $f = true;
+        if( $this->getServer()->getLevelByName( $levelname )->getBlockIdAt($block->x, $block->y + 1, $block->z) == 51 ){ // is fire above
+            if( !$this->canBurn( $position ) ){ // is fire not allowed? // Block::FIRE
+                    $this->getServer()->getLevelByName( $levelname )->setBlockIdAt( $block->x, $block->y + 1, $block->z, 0);
+            }
+        }
+        $msg = TextFormat::RED . "Updated " . $block->getName() . "(". $block->getID() . ") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]";
+        $this->getLogger()->info( $msg );
+
+    }
+    */
+
 	/** onHurt
 	 * @param EntityDamageEvent $event
 	 * @ignoreCancelled true
@@ -1409,7 +1464,9 @@ class Main extends PluginBase implements Listener{
 	 * @ignoreCancelled true
      */
     public function onEntitySpawn( EntitySpawnEvent $event ): void{
+
         $e = $event->getEntity();
+        //($e instanceof Fire && !$this->canBurn( $e->getPosition() )) || (
         if( !$e instanceof Player && !$this->canEntitySpawn( $e ) ){
             //$e->flagForDespawn() to slow / ? $e->close(); private..
             $this->getServer()->getPluginManager()->callEvent(new EntityDespawnEvent($e));
@@ -1423,6 +1480,7 @@ class Main extends PluginBase implements Listener{
                 $e->setLevel(null);
             }
         }
+
     }
 
 	/** Item drop
@@ -1451,16 +1509,24 @@ class Main extends PluginBase implements Listener{
         }
     }
 
-    /** on Explode entity
+    /** on Explode entity // canExplode
      * EntityExplodeEvent
      * @param EntityExplodeEvent $event
      * @return void
      */
     public function onEntityExplode(EntityExplodeEvent $event){
-        if (!$this->canExplode( $event->getPosition() )) {
+
+        $e = $event->getEntity();
+        if( $e instanceof PrimedTNT ){
+            if( !$this->canTNTExplode( $event->getPosition() ) ){
+                $event->setCancelled(); // ? on
+            }
+        }else if (!$this->canExplode( $event->getPosition() )) {
             $event->setCancelled();
         }
+
     }
+
 
     /** Hunger
      * PlayerExhaustEvent
@@ -1490,10 +1556,6 @@ class Main extends PluginBase implements Listener{
         unset( $this->areaTitles[$playerName] );
 
     }
-
-
-
-
 
     /** OUTBOUND ACTION */
 
@@ -1570,30 +1632,31 @@ class Main extends PluginBase implements Listener{
         $item = $event->getItem();
         $block = $event->getBlock();
 		$player = $event->getPlayer();
-        $position = $player->getPosition();
+        $position = new Position($block->getFloorX(), $block->getFloorY(), $block->getFloorZ(), $block->getLevel());// $player->getPosition();
         $playername = strtolower($player->getName());
         $b = $block->getID();
         $i = $item->getID();
 
-        /*
-        $player->sendMessage("Action on " . $block->getName() . "(". $block->getID() . ") with ". $item->getName() ."(".$item->getID().") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]");
-        */ 
+        // $player->sendMessage("Action on ".$block->getName()."(".$block->getID().") with ".$item->getName()."(".$item->getID().") at [x=".round($block->x). " y=".round($block->y)." z=".round($block->z)."]");
+
         if( $player->isOp() || $player->hasPermission("festival") || $player->hasPermission("festival.access")){
             return true;
         }
 
-        $o = true;
-        // 46 // tnt //259 // flint & steel
-        //.. canUseTNT( $player, $b )
-        if( $b == Block::TNT && $i == Item::FLINT_AND_STEEL && !$this->canExplode( $player->getPosition() ) ){
-            $o = false;
+        // tnt flag id 46 Block::TNT _ id 259 FLINT_AND_STEEL ? canUseTNT( $player, $b )
+        if( $b == 46 && $i == 259 && !$this->canUseTNT( $player, $position ) ){
+            return false;
         }
-        if(
-            $b == 199 // item frame
-            || ( ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) ) // no farm event
-            || $i == 259 // apart for fire flag
-                //.. canBurn( $player->getPosition() )
-        ){
+
+        // fire flag
+        if( $i == 259 && $b != 46 && !$this->canBurn( $position ) ){
+            return false;
+        }
+
+        // edit /
+        $o = true;
+        // 199 itemframe, dirt & grass + items for farm events
+        if( $b == 199  || ( ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) ) ){
             if(!$this->canEdit($player, $block)){
                 $o = false;
             }
@@ -1824,7 +1887,14 @@ class Main extends PluginBase implements Listener{
     public function canEntitySpawn( Entity $e ): bool{
 
         $o = true;
-        if( $e instanceof FallingBlock || $e instanceof FallingSand || $e instanceof PrimedTNT || $e instanceof ExperienceOrb || $e instanceof ItemEntity || $e instanceof Projectile || $e instanceof FloatingTextParticle){
+        if( // what entities are always allowed
+            $e instanceof FallingBlock // FallingBlock (Sand,Gravel, Water, Lava? )// $e instanceof FallingSand
+            || $e instanceof PrimedTNT
+            || $e instanceof ExperienceOrb
+            || $e instanceof ItemEntity
+            || $e instanceof Projectile
+            || $e instanceof FloatingTextParticle
+        ){
             return $o; // might be allowed to spawn under different flag
         }
         
@@ -1836,7 +1906,6 @@ class Main extends PluginBase implements Listener{
         if( null !== $e->getPosition() ){
             $pos = $e->getPosition();
         }
-
 
         if($pos && $nm != ''){
 
@@ -1960,7 +2029,7 @@ class Main extends PluginBase implements Listener{
      * @param pocketmine\level\Position $pos
      * @param pocketmine\level\Level $level
      * @return bool
-
+     */
     public function canBurn( Position $pos ): bool{
         $o = true;
         $e = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Fire"] : $this->fire);
@@ -1980,7 +2049,7 @@ class Main extends PluginBase implements Listener{
         }
         return $o;
     }
-    */
+
 
     /**
      * canExplode()
@@ -1990,18 +2059,19 @@ class Main extends PluginBase implements Listener{
      * @return bool
      */
     public function canExplode( Position $pos ): bool{
+
         $o = true;
-        $e = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["TNT"] : $this->tnt);
+        $e = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Explode"] : $this->explode);
         if ($e) {
             $o = false;
         }
         // including entities/mobs in any area
         foreach ($this->areas as $area) {
             if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
-                if ($area->getFlag("tnt")) {
+                if ($area->getFlag("explode")) {
                     $o = false;
                 }
-                if(!$area->getFlag("tnt") && $e){
+                if(!$area->getFlag("explode") && $e){
                     $o = true;
                 }
             }
@@ -2015,7 +2085,7 @@ class Main extends PluginBase implements Listener{
 	 * @param Player   $player
 	 * @param Position $position
 	 * @return bool
-
+    */
 	public function canUseTNT(Player $player, Position $position) : bool{
 		if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
 			return true;
@@ -2029,6 +2099,9 @@ class Main extends PluginBase implements Listener{
         foreach($this->inArea[$playername] as $areaname){
             if( isset($this->areaList[ $areaname ]) ){
                 $area = $this->areaList[$areaname];
+
+                //if( $area->contains( $position, $position->getLevel()->getName() ) ){}
+
                 if($area->getFlag("tnt")){
                     $o = false;
                 }
@@ -2042,7 +2115,35 @@ class Main extends PluginBase implements Listener{
         }
 		return $o;
 	}
+
+    /** canTNTExplode()
+     * Checks if TNT is allowed to be used by player on given position
+     * @param flag $this->tnt
+	 * @param Player   $player
+	 * @param Position $position
+	 * @return bool
     */
+	public function canTNTExplode( Position $position ) : bool{
+
+		$o = true;
+        $e = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["TNT"] : $this->tnt);
+        if ($e) {
+            $o = false;
+        }
+        // look for any area
+        foreach ($this->areas as $area) {
+            if ($area->contains(new Vector3($position->getX(), $position->getY(), $position->getZ()), $position->getLevel()->getName() )) {
+                if ($area->getFlag("tnt")) {
+                    $o = false;
+                }
+                if(!$area->getFlag("tnt") && $e){
+                    $o = true;
+                }
+            }
+        }
+        return $o;
+	}
+
 
     /** canShoot
 	 * @param Player $player
