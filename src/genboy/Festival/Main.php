@@ -1366,6 +1366,7 @@ class Main extends PluginBase implements Listener{
                     //$player->sendMessage("TNT not allowed here");
                 }
             }
+
 			if(!$this->canEdit($player, $block)){
 				$event->setCancelled();
 			}
@@ -1419,12 +1420,11 @@ class Main extends PluginBase implements Listener{
         }
     }
 
-
     /** onBlockUpdate
      * BlockUpdateEvent
      * @param BlockUpdateEvent $event
      * @return void
-
+     */
     public function onBlockUpdate( BlockUpdateEvent $event ): void{
 
         $block = $event->getBlock();
@@ -1434,14 +1434,14 @@ class Main extends PluginBase implements Listener{
         $f = true;
         if( $this->getServer()->getLevelByName( $levelname )->getBlockIdAt($block->x, $block->y + 1, $block->z) == 51 ){ // is fire above
             if( !$this->canBurn( $position ) ){ // is fire not allowed? // Block::FIRE
-                    $this->getServer()->getLevelByName( $levelname )->setBlockIdAt( $block->x, $block->y + 1, $block->z, 0);
+                $this->getServer()->getLevelByName( $levelname )->setBlockIdAt( $block->x, $block->y + 1, $block->z, 0);
+                $msg = TextFormat::RED . "Fire removed from " . $block->getName() . "(". $block->getID() . ") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]";
+                $this->getLogger()->info( $msg );
             }
+
         }
-        $msg = TextFormat::RED . "Updated " . $block->getName() . "(". $block->getID() . ") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]";
-        $this->getLogger()->info( $msg );
 
     }
-    */
 
 	/** onHurt
 	 * @param EntityDamageEvent $event
@@ -1649,9 +1649,14 @@ class Main extends PluginBase implements Listener{
         }
 
         // fire flag
-        if( $i == 259 && $b != 46 && !$this->canBurn( $position ) ){
+        if( $i == 259 && $b != 46 && !$this->canBurn( $position ) ){ // FLINT_AND_STEEL + not tnt
             return false;
         }
+
+        if( $i == 325 && !$this->canBurn( $position ) ){ // Flowing Lava flowing_lava 10, Lava lava 11 set by Lava Bucket 325
+            return false;
+        }
+
 
         // edit /
         $o = true;
