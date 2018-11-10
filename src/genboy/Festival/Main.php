@@ -1426,7 +1426,7 @@ class Main extends PluginBase implements Listener{
      * @param BlockUpdateEvent $event
      * @return void
      */
-    public function onBlockUpdate( BlockUpdateEvent $event ): void{
+    public function onBlockUpdate( BlockUpdateEvent $event ): void{ // BlockUpdateEvent
 
         $block = $event->getBlock();
         $position = new Position($block->getFloorX(), $block->getFloorY(), $block->getFloorZ(), $block->getLevel());
@@ -1435,14 +1435,15 @@ class Main extends PluginBase implements Listener{
         // kill fire -  or lava -  flowing_lava 10, lava 11 , Bucket item id 325
         $f = true;
         $aid = $this->getServer()->getLevelByName( $levelname )->getBlockIdAt($block->x, $block->y + 1, $block->z);
-        if(   $aid == 51 ||  $aid == 10 || $aid == 11 ){ // is fire/lava above
+        if(  $aid == 51 ||  $aid == 10 || $aid == 11 ){ // is fire/lava above
             if( !$this->canBurn( $position ) ){ // is fire not allowed? // Block::FIRE
                 $this->getServer()->getLevelByName( $levelname )->setBlockIdAt( $block->x, $block->y + 1, $block->z, 0);
-                $msg = TextFormat::RED . "Fire removed from " . $block->getName() . "(". $block->getID() . ") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]";
-                $this->getLogger()->info( $msg );
+                //$msg = TextFormat::RED . "Fire removed from " . $block->getName() . "(". $block->getID() . ") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]";
+                //$this->getLogger()->info( $msg );
             }
         }
     }
+
     /*
     public function onPlayerBucketEvent( PlayerBucketEvent $event): void{
         $block = $event->getBlockClicked();
@@ -1787,7 +1788,7 @@ class Main extends PluginBase implements Listener{
         if($ev->getEntity() instanceof Player){
 			$player = $ev->getEntity();
 			$playerName = strtolower($player->getName());
-			if(!$this->canGetHurt($player)){
+			if( !$this->canGetHurt( $player ) || !$this->canBurn( $player->getPosition() )){
                 if( $player->isOnFire() ){
                     $player->extinguish(); // 1.0.7-dev
                 }
