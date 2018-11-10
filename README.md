@@ -1,6 +1,6 @@
 ## Festival
 
-If you like Festival please leave a thumb up at [poggit](https://poggit.pmmp.io/p/Festival/1.0.7)  to help getting the Festival plugin approved, thank you!_
+If you like Festival please share your experience to help Festival plugin improve, thank you! 
 
 ![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png) 
 
@@ -30,7 +30,9 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 	
 More info also available at [the Festival Wiki](https://github.com/genboy/Festival/wiki) 
 
-!Please before asking first double-check your server basic world configurations, other plugins configurations (ie. worldguard) and the used player permissions incl. Festival whitelistings.
+Download the latest .phar files from [poggit.pmmp.io](https://poggit.pmmp.io/p/Festival/1.0.7), also available at [mcpehost.ru](https://panel.mcpehost.ru/repository/plugin?name=Festival)
+
+!Please before asking; first double-check your server basic world configurations, other plugins configurations (ie. worldguard) and the used player permissions incl. Festival whitelistings.
 
 #### Features
 
@@ -67,16 +69,18 @@ More info also available at [the Festival Wiki](https://github.com/genboy/Festiv
     - touch: area is save from player interaction with doors/chests/signs etc.
     - animals: no animal spawning (including spawners & eggs)
     - mobs: no mobs spawning (including spawners & eggs)
-    - effects: player can not keep using effects in the area 
+    - effects: player can not keep using effects in the area
     - msg: do not display area enter/leave messages
     - passage: no passage for non-whitelisted players! (previously barrier flag)
     - drop: players can not drop things
     - tnt: explosions protected area
+    - fire: fire protected area (including spreading & lava)
+    - explode: explosions protected area
     - shoot: player can not shoot (bow)
-    - perms: player permissions are used to determine area command execution (experiment)
+    - perms: player permissions are used to determine area command execution
     - hunger: player does not exhaust / hunger
     - falldamage: player will not have fall damage (no fall damage)
-    - cmdmode: area event commands are only executed for ops (for testing commands)
+    - cmdmode: area event commands are only executed for ops (test area commands)
 
 
 **Events & Commands**
@@ -145,7 +149,7 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   ###### Copyright [Genboy](https://genboy.net) 2018
   
 
-
+ 
   #### Language
   
   Set Festival language en/nl for area and command returned messages. 
@@ -181,7 +185,7 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   
     Festival v1.0.1-11 introduced a fast toggle for flags:
   
-      /fe <edit/god/pvp/flight/touch/mobs/animals/effects/tnt/shoot/drop/msg/pass/hunger/perms/falldamage/cmdmode> <AREANAME>
+      /fe <edit/god/pvp/flight/touch/mobs/animals/effects/tnt/fire/explode/shoot/drop/msg/pass/hunger/perms/falldamage/cmdmode> <AREANAME>
 
   
     Area flag defaults are set in the config.yml, server defaults and world specific default flag. 
@@ -189,7 +193,7 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
     
     The basic command to control area flags:
   
-	  /fe flag(f) <AREANAME> <edit/god/pvp/flight/touch/mobs/animals/effects/tnt/shoot/drop/msg/pass/hunger/perms/falldamage/cmdmode> <true/false>
+	  /fe flag(f) <AREANAME> <edit/god/pvp/flight/touch/mobs/animals/effects/tnt/fire/explode/shoot/drop/msg/pass/hunger/perms/falldamage/cmdmode> <true/false>
   
     Area flag listing
   
@@ -405,10 +409,10 @@ Thank you
   **Since v1.0.7.9**
   - /fe lang <en/nl/..> - set  Festival language
   - Edit flag includes No Farmland creation
-  - Edit flag includes No Fire from Flint & Steel 
-  - Edit flag includes No TNT placing
-  - Edit flag includes No TNT ignition with Flint & Steel
   - Edit flag includes protect item in frame use
+  - !Fire flag includes No Fire from Flint & Steel and No lava 
+  - !TNT flag includes No TNT placing or tnt explosions 
+  - !Explode flag includes No entity explosions  
   - Areas floating title
   - Add translation options (en/nl/..)
   - Spawning: Prevent mob/animal spawning (and spawners/eggs) in area's 
