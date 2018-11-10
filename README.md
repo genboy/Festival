@@ -181,7 +181,7 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   
     Festival v1.0.1-11 introduced a fast toggle for flags:
   
-      /fe <edit/god/pvp/flight/touch/mobs/animals/effects/tnt/shoot/drop/msg/pass/hunger/perms/falldamage/cmdmode> <AREANAME>
+      /fe <edit/god/pvp/flight/touch/mobs/animals/effects/tnt/fire/explode/shoot/drop/msg/pass/hunger/perms/falldamage/cmdmode> <AREANAME>
 
   
     Area flag defaults are set in the config.yml, server defaults and world specific default flag. 
@@ -189,7 +189,7 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
     
     The basic command to control area flags:
   
-	  /fe flag(f) <AREANAME> <edit/god/pvp/flight/touch/mobs/animals/effects/tnt/shoot/drop/msg/pass/hunger/perms/falldamage/cmdmode> <true/false>
+	  /fe flag(f) <AREANAME> <edit/god/pvp/flight/touch/mobs/animals/effects/tnt/fire/explode/shoot/drop/msg/pass/hunger/perms/falldamage/cmdmode> <true/false>
   
     Area flag listing
   
@@ -405,10 +405,10 @@ Thank you
   **Since v1.0.7.9**
   - /fe lang <en/nl/..> - set  Festival language
   - Edit flag includes No Farmland creation
-  - Edit flag includes No Fire from Flint & Steel 
-  - Edit flag includes No TNT placing
-  - Edit flag includes No TNT ignition with Flint & Steel
   - Edit flag includes protect item in frame use
+  - !Fire flag includes No Fire from Flint & Steel and No lava 
+  - !TNT flag includes No TNT placing or tnt explosions 
+  - !Explode flag includes No entity explosions  
   - Areas floating title
   - Add translation options (en/nl/..)
   - Spawning: Prevent mob/animal spawning (and spawners/eggs) in area's 

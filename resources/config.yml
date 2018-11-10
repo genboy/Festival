@@ -55,8 +55,14 @@ Default:
   # Keep players from dropping items in the area? (true = NoDropping)
   Drop: false
 
-  # No explosions allowed in the area? (true = NoExplosions)
+  # No tnt placement or explosions allowed in the area? (true = NoTNT)
   TNT: false
+
+  # No Fire allowed in the area? (true = NoFire)
+  Fire: false
+
+  # No entity explosions allowed in the area? (true = NoExplosions)
+  Explode: false
 
   # No shooting allowed in the area? (true = NoShooting)
   Shoot: false
@@ -112,8 +118,14 @@ Worlds:
     # Keep players from dropping items in the area? (true = NoDropping)
     Drop: false
 
-    # No explosions allowed in the area? (true = NoExplosions)
+    # No tnt placement or explosions allowed in the area? (true = NoTNT)
     TNT: false
+
+    # No Fire allowed in the area? (true = NoFire)
+    Fire: false
+
+    # No entity explosions allowed in the area? (true = NoExplosions)
+    Explode: false
 
     # No shooting allowed in the area? (true = NoShooting)
     Shoot: false
@@ -166,8 +178,14 @@ Worlds:
     # Keep players from dropping items in the area? (true = NoDropping)
     Drop: false
 
-    # No explosions allowed in the area? (true = NoExplosions)
+    # No tnt placement or explosions allowed in the area? (true = NoTNT)
     TNT: false
+
+    # No Fire allowed in the area? (true = NoFire)
+    Fire: false
+
+    # No entity explosions allowed in the area? (true = NoExplosions)
+    Explode: false
 
     # No shooting allowed in the area? (true = NoShooting)
     Shoot: false
