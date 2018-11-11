@@ -10,7 +10,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 ### Manage area's and run commmands attachted to area events. 
 
  
-![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/10/festival_usage_1.0.7.9-dev.png)
+![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/11/festival_usage_1.0.8.png) 
 
 
 ###### Copyright [Genboy](https://genboy.net) 2018
@@ -30,7 +30,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 	
 More info also available at [the Festival Wiki](https://github.com/genboy/Festival/wiki) 
 
-Download the latest .phar files from [poggit.pmmp.io](https://poggit.pmmp.io/p/Festival/1.0.7), also available at [mcpehost.ru](https://panel.mcpehost.ru/repository/plugin?name=Festival)
+Download the latest .phar files from [poggit.pmmp.io](https://poggit.pmmp.io/p/Festival/1.0.8), also available at [mcpehost.ru](https://panel.mcpehost.ru/repository/plugin?name=Festival)
 
 !Please before asking; first double-check your server basic world configurations, other plugins configurations (ie. worldguard) and the used player permissions incl. Festival whitelistings.
 
@@ -144,7 +144,7 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 
   ##### A visualisation of Festival command usage
   
-  ![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/10/festival_usage_1.0.7.9-dev.png)
+  ![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/11/festival_usage_1.0.8.png)
   
   ###### Copyright [Genboy](https://genboy.net) 2018
   
@@ -406,20 +406,20 @@ Thank you
   - new animals and mobs (spawning) flag 
   - Fixes itemframe and farmland edit  
 
-  **Since v1.0.7.9**
+  **Since v1.0.8**
   - /fe lang <en/nl/..> - set  Festival language
   - Edit flag includes No Farmland creation
   - Edit flag includes protect item in frame use
-  - !Fire flag includes No Fire from Flint & Steel and No lava 
-  - !TNT flag includes No TNT placing or tnt explosions 
-  - !Explode flag includes No entity explosions  
+  - !NEW Fire flag includes No Fire from Flint & Steel and No lava 
+  - !NEW TNT flag includes No TNT placing or tnt explosions 
+  - !NEW Explode flag includes No entity explosions  
   - Areas floating title
   - Add translation options (en/nl/..)
   - Spawning: Prevent mob/animal spawning (and spawners/eggs) in area's 
   - Mobs flag prevent mobs from spawning in area
   - Animals flag prevent animals from spawning in area
   - Area messages display in chat with config option Msgtype 'msg' 
-  - cmd flag: area event commands for ops or whitelisted players only
+  - cmd flag: area event commands for ops or whitelisted players only 
 
 ------ 
 
