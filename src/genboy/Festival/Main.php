@@ -246,12 +246,18 @@ class Main extends PluginBase implements Listener{
 		}
 		if(!isset($c["Default"]["Explode"])) { // new in v1.0.7.9
 			$c["Default"]["Explode"] = false;
+            if( isset($c["Default"]["TNT"]) ){
+                $c["Default"]["Explode"] = true;
+            }
 		}
 		if(!isset($c["Default"]["TNT"])) { // new in v1.0.7.3
 			$c["Default"]["TNT"] = false;
 		}
 		if(!isset($c["Default"]["Fire"])) { // new in v1.0.7.9
 			$c["Default"]["Fire"] = false;
+            if( isset($c["Default"]["TNT"]) ){
+                $c["Default"]["Fire"] = true;
+            }
 		}
 		if(!isset($c["Default"]["Shoot"])) { // new in v1.0.7
 			$c["Default"]["Shoot"] = false;
@@ -678,7 +684,9 @@ class Main extends PluginBase implements Listener{
                                             "msg" => $flags['Msg'],
                                             "passage" => $flags['Passage'],
                                             "drop" => $flags['Drop'],
+                                            "explode" => $flags['Explode'],
                                             "tnt" => $flags['TNT'],
+                                            "fire" => $flags['Fire'],
                                             "shoot" => $flags['Shoot'],
                                             "hunger" => $flags['Hunger'],
                                             "perms" => $flags['Perms'],

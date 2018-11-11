@@ -55,7 +55,7 @@ Default:
   # Keep players from dropping items in the area? (true = NoDropping)
   Drop: false
 
-  # No tnt placement or explosions allowed in the area? (true = NoTNT)
+  # No tnt explosions allowed in the area? (true = NoTNT)
   TNT: false
 
   # No Fire allowed in the area? (true = NoFire)
@@ -118,7 +118,7 @@ Worlds:
     # Keep players from dropping items in the area? (true = NoDropping)
     Drop: false
 
-    # No tnt placement or explosions allowed in the area? (true = NoTNT)
+    # No tnt explosions allowed in the area? (true = NoTNT)
     TNT: false
 
     # No Fire allowed in the area? (true = NoFire)
@@ -178,7 +178,7 @@ Worlds:
     # Keep players from dropping items in the area? (true = NoDropping)
     Drop: false
 
-    # No tnt placement or explosions allowed in the area? (true = NoTNT)
+    # No tnt explosions allowed in the area? (true = NoTNT)
     TNT: false
 
     # No Fire allowed in the area? (true = NoFire)
