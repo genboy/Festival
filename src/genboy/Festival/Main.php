@@ -18,7 +18,7 @@
  *
  * Options in config.yml
  * language: en/nl, Msgtype: msg/title/tip/pop, Areadisplay: off/op/on, Msgdisplay: off/op/on
- * Flags: god, pvp, flight, edit, touch, mobs, animals, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage, cmdmode
+ * Flags: god, pvp, flight, edit, touch, mobs, animals, effects, msg, passage, drop, tnt, fire, explode, shoot, hunger, perms, falldamage, cmdmode
  *
  */
 
@@ -66,6 +66,7 @@ use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerCommandPreprocessEvent;
 use pocketmine\event\player\PlayerExhaustEvent;
 use pocketmine\event\player\PlayerDropItemEvent;
+use pocketmine\event\player\PlayerBucketEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 
 class Main extends PluginBase implements Listener{
@@ -116,7 +117,7 @@ class Main extends PluginBase implements Listener{
 	/** @var bool */
 	private $falldamage    = false;
 	/** @var bool */
-	private $cmdmode           = false;
+	private $cmdmode       = false;
 
 	/** @var bool[] */
 	private $selectingFirst    = [];
@@ -245,12 +246,18 @@ class Main extends PluginBase implements Listener{
 		}
 		if(!isset($c["Default"]["Explode"])) { // new in v1.0.7.9
 			$c["Default"]["Explode"] = false;
+            if( isset($c["Default"]["TNT"]) ){
+                $c["Default"]["Explode"] = true;
+            }
 		}
 		if(!isset($c["Default"]["TNT"])) { // new in v1.0.7.3
 			$c["Default"]["TNT"] = false;
 		}
 		if(!isset($c["Default"]["Fire"])) { // new in v1.0.7.9
 			$c["Default"]["Fire"] = false;
+            if( isset($c["Default"]["TNT"]) ){
+                $c["Default"]["Fire"] = true;
+            }
 		}
 		if(!isset($c["Default"]["Shoot"])) { // new in v1.0.7
 			$c["Default"]["Shoot"] = false;
@@ -295,7 +302,7 @@ class Main extends PluginBase implements Listener{
 					$flags["Passage"] = $flags["Barrier"]; // replaced in v1.0.5-11
 					unset($flags["Barrier"]);
 				}
-				if( !isset($flags["Passage"]) ){
+				if( !isset($flags["Passage"]) ){ // changed in v1.0.3-11
 					$flags["Passage"] = $this->passage;
 				}
 				if( !isset($flags["Perms"]) ){ // new v1.0.4-11
@@ -677,7 +684,9 @@ class Main extends PluginBase implements Listener{
                                             "msg" => $flags['Msg'],
                                             "passage" => $flags['Passage'],
                                             "drop" => $flags['Drop'],
+                                            "explode" => $flags['Explode'],
                                             "tnt" => $flags['TNT'],
+                                            "fire" => $flags['Fire'],
                                             "shoot" => $flags['Shoot'],
                                             "hunger" => $flags['Hunger'],
                                             "perms" => $flags['Perms'],
@@ -1425,23 +1434,33 @@ class Main extends PluginBase implements Listener{
      * @param BlockUpdateEvent $event
      * @return void
      */
-    public function onBlockUpdate( BlockUpdateEvent $event ): void{
+    public function onBlockUpdate( BlockUpdateEvent $event ): void{ // BlockUpdateEvent
 
         $block = $event->getBlock();
         $position = new Position($block->getFloorX(), $block->getFloorY(), $block->getFloorZ(), $block->getLevel());
         $levelname = $block->getLevel()->getName();
-        // fire
+
+        // kill fire -  or lava -  flowing_lava 10, lava 11 , Bucket item id 325
         $f = true;
-        if( $this->getServer()->getLevelByName( $levelname )->getBlockIdAt($block->x, $block->y + 1, $block->z) == 51 ){ // is fire above
+        $aid = $this->getServer()->getLevelByName( $levelname )->getBlockIdAt($block->x, $block->y + 1, $block->z);
+        if(  $aid == 51 ||  $aid == 10 || $aid == 11 ){ // is fire/lava above
             if( !$this->canBurn( $position ) ){ // is fire not allowed? // Block::FIRE
                 $this->getServer()->getLevelByName( $levelname )->setBlockIdAt( $block->x, $block->y + 1, $block->z, 0);
-                $msg = TextFormat::RED . "Fire removed from " . $block->getName() . "(". $block->getID() . ") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]";
-                $this->getLogger()->info( $msg );
+                //$msg = TextFormat::RED . "Fire removed from " . $block->getName() . "(". $block->getID() . ") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]";
+                //$this->getLogger()->info( $msg );
             }
-
         }
-
     }
+
+    /*
+    public function onPlayerBucketEvent( PlayerBucketEvent $event): void{
+        $block = $event->getBlockClicked();
+        $position = new Position($block->getFloorX(), $block->getFloorY(), $block->getFloorZ(), $block->getLevel());
+        if( ($event->getItem()->getId() == 10 || $event->getItem()->getId() == 11) && !$this->canBurn( $position ) ){
+			$event->setCancelled();
+            $this->getLogger()->info( 'No lava bucket allowed!' );
+        }
+    }*/
 
 	/** onHurt
 	 * @param EntityDamageEvent $event
@@ -1648,23 +1667,15 @@ class Main extends PluginBase implements Listener{
             return false;
         }
 
-        // fire flag
+        // fire flag - see also onBlockUpdate
         if( $i == 259 && $b != 46 && !$this->canBurn( $position ) ){ // FLINT_AND_STEEL + not tnt
             return false;
         }
 
-        if( $i == 325 && !$this->canBurn( $position ) ){ // Flowing Lava flowing_lava 10, Lava lava 11 set by Lava Bucket 325
-            return false;
-        }
-
-
-        // edit /
+        // edit flag for items - 199 itemframe, dirt & grass + items for farm events
         $o = true;
-        // 199 itemframe, dirt & grass + items for farm events
-        if( $b == 199  || ( ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) ) ){
-            if(!$this->canEdit($player, $block)){
-                $o = false;
-            }
+        if( ( $b == 199 || ( ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) ) ) && !$this->canEdit($player, $block) ){
+            $o = false;
         }
         return $o;
 
@@ -1731,22 +1742,6 @@ class Main extends PluginBase implements Listener{
 		return $o;
 	}
 
-    /*
-	public function onFallDisable(EntityDamageEvent $event) : void{
-		$player = $event->getEntity();
-    	$level = $player->getLevel()->getFolderName();
-		$cause = $event->getCause();
-		if($event->getEntity() instanceof Player){
-			if(!$this->canGetHurt($player)){
-				$event->setCancelled();
-			}
-			if($cause == EntityDamageEvent::CAUSE_FALL && $this->hasFallDamage($player)){
-				$event->setCancelled(true);
-			}
-		}
-	}
-    */
-
     /** PVP
 	 * @param Event $ev
 	 * @return bool
@@ -1801,7 +1796,7 @@ class Main extends PluginBase implements Listener{
         if($ev->getEntity() instanceof Player){
 			$player = $ev->getEntity();
 			$playerName = strtolower($player->getName());
-			if(!$this->canGetHurt($player)){
+			if( !$this->canGetHurt( $player ) || !$this->canBurn( $player->getPosition() )){
                 if( $player->isOnFire() ){
                     $player->extinguish(); // 1.0.7-dev
                 }
