@@ -18,7 +18,7 @@
  *
  * Options in config.yml
  * language: en/nl, Msgtype: msg/title/tip/pop, Areadisplay: off/op/on, Msgdisplay: off/op/on
- * Flags: god, pvp, flight, edit, touch, mobs, animals, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage, cmdmode
+ * Flags: god, pvp, flight, edit, touch, mobs, animals, effects, msg, passage, drop, tnt, fire, explode, shoot, hunger, perms, falldamage, cmdmode
  *
  */
 
