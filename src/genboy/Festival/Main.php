@@ -1442,15 +1442,39 @@ class Main extends PluginBase implements Listener{
 
         // kill fire -  or lava -  flowing_lava 10, lava 11 , Bucket item id 325
         $f = true;
-        $aid = $this->getServer()->getLevelByName( $levelname )->getBlockIdAt($block->x, $block->y + 1, $block->z);
+        $aid = $block->getLevel()->getBlockIdAt($block->x, $block->y + 1, $block->z);
+
         if(  $aid == 51 ||  $aid == 10 || $aid == 11 ){ // is fire/lava above
             if( !$this->canBurn( $position ) ){ // is fire not allowed? // Block::FIRE
-                $this->getServer()->getLevelByName( $levelname )->setBlockIdAt( $block->x, $block->y + 1, $block->z, 0);
+                $block->getLevel()->setBlock(new Vector3($block->x, $block->y + 1, $block->z), Block::get(0,0) ); // $block->getLevel()->setBlockIdAt( $block->x, $block->y + 1, $block->z, 0 );  //Block::AIR
                 //$msg = TextFormat::RED . "Fire removed from " . $block->getName() . "(". $block->getID() . ") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]";
                 //$this->getLogger()->info( $msg );
             }
         }
     }
+
+
+    /** onBlockBurn
+     * BlockBurnEvent
+     * @param BlockUpdateEvent $event
+     * @return void
+
+        // Should check BlockBurnEvent ..
+        // https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/event/block/BlockBurnEvent.php
+
+    public function onBlockBurn( BlockBurnEvent $event ): void { // BlockBurnEvent
+
+        $block = $event->getBlock();
+        $position = new Position($block->getFloorX(), $block->getFloorY(), $block->getFloorZ(), $block->getLevel());
+        $levelname = $block->getLevel()->getName();
+
+        if( !$this->canBurn( $position ) ){ // is fire not allowed? // Block::FIRE
+            $event->setCancelled();
+        }
+
+    }
+     */
+
 
     /*
     public function onPlayerBucketEvent( PlayerBucketEvent $event): void{
