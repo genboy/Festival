@@ -1186,10 +1186,10 @@ class Main extends PluginBase implements Listener{
 											$this->saveAreas();
 											$o = TextFormat::GREEN . Language::translate("cmd-id"). ' '.$cid.' edited';
 										}else{
-											$o = TextFormat::RED .Language::translate("cmd-id"). ' '.$cid.' '. Language::tranlate("cannot-be-found") .' ( /fe command <areaname> list)';
+											$o = TextFormat::RED .Language::translate("cmd-id"). ' '.$cid.' '. Language::translate("cannot-be-found") .' ( /fe command <areaname> list)';
 										}
 									}else{
-										$o = TextFormat::RED .Language::tranlate("cmd-specify-id-and-command-usage");
+										$o = TextFormat::RED .Language::translate("cmd-specify-id-and-command-usage");
 									}
                                     break;
 
@@ -1778,9 +1778,9 @@ class Main extends PluginBase implements Listener{
             $player = $ev->getDamager();
             if( $this->skippTime( 2, strtolower($player->getName()) ) ){
                 if( $god ){
-                    $this->areaMessage( Language::tranlate("all-players-are-god"), $player );
+                    $this->areaMessage( Language::translate("all-players-are-god"), $player );
                 }else{
-                    $this->areaMessage( Language::tranlate("no-pvp-area"), $player );
+                    $this->areaMessage( Language::translate("no-pvp-area"), $player );
                 }
 			}
         }
@@ -2720,18 +2720,15 @@ class Main extends PluginBase implements Listener{
      *   makes it easy to find Festival console output fast
      */
     public function codeSigned(){
-        $this->getLogger()->info( "                                            " );
-        $this->getLogger()->info( "                     |~                     " );
-        $this->getLogger()->info( "           .___---^^^ ^^^---___.            " );
-        $this->getLogger()->info( "   ___|~__/_____________________\___|~__    " );
-        $this->getLogger()->info( "  /_______\       ._____.       /_______\   " );
-        $this->getLogger()->info( "  /   |\  /       |  F  |       \   |\  \   " );
-        $this->getLogger()->info( "------------------'-----'-------------------" );
-        $this->getLogger()->info( "   ____  ___       _   |_|            _     " );
-        $this->getLogger()->info( "  |  __|| -_| ___ | |_ | |  _  _ ___ | |    " );
-        $this->getLogger()->info( "  |  _| |___||_ -||  _ | | | | || .'|| |    " );
-        $this->getLogger()->info( "  |_|        |___||_|  |_| \__/ |__,||_|    " );
-        $this->getLogger()->info( "                             GENBOY 2018    " );
+
+
+        $this->getLogger()->info( "~~__.__~~" );
+        $this->getLogger()->info( "..-/-\-.." );
+        $this->getLogger()->info( "by-Genboy" );
+        $this->getLogger()->info( "--__|~_--" );
+        $this->getLogger()->info( "-/_____\-" );
+        $this->getLogger()->info( "./..|\.\." );
+
     }
 
 }
