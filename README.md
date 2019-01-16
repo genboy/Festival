@@ -3,7 +3,7 @@
 If you like Festival please share your experience to help Festival plugin improve, thank you! 
 
 Festival 1.8 functionalities will not extend further more. Important bug fixes will still be done untill Festival 2 is ready.
-Fetival 2 is in development including FormUI for easy control, a new code structure and some of the flags will be completely rewritten. I probably dump the translations untill there is request for it. Just to let you know ..
+Festival 2 is in development including FormUI for easy control, a new code structure and some of the flags will be completely rewritten. I probably dump the translations untill there is request for it. Just to let you know ..
 
 ![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png) 
 
@@ -16,7 +16,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 ![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/11/festival_usage_1.0.8.png)  
 
 
-###### Copyright [Genboy](https://genboy.net) 2018
+###### Copyright [Genboy](https://genboy.net) 2018 
  
 --- 
 
