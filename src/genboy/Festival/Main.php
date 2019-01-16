@@ -1265,9 +1265,31 @@ class Main extends PluginBase implements Listener{
 	 */
     public function onJoin(PlayerJoinEvent $event){
         $player = $event->getPlayer();
+        $playername = strtolower($player->getName());
         $level = $player->getLevel(); //  $this->getServer()->getDefaultLevel();
-        $this->areaTitles[strtolower($player->getName())] = [];
+
+        $this->areaTitles[$playername] = [];
+        $this->inArea[$playername] = [];
         $this->checkAreaTitles( $player,  $level  );
+    }
+
+
+
+    /** onQuit
+	 * @param Event $event
+	 * @return bool
+	 */
+    public function onQuit(PlayerQuitEvent $event){
+
+        $playerName = strtolower($event->getPlayer()->getName());
+        $lvl = $event->getPlayer()->getLevel()->getName();
+        unset($this->inArea[$playerName]);
+
+        foreach($this->areas as $area){
+            $this->hideAreaTitle( $event->getPlayer(), $event->getPlayer()->getPosition()->getLevel(), $area );
+        }
+        unset( $this->areaTitles[$playerName] );
+
     }
 
     /** levelChange
@@ -1583,22 +1605,6 @@ class Main extends PluginBase implements Listener{
     }
 
 
-    /** onQuit
-	 * @param Event $event
-	 * @return bool
-	 */
-    public function onQuit(PlayerQuitEvent $event){
-
-        $playerName = strtolower($event->getPlayer()->getName());
-        $lvl = $event->getPlayer()->getLevel()->getName();
-        unset($this->inArea[$playerName]);
-
-        foreach($this->areas as $area){
-            $this->hideAreaTitle( $event->getPlayer(), $event->getPlayer()->getPosition()->getLevel(), $area );
-        }
-        unset( $this->areaTitles[$playerName] );
-
-    }
 
     /** OUTBOUND ACTION */
 
@@ -1820,12 +1826,19 @@ class Main extends PluginBase implements Listener{
         if($ev->getEntity() instanceof Player){
 			$player = $ev->getEntity();
 			$playerName = strtolower($player->getName());
-			if( !$this->canGetHurt( $player ) || !$this->canBurn( $player->getPosition() )){
+			if( !$this->canGetHurt( $player ) ){
                 if( $player->isOnFire() ){
                     $player->extinguish(); // 1.0.7-dev
                 }
 				$ev->setCancelled();
                 return false;
+			}
+            if( !$this->canBurn( $player->getPosition() )){
+                if( $player->isOnFire() ){
+                    $player->extinguish(); // 1.0.7-dev
+				    $ev->setCancelled();
+                    return false;
+                }
 			}
             if(!$this->canPVP($ev)){ // v 1.0.6-13
 				$ev->setCancelled();
