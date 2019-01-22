@@ -1946,6 +1946,8 @@ class Main extends PluginBase implements Listener{
             || $e instanceof ItemEntity
             || $e instanceof Projectile
             || $e instanceof FloatingTextParticle
+
+            || $e instanceof MysterySkull // https://github.com/CubePM/MysteryBox/blob/master/src/mysterybox/entity/MysterySkull.php
         ){
             return $o; // might be allowed to spawn under different flag
         }
