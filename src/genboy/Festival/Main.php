@@ -1947,17 +1947,17 @@ class Main extends PluginBase implements Listener{
             || $e instanceof Projectile
             || $e instanceof FloatingTextParticle
 
-            || $e instanceof mysterybox\entity\MysterySkull // https://github.com/CubePM/MysteryBox/blob/master/src/mysterybox/entity/MysterySkull.php
+            //|| $e instanceof mysterybox\entity\MysterySkull // https://github.com/CubePM/MysteryBox/blob/master/src/mysterybox/entity/MysterySkull.php
         ){
             return $o; // might be allowed to spawn under different flag
         }
         
         $nm =  ''; //
-        if( null !== $e->getName() ){
+        if( method_exists($e,'getName') && null !== $e->getName() ){
           $nm = $e instanceof Item ? $e->getItem()->getName() : $e->getName();
         }
         $pos = false;
-        if( null !== $e->getPosition() ){
+        if( method_exists($e,'getPosition') && null !== $e->getPosition() ){
             $pos = $e->getPosition();
         }
 
