@@ -1903,7 +1903,8 @@ class Main extends PluginBase implements Listener{
             $fly = false; // flag default
         }
         // ! if( $player->isOp() ){
-        if( $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+        // Survival Mode = 0, Creative Mode = 1, Adventure Mode = 2, Spectator Mode = 4
+        if( $player->hasPermission("festival") || $player->hasPermission("festival.access") || $player->getGamemode() === 1 ){
             $fly = true;
             $player->setAllowFlight(true);
             return $fly;
