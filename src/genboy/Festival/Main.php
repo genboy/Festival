@@ -2797,15 +2797,7 @@ class Main extends PluginBase implements Listener{
      *   makes it easy to find Festival console output fast
      */
     public function codeSigned(){
-
-
-        $this->getLogger()->info( "~~__.__~~" );
-        $this->getLogger()->info( "..-/-\-.." );
-        $this->getLogger()->info( "by-Genboy" );
-        $this->getLogger()->info( "--__|~_--" );
-        $this->getLogger()->info( "-/_____\-" );
-        $this->getLogger()->info( "./..|\.\." );
-
+        $this->getLogger()->info( "Made by Genboy" );
     }
 
 }

@@ -1,13 +1,9 @@
+
 ## Festival
 
-If you like Festival please share your experience to help Festival plugin improve, thank you! 
-
-Festival 1.8 functionalities will not extend further more. Important bug fixes will still be done untill Festival 2 is ready.
-Festival 2 is in development including FormUI for easy control, a new code structure and some of the flags will be completely rewritten. I probably dump the translations untill there is request for it. Just to let you know ..
+If you like Festival please [vote](https://poggit.pmmp.io/p/Festival/1.0.9) and [share your experience](https://github.com/genboy/Festival/issues) to help Festival plugin improve, thank you! 
 
 ![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png) 
-
-
 Create a festival with this custom area events plugin for Pocketmine Server:
 
 ### Manage area's and run commmands attachted to area events. 
@@ -21,6 +17,8 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 --- 
 
 ## Info
+Festival 1.0.9 functionalities will not extend further more. Important bug fixes will still be done untill Festival 2 is ready.
+Festival 2 is in [development](https://github.com/genboy/Festival/projects/2) including FormUI for easy control, a new code structure and some of the flags will be completely rewritten. I probably dump the translations untill there is request for it. Just to let you know ..
 
 # Festival
 
@@ -424,6 +422,11 @@ Thank you
   - Area messages display in chat with config option Msgtype 'msg' 
   - cmd flag: area event commands for ops or whitelisted players only 
 
+  **Since v1.0.9**
+  - gmc flying allowed by default
+  - fix inArea Player availabillity
+  - fix player damage cause check
+  
 ------ 
 
 
@@ -431,5 +434,4 @@ Thank you
 
 The area code derives from the [iProctector plugin](https://github.com/LDX-MCPE/iProtector). All credits for the area creation and protection code go to the iProtector creator [LDX-MCPE](https://github.com/LDX-MCPE) and [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 
-The Festival code is written and tested by Genboy and first released on 12 Feb 2018, first extendomg the area object with area events (enter and leave messages) and soon added functions and ingame commands to attach a commandstring to a area-event. Since v1.0.7 the area's and players can be protected with 12 flags, and trigger commands on areaEnter, areaCenter and areaLeave. 
-
+The Festival code is written and tested by Genboy and first released on 12 Feb 2018, first extending the area object with area events (enter and leave messages) and soon added functions and ingame commands to attach a commandstring to a area-event. Since v1.0.7 the area's and players can be protected with 12 flags, and trigger commands on areaEnter, areaCenter and areaLeave. 
