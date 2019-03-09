@@ -1186,10 +1186,10 @@ class Main extends PluginBase implements Listener{
 											$this->saveAreas();
 											$o = TextFormat::GREEN . Language::translate("cmd-id"). ' '.$cid.' edited';
 										}else{
-											$o = TextFormat::RED .Language::translate("cmd-id"). ' '.$cid.' '. Language::tranlate("cannot-be-found") .' ( /fe command <areaname> list)';
+											$o = TextFormat::RED .Language::translate("cmd-id"). ' '.$cid.' '. Language::translate("cannot-be-found") .' ( /fe command <areaname> list)';
 										}
 									}else{
-										$o = TextFormat::RED .Language::tranlate("cmd-specify-id-and-command-usage");
+										$o = TextFormat::RED .Language::translate("cmd-specify-id-and-command-usage");
 									}
                                     break;
 
@@ -1265,9 +1265,31 @@ class Main extends PluginBase implements Listener{
 	 */
     public function onJoin(PlayerJoinEvent $event){
         $player = $event->getPlayer();
+        $playername = strtolower($player->getName());
         $level = $player->getLevel(); //  $this->getServer()->getDefaultLevel();
-        $this->areaTitles[strtolower($player->getName())] = [];
+
+        $this->areaTitles[$playername] = [];
+        $this->inArea[$playername] = [];
         $this->checkAreaTitles( $player,  $level  );
+    }
+
+
+
+    /** onQuit
+	 * @param Event $event
+	 * @return bool
+	 */
+    public function onQuit(PlayerQuitEvent $event){
+
+        $playerName = strtolower($event->getPlayer()->getName());
+        $lvl = $event->getPlayer()->getLevel()->getName();
+        unset($this->inArea[$playerName]);
+
+        foreach($this->areas as $area){
+            $this->hideAreaTitle( $event->getPlayer(), $event->getPlayer()->getPosition()->getLevel(), $area );
+        }
+        unset( $this->areaTitles[$playerName] );
+
     }
 
     /** levelChange
@@ -1442,15 +1464,39 @@ class Main extends PluginBase implements Listener{
 
         // kill fire -  or lava -  flowing_lava 10, lava 11 , Bucket item id 325
         $f = true;
-        $aid = $this->getServer()->getLevelByName( $levelname )->getBlockIdAt($block->x, $block->y + 1, $block->z);
+        $aid = $block->getLevel()->getBlockIdAt($block->x, $block->y + 1, $block->z);
+
         if(  $aid == 51 ||  $aid == 10 || $aid == 11 ){ // is fire/lava above
             if( !$this->canBurn( $position ) ){ // is fire not allowed? // Block::FIRE
-                $this->getServer()->getLevelByName( $levelname )->setBlockIdAt( $block->x, $block->y + 1, $block->z, 0);
+                $block->getLevel()->setBlock(new Vector3($block->x, $block->y + 1, $block->z), Block::get(0,0) ); // $block->getLevel()->setBlockIdAt( $block->x, $block->y + 1, $block->z, 0 );  //Block::AIR
                 //$msg = TextFormat::RED . "Fire removed from " . $block->getName() . "(". $block->getID() . ") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]";
                 //$this->getLogger()->info( $msg );
             }
         }
     }
+
+
+    /** onBlockBurn
+     * BlockBurnEvent
+     * @param BlockUpdateEvent $event
+     * @return void
+
+        // Should check BlockBurnEvent ..
+        // https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/event/block/BlockBurnEvent.php
+
+    public function onBlockBurn( BlockBurnEvent $event ): void { // BlockBurnEvent
+
+        $block = $event->getBlock();
+        $position = new Position($block->getFloorX(), $block->getFloorY(), $block->getFloorZ(), $block->getLevel());
+        $levelname = $block->getLevel()->getName();
+
+        if( !$this->canBurn( $position ) ){ // is fire not allowed? // Block::FIRE
+            $event->setCancelled();
+        }
+
+    }
+     */
+
 
     /*
     public function onPlayerBucketEvent( PlayerBucketEvent $event): void{
@@ -1559,22 +1605,6 @@ class Main extends PluginBase implements Listener{
     }
 
 
-    /** onQuit
-	 * @param Event $event
-	 * @return bool
-	 */
-    public function onQuit(PlayerQuitEvent $event){
-
-        $playerName = strtolower($event->getPlayer()->getName());
-        $lvl = $event->getPlayer()->getLevel()->getName();
-        unset($this->inArea[$playerName]);
-
-        foreach($this->areas as $area){
-            $this->hideAreaTitle( $event->getPlayer(), $event->getPlayer()->getPosition()->getLevel(), $area );
-        }
-        unset( $this->areaTitles[$playerName] );
-
-    }
 
     /** OUTBOUND ACTION */
 
@@ -1625,19 +1655,23 @@ class Main extends PluginBase implements Listener{
 		if($t){
 			$o = false;
 		}
-        foreach($this->inArea[$playername] as $areaname){
-            if( isset($this->areaList[ $areaname ]) ){
-                $area = $this->areaList[$areaname];
-                if($area->getFlag("touch")){
-                    $o = false;
-                }
-                if(!$area->getFlag("touch") && $t){
-                    $o = true;
-                }
-                if($area->isWhitelisted($playername)){
-                    $o = true;
+        if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
+            foreach($this->inArea[$playername] as $areaname){
+                if( isset($this->areaList[ $areaname ]) ){
+                    $area = $this->areaList[$areaname];
+                    if($area->getFlag("touch")){
+                        $o = false;
+                    }
+                    if(!$area->getFlag("touch") && $t){
+                        $o = true;
+                    }
+                    if($area->isWhitelisted($playername)){
+                        $o = true;
+                    }
                 }
             }
+        }else{
+            $o = false;
         }
 		return $o;
 	}
@@ -1693,19 +1727,23 @@ class Main extends PluginBase implements Listener{
                 $o = false;
             }
             $playername =  strtolower($entity->getName());
-            foreach($this->inArea[$playername] as $areaname){
-                if( isset($this->areaList[ $areaname ]) ){
-                    $area = $this->areaList[ $areaname ];
-                    if($area->getFlag("god")){
-                        $o = false;
-                    }
-                    if(!$area->getFlag("god") && $g ){
-                        $o = true;
-                    }
-                    if($area->isWhitelisted($playername)){
-                        $o = false;
+            if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
+                foreach($this->inArea[$playername] as $areaname){
+                    if( isset($this->areaList[ $areaname ]) ){
+                        $area = $this->areaList[ $areaname ];
+                        if($area->getFlag("god")){
+                            $o = false;
+                        }
+                        if(!$area->getFlag("god") && $g ){
+                            $o = true;
+                        }
+                        if($area->isWhitelisted($playername)){
+                            $o = false;
+                        }
                     }
                 }
+            }else{
+               $o = false;
             }
         }
 		return $o;
@@ -1724,19 +1762,23 @@ class Main extends PluginBase implements Listener{
                 $o = false;
             }
             $playername = strtolower($entity->getName());
-            foreach($this->inArea[$playername] as $areaname){
-                if( isset($this->areaList[ $areaname ]) ){
-                    $area = $this->areaList[$areaname];
-                    if($area->getFlag("falldamage")){
-                        $o = false;
-                    }
-                    if(!$area->getFlag("falldamage") && $f){
-                        $o = true;
-                    }
-                    if($area->isWhitelisted($playername)){
-                        $o = false;
+            if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
+                foreach($this->inArea[$playername] as $areaname){
+                    if( isset($this->areaList[ $areaname ]) ){
+                        $area = $this->areaList[$areaname];
+                        if($area->getFlag("falldamage")){
+                            $o = false;
+                        }
+                        if(!$area->getFlag("falldamage") && $f){
+                            $o = true;
+                        }
+                        if($area->isWhitelisted($playername)){
+                            $o = false;
+                        }
                     }
                 }
+            }else{
+                $o = false;
             }
         }
 		return $o;
@@ -1778,9 +1820,9 @@ class Main extends PluginBase implements Listener{
             $player = $ev->getDamager();
             if( $this->skippTime( 2, strtolower($player->getName()) ) ){
                 if( $god ){
-                    $this->areaMessage( Language::tranlate("all-players-are-god"), $player );
+                    $this->areaMessage( Language::translate("all-players-are-god"), $player );
                 }else{
-                    $this->areaMessage( Language::tranlate("no-pvp-area"), $player );
+                    $this->areaMessage( Language::translate("no-pvp-area"), $player );
                 }
 			}
         }
@@ -1796,12 +1838,19 @@ class Main extends PluginBase implements Listener{
         if($ev->getEntity() instanceof Player){
 			$player = $ev->getEntity();
 			$playerName = strtolower($player->getName());
-			if( !$this->canGetHurt( $player ) || !$this->canBurn( $player->getPosition() )){
+			if( !$this->canGetHurt( $player ) ){
                 if( $player->isOnFire() ){
                     $player->extinguish(); // 1.0.7-dev
                 }
 				$ev->setCancelled();
                 return false;
+			}
+            if( !$this->canBurn( $player->getPosition() )){
+                if( $player->isOnFire() ){
+                    $player->extinguish(); // 1.0.7-dev
+				    $ev->setCancelled();
+                    return false;
+                }
 			}
             if(!$this->canPVP($ev)){ // v 1.0.6-13
 				$ev->setCancelled();
@@ -1832,26 +1881,30 @@ class Main extends PluginBase implements Listener{
         if( $f ){
             $fly = false; // flag default
         }
-
-        foreach($this->inArea[$playername] as $areaname){
-            if( isset($this->areaList[ $areaname ]) ){
-                $area = $this->areaList[$areaname];
-                if(  $area->getFlag("flight") && !$area->isWhitelisted( $playername ) ){
-                    $fly = false; // flag area
-                }
-                if(!$area->getFlag("flight") && $f){
-                    $fly = true;
-                }
-                if( !$area->getFlag("msg") ){
-                    $sendmsg = true;
-                }
-                if( $area->getFlag("falldamage") ){
-                    $falldamage = true;
+        if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
+            foreach($this->inArea[$playername] as $areaname){
+                if( isset($this->areaList[ $areaname ]) ){
+                    $area = $this->areaList[$areaname];
+                    if(  $area->getFlag("flight") && !$area->isWhitelisted( $playername ) ){
+                        $fly = false; // flag area
+                    }
+                    if(!$area->getFlag("flight") && $f){
+                        $fly = true;
+                    }
+                    if( !$area->getFlag("msg") ){
+                        $sendmsg = true;
+                    }
+                    if( $area->getFlag("falldamage") ){
+                        $falldamage = true;
+                    }
                 }
             }
+        }else{
+            $fly = false; // flag default
         }
         // ! if( $player->isOp() ){
-        if( $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+        // Survival Mode = 0, Creative Mode = 1, Adventure Mode = 2, Spectator Mode = 4
+        if( $player->hasPermission("festival") || $player->hasPermission("festival.access") || $player->getGamemode() === 1 ){
             $fly = true;
             $player->setAllowFlight(true);
             return $fly;
@@ -1894,16 +1947,18 @@ class Main extends PluginBase implements Listener{
             || $e instanceof ItemEntity
             || $e instanceof Projectile
             || $e instanceof FloatingTextParticle
+
+            //|| $e instanceof mysterybox\entity\MysterySkull // https://github.com/CubePM/MysteryBox/blob/master/src/mysterybox/entity/MysterySkull.php
         ){
             return $o; // might be allowed to spawn under different flag
         }
         
         $nm =  ''; //
-        if( null !== $e->getName() ){
+        if( method_exists($e,'getName') && null !== $e->getName() ){
           $nm = $e instanceof Item ? $e->getItem()->getName() : $e->getName();
         }
         $pos = false;
-        if( null !== $e->getPosition() ){
+        if( method_exists($e,'getPosition') && null !== $e->getPosition() ){
             $pos = $e->getPosition();
         }
 
@@ -1972,21 +2027,24 @@ class Main extends PluginBase implements Listener{
 			$o = false;
 		}
 
-        foreach($this->inArea[$playername] as $areaname){
-            if( isset($this->areaList[ $areaname ]) ){
-                $area = $this->areaList[$areaname];
-                if($area->getFlag("effects")){
-                    $o = false;
-                }
-                if(!$area->getFlag("effects") && $e){
-                    $o = true;
-                }
-                if( $area->isWhitelisted( $playername ) ){
-                    $o = true;
+        if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
+            foreach($this->inArea[$playername] as $areaname){
+                if( isset($this->areaList[ $areaname ]) ){
+                    $area = $this->areaList[$areaname];
+                    if($area->getFlag("effects")){
+                        $o = false;
+                    }
+                    if(!$area->getFlag("effects") && $e){
+                        $o = true;
+                    }
+                    if( $area->isWhitelisted( $playername ) ){
+                        $o = true;
+                    }
                 }
             }
+        }else{
+            $o = false;
         }
-
 		return $o;
 	}
 
@@ -2005,19 +2063,24 @@ class Main extends PluginBase implements Listener{
 			$o = false;
 		}
         $playername = strtolower($player->getName());
-        foreach($this->inArea[$playername] as $areaname){
-            if( isset($this->areaList[ $areaname ]) ){
-                $area = $this->areaList[$areaname];
-                if($area->getFlag("drop")){
-                    $o = false;
-                }
-                if(!$area->getFlag("drop") && $d){
-                    $o = true;
-                }
-                if($area->isWhitelisted($playername)){
-                    $o = true;
+
+        if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
+            foreach($this->inArea[$playername] as $areaname){
+                if( isset($this->areaList[ $areaname ]) ){
+                    $area = $this->areaList[$areaname];
+                    if($area->getFlag("drop")){
+                        $o = false;
+                    }
+                    if(!$area->getFlag("drop") && $d){
+                        $o = true;
+                    }
+                    if($area->isWhitelisted($playername)){
+                        $o = true;
+                    }
                 }
             }
+        }else{
+            $o = false;
         }
 		return $o;
 	}
@@ -2096,22 +2159,27 @@ class Main extends PluginBase implements Listener{
 			$o = false;
 		}
         $playername = strtolower($player->getName());
-        foreach($this->inArea[$playername] as $areaname){
-            if( isset($this->areaList[ $areaname ]) ){
-                $area = $this->areaList[$areaname];
 
-                //if( $area->contains( $position, $position->getLevel()->getName() ) ){}
+        if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
+            foreach($this->inArea[$playername] as $areaname){
+                if( isset($this->areaList[ $areaname ]) ){
+                    $area = $this->areaList[$areaname];
 
-                if($area->getFlag("tnt")){
-                    $o = false;
-                }
-                if(!$area->getFlag("tnt") && $d){
-                    $o = true;
-                }
-                if($area->isWhitelisted($playername)){
-                    $o = true;
+                    //if( $area->contains( $position, $position->getLevel()->getName() ) ){}
+
+                    if($area->getFlag("tnt")){
+                        $o = false;
+                    }
+                    if(!$area->getFlag("tnt") && $d){
+                        $o = true;
+                    }
+                    if($area->isWhitelisted($playername)){
+                        $o = true;
+                    }
                 }
             }
+        }else{
+            $o = false;
         }
 		return $o;
 	}
@@ -2164,24 +2232,28 @@ class Main extends PluginBase implements Listener{
 			$o = false;
 		}
 
-        foreach($this->inArea[$playername] as $areaname){
-            if( isset($this->areaList[ $areaname ]) ){
-                $area = $this->areaList[$areaname];
-                if($area->getFlag("shoot")){
-                    $o = false;
-                }
-                if(!$area->getFlag("shoot") && $s){
-                    $o = true;
-                }
-                if($area->isWhitelisted($playername)){
-                    $o = true;
-                }
-                if( $area->getFlag("msg") ){
-                   $m = false;
+        if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
+            foreach($this->inArea[$playername] as $areaname){
+                if( isset($this->areaList[ $areaname ]) ){
+                    $area = $this->areaList[$areaname];
+                    if($area->getFlag("shoot")){
+                        $o = false;
+                    }
+                    if(!$area->getFlag("shoot") && $s){
+                        $o = true;
+                    }
+                    if($area->isWhitelisted($playername)){
+                        $o = true;
+                    }
+                    if( $area->getFlag("msg") ){
+                       $m = false;
+                    }
                 }
             }
+        }else{
+            $o = false;
+            $m = true;
         }
-
         if( $m && !$o ){ // 'ínline' message method
             $msg = TextFormat::RED . "NO Shooting here!";
             $player->areaMessage( $msg );
@@ -2235,19 +2307,23 @@ class Main extends PluginBase implements Listener{
         if ($h) {
             $o = false;
         }
-        foreach($this->inArea[$playername] as $areaname){
-            if( isset($this->areaList[ $areaname ]) ){
-                $area = $this->areaList[$areaname];
-                if ($area->getFlag("hunger")) {
-                    $o = false;
-                }
-                if(!$area->getFlag("hunger") && $h){
-                    $o = true;
-                }
-                if($area->isWhitelisted($playername)){
-                    $o = false;
+        if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
+            foreach($this->inArea[$playername] as $areaname){
+                if( isset($this->areaList[ $areaname ]) ){
+                    $area = $this->areaList[$areaname];
+                    if ($area->getFlag("hunger")) {
+                        $o = false;
+                    }
+                    if(!$area->getFlag("hunger") && $h){
+                        $o = true;
+                    }
+                    if($area->isWhitelisted($playername)){
+                        $o = false;
+                    }
                 }
             }
+        }else{
+            $o = false;
         }
         return $o;
     }
@@ -2340,6 +2416,7 @@ class Main extends PluginBase implements Listener{
 			} 
 		}
 		$playerName = strtolower( $player->getName() );
+
 		$this->inArea[$playerName][] = strtolower( $area->getName() ); // player area's
 
         // effects check
@@ -2720,18 +2797,15 @@ class Main extends PluginBase implements Listener{
      *   makes it easy to find Festival console output fast
      */
     public function codeSigned(){
-        $this->getLogger()->info( "                                            " );
-        $this->getLogger()->info( "                     |~                     " );
-        $this->getLogger()->info( "           .___---^^^ ^^^---___.            " );
-        $this->getLogger()->info( "   ___|~__/_____________________\___|~__    " );
-        $this->getLogger()->info( "  /_______\       ._____.       /_______\   " );
-        $this->getLogger()->info( "  /   |\  /       |  F  |       \   |\  \   " );
-        $this->getLogger()->info( "------------------'-----'-------------------" );
-        $this->getLogger()->info( "   ____  ___       _   |_|            _     " );
-        $this->getLogger()->info( "  |  __|| -_| ___ | |_ | |  _  _ ___ | |    " );
-        $this->getLogger()->info( "  |  _| |___||_ -||  _ | | | | || .'|| |    " );
-        $this->getLogger()->info( "  |_|        |___||_|  |_| \__/ |__,||_|    " );
-        $this->getLogger()->info( "                             GENBOY 2018    " );
+
+
+        $this->getLogger()->info( "~~__.__~~" );
+        $this->getLogger()->info( "..-/-\-.." );
+        $this->getLogger()->info( "by-Genboy" );
+        $this->getLogger()->info( "--__|~_--" );
+        $this->getLogger()->info( "-/_____\-" );
+        $this->getLogger()->info( "./..|\.\." );
+
     }
 
 }
