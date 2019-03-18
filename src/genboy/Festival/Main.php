@@ -1622,7 +1622,23 @@ class Main extends PluginBase implements Listener{
 		if($e){
 			$o = false;
 		}
+
         $playername = strtolower($player->getName());
+
+        foreach ($this->areas as $area) {
+            if ($area->contains(new Vector3($position->getX(), $position->getY(), $position->getZ()), $position->getLevel()->getName() )) {
+                if($area->getFlag("edit")){
+                    $o = false;
+                }
+                if(!$area->getFlag("edit") && $e){
+                    $o = true;
+                }
+                if($area->isWhitelisted($playername)){
+                    $o = true;
+                }
+            }
+        }
+        /*
         foreach($this->inArea[$playername] as $areaname){
             if( isset($this->areaList[ $areaname ]) ){
                 $area = $this->areaList[$areaname];
@@ -1637,6 +1653,7 @@ class Main extends PluginBase implements Listener{
                 }
             }
         }
+        */
 		return $o;
 	}
 
@@ -1651,10 +1668,27 @@ class Main extends PluginBase implements Listener{
 		}
         $playername = strtolower($player->getName());
 		$o = true;
+
 		$t = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Touch"] : $this->touch);
 		if($t){
 			$o = false;
 		}
+
+        foreach ($this->areas as $area) {
+            if ($area->contains(new Vector3($position->getX(), $position->getY(), $position->getZ()), $position->getLevel()->getName() )) {
+                if($area->getFlag("touch")){
+                    $o = false;
+                }
+                if(!$area->getFlag("touch") && $t){
+                    $o = true;
+                }
+                if($area->isWhitelisted($playername)){
+                    $o = true;
+                }
+            }
+        }
+
+        /*
         if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
             foreach($this->inArea[$playername] as $areaname){
                 if( isset($this->areaList[ $areaname ]) ){
@@ -1672,7 +1706,8 @@ class Main extends PluginBase implements Listener{
             }
         }else{
             $o = false;
-        }
+        }*/
+
 		return $o;
 	}
 
@@ -2160,6 +2195,20 @@ class Main extends PluginBase implements Listener{
 		}
         $playername = strtolower($player->getName());
 
+        foreach ($this->areas as $area) {
+            if ($area->contains(new Vector3($position->getX(), $position->getY(), $position->getZ()), $position->getLevel()->getName() )) {
+                if($area->getFlag("tnt")){
+                    $o = false;
+                }
+                if(!$area->getFlag("tnt") && $d){
+                    $o = true;
+                }
+                if($area->isWhitelisted($playername)){
+                    $o = true;
+                }
+            }
+        }
+        /*
         if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
             foreach($this->inArea[$playername] as $areaname){
                 if( isset($this->areaList[ $areaname ]) ){
@@ -2181,6 +2230,7 @@ class Main extends PluginBase implements Listener{
         }else{
             $o = false;
         }
+        */
 		return $o;
 	}
 
