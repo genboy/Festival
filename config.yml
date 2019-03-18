@@ -3,17 +3,17 @@
 # Festival options
 Options:
   # select a language: English = en, Dutch = nl, translate please !
-  language: en
-  
+  Language: nl
+
   # Area Messages Display position (msg/title/tip/pop)
-  Msgtype: msg
-  
-  # Area Floatingtext title display (off/op/on)
-  Areadisplay: op
+  Msgtype: pop
 
   # Area Messages persist display to ops (off/op/on)
   Msgdisplay: off
-  
+
+  # Area Floating Title display to ops (off/op/on)
+  Areadisplay: on
+
   # Auto whitelist area creator (on/off)
   AutoWhitelist: on
 
@@ -36,7 +36,7 @@ Default:
 
   # Keep players from touching blocks and activating things like chests? (true = NoTouching)
   Touch: false
-  
+
   # Prevent Animal Entities from spawning? (true = NoAnimals)
   Animals: false
 
@@ -45,7 +45,7 @@ Default:
 
   # Keep players from having effects like speed or night vision? (true = NoEffects)
   Effects: false
-   
+
   # Keep players from seeing enter/leave/description messages? (true = NoMessages)
   Msg: false
 
@@ -66,13 +66,13 @@ Default:
 
   # Keep players from executing area event commands without specific perms (true = No Op Permissons)
   Perms: false
-  
+
   # Keep players from taking fall damage (true = NoFallDamage)
   FallDamage: true
 
   # Keep area event commands from executing for non-ops (command test mode)
   CMDmode: false
-  
+
 # Settings for unprotected areas in individual worlds:
 Worlds:
 
@@ -86,14 +86,14 @@ Worlds:
     PVP: false
 
     # Keep players from flying? (true = NoFlight)
-    Flight: false
+    Flight: true
 
     # Keep players from editing the world? (true = NoEdit)
     Edit: true
 
     # Keep players from touching blocks and activating things like chests? (true = NoTouching)
     Touch: false
-  
+
     # Prevent Animal Entities from spawning? (true = NoAnimals)
     Animals: false
 
@@ -130,9 +130,8 @@ Worlds:
     # Keep area event commands from executing for non-ops (command test mode)
     CMDmode: false
 
-  # Example specific level default flags  (copy and replace 'world' with your levelname)
   world:
-  
+
     # Keep players from getting hurt? (true = Player god mode)
     God: false
 
@@ -140,14 +139,67 @@ Worlds:
     PVP: false
 
     # Keep players from flying? (true = NoFlight)
-    Flight: false
+    Flight: true
 
     # Keep players from editing the world? (true = NoEdit)
     Edit: true
 
     # Keep players from touching blocks and activating things like chests? (true = NoTouching)
     Touch: false
-  
+
+    # Prevent Animal Entities from spawning? (true = NoAnimals)
+    Animals: false
+
+    # Prevent Mob Entities from spawning? (true = NoMobs)
+    Mobs: false
+
+    # Keep players from having effects like speed or night vision? (true = NoEffects)
+    Effects: false
+
+    # Keep players from seeing enter/leave/description messages? (true = NoMessages)
+    Msg: false
+
+    # Prevent players from enter/leaving the area? (barrier) (true = NoPassage)
+    Passage: false
+
+    # Keep players from dropping items in the area? (true = NoDropping)
+    Drop: false
+
+    # No explosions allowed in the area? (true = NoExplosions)
+    TNT: false
+
+    # No shooting allowed in the area? (true = NoShooting)
+    Shoot: false
+
+    # Keep players from hunger(exhaust) in the area? (true = NoExhaust)
+    Hunger: false
+
+    # Keep players from executing area event commands without specific perms (true = No Op Permissons)
+    Perms: false
+
+    # Keep players from taking fall damage (true = NoFallDamage)
+    FallDamage: true
+
+    # Keep area event commands from executing for non-ops (command test mode)
+    CMDmode: false
+
+  lobby:
+
+    # Keep players from getting hurt? (true = Player god mode)
+    God: false
+
+    # Keep players from getting hurt by other players? (true = NoPVP)
+    PVP: false
+
+    # Keep players from flying? (true = NoFlight)
+    Flight: true
+
+    # Keep players from editing the world? (true = NoEdit)
+    Edit: true
+
+    # Keep players from touching blocks and activating things like chests? (true = NoTouching)
+    Touch: false
+
     # Prevent Animal Entities from spawning? (true = NoAnimals)
     Animals: false
 
