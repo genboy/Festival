@@ -1,4 +1,4 @@
-# Config file for Festival
+# Config file for Festival 1.1.0
 
 # Festival options
 Options:
@@ -55,14 +55,8 @@ Default:
   # Keep players from dropping items in the area? (true = NoDropping)
   Drop: false
 
-  # No tnt explosions allowed in the area? (true = NoTNT)
+  # No explosions allowed in the area? (true = NoExplosions)
   TNT: false
-
-  # No Fire allowed in the area? (true = NoFire)
-  Fire: false
-
-  # No entity explosions allowed in the area? (true = NoExplosions)
-  Explode: false
 
   # No shooting allowed in the area? (true = NoShooting)
   Shoot: false
@@ -118,14 +112,8 @@ Worlds:
     # Keep players from dropping items in the area? (true = NoDropping)
     Drop: false
 
-    # No tnt explosions allowed in the area? (true = NoTNT)
+    # No explosions allowed in the area? (true = NoExplosions)
     TNT: false
-
-    # No Fire allowed in the area? (true = NoFire)
-    Fire: false
-
-    # No entity explosions allowed in the area? (true = NoExplosions)
-    Explode: false
 
     # No shooting allowed in the area? (true = NoShooting)
     Shoot: false
@@ -178,14 +166,8 @@ Worlds:
     # Keep players from dropping items in the area? (true = NoDropping)
     Drop: false
 
-    # No tnt explosions allowed in the area? (true = NoTNT)
+    # No explosions allowed in the area? (true = NoExplosions)
     TNT: false
-
-    # No Fire allowed in the area? (true = NoFire)
-    Fire: false
-
-    # No entity explosions allowed in the area? (true = NoExplosions)
-    Explode: false
 
     # No shooting allowed in the area? (true = NoShooting)
     Shoot: false

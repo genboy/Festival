@@ -9,7 +9,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 ### Manage area's and run commmands attachted to area events. 
 
  
-![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/11/festival_usage_1.0.8.png)  
+![Festival creation & usage](https://genboy.net/wp-content/uploads/2019/03/festival_usage_1.0.9.png)  
 
 
 ###### Copyright [Genboy](https://genboy.net) 2018 
@@ -17,7 +17,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 --- 
 
 ## Info
-Festival 1.0.9 functionalities will not extend further more. Important bug fixes will still be done untill Festival 2 is ready.
+Festival 1.1.0 functionalities will not extend further more. Important bug fixes will still be done untill Festival 2 is ready.
 Festival 2 is in [development](https://github.com/genboy/Festival/projects/2) including FormUI for easy control, a new code structure and some of the flags will be completely rewritten. I probably dump the translations untill there is request for it. Just to let you know ..
 
 # Festival
@@ -145,7 +145,7 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 
   ##### A visualisation of Festival command usage
   
-  ![Festival creation & usage](https://genboy.net/wp-content/uploads/2018/11/festival_usage_1.0.8.png)
+  ![Festival creation & usage](https://genboy.net/wp-content/uploads/2019/03/festival_usage_1.0.9.png)
   
   ###### Copyright [Genboy](https://genboy.net) 2018
   
@@ -426,6 +426,9 @@ Thank you
   - gmc flying allowed by default
   - fix inArea Player availabillity
   - fix player damage cause check
+    
+  **Since v1.1.0**
+  - fix griefing bug: adjusted in some functions to determine the needed position to validate the action(flag).
   
 ------ 
 
