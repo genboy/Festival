@@ -1,7 +1,7 @@
 
 ## Festival
 
-If you like Festival please [vote](https://poggit.pmmp.io/p/Festival/1.0.9) and [share your experience](https://github.com/genboy/Festival/issues) to help Festival plugin improve, thank you! 
+If you like Festival please [vote](https://poggit.pmmp.io/p/Festival/1.1.1) and [share your experience](https://github.com/genboy/Festival/issues) to help Festival plugin improve, thank you! 
 
 ![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png) 
 Create a festival with this custom area events plugin for Pocketmine Server:
@@ -17,7 +17,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 --- 
 
 ## Info
-Festival 1.1.0 functionalities will not extend further more. Important bug fixes will still be done untill Festival 2 is ready.
+Festival 1.1.1 functionalities will not extend further more. Important bug fixes will still be done untill Festival 2 is ready.
 Festival 2 is in [development](https://github.com/genboy/Festival/projects/2) including FormUI for easy control, a new code structure and some of the flags will be completely rewritten. I probably dump the translations untill there is request for it. Just to let you know ..
 
 # Festival
@@ -31,7 +31,7 @@ Festival 2 is in [development](https://github.com/genboy/Festival/projects/2) in
 	
 More info also available at [the Festival Wiki](https://github.com/genboy/Festival/wiki) 
 
-Download the latest .phar files from [poggit.pmmp.io](https://poggit.pmmp.io/p/Festival/1.0.8), also available at [mcpehost.ru](https://panel.mcpehost.ru/repository/plugin?name=Festival)
+Download the latest .phar files from [poggit.pmmp.io](https://poggit.pmmp.io/p/Festival/1.1.1), also available at [mcpehost.ru](https://panel.mcpehost.ru/repository/plugin?name=Festival)
 
 !Please before asking; first double-check your server basic world configurations, other plugins configurations (ie. worldguard) and the used player permissions incl. Festival whitelistings.
 

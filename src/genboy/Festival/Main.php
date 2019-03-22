@@ -1,5 +1,5 @@
 <?php
-/** Festival 1.0
+/** Festival 1.1.1
  *
  *                          |~
  *                .___---^^^ ^^^---___.
@@ -1468,9 +1468,8 @@ class Main extends PluginBase implements Listener{
 
         if(  $aid == 51 ||  $aid == 10 || $aid == 11 ){ // is fire/lava above
             if( !$this->canBurn( $position ) ){ // is fire not allowed? // Block::FIRE
-                $block->getLevel()->setBlock(new Vector3($block->x, $block->y + 1, $block->z), Block::get(0,0) ); // $block->getLevel()->setBlockIdAt( $block->x, $block->y + 1, $block->z, 0 );  //Block::AIR
-                //$msg = TextFormat::RED . "Fire removed from " . $block->getName() . "(". $block->getID() . ") at [x=" . round($block->x) . " y=" . round($block->y) . " z=" . round($block->z) . "]";
-                //$this->getLogger()->info( $msg );
+                $f = false;
+                $event->setCancelled();
             }
         }
     }
