@@ -1,8 +1,8 @@
 
 ## Festival
-
-If you like Festival please [vote](https://poggit.pmmp.io/p/Festival/1.1.1) and [share your experience](https://github.com/genboy/Festival/issues) to help Festival plugin improve, thank you! 
-
+Consider posting your first [share your experience and issues](https://github.com/genboy/Festival/issues) before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1) if you like to use Festival!
+That way it will improve Festival, my coding skills, your PMMP insights and the PMMP community, thank you!
+ 
 ![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png) 
 Create a festival with this custom area events plugin for Pocketmine Server:
 
