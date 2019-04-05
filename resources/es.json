@@ -1,0 +1,117 @@
+{
+    "language-name": "Spanish",
+	"language-selected": "Has Seleccionado el Español",
+
+    "enabled-console-msg": "Festival ahora habilitado, inglés seleccionado (ajustar con /fe lang <en/nl/es>).",
+
+    "cmd-ingameonly-msg": "El comando solo puede ser usado en el juego.",
+    "cmd-unknown-msg": "Comando desconocido",
+    "cmd-noperms-msg": "No puedes usar este comando del Festival.",
+    "cmd-noperms-subcommand": "No tienes permiso para usar este subcomando.",
+
+
+    "pos-select-active": "¡Ya estás seleccionando una posición!",
+    "select-both-pos-first":"Por favor, seleccione ambas posiciones primero.",
+    "pos1": "posición 1",
+    "pos2": "posición 2",
+    "make-pos1": "Por favor coloque o rompa la primera posición.",
+    "make-pos2": "Por favor coloque o rompa la segunda posición.",
+    "give-area-name": "Por favor, especifique un nombre para esta área.",
+
+    "in-unknown-area": "Estas en un area desconocida",
+
+    "area": "Area",
+    "areas": "areas",
+    "level": "nivel",
+    "level": "niveles",
+    "player": "jugador",
+    "players": "jugadores",
+    "the-area": "La zona",
+    "the-level": "El nivel",
+    "area-created": "Área creada!",
+    "created-by":"creado por",
+    "area-here": "Area aqui",
+    "area-no-area-available": "No hay área disponible",
+    "area-no-area-to-edit": "No hay áreas que puedas editar.",
+    "area-name-excist": "Ya existe un área con ese nombre.",
+    "area-not-excist": "Área no existe.",
+    "cannot-be-found": "no pudo ser encontrado.",
+    "area-list" : "Lista de áreas",
+    "players-in-area": "jugadores en el area",
+    "area-whitelist": "lista blanca",
+    "area-no-commands": "sin comandos adjuntos",
+    "player-has-been-whitelisted": "ha sido incluido en la lista blanca en el área",
+    "player-allready-whitelisted": "Ya está en la lista blanca en el área",
+    "player-has-been-unwhitelisted": "Ha sido excluido de la lista blanca de está area",
+    "player-allready-unwhitelisted": "ya está excluido en la lista blanca del área",
+    "whitelist-specify-action": "Por favor, especifique una acción válida. Usé: /area whitelist <areaname> <add/list/remove> <playername>",
+
+    "desc-saved": "Descripción guardada.",
+    "desc-write-usage": "Por favor escriba la descripción. Usé: /fe desc <areaname> <..>",
+    "desc-specify-area": "Por favor, especifique un área para editar la descripción. Usé: /fe desc <areaname> <desc>",
+
+
+    "area-deleted": "Área eliminada!",
+    "deleted-by":"eliminado por",
+    "specify-to-delete":"Por favor, especifique un área para eliminar.",
+
+
+    "flag": "flag",
+    "flags": "flags",
+    "flag-not-found-list": "Flag no encontrada (Flags: god, pvp, flight, edit, touch, animals, mobs, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)",
+    "flag-not-specified-list": "Por favor, especifique una flag. (Flags: god, pvp, flight, edit, touch, animals, mobs, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)",
+    "specify-to-flag": "Por favor, especifique el área en la que le gustaría colocar una flag",
+
+    "tp-to-area-active": "Estás teletransportando a la zona",
+    "specify-excisting-area-name": "Por favor, especifique un nombre de área existente.",
+
+    "cmd": "comando",
+    "cmds": "comandos",
+    "cmd-id": "ID del comando",
+    "cmd-list": "Lista de comandos",
+    "-event": "-evento",
+	"set-for-area": "establecer para el área",
+    "added-to-area": "añadido al área",
+	"allready-used-for": "ya utilizado para",
+    "allready-set-for-area": "ya establecido para el área",
+    "edit-id-or-other": ", edita este id o usa otro id",
+	"cmd-specify-id-and-command-usage": "Por favor, especifique el ID de comando y el comando para agregar. Usé: /fe command <areaname> y <COMMANDID> <COMMANDSTRING>",
+    "cmd-valid-areaname": "Área no encontrada, por favor envíe un nombre válido. Usé: /fe command <areaname> <add/list/edit/del> <commandID> <commandstring>.",
+
+    "cmd-id-not-found": "ID de comando no encontrado. Ver los comandos con /fe event command <areaname> list'",
+    "cmd-specify-id-to-delete": "Por favor, especifique el ID del comando para eliminar. Usé /fe event command <areaname> del <COMMANDID>",
+    "cmd-specify-action": "Por favor agregue una acción para realizar con el comando.  Usé: /fe command <areaname> <add/list/edit/del> <commandID> <commandstring>.",
+
+    "event": "evento",
+    "event-is-now": "evento es ahora",
+    "change-failed": "cambio-fallido!",
+
+    "select-and": "y",
+    "select-in": "en",
+    "select-yes": "Sí",
+    "select-no": "No",
+    "status-on": "Encendido",
+    "status-off": "Apagado",
+    "set-to": "ajustado a",
+    "for-area": "Por área",
+
+    "all-players-are-god": "¡Todos los jugadores son dios en esta área!",
+    "no-pvp-area": "¡Estás en un área sin PVP!",
+    "no-flight-area": "NO puede volar aquí!",
+    "flight-area": "¡Se permite volar aquí!",
+
+    "leaving-area": "saliendo",
+    "enter-area": "entrando",
+    "leaving-center-area": "Saliendo del centro de la area.",
+    "enter-center-area": "Entrando en el centro del área.",
+    "cannot-enter-area": "No puedes entrar al area",
+    "cannot-leave-area": "No puedes dejar la zona.",
+    "enter-barrier-area": "acaba de pasar una barrera!",
+
+    "option-missing-in-config": "opción que falta en config.yml, ahora configurada en",
+    "flag-missing-in-config": "faltan valores predeterminados de la bandera, ahora se establece en",
+    "barrier-is-passage-flag": "Se usó la antigua configuración de barrera, ahora configurada en 'false'; por favor renombra 'Barrier' por 'Passage' en config.yml",
+    "no-is-falldamage-flag": "Se usó la antigua configuración de barrera, ahora configurada en 'false'; por favor renombra 'Barrier' por 'Passage' en config.yml",
+    "option-see-configfile": "Por favor, vea configuraciones originales en /resources/config.yml"
+
+}
