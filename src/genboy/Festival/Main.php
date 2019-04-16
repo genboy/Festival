@@ -201,7 +201,8 @@ class Main extends PluginBase implements Listener{
 			}
 			$this->options = $c["Options"];
 		}else{
-			$this->options = array("Language"=>"en", "Msgtype"=>"pop", "Msgdisplay"=>"off", "AutoWhitelist"=>"on"); // Fallback defaults
+            $this->options = array("Language"=>"en", "Msgtype"=>"pop", "Msgdisplay"=>"off", "AutoWhitelist"=>"on"); // Fallback defaults
+            //$newchange['Options'] = "! Config Options missing in config.yml, defaults are set for now; please see /resources/config.yml";
             $newchange['Options'] = "! ".Language::translate("option-missing-in-config")."; ". Language::translate("option-see-configfile");
 		}
 
@@ -430,7 +431,7 @@ class Main extends PluginBase implements Listener{
 		$this->saveAreas(); // all save $this->areaList available :)
 
 		/** load language translation class */
-        $this->loadLanguage( $languageCode = $this->options["Language"] );
+        $this->loadLanguage( $this->options["Language"] );
 
         /** console output */
         $this->getLogger()->info( Language::translate("enabled-console-msg") );
@@ -463,14 +464,22 @@ class Main extends PluginBase implements Listener{
      * @file resources nl.json
 	 * @var obj Language
 	 */
-    public function loadLanguage($languageCode =  'en' ){
+    public function loadLanguage( $languageCode = false ){
+
+      if( !$languageCode ){
+          $languageCode = 'en';
+      }
+
       $resources = $this->getResources(); // read files in resources folder
-      foreach($resources as $resource){
+
+    foreach($resources as $resource){
         if($resource->getFilename() === "en.json"){
-          $default = json_decode(file_get_contents($resource->getPathname(), true), true);
+          $text = utf8_encode( file_get_contents($resource->getPathname(), true) ); // json content in utf-8
+          $default = json_decode($text, true); // php decode utf-8
         }
         if($resource->getFilename() === $languageCode.".json"){
-          $setting = json_decode(file_get_contents($resource->getPathname(), true), true);
+          $text = utf8_encode( file_get_contents($resource->getPathname(), true) );
+          $setting = json_decode($text, true); // php decode utf-8
         }
       }
       if(isset($setting)){
@@ -486,8 +495,8 @@ class Main extends PluginBase implements Listener{
 	 * @var obj Player
 	 */
     public function setLanguage( $lang, $player ){
-        $this->options["Language"] = $lang;
-        $this->loadLanguage();
+        $this->options["Language"] = strtolower( $lang );
+        $this->loadLanguage( $this->options["Language"] );
         $msg = TextFormat::AQUA . Language::translate("language-selected");
         $this->areaMessage( $msg, $player );
     }
@@ -603,7 +612,7 @@ class Main extends PluginBase implements Listener{
 		switch($action){
             case "lang": // experiment v1.0.7.7-dev
                 if( isset($args[1]) ){
-                    if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.lang")){
+                    if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe.lang")){
                         $lang = $args[1];
                         $this->setLanguage( $lang, $sender );
                     }
@@ -1539,6 +1548,7 @@ class Main extends PluginBase implements Listener{
 		$this->canDamage( $event );
 	}
 
+
     /** Mob / Animal spawning
 	 * @param EntitySpawnEvent $event
 	 * @ignoreCancelled true
@@ -1547,7 +1557,7 @@ class Main extends PluginBase implements Listener{
 
         $e = $event->getEntity();
         //($e instanceof Fire && !$this->canBurn( $e->getPosition() )) || (
-        if( !$e instanceof Player && !$this->canEntitySpawn( $e ) ){
+        if( !($e instanceof Player) && !$this->canEntitySpawn( $e ) ){
             //$e->flagForDespawn() to slow / ? $e->close(); private..
             $this->getServer()->getPluginManager()->callEvent(new EntityDespawnEvent($e));
             $e->despawnFromAll();
