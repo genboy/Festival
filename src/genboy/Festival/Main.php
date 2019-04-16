@@ -1548,6 +1548,7 @@ class Main extends PluginBase implements Listener{
 		$this->canDamage( $event );
 	}
 
+
     /** Mob / Animal spawning
 	 * @param EntitySpawnEvent $event
 	 * @ignoreCancelled true
@@ -1556,7 +1557,7 @@ class Main extends PluginBase implements Listener{
 
         $e = $event->getEntity();
         //($e instanceof Fire && !$this->canBurn( $e->getPosition() )) || (
-        if( !$e instanceof Player && !$this->canEntitySpawn( $e ) ){
+        if( !($e instanceof Player) && !$this->canEntitySpawn( $e ) ){
             //$e->flagForDespawn() to slow / ? $e->close(); private..
             $this->getServer()->getPluginManager()->callEvent(new EntityDespawnEvent($e));
             $e->despawnFromAll();
