@@ -2,7 +2,7 @@
 
 # Festival options
 Options:
-  # select a language: English = en, Dutch = nl, translate please !
+  # select a language: English = en, Dutch = nl, translate please
   Language: es
   
   # Area Messages Display position (msg/title/tip/pop)

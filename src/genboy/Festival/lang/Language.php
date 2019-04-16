@@ -18,7 +18,12 @@ class Language{
 
 	static function translate($key){
 
-		$txt = self::$instance->trans[$key];
+
+
+		$txt_code = self::$instance->trans[$key];
+
+        $txt = utf8_decode( $txt_code );
+
 		if (strpos($txt, "%n") != false) {
 			$text = str_replace("%n", "\n", $txt);
 		} else {
