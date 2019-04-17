@@ -474,12 +474,12 @@ class Main extends PluginBase implements Listener{
 
     foreach($resources as $resource){
         if($resource->getFilename() === "en.json"){
-          $text = utf8_decode( file_get_contents($resource->getPathname(), true) );
-          $default = json_decode($text, true);
+          $text = utf8_encode( file_get_contents($resource->getPathname(), true) ); // json content in utf-8
+          $default = json_decode($text, true); // php decode utf-8
         }
         if($resource->getFilename() === $languageCode.".json"){
-          $text = utf8_decode( file_get_contents($resource->getPathname(), true) );
-          $setting = json_decode($text, true);
+          $text = utf8_encode( file_get_contents($resource->getPathname(), true) );
+          $setting = json_decode($text, true); // php decode utf-8
         }
       }
       if(isset($setting)){
