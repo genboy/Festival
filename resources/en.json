@@ -2,19 +2,19 @@
     "language-name": "English",
 	"language-selected": "Now selected English.",
 
-    "enabled-console-msg": "Festival now enabled, English selected (adjust with /fe lang <en/nl>).",
+    "enabled-console-msg": "Festival now enabled, English selected (adjust with /fe lang <en/nl/es/po>).",
 
     "cmd-ingameonly-msg": "Festival command only to be used in-game.",
     "cmd-unknown-msg": "Unknown Festival command",
     "cmd-noperms-msg": "You can not use this Festival command",
     "cmd-noperms-subcommand": "You do not have permission to use this subcommand.",
 
-
     "pos-select-active": "You're already selecting a position!",
     "select-both-pos-first":"Please select both positions first.",
     "pos1": "position 1",
     "pos2": "position 2",
     "make-pos1": "Please place or break the first position.",
+    "make-pos2": "Please place or break the second position.",
     "make-pos2": "Please place or break the second position.",
     "give-area-name": "Please specify a name for this area.",
 
@@ -50,11 +50,9 @@
     "desc-write-usage": "Please write the description. Usage /fe desc <areaname> <..>",
     "desc-specify-area": "Please specify an area to edit the description. Usage: /fe desc <areaname> <desc>",
 
-
     "area-deleted": "Area deleted!",
     "deleted-by":"deleted by",
     "specify-to-delete":"Please specify an area to delete.",
-
 
     "flag": "Flag",
     "flags": "flags",
@@ -111,7 +109,7 @@
     "option-missing-in-config": "option missing in config.yml, now set to",
     "flag-missing-in-config": "flag defaults missing, now set to",
     "barrier-is-passage-flag": "Old Barrier config was used, now set to 'false'; please rename 'Barrier' to 'Passage' in config.yml",
-    "no-is-falldamage-flag": "Old Barrier config was used, now set to 'false'; please rename 'Barrier' to 'Passage' in config.yml",
+    "no-is-falldamage-flag": "Old NoFalldamage config was used, now set to 'false'; please rename 'NoFalldamage' to 'Falldamage' in config.yml",
     "option-see-configfile": "please see original configs in /resources/config.yml"
 
 }

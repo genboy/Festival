@@ -1,14 +1,13 @@
 {
-    "language-name": "Spanish",
+    "language-name": "Español",
 	"language-selected": "Has Seleccionado el Español",
 
-    "enabled-console-msg": "Festival ahora habilitado, inglés seleccionado (ajustar con /fe lang <en/nl/es>).",
+    "enabled-console-msg": "Festival ahora habilitado, inglés seleccionado (ajustar con /fe lang <en/nl/es/po>).",
 
     "cmd-ingameonly-msg": "El comando solo puede ser usado en el juego.",
     "cmd-unknown-msg": "Comando desconocido",
     "cmd-noperms-msg": "No puedes usar este comando del Festival.",
     "cmd-noperms-subcommand": "No tienes permiso para usar este subcomando.",
-
 
     "pos-select-active": "¡Ya estás seleccionando una posición!",
     "select-both-pos-first":"Por favor, seleccione ambas posiciones primero.",
@@ -50,11 +49,9 @@
     "desc-write-usage": "Por favor escriba la descripción. Usé: /fe desc <areaname> <..>",
     "desc-specify-area": "Por favor, especifique un área para editar la descripción. Usé: /fe desc <areaname> <desc>",
 
-
     "area-deleted": "Área eliminada!",
     "deleted-by":"eliminado por",
     "specify-to-delete":"Por favor, especifique un área para eliminar.",
-
 
     "flag": "flag",
     "flags": "flags",
@@ -111,7 +108,7 @@
     "option-missing-in-config": "opción que falta en config.yml, ahora configurada en",
     "flag-missing-in-config": "faltan valores predeterminados de la bandera, ahora se establece en",
     "barrier-is-passage-flag": "Se usó la antigua configuración de barrera, ahora configurada en 'false'; por favor renombra 'Barrier' por 'Passage' en config.yml",
-    "no-is-falldamage-flag": "Se usó la antigua configuración de barrera, ahora configurada en 'false'; por favor renombra 'Barrier' por 'Passage' en config.yml",
+    "no-is-falldamage-flag": "Se usó la antigua configuración de NoFalldamage, ahora configurada en 'false'; por favor renombra 'NoFalldamage' por 'Falldamage' en config.yml",
     "option-see-configfile": "Por favor, vea configuraciones originales en /resources/config.yml"
 
 }
