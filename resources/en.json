@@ -2,7 +2,7 @@
     "language-name": "English",
 	"language-selected": "Now selected English.",
 
-    "enabled-console-msg": "Festival now enabled, English selected (adjust with /fe lang <en/nl/es/po>).",
+    "enabled-console-msg": "Festival now enabled, English selected (adjust with /fe lang <en/nl/es/pl>).",
 
     "cmd-ingameonly-msg": "Festival command only to be used in-game.",
     "cmd-unknown-msg": "Unknown Festival command",

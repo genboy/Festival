@@ -17,7 +17,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 --- 
 
 ## Info
-Festival 1.1.1 functionalities will not extend further more. Important bug fixes will still be done untill Festival 2 is ready.
+Festival 1.1.2 functionalities will not extend further more. Maybe Flight flag will change. Important translations and bug fixes will still be done untill Festival 2 is ready.
 Festival 2 is in [development](https://github.com/genboy/Festival/projects/2) including FormUI for easy control, a new code structure and some of the flags will be completely rewritten. I probably dump the translations untill there is request for it. Just to let you know ..
 
 # Festival
@@ -39,7 +39,7 @@ Download the latest .phar files from [poggit.pmmp.io](https://poggit.pmmp.io/p/F
 
 **Config**
 - set default options in config.yml;
-  - language: en - select language English = en, Dutch = nl, translate please !
+  - language: en - select language English = en, Dutch = nl, es = Español, pl = Polskie - translate please !
   - Msgtype: msg - Area Messages Display position (msg/title/tip/pop)
   - Msgdisplay: off - Area Messages persist display to ops (off/op/on)
   - Areadisplay: op - Area Floating Title display to ops (off/op/on)
@@ -430,6 +430,12 @@ Thank you
   **Since v1.1.0**
   - fix griefing bug: adjusted in some functions to determine the needed position to validate the action(flag).
   
+  **Since v1.1.1**
+  - fix transalation and mobs/animals error + @bptube added & reviewed Español(/fe lang es)
+  
+  **Since v1.1.2**
+  - new pl.json and @dearminder reviewed Polskie(/fe lang pl)
+
 ------ 
 
 

@@ -1,6 +1,6 @@
 name: Festival
 author: Genboy
-version: 1.1.1
+version: 1.1.2
 main: genboy\Festival\Main
 load: POSTWORLD
 api: [3.0.0]
@@ -8,7 +8,7 @@ website: "https://github.com/genboy/Festival"
 commands:
   fe:
     description: "Allows you to manage Festival area's and events."
-    usage: "\n§bChoose language: §f/fe lang <en/nl> §bToggle floating area titles: §f/fe titles §bSee area info at location: §f/fe <list/here> \n§5How to create an area: §6select 2 corner positions §f/fe <pos1/pos2>§6, then name the area by using: §f/fe create <AREANAME> \n§9Toggle area flags: §f/fe <FLAGNAME> <AREANAME> §9Flags: §fgod, pvp, flight, edit, touch, mobs, animals, effects, msg, passage, drop, tnt, fire, explode, shoot, hunger, perms, falldamage \n§5Add an area event command: \n§f/fe command <AREANAME> <add/enter/center/leave> <COMMANDID> <COMMANDSTRING> \n§5Edit or delete command: \n§f/fe command <AREANAME> <(edit)/del> <COMMANDID> (<COMMANDSTRING>) \n§5Change command event: \n§f/fe command <AREANAME> event <COMMANDID> <enter/center/leave> \n§5Whitelist players: \n§f/fe whitelist <AREANAME> <add/remove> <PLAYERNAME>"
+    usage: "\n§bChoose language: §f/fe lang <en/nl/es/pl> §bToggle floating area titles: §f/fe titles §bSee area info at location: §f/fe <list/here> \n§5How to create an area: §6select 2 corner positions §f/fe <pos1/pos2>§6, then name the area by using: §f/fe create <AREANAME> \n§9Toggle area flags: §f/fe <FLAGNAME> <AREANAME> §9Flags: §fgod, pvp, flight, edit, touch, mobs, animals, effects, msg, passage, drop, tnt, fire, explode, shoot, hunger, perms, falldamage \n§5Add an area event command: \n§f/fe command <AREANAME> <add/enter/center/leave> <COMMANDID> <COMMANDSTRING> \n§5Edit or delete command: \n§f/fe command <AREANAME> <(edit)/del> <COMMANDID> (<COMMANDSTRING>) \n§5Change command event: \n§f/fe command <AREANAME> event <COMMANDID> <enter/center/leave> \n§5Whitelist players: \n§f/fe whitelist <AREANAME> <add/remove> <PLAYERNAME>"
     permission: festival.command.fe
 permissions:
   festival:
@@ -57,7 +57,7 @@ permissions:
                 description: "Allows access to the Festival flag subcommand."
                 default: op
               festival.command.fe.delete:
-                description: "Allows access to the iProtector delete subcommand."
+                description: "Allows access to the Festival delete subcommand."
                 default: op
               festival.command.fe.whitelist:
                 description: "Allows access to the Festival whitelist subcommand."
