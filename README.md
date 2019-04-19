@@ -429,6 +429,10 @@ Thank you
     
   **Since v1.1.0**
   - fix griefing bug: adjusted in some functions to determine the needed position to validate the action(flag).
+      
+  **Since v1.1.2**
+  - fix translation bug: adjusted utf-8 json encoding, 
+  - Thanks to [@bptube](https://github.com/bptube) now including Spanish language! 
   
   **Since v1.1.1**
   - fix transalation and mobs/animals error + @bptube added & reviewed Español(/fe lang es)
