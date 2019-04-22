@@ -451,7 +451,7 @@ class Main extends PluginBase implements Listener{
 		
 		$levelsloaded = count( $this->getServerWorlds() );
 		
-        $this->getLogger()->info( $fa.' '.Language::translate("flags").' '.Language::translate("select-and").' '. $ca .' '. Language::translate("cmds") .' '.Language::translate("select-in").' '. count($this->areas)  .' '.  Language::translate("areas").' ('.$levelsloaded.' levels)');
+        $this->getLogger()->info( $fa.' '.Language::translate("flags").' '.Language::translate("select-and").' '. $ca .' '. Language::translate("cmds") .' '.Language::translate("select-in").' '. count($this->areas)  .' '.  Language::translate("areas").' ('.$levelsloaded.' '.Language::translate("levels").')');
 
 		// warnings changes
 		if( count($newchange) > 0 ){
