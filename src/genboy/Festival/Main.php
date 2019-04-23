@@ -26,6 +26,7 @@ declare(strict_types = 1);
 
 namespace genboy\Festival;
 
+use ForceUTF8\Encoding;
 use genboy\Festival\lang\Language;
 
 use pocketmine\command\Command;
@@ -477,11 +478,13 @@ class Main extends PluginBase implements Listener{
 
     foreach($resources as $resource){
         if($resource->getFilename() === "en.json"){
-          $text = utf8_encode( file_get_contents($resource->getPathname(), true) ); // json content in utf-8
+          //$text = utf8_encode( file_get_contents($resource->getPathname(), true) ); // json content in utf-8
+          $text = Encoding::toUTF8( file_get_contents($resource->getPathname(), true) );
           $default = json_decode($text, true); // php decode utf-8
         }
         if($resource->getFilename() === $languageCode.".json"){
-          $text = utf8_encode( file_get_contents($resource->getPathname(), true) );
+          //$text = utf8_encode( file_get_contents($resource->getPathname(), true) );
+          $text = Encoding::toUTF8( file_get_contents($resource->getPathname(), true) );
           $setting = json_decode($text, true); // php decode utf-8
         }
       }
