@@ -196,13 +196,17 @@ class Main extends PluginBase implements Listener{
 				$c["Options"]["Areadisplay"] = 'off';
 				$newchange['Areadisplay'] = "! Areadisplay ".Language::translate("option-missing-in-config")." 'off'; ". Language::translate("option-see-configfile");
 			}
+            if(!isset($c["Options"]["FlightControl"])){ // check since v1.1.3
+				$c["Options"]["FlightControl"] = 'on';
+				$newchange['Msgtype'] = "! FlightControl ".Language::translate("option-missing-in-config")." 'on'; ". Language::translate("option-see-configfile");
+			}
             if(!isset($c["Options"]["AutoWhitelist"])){ // check since v1.0.5-12
 				$c["Options"]["AutoWhitelist"] = 'on';
 				$newchange['Msgtype'] = "! AutoWhitelist ".Language::translate("option-missing-in-config")." 'on'; ". Language::translate("option-see-configfile");
 			}
 			$this->options = $c["Options"];
 		}else{
-            $this->options = array("Language"=>"en", "Msgtype"=>"pop", "Msgdisplay"=>"off", "AutoWhitelist"=>"on"); // Fallback defaults
+            $this->options = array("Language"=>"en", "Msgtype"=>"pop", "Msgdisplay"=>"off", "FlightControl"=>"on", "AutoWhitelist"=>"on"); // Fallback defaults
             //$newchange['Options'] = "! Config Options missing in config.yml, defaults are set for now; please see /resources/config.yml";
             $newchange['Options'] = "! ".Language::translate("option-missing-in-config")."; ". Language::translate("option-see-configfile");
 		}
@@ -1402,8 +1406,12 @@ class Main extends PluginBase implements Listener{
 			}
             // Area Player Monitor  $this->AreaPlayerMonitor($area, $ev);
 		}
-        $this->checkPlayerFlying( $ev->getPlayer() );
+
+        if( $this->options["FlightControl"] == "on" ){ // since v.1.1.3 flight flag usage can be turn off
+            $this->checkPlayerFlying( $ev->getPlayer() );
+        }
 		return;
+
 	}
 
 	/** Block Place
