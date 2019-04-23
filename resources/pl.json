@@ -1,8 +1,8 @@
 {
-    "language-name": "Polski", // updated by github user @dearminder
+    "language-name": "Polski",
 	"language-selected": "Teraz wybrany Polski.",
 
-    "enabled-console-msg": "Festival jest teraz włączony, wybrany Polski (dostosuj za pomocą /fe lang <en/nl/es/pl>).",
+    "enabled-console-msg": "Festival jest teraz włączony, wybrany Polski (dostosuj za pomocą /fe lang <en/nl/es/po>).",
 
     "cmd-ingameonly-msg": "Polecenie Festival używane tylko w grze.",
     "cmd-unknown-msg": "Nieznane polecenie Festival",
@@ -22,7 +22,7 @@
     "area": "Obszar",
     "areas": "obszary",
     "level": "poziom",
-    "level": "poziomy",
+    "levels": "poziomy",
     "player": "gracz",
     "players": "gracze",
     "the-area": "Strefa",

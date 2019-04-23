@@ -15,7 +15,6 @@
     "pos2": "position 2",
     "make-pos1": "Please place or break the first position.",
     "make-pos2": "Please place or break the second position.",
-    "make-pos2": "Please place or break the second position.",
     "give-area-name": "Please specify a name for this area.",
 
     "in-unknown-area": "You are in an unknown area",
@@ -23,7 +22,7 @@
     "area": "Area",
     "areas": "areas",
     "level": "level",
-    "level": "levels",
+    "levels": "levels",
     "player": "player",
     "players": "players",
     "the-area": "The area",
