@@ -1,9 +1,11 @@
 {
     "language-name": "Polski",
-	"language-selected": "Wybrano jezyk Polski.",
+	  "language-selected": "Wybrano jezyk Polski.",
 
     "enabled-console-msg": "Festival jest teraz wlaczony, wybrano jezyk Polski (dostosuj za pomoca /fe lang <en/nl/es/po>).",
+	  "language-selected": "Teraz wybrany Polski.",
 
+    "enabled-console-msg": "Festival jest teraz włączony, wybrany Polski (dostosuj za pomocą /fe lang <en/nl/es/po>).",
     "cmd-ingameonly-msg": "Polecenie Festival uzywane tylko w grze.",
     "cmd-unknown-msg": "Nieznane polecenie Festival",
     "cmd-noperms-msg": "Nie mozesz uzyc tego polecenia Festival",
@@ -22,7 +24,7 @@
     "area": "Obszar",
     "areas": "obszary",
     "level": "poziom",
-    "level": "poziomy",
+    "levels": "poziomy",
     "player": "gracz",
     "players": "gracze",
     "the-area": "Strefa",
@@ -67,12 +69,12 @@
     "cmd-id": "ID komendy",
     "cmd-list": "Lista komend",
     "-event": "-wydarzenie",
-	"set-for-area": "ustawiono dla obszaru",
+	  "set-for-area": "ustawiono dla obszaru",
     "added-to-area": "dodano do obszaru",
-	"allready-used-for": "juz uzywane przez",
+	  "allready-used-for": "juz uzywane przez",
     "allready-set-for-area": "juz ustawiony dla tego obszaru",
     "edit-id-or-other": ", edytuj to id lub uzyj innego id",
-	"cmd-specify-id-and-command-usage": "prosze wprowadź id komendy i tresc komendy do dodania. Stosowanie: /fe command <nazwa_obszaru> add <id_komendy> <komenda>",
+	  "cmd-specify-id-and-command-usage": "prosze wprowadź id komendy i tresc komendy do dodania. Stosowanie: /fe command <nazwa_obszaru> add <id_komendy> <komenda>",
     "cmd-valid-areaname": "Nie znaleziono obszaru, podaj poprawna nazwe. Stosowanie: /fe command <nazwa_obszaru> <add/list/edit/del> <id_komendy> <komenda>.",
 
     "cmd-id-not-found": "Identyfikator komendy nie zostal znaleziony. Zobacz polecenia za pomoca /fe event command <nazwa_obszaru> list'",

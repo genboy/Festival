@@ -448,7 +448,10 @@ class Main extends PluginBase implements Listener{
             }
 			$ca = $ca + count( $a->getCommands() );
 		}
-        $this->getLogger()->info( $fa.' '.Language::translate("flags").' '.Language::translate("select-and").' '. $ca .' '. Language::translate("cmds") .' '.Language::translate("select-in").' '. count($this->areas)  .' '.  Language::translate("areas"));
+		
+		$levelsloaded = count( $this->getServerWorlds() );
+		
+        $this->getLogger()->info( $fa.' '.Language::translate("flags").' '.Language::translate("select-and").' '. $ca .' '. Language::translate("cmds") .' '.Language::translate("select-in").' '. count($this->areas)  .' '.  Language::translate("areas").' ('.$levelsloaded.' '.Language::translate("levels").')');
 
 		// warnings changes
 		if( count($newchange) > 0 ){
@@ -760,13 +763,13 @@ class Main extends PluginBase implements Listener{
             break;
 			case "list":
 				if( $sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.list")){
-                    $levelNamesArray = scandir($this->getServer()->getDataPath() . "worlds/");
-                    foreach($levelNamesArray as $levelName) {
+                    $levelNamesArray = $this->getServerWorlds(); // scandir($this->getServer()->getDataPath() . "worlds/");
+                    /*foreach($levelNamesArray as $levelName) {
                         if($levelName === "." || $levelName === "..") {
                         continue;
                         }
                         $this->getServer()->loadLevel($levelName); //Note that this will return false if the world folder is not a valid level, and could not be loaded.
-                    }
+                    }*/
                     $lvls = $this->getServer()->getLevels();
                     $o = '';
                     $l = '';
@@ -1299,6 +1302,27 @@ class Main extends PluginBase implements Listener{
         }
         unset( $this->areaTitles[$playerName] );
 
+    }
+	
+	/** getServerWorlds
+	 * @func plugin getServer()->getDataPath()
+	 * @dir worlds
+     */
+    public function getServerWorlds() : ARRAY {
+        $worlds = [];
+        $worldfolders = array_filter( glob($this->getServer()->getDataPath() . "worlds/*") , 'is_dir');
+        foreach( $worldfolders as $worldfolder) {
+            $worlds[] = basename($worldfolder);
+            $worldfolder = str_replace( $worldfolders, "", $worldfolder);
+            if( $this->getServer()->isLevelLoaded($worldfolder) ) {
+                continue;
+            }
+            /* Load all world levels
+            if( !empty( $worldfolder ) ){
+                $this->plugin->getServer()->loadLevel($worldfolder);
+            } */
+        }
+        return $worlds;
     }
 
     /** levelChange
