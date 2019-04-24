@@ -1,9 +1,9 @@
-# Config file for Festival 1.1.1
+# Config file for Festival 1.1.3
 
 # Festival options
 Options:
-  # select a language: English = en, Dutch = nl, translate please !
-  language: en
+  # select a language: English = en, Dutch = nl, Español = es, Polskie = pl  ( todo: 日本人 = ja, 中文 = zh, 한국어 = ko, русский = ru, italiano = it, Indonesia = in, translate please)
+  Language: en
   
   # Area Messages Display position (msg/title/tip/pop)
   Msgtype: msg
@@ -14,6 +14,9 @@ Options:
   # Area Messages persist display to ops (off/op/on)
   Msgdisplay: off
   
+  # Use flight flag (on/off) - since v.1.1.3 flight flag usage can be turn off
+  FlightControl: on
+
   # Auto whitelist area creator (on/off)
   AutoWhitelist: on
 

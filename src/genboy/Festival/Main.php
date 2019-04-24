@@ -26,6 +26,7 @@ declare(strict_types = 1);
 
 namespace genboy\Festival;
 
+use ForceUTF8\Encoding;
 use genboy\Festival\lang\Language;
 
 use pocketmine\command\Command;
@@ -195,13 +196,18 @@ class Main extends PluginBase implements Listener{
 				$c["Options"]["Areadisplay"] = 'off';
 				$newchange['Areadisplay'] = "! Areadisplay ".Language::translate("option-missing-in-config")." 'off'; ". Language::translate("option-see-configfile");
 			}
+            if(!isset($c["Options"]["FlightControl"])){ // check since v1.1.3
+				$c["Options"]["FlightControl"] = 'on';
+				$newchange['Msgtype'] = "! FlightControl ".Language::translate("option-missing-in-config")." 'on'; ". Language::translate("option-see-configfile");
+			}
             if(!isset($c["Options"]["AutoWhitelist"])){ // check since v1.0.5-12
 				$c["Options"]["AutoWhitelist"] = 'on';
 				$newchange['Msgtype'] = "! AutoWhitelist ".Language::translate("option-missing-in-config")." 'on'; ". Language::translate("option-see-configfile");
 			}
 			$this->options = $c["Options"];
 		}else{
-			$this->options = array("Language"=>"en", "Msgtype"=>"pop", "Msgdisplay"=>"off", "AutoWhitelist"=>"on"); // Fallback defaults
+            $this->options = array("Language"=>"en", "Msgtype"=>"pop", "Msgdisplay"=>"off", "FlightControl"=>"on", "AutoWhitelist"=>"on"); // Fallback defaults
+            //$newchange['Options'] = "! Config Options missing in config.yml, defaults are set for now; please see /resources/config.yml";
             $newchange['Options'] = "! ".Language::translate("option-missing-in-config")."; ". Language::translate("option-see-configfile");
 		}
 
@@ -430,7 +436,7 @@ class Main extends PluginBase implements Listener{
 		$this->saveAreas(); // all save $this->areaList available :)
 
 		/** load language translation class */
-        $this->loadLanguage( $languageCode = $this->options["Language"] );
+        $this->loadLanguage( $this->options["Language"] );
 
         /** console output */
         $this->getLogger()->info( Language::translate("enabled-console-msg") );
@@ -447,7 +453,10 @@ class Main extends PluginBase implements Listener{
             }
 			$ca = $ca + count( $a->getCommands() );
 		}
-        $this->getLogger()->info( $fa.' '.Language::translate("flags").' '.Language::translate("select-and").' '. $ca .' '. Language::translate("cmds") .' '.Language::translate("select-in").' '. count($this->areas)  .' '.  Language::translate("areas"));
+		
+		$levelsloaded = count( $this->getServerWorlds() );
+		
+        $this->getLogger()->info( $fa.' '.Language::translate("flags").' '.Language::translate("select-and").' '. $ca .' '. Language::translate("cmds") .' '.Language::translate("select-in").' '. count($this->areas)  .' '.  Language::translate("areas").' ('.$levelsloaded.' '.Language::translate("levels").')');
 
 		// warnings changes
 		if( count($newchange) > 0 ){
@@ -463,14 +472,24 @@ class Main extends PluginBase implements Listener{
      * @file resources nl.json
 	 * @var obj Language
 	 */
-    public function loadLanguage($languageCode =  'en' ){
+    public function loadLanguage( $languageCode = false ){
+
+      if( !$languageCode ){
+          $languageCode = 'en';
+      }
+
       $resources = $this->getResources(); // read files in resources folder
-      foreach($resources as $resource){
+
+    foreach($resources as $resource){
         if($resource->getFilename() === "en.json"){
-          $default = json_decode(file_get_contents($resource->getPathname(), true), true);
+          //$text = utf8_encode( file_get_contents($resource->getPathname(), true) ); // json content in utf-8
+          $text = Encoding::toUTF8( file_get_contents($resource->getPathname(), true) );
+          $default = json_decode($text, true); // php decode utf-8
         }
         if($resource->getFilename() === $languageCode.".json"){
-          $setting = json_decode(file_get_contents($resource->getPathname(), true), true);
+          //$text = utf8_encode( file_get_contents($resource->getPathname(), true) );
+          $text = Encoding::toUTF8( file_get_contents($resource->getPathname(), true) );
+          $setting = json_decode($text, true); // php decode utf-8
         }
       }
       if(isset($setting)){
@@ -486,8 +505,8 @@ class Main extends PluginBase implements Listener{
 	 * @var obj Player
 	 */
     public function setLanguage( $lang, $player ){
-        $this->options["Language"] = $lang;
-        $this->loadLanguage();
+        $this->options["Language"] = strtolower( $lang );
+        $this->loadLanguage( $this->options["Language"] );
         $msg = TextFormat::AQUA . Language::translate("language-selected");
         $this->areaMessage( $msg, $player );
     }
@@ -603,7 +622,7 @@ class Main extends PluginBase implements Listener{
 		switch($action){
             case "lang": // experiment v1.0.7.7-dev
                 if( isset($args[1]) ){
-                    if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.lang")){
+                    if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe.lang")){
                         $lang = $args[1];
                         $this->setLanguage( $lang, $sender );
                     }
@@ -751,13 +770,13 @@ class Main extends PluginBase implements Listener{
             break;
 			case "list":
 				if( $sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.list")){
-                    $levelNamesArray = scandir($this->getServer()->getDataPath() . "worlds/");
-                    foreach($levelNamesArray as $levelName) {
+                    $levelNamesArray = $this->getServerWorlds(); // scandir($this->getServer()->getDataPath() . "worlds/");
+                    /*foreach($levelNamesArray as $levelName) {
                         if($levelName === "." || $levelName === "..") {
                         continue;
                         }
                         $this->getServer()->loadLevel($levelName); //Note that this will return false if the world folder is not a valid level, and could not be loaded.
-                    }
+                    }*/
                     $lvls = $this->getServer()->getLevels();
                     $o = '';
                     $l = '';
@@ -1291,6 +1310,27 @@ class Main extends PluginBase implements Listener{
         unset( $this->areaTitles[$playerName] );
 
     }
+	
+	/** getServerWorlds
+	 * @func plugin getServer()->getDataPath()
+	 * @dir worlds
+     */
+    public function getServerWorlds() : ARRAY {
+        $worlds = [];
+        $worldfolders = array_filter( glob($this->getServer()->getDataPath() . "worlds/*") , 'is_dir');
+        foreach( $worldfolders as $worldfolder) {
+            $worlds[] = basename($worldfolder);
+            $worldfolder = str_replace( $worldfolders, "", $worldfolder);
+            if( $this->getServer()->isLevelLoaded($worldfolder) ) {
+                continue;
+            }
+            /* Load all world levels
+            if( !empty( $worldfolder ) ){
+                $this->plugin->getServer()->loadLevel($worldfolder);
+            } */
+        }
+        return $worlds;
+    }
 
     /** levelChange
      * change Area Titles for Player ( FloatingTextParticle )
@@ -1366,8 +1406,12 @@ class Main extends PluginBase implements Listener{
 			}
             // Area Player Monitor  $this->AreaPlayerMonitor($area, $ev);
 		}
-        $this->checkPlayerFlying( $ev->getPlayer() );
+
+        if( $this->options["FlightControl"] == "on" ){ // since v.1.1.3 flight flag usage can be turn off
+            $this->checkPlayerFlying( $ev->getPlayer() );
+        }
 		return;
+
 	}
 
 	/** Block Place
@@ -1539,6 +1583,7 @@ class Main extends PluginBase implements Listener{
 		$this->canDamage( $event );
 	}
 
+
     /** Mob / Animal spawning
 	 * @param EntitySpawnEvent $event
 	 * @ignoreCancelled true
@@ -1547,7 +1592,7 @@ class Main extends PluginBase implements Listener{
 
         $e = $event->getEntity();
         //($e instanceof Fire && !$this->canBurn( $e->getPosition() )) || (
-        if( !$e instanceof Player && !$this->canEntitySpawn( $e ) ){
+        if( !($e instanceof Player) && !$this->canEntitySpawn( $e ) ){
             //$e->flagForDespawn() to slow / ? $e->close(); private..
             $this->getServer()->getPluginManager()->callEvent(new EntityDespawnEvent($e));
             $e->despawnFromAll();
