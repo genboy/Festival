@@ -9,7 +9,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 ### Manage area's and run commmands attachted to area events. 
 
  
-![Festival creation & usage](https://genboy.net/wp-content/uploads/2019/03/festival_usage_1.1.0.png)  
+![Festival creation & usage](https://genboy.net/wp-content/uploads/2019/04/festival_usage_v1.1.3.png)  
 
 
 ###### Copyright [Genboy](https://genboy.net) 2018 
@@ -17,8 +17,8 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 --- 
 
 ## Info
-Festival 1.1.2 functionalities will not extend further more. Maybe Flight flag will change. Important translations and bug fixes will still be done untill Festival 2 is ready.
-Festival 2 is in [development](https://github.com/genboy/Festival/projects/2) including FormUI for easy control, a new code structure and some of the flags will be completely rewritten. I probably dump the translations untill there is request for it. Just to let you know ..
+Festival 1.1.3 has now option to disable Flight flag (flight control off) and Spanish and Polish ranslations!
+Festival 2 is paused for a little while now, development in [development](https://github.com/genboy/Festival/projects/2) including FormUI for easy control, a new code structure and some of the flags will be completely rewritten. Just to let you know ..
 
 # Festival
 
@@ -31,7 +31,7 @@ Festival 2 is in [development](https://github.com/genboy/Festival/projects/2) in
 	
 More info also available at [the Festival Wiki](https://github.com/genboy/Festival/wiki) 
 
-Download the latest .phar files from [poggit.pmmp.io](https://poggit.pmmp.io/p/Festival/1.1.1), also available at [mcpehost.ru](https://panel.mcpehost.ru/repository/plugin?name=Festival)
+Download the latest .phar files from [poggit.pmmp.io](https://poggit.pmmp.io/p/Festival/1.1.3), also available at [mcpehost.ru](https://panel.mcpehost.ru/repository/plugin?name=Festival)
 
 !Please before asking; first double-check your server basic world configurations, other plugins configurations (ie. worldguard) and the used player permissions incl. Festival whitelistings.
 
@@ -43,6 +43,7 @@ Download the latest .phar files from [poggit.pmmp.io](https://poggit.pmmp.io/p/F
   - Msgtype: msg - Area Messages Display position (msg/title/tip/pop)
   - Msgdisplay: off - Area Messages persist display to ops (off/op/on)
   - Areadisplay: op - Area Floating Title display to ops (off/op/on)
+  - FlightControl: on - To disable flight flag for all Festival usage (on/off)
   - AutoWhitelist: on - Auto whitelist area creator (on/off)
   
 **Area**
@@ -145,7 +146,7 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 
   ##### A visualisation of Festival command usage
   
-  ![Festival creation & usage](https://genboy.net/wp-content/uploads/2019/03/festival_usage_1.1.0.png) 
+  ![Festival creation & usage](https://genboy.net/wp-content/uploads/2019/04/festival_usage_v1.1.3.png) 
   
   ###### Copyright [Genboy](https://genboy.net) 2018
   
@@ -153,9 +154,11 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
  
   #### Language
   
-  Set Festival language en/nl for area and command returned messages. 
+  Set Festival language en/nl/es/pl for area and command returned messages. 
   en = english
   nl = nederlands 
+  es = Espanol
+  pl = Polski
   __ = your language, please help [translate __.js](https://github.com/genboy/Festival/blob/master/resources/en.json)
   
 
@@ -439,6 +442,10 @@ Thank you
   
   **Since v1.1.2**
   - new pl.json and @dearminder reviewed Polskie(/fe lang pl)
+  
+  **Since v1.1.3**
+  - new class ForceUTF8 for json encoding translations
+  - new FlightControl option to disable flight flag
 
 ------ 
 
