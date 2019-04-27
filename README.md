@@ -1,14 +1,19 @@
 
 ## Festival
 
-To protect this software since 27 April 2019 the Festival software is copyright of Genboy. You are legally bind to read the Festival Copyright statement. 
-For Festival the General Public License agreement version 3, as in the LICENSE file is still included and operative.
-In short this change of Copyright statement does not change the usage levels as stated in the GPU, for a part it now prohibits any entities to sell the software without the knowledge of the owner.
-
 Consider posting your first [share your experience and issues](https://github.com/genboy/Festival/issues) before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1) if you like to use Festival!
 That way it will improve Festival, my coding skills, your PMMP insights and the PMMP community, thank you!
  
 ![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png) 
+
+-- Legal notice --
+
+To protect this software since 27 April 2019 the Festival software is copyright of Genboy. You are legally bind to read the Festival Copyright statement. 
+For Festival the General Public License agreement version 3, as in the LICENSE file is still included and operative.
+In short this change of Copyright statement does not change the usage levels as stated in the GPU, for a part it now prohibits any entities to sell the software without the knowledge of the owner.
+
+-- end legal notice --
+
 Create a festival with this custom area events plugin for Pocketmine Server:
 
 ### Manage area's and run commmands attachted to area events. 
