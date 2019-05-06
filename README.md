@@ -1,8 +1,8 @@
 
 ## Festival
 
-Consider posting your first [share your experience and issues](https://github.com/genboy/Festival/issues) before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1) if you like to use Festival!
-That way it will improve Festival, my coding skills, your PMMP insights and the PMMP community, thank you!
+If you like to use Festival consider [sharing your experience and issues](https://github.com/genboy/Festival/issues) to fix any usability problems before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1)!
+That way it will improve Festival, my coding skills, your Pocketmine-MP insights and strenghten the PMMP community, thank you!
  
 ![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png) 
 
@@ -23,8 +23,8 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 --- 
 
 ## Info
-Festival 1.1.3 has now option to disable Flight flag (flight control off) and Spanish and Polish ranslations!
-Festival 2 is paused for a little while now, development in [development](https://github.com/genboy/Festival/projects/2) including FormUI for easy control, a new code structure and some of the flags will be completely rewritten. Just to let you know ..
+Since Festival 1.1.3 the config option to disable Flight flag (flight control off) is available!
+Festival 2 is being implemented step by step now, [development](https://github.com/genboy/Festival/projects/2) including FormUI for easy control, a new code structure and some of the flags will be completely rewritten. Just to let you know ..
 
 # Festival
 
@@ -454,7 +454,7 @@ Thank you
   - new FlightControl option to disable flight flag
 
 ------ 
-
+ 
 
 ## Credits
 
@@ -471,6 +471,6 @@ For Festival the General Public License agreement version 3, as in the LICENSE f
 To protect this software since 27 April 2019 the Festival software package is copyrighted by Genboy. 
 You are legally bind to read the Festival Copyright statement. 
 
-In short this change of Copyright statement does not change the usage levels as stated in the GPU, for a part it now prohibits any entities to sell the software without the knowledge of the owner.
+In short this change of Copyright statement does not change the usage levels as stated in the GPU, for a part it now prohibits any entities to sell the software without the knowledge of the owner. 
 
--- end legal notice --
+-- end legal notice -- 
