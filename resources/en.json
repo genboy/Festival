@@ -9,12 +9,16 @@
     "cmd-noperms-msg": "You can not use this Festival command",
     "cmd-noperms-subcommand": "You do not have permission to use this subcommand.",
 
+    "new-radius-variable": "! New radius integer variable added to create sphere type area's.",
+
     "pos-select-active": "You're already selecting a position!",
     "select-both-pos-first":"Please select both positions first.",
     "pos1": "position 1",
     "pos2": "position 2",
     "make-pos1": "Please place or break the first position.",
     "make-pos2": "Please place or break the second position.",
+    "make-radius-distance": "Please place or break to select the radius distance.",
+    "radius-distance-to-position": "Radius distance to position",
     "give-area-name": "Please specify a name for this area.",
 
     "in-unknown-area": "You are in an unknown area",

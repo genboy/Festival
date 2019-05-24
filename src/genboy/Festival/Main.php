@@ -355,7 +355,7 @@ class Main extends PluginBase implements Listener{
 
                 if( !isset($datum["radius"]) ){ // new radius variable v 1.1.4
                     $datum["radius"] = 0;
-                    $newchange['Radius'] = "! New radius integer variable added to create sphere type area's.";
+                    $newchange['Radius'] = Language::translate("new-radius-variable");
                 }
 
                 $flags = $datum["flags"];
@@ -661,12 +661,10 @@ class Main extends PluginBase implements Listener{
             case "radius":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.create")){
 					if(isset($this->selectingFirst[$playerName]) || isset($this->selectingRadius[$playerName])){
-                        $o = TextFormat::RED . "You're already selecting a position!";
-                        //$o = TextFormat::RED . Language::translate("pos-select-active"); //$o = TextFormat::RED . "You're already selecting a position!";
+                        $o = TextFormat::RED . Language::translate("pos-select-active"); //$o = TextFormat::RED . "You're already selecting a position!";
 					}else{
 						$this->selectingRadius[$playerName] = true;
-                        $o = TextFormat::GREEN . "Please place or break to select the radius distance.";
-						//$o = TextFormat::GREEN . Language::translate("make-pos2"); //$o = TextFormat::GREEN . "Please place or break the second position.";
+						$o = TextFormat::GREEN . Language::translate("make-radius-distance"); //$o = TextFormat::GREEN . "Please place or break to select the radius distance.";
 					}
 				}else{
                     $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); //$o = TextFormat::RED . "You do not have permission to use this subcommand.";
@@ -1487,7 +1485,7 @@ class Main extends PluginBase implements Listener{
 		}elseif(isset($this->selectingRadius[$playerName])){
             unset($this->selectingRadius[$playerName]);
             $this->radiusPosition[$playerName] = $block->asVector3();
-            $player->sendMessage(TextFormat::GREEN . "Radius distance to position: (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
+            $player->sendMessage(TextFormat::GREEN . language::translate("radius-distance-to-position"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")"); // Radius distance to position:
             //$player->sendMessage(TextFormat::GREEN . language::translate("pos2")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
 			$event->setCancelled();
         }else{
@@ -1495,8 +1493,7 @@ class Main extends PluginBase implements Listener{
             if( $block->getID() == Block::TNT && !$this->canUseTNT( $player, $block ) ){
                 if( $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
 		        }else{
-                    $event->setCancelled();
-                    //$player->sendMessage("TNT not allowed here");
+                    $event->setCancelled(); //$player->sendMessage("TNT not allowed here");
                 }
             }
 
