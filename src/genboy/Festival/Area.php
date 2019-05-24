@@ -1,6 +1,11 @@
 <?php declare(strict_types = 1);
+/** Festival 1.1.4
+ * src/genboy/Festival/Area.php
+ * copyright Genbay 2019
+ * Options in config.yml
+ *
+ */
 
-/** src/genboy/Festival/Area.php */
 
 namespace genboy\Festival;
 
@@ -19,6 +24,8 @@ class Area{
 	private $pos1;
 	/** @var Vector3 */
 	private $pos2;
+    /** @var Vector3 */
+	private $radius;
 	/** @var string */
 	private $levelName;
 	/** @var string[] */
@@ -30,12 +37,13 @@ class Area{
 	/** @var Main */
 	private $plugin;
 
-	public function __construct(string $name, string $desc, array $flags, Vector3 $pos1, Vector3 $pos2, string $levelName, array $whitelist, array $commands, array $events, Main $plugin){
+	public function __construct(string $name, string $desc, array $flags, Vector3 $pos1, Vector3 $pos2, int $radius, string $levelName, array $whitelist, array $commands, array $events, Main $plugin){
 		$this->name = strtolower($name);
 		$this->desc = $desc;
 		$this->flags = $flags;
 		$this->pos1 = $pos1;
 		$this->pos2 = $pos2;
+		$this->radius = $radius;
 		$this->levelName = $levelName;
 		$this->whitelist = $whitelist;
 		$this->commands = $commands;
@@ -70,6 +78,19 @@ class Area{
 	 */
 	public function getSecondPosition() : Vector3{
 		return $this->pos2;
+	}
+
+    /**
+	 * @param int
+	 */
+	public function setRadius( $int ) : int{
+		$this->radius = $int;
+	}
+	/**
+	 * @return int
+	 */
+	public function getRadius() : int{
+		return $this->radius;
 	}
 
 	/**
@@ -169,7 +190,32 @@ class Area{
 	 * @return bool
 	 */
 	public function contains(Vector3 $pos, string $levelName) : bool{
+
+        // check if area is sphere or cube (given radius)
+        if( isset( $this->radius ) &&  $this->radius > 0 && isset( $this->pos1 ) ){
+            // in sphere area
+            return ( $pos->getX() >= ( $this->pos1->getX() - $this->radius )
+                && $pos->getX() <= ( $this->pos1->getX() + $this->radius )
+                && $pos->getY() >= ( $this->pos1->getY() - $this->radius )
+                && $pos->getY() <= ( $this->pos1->getY() + $this->radius )
+                && $pos->getZ() >= ( $this->pos1->getZ() - $this->radius )
+                && $pos->getZ() <= ( $this->pos1->getZ() + $this->radius )
+                && strtolower( $this->levelName ) === strtolower( $levelName ) );
+        }else if( isset( $this->pos1 ) && isset( $this->pos2 ) ){
+            // in cube area
+            return ((min($this->pos1->getX(), $this->pos2->getX()) <= $pos->getX())
+                && (max($this->pos1->getX(), $this->pos2->getX()) >= $pos->getX())
+                && (min($this->pos1->getY(), $this->pos2->getY()) <= $pos->getY())
+                && (max($this->pos1->getY(), $this->pos2->getY()) >= $pos->getY())
+                && (min($this->pos1->getZ(), $this->pos2->getZ()) <= $pos->getZ())
+                && (max($this->pos1->getZ(), $this->pos2->getZ()) >= $pos->getZ())
+                &&  strtolower( $this->levelName ) === strtolower( $levelName ) );
+        }
+
+        /* only cube area's
 		return ((min($this->pos1->getX(), $this->pos2->getX()) <= $pos->getX()) && (max($this->pos1->getX(), $this->pos2->getX()) >= $pos->getX()) && (min($this->pos1->getY(), $this->pos2->getY()) <= $pos->getY()) && (max($this->pos1->getY(), $this->pos2->getY()) >= $pos->getY()) && (min($this->pos1->getZ(), $this->pos2->getZ()) <= $pos->getZ()) && (max($this->pos1->getZ(), $this->pos2->getZ()) >= $pos->getZ()) && ($this->levelName === $levelName));
+        */
+
 	}
 
 
@@ -180,6 +226,30 @@ class Area{
 	 */
 	public function centerContains(Vector3 $pos, string $levelName) : bool{
 
+        if( isset( $this->radius ) &&  $this->radius > 1 && isset( $this->pos1 ) ){
+            // in sphere area center
+            return ( $pos->getX() >= ( $this->pos1->getX() - 2 )
+            && $pos->getX() <= ( $this->pos1->getX() + 2 )
+            && $pos->getY() >= ( $this->pos1->getY() - 2 )
+            && $pos->getY() <= ( $this->pos1->getY() + 2 )
+            && $pos->getZ() >= ( $this->pos1->getZ() - 2 )
+            && $pos->getZ() <= ( $this->pos1->getZ() + 2 )
+            && strtolower( $this->levelName ) === strtolower( $levelName ) );
+        }else if( isset( $this->pos1 ) && isset( $this->pos2 ) ){
+            // in cube area center
+            $cx = $this->pos2->getX() + ( ( $this->pos1->getX() - $this->pos2->getX() ) / 2 );
+            $cz = $this->pos2->getZ() + ( ( $this->pos1->getZ() - $this->pos2->getZ() ) / 2 );
+            $cy1 = min( $this->pos2->getY(), $this->pos1->getY());
+            $cy2 = max( $this->pos2->getY(), $this->pos1->getY());
+            $px = $pos->getX();
+            $py = $pos->getY();
+            $pz = $pos->getZ();
+            return( $px >= ($cx - 1) && $px <= ($cx + 1) && $pz >= ($cz - 1) && $pz <= ($cz + 1) && $py >= $cy1 && $py <= $cy2
+            && strtolower( $this->levelName ) === strtolower( $levelName ) );
+        }
+
+
+        /* only cube area's
 		$cx = $this->pos2->getX() + ( ( $this->pos1->getX() - $this->pos2->getX() ) / 2 );
 		$cz = $this->pos2->getZ() + ( ( $this->pos1->getZ() - $this->pos2->getZ() ) / 2 );
 		$cy1 = min( $this->pos2->getY(), $this->pos1->getY());
@@ -190,6 +260,7 @@ class Area{
 
 		return( $px >= ($cx - 1) && $px <= ($cx + 1) && $pz >= ($cz - 1) && $pz <= ($cz + 1) && $py >= $cy1 && $py <= $cy2 && ($this->levelName === $levelName) );
 		//return ((min($this->pos1->getX(), $this->pos2->getX()) <= $pos->getX()) && (max($this->pos1->getX(), $this->pos2->getX()) >= $pos->getX()) && (min($this->pos1->getY(), $this->pos2->getY()) <= $pos->getY()) && (max($this->pos1->getY(), $this->pos2->getY()) >= $pos->getY()) && (min($this->pos1->getZ(), $this->pos2->getZ()) <= $pos->getZ()) && (max($this->pos1->getZ(), $this->pos2->getZ()) >= $pos->getZ()) && ($this->levelName === $levelName));
+        */
 	}
 
 	/**
@@ -274,5 +345,4 @@ class Area{
 	public function save() : void{
 		$this->plugin->areas[$this->name] = $this;
 	}
-
 }
