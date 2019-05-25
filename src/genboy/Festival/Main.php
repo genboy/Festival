@@ -710,15 +710,12 @@ class Main extends PluginBase implements Listener{
 
                                     if( !isset($this->secondPosition[$playerName]) && isset($this->radiusPosition[$playerName]) ){
 
+
                                         $p1 = $this->firstPosition[$playerName];
                                         $p2 = $this->radiusPosition[$playerName];
-                                        $radius = intval( 0 );
-                                        $dy = $p1->getY() - $p2->getY();
-                                        $dz = $p1->getZ() - $p2->getZ();
-                                        $dx = $p1->getX() - $p2->getX();
-                                        $df = sqrt( ($dy*$dy)+($dx*$dx) );
 
-                                        $radius = intval( sqrt( ($df*$df)+($dz*$dz) ) );
+                                        $radius = $this->get_3d_distance($p1,$p2);
+
                                     }else{
                                         $radius = intval( 0 );
                                     }
@@ -1468,10 +1465,12 @@ class Main extends PluginBase implements Listener{
 	 * @param BlockPlaceEvent $event
 	 * @ignoreCancelled true
 	 */
-	public function ockockPlace(BlockPlaceEvent $event) : void{
+	public function onBlockPlace(BlockPlaceEvent $event) : void{
+
 		$block = $event->getBlock();
 		$player = $event->getPlayer();
 		$playerName = strtolower($player->getName());
+
 		if(isset($this->selectingFirst[$playerName])){
 			unset($this->selectingFirst[$playerName]);
 			$this->firstPosition[$playerName] = $block->asVector3();
@@ -1485,8 +1484,14 @@ class Main extends PluginBase implements Listener{
 		}elseif(isset($this->selectingRadius[$playerName])){
             unset($this->selectingRadius[$playerName]);
             $this->radiusPosition[$playerName] = $block->asVector3();
-            $player->sendMessage(TextFormat::GREEN . language::translate("radius-distance-to-position"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")"); // Radius distance to position:
-            //$player->sendMessage(TextFormat::GREEN . language::translate("pos2")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
+
+            $p1 = $this->firstPosition[$playerName];
+            $p2 = $this->radiusPosition[$playerName];
+            $radius = $this->get_3d_distance($p1,$p2);
+
+            // Radius distance to position:
+            $player->sendMessage( TextFormat::GREEN . language::translate("radius-distance-to-position"). ": " . $radius . " blocks (" . $p1->getX() . ", " . $p1->getY() . ", " . $p1->getZ() . " to " . $p2->getX() . ", " . $p2->getY() . ", " . $p2->getZ() . ")");
+            // $player->sendMessage(TextFormat::GREEN . language::translate("pos2")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
 			$event->setCancelled();
         }else{
             //  .. canUseTNT( $player, $block )
@@ -2674,6 +2679,22 @@ class Main extends PluginBase implements Listener{
 		}
 		return $command;
 	}
+
+    /** get distance between 2 3d vector coordinates
+	 * delay function for str player $nm repeating int $sec
+	 * @param string $sec
+     * @return false
+	 */
+    public function get_3d_distance($p1,$p2){
+        $dist = intval( 0 );
+        $dy = $p1->getY() - $p2->getY();
+        $dz = $p1->getZ() - $p2->getZ();
+        $dx = $p1->getX() - $p2->getX();
+        $df = sqrt( ($dy*$dy)+($dx*$dx) );
+        $dist = intval( sqrt( ($df*$df)+($dz*$dz) ) );
+        return $dist;
+    }
+
 
 	/** skippTime
 	 * delay function for str player $nm repeating int $sec
