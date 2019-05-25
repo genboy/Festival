@@ -9,12 +9,16 @@
     "cmd-noperms-msg": "Je kunt dit commando niet gebruiken",
     "cmd-noperms-subcommand": "Je hebt geen toestemming om dit subcommando te gebruiken.",
 
+    "new-radius-variable": "! Nieuwe radius integer-variabele toegevoegd om gebieden van het bol-type te maken.",
+
     "pos-select-active": "Je bent al een coordinaat aan het selecteren!",
     "select-both-pos-first":"Je moet eerst allebei de coordinaten selecteren.",
     "pos1": "coordinaat 1",
     "pos2": "coordinaat 2",
     "make-pos1": "Breek of plaats een blok voor het eerste coordinaat.",
     "make-pos2": "Breek of plaats een blok voor het tweede coordinaat.",
+    "make-radius-distance": "Breek of plaats een blok om de radius grote te bepalen.",
+    "radius-distance-to-position": "Radius afstand tot positie",
     "give-area-name": "Geef het gebied een naam.",
 
     "in-unknown-area": "Je ben in onbekend gebied",
@@ -72,12 +76,12 @@
 	"allready-used-for": "al in gebruik voor",
     "allready-set-for-area": "al toegevoegd aan gebied",
     "edit-id-or-other": ", bewerk deze id of bewerk een andere id",
-	"cmd-specify-id-and-command-usage": "Geef een uniek id en commando regel om toe te voegen. Gebruik: /fe command <areaname> add <COMMANDID> <COMMANDSTRING>",
+	"cmd-specify-id-and-command-usage": "Geef een uniek id en comando regel om toe te voegen. Gebruik: /fe command <areaname> add <COMMANDID> <COMMANDSTRING>",
 
-    "cmd-valid-areaname": "Gebier niet gevinden, geef een bestande naam op. Gebruik: /fe command <areaname> <add/list/edit/del> <commandID> <commandstring>.",
-    "cmd-id-not-found": "Command ID niet gevonden. Bekijk de commando's met /fe event command <areaname> list",
+    "cmd-valid-areaname": "Gebied niet gevonden, geef een bestaande naam op. Gebruik: /fe command <areaname> <add/list/edit/del> <commandID> <commandstring>.",
+    "cmd-id-not-found": "Comando ID niet gevonden. Bekijk de comando's met /fe event command <areaname> list",
     "cmd-specify-id-to-delete": "Geef het comando ID om het te verwijderen. Gebruik /fe event command <areaname> del <COMMANDID>",
-    "cmd-specify-action": "Voeg een actie toe voor het commando.  Geruik: /fe command <areaname> <add/list/edit/del> <commandID> <commandstring>.",
+    "cmd-specify-action": "Voeg een actie toe voor het comando.  Geruik: /fe command <areaname> <add/list/edit/del> <commandID> <commandstring>.",
 
     "event": "event",
     "event-is-now": "event is nu",
