@@ -37,7 +37,7 @@ class Area{
 	/** @var Main */
 	private $plugin;
 
-	public function __construct(string $name, string $desc, array $flags, Vector3 $pos1, Vector3 $pos2, int $radius, string $levelName, array $whitelist, array $commands, array $events, Main $plugin){
+	public function __construct(string $name, string $desc, array $flags, Vector3 $pos1, Vector3 $pos2, int $radius, string $levelName, array $whitelist, array $commands, array $events, Festival $plugin){
 		$this->name = strtolower($name);
 		$this->desc = $desc;
 		$this->flags = $flags;
@@ -194,13 +194,25 @@ class Area{
         // check if area is sphere or cube (given radius)
         if( isset( $this->radius ) &&  $this->radius > 0 && isset( $this->pos1 ) ){
             // in sphere area
-            return ( $pos->getX() >= ( $this->pos1->getX() - $this->radius )
+            /* return ( $pos->getX() >= ( $this->pos1->getX() - $this->radius )
                 && $pos->getX() <= ( $this->pos1->getX() + $this->radius )
                 && $pos->getY() >= ( $this->pos1->getY() - $this->radius )
                 && $pos->getY() <= ( $this->pos1->getY() + $this->radius )
                 && $pos->getZ() >= ( $this->pos1->getZ() - $this->radius )
                 && $pos->getZ() <= ( $this->pos1->getZ() + $this->radius )
                 && strtolower( $this->levelName ) === strtolower( $levelName ) );
+            */
+            $r = $this->radius;
+            $dis = $this->plugin->get_3d_distance($this->pos1, $pos);
+            if( $dis < $r  ){
+                return true; //point in radius
+            }else if($dis == $r){
+                return true; // point is equal to radius
+            }else{
+                return false; // point outside radius
+            }
+
+
         }else if( isset( $this->pos1 ) && isset( $this->pos2 ) ){
             // in cube area
             return ((min($this->pos1->getX(), $this->pos2->getX()) <= $pos->getX())
@@ -226,8 +238,9 @@ class Area{
 	 */
 	public function centerContains(Vector3 $pos, string $levelName) : bool{
 
-        if( isset( $this->radius ) &&  $this->radius > 1 && isset( $this->pos1 ) ){
-            // in sphere area center
+        if( isset( $this->radius ) &&  $this->radius > 0 && isset( $this->pos1 ) ){
+
+            /* in cube (not sphere) area center
             return ( $pos->getX() >= ( $this->pos1->getX() - 2 )
             && $pos->getX() <= ( $this->pos1->getX() + 2 )
             && $pos->getY() >= ( $this->pos1->getY() - 2 )
@@ -235,6 +248,19 @@ class Area{
             && $pos->getZ() >= ( $this->pos1->getZ() - 2 )
             && $pos->getZ() <= ( $this->pos1->getZ() + 2 )
             && strtolower( $this->levelName ) === strtolower( $levelName ) );
+            */
+            // Real sphere..
+
+            $r = 2; //$this->radius;
+            $dis = $this->plugin->get_3d_distance($this->pos1, $pos);
+            if( $dis < $r  ){
+                return true; //point in radius
+            }else if($dis == $r){
+                return true; // point is equal to radius
+            }else{
+                return false; // point outside radius
+            }
+
         }else if( isset( $this->pos1 ) && isset( $this->pos2 ) ){
             // in cube area center
             $cx = $this->pos2->getX() + ( ( $this->pos1->getX() - $this->pos2->getX() ) / 2 );
@@ -262,6 +288,7 @@ class Area{
 		//return ((min($this->pos1->getX(), $this->pos2->getX()) <= $pos->getX()) && (max($this->pos1->getX(), $this->pos2->getX()) >= $pos->getX()) && (min($this->pos1->getY(), $this->pos2->getY()) <= $pos->getY()) && (max($this->pos1->getY(), $this->pos2->getY()) >= $pos->getY()) && (min($this->pos1->getZ(), $this->pos2->getZ()) <= $pos->getZ()) && (max($this->pos1->getZ(), $this->pos2->getZ()) >= $pos->getZ()) && ($this->levelName === $levelName));
         */
 	}
+
 
 	/**
 	 * @param string $flag
