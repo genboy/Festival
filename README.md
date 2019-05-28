@@ -1,9 +1,15 @@
 
 ## Festival
-Consider posting your first [share your experience and issues](https://github.com/genboy/Festival/issues) before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1) if you like to use Festival!
-That way it will improve Festival, my coding skills, your PMMP insights and the PMMP community, thank you!
+
+If you like to use Festival consider [sharing your experience and issues](https://github.com/genboy/Festival/issues) to fix any usability problems before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1)!
+That way it will improve Festival, my coding skills, your Pocketmine-MP insights and strenghten the PMMP community, thank you!
  
 ![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png) 
+
+
+!Take notice of the Copyright Statement if you use Festival for the first time since 27 April 2019. 
+Read the Legal Notice at the bottom of this README file or the Legal Notice tab at poggit.pmmp.io/p/Festival
+
 Create a festival with this custom area events plugin for Pocketmine Server:
 
 ### Manage area's and run commmands attachted to area events. 
@@ -17,8 +23,8 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 --- 
 
 ## Info
-Festival 1.1.3 has now option to disable Flight flag (flight control off) and Spanish and Polish ranslations!
-Festival 2 is paused for a little while now, development in [development](https://github.com/genboy/Festival/projects/2) including FormUI for easy control, a new code structure and some of the flags will be completely rewritten. Just to let you know ..
+Since Festival 1.1.3 the config option to disable Flight flag (flight control off) is available!
+Festival 2 is being implemented step by step now, [development](https://github.com/genboy/Festival/projects/2) including FormUI for easy control, a new code structure and some of the flags will be completely rewritten. Just to let you know ..
 
 # Festival
 
@@ -448,10 +454,23 @@ Thank you
   - new FlightControl option to disable flight flag
 
 ------ 
-
+ 
 
 ## Credits
 
 The area code derives from the [iProctector plugin](https://github.com/LDX-MCPE/iProtector). All credits for the area creation and protection code go to the iProtector creator [LDX-MCPE](https://github.com/LDX-MCPE) and [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 
 The Festival code is written and tested by Genboy and first released on 12 Feb 2018, first extending the area object with area events (enter and leave messages) and soon added functions and ingame commands to attach a commandstring to a area-event. Since v1.0.7 the area's and players can be protected with 12 flags, and trigger commands on areaEnter, areaCenter and areaLeave. 
+
+## Legal Notice
+
+-- Legal notice --
+
+For Festival the General Public License agreement version 3, as in the LICENSE file is still included and operative.
+
+To protect this software since 27 April 2019 the Festival software package is copyrighted by Genboy. 
+You are legally bind to read the Festival Copyright statement. 
+
+In short this change of Copyright statement does not change the usage levels as stated in the GPU, for a part it now prohibits any entities to sell the software without the knowledge of the owner. 
+
+-- end legal notice -- 

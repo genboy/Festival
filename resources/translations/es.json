@@ -9,12 +9,16 @@
     "cmd-noperms-msg": "No puedes usar este comando del Festival.",
     "cmd-noperms-subcommand": "No tienes permiso para usar este subcomando.",
 
+    "new-radius-variable": "! Se agregó una nueva variable de entero de radio para crear el área de tipo de esfera.",
+
     "pos-select-active": "¡Ya estás seleccionando una posición!",
     "select-both-pos-first":"Por favor, seleccione ambas posiciones primero.",
     "pos1": "posición 1",
     "pos2": "posición 2",
     "make-pos1": "Por favor coloque o rompa la primera posición.",
     "make-pos2": "Por favor coloque o rompa la segunda posición.",
+    "make-radius-distance": "Romper o colocar un bloque para determinar el radio grande.",
+    "radius-distance-to-position": "Radio distancia a la posición",
     "give-area-name": "Por favor, especifique un nombre para esta área.",
 
     "in-unknown-area": "Estas en un area desconocida",
