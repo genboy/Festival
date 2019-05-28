@@ -12,7 +12,7 @@ declare(strict_types = 1);
 
 namespace genboy\Festival;
 
-use ForceUTF8\Encoding;
+use neitanod\ForceUTF8\Encoding;
 use genboy\Festival\lang\Language;
 
 use pocketmine\command\Command;
@@ -56,7 +56,7 @@ use pocketmine\event\player\PlayerDropItemEvent;
 use pocketmine\event\player\PlayerBucketEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 
-class Main extends PluginBase implements Listener{
+class Festival extends PluginBase implements Listener{
 
 	/** @var array[] */
 	private $levels        = []; // list of level flags
@@ -165,7 +165,7 @@ class Main extends PluginBase implements Listener{
         $this->loadLanguage();
 
 		$c = yaml_parse_file($this->getDataFolder() . "config.yml");
-		
+
 		// innitialize configurations & update options
 		if( isset( $c["Options"] ) && is_array( $c["Options"] ) ){
             if(!isset($c["Options"]["Language"])){
@@ -290,7 +290,7 @@ class Main extends PluginBase implements Listener{
 		$this->cmdmode        = $c["Default"]["CMDmode"]; // new in  1.0.7.8-dev(1.0.8)
 
         $this->flagset        = $c['Default']; // all flags :) new in v1.0.5-12
-        
+
         // specified world default flag settings
 		if(is_array( $c["Worlds"] )){
 			foreach($c["Worlds"] as $level => $flags){
@@ -449,9 +449,9 @@ class Main extends PluginBase implements Listener{
             }
 			$ca = $ca + count( $a->getCommands() );
 		}
-		
+
 		$levelsloaded = count( $this->getServerWorlds() );
-		
+
         $this->getLogger()->info( $fa.' '.Language::translate("flags").' '.Language::translate("select-and").' '. $ca .' '. Language::translate("cmds") .' '.Language::translate("select-in").' '. count($this->areas)  .' '.  Language::translate("areas").' ('.$levelsloaded.' '.Language::translate("levels").')');
 
 		// warnings changes
@@ -473,19 +473,15 @@ class Main extends PluginBase implements Listener{
         if( !$languageCode ){
             $languageCode = 'en';
         }
-        $resources = $this->getResources(); // read files in resources folder
-
-        foreach($resources as $resource){
-            if($resource->getFilename() === "en.json"){
-              //$text = utf8_encode( file_get_contents($resource->getPathname(), true) ); // json content in utf-8
-              $text = Encoding::toUTF8( file_get_contents($resource->getPathname(), true) );
-              $default = json_decode($text, true); // php decode utf-8
-            }
-            if($resource->getFilename() === $languageCode.".json"){
-              //$text = utf8_encode( file_get_contents($resource->getPathname(), true) );
-              $text = Encoding::toUTF8( file_get_contents($resource->getPathname(), true) );
-              $setting = json_decode($text, true); // php decode utf-8
-            }
+        $langfile1 = $this->getDataFolder() . "resources" . DIRECTORY_SEPARATOR . "translations" . DIRECTORY_SEPARATOR. "en.json";
+        if( file_exists( $langfile1 )){
+            $text = Encoding::toUTF8( file_get_contents($langfile1, true) );
+            $default = json_decode($text, true); // php decode utf-8
+        }
+        $langfile2 = $this->getDataFolder() . "resources" . DIRECTORY_SEPARATOR . "translations" . DIRECTORY_SEPARATOR. $languageCode .".json";
+        if( file_exists( $langfile2 )){
+            $text = Encoding::toUTF8( file_get_contents($langfile2, true) );
+            $setting = json_decode($text, true); // php decode utf-8
         }
         if(isset($setting)){
             $langJson = $setting;
@@ -599,9 +595,9 @@ class Main extends PluginBase implements Listener{
     /** COMMANDS
 	 * @param CommandSender $sender
 	 * @param Command $cmd
-	 * @param string $label 
+	 * @param string $label
 	 * @param array $args
-	 * @return bool 
+	 * @return bool
 	 */
 	public function onCommand(CommandSender $sender, Command $cmd, string $label, array $args) : bool{
 		if(!($sender instanceof Player)){
@@ -798,7 +794,7 @@ class Main extends PluginBase implements Listener{
 					}else{
                         $o = TextFormat::RED . Language::translate("desc-specify-area"); // Please specify an area to edit the description. Usage: /fe desc <areaname> <desc>
 					}
-				}else{  
+				}else{
                     $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); // You do not have permission to use this subcommand
 				}
             break;
@@ -955,7 +951,7 @@ class Main extends PluginBase implements Listener{
 
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.flag")){
 					if(isset($args[1])){
-                        
+
 						/**
 						* Revert a flag in all area's (v1.0.4-11)
 						*/
@@ -971,12 +967,12 @@ class Main extends PluginBase implements Listener{
 								}
 								$this->saveAreas();
 								$o = TextFormat::RED . "All ". $flag ." flags for all areas have been swapped";
-                                
-                                
+
+
 							}else{
 								$o = TextFormat::RED . $flag ." is not a flag and can not be swapped";
-							}  
-                            
+							}
+
 						}else if(isset($this->areas[strtolower($args[1])])){
 							$area = $this->areas[strtolower($args[1])];
 							$flag = $this->isFlag( $args[0] ); // v1.0.6-13
@@ -995,15 +991,15 @@ class Main extends PluginBase implements Listener{
 								if($area->getFlag($flag)){
 									$status = "on";
 								}else{
-									$status = "off"; 
+									$status = "off";
 								}
 								$o = TextFormat::GREEN . Language::translate("flag") . " " . $flag . " ". Language::translate("set-to") . " " . $status . " ". Language::translate("for-area") . " " . $area->getName() . "!";
-                                
+
 							}else{
 
 								if(isset($args[2])){ // excute long (old) notation
                                     if( $args[2] == "list" ){
-                                        $flgs = $area->getFlags(); 
+                                        $flgs = $area->getFlags();
                                         $l = $area->getName() . TextFormat::GRAY . " " . Language::translate("flags"). ":";
                                         foreach($flgs as $fi => $flg){
                                             $l .= "\n". TextFormat::GOLD . "    ". $fi . ": ";
@@ -1012,7 +1008,7 @@ class Main extends PluginBase implements Listener{
                                             }else{
                                                 $l .= TextFormat::RED . Language::translate("status-off");
                                             }
-                                        } 
+                                        }
                                         $o = $l;
                                     }else if( isset($area->flags[strtolower($args[2])]) ){
 										$flag = strtolower($args[2]);
@@ -1357,7 +1353,7 @@ class Main extends PluginBase implements Listener{
         unset( $this->areaTitles[$playerName] );
 
     }
-	
+
 	/** getServerWorlds
 	 * @func plugin getServer()->getDataPath()
 	 * @dir worlds
@@ -1390,7 +1386,7 @@ class Main extends PluginBase implements Listener{
             $this->checkAreaTitles( $entity, $level );
         }
     }
-    
+
 	/** onMove
 	 * @param PlayerMoveEvent $ev
 	 * @var string inArea
@@ -1805,7 +1801,7 @@ class Main extends PluginBase implements Listener{
      * @return bool
      */
     public function canInteract( PlayerInteractEvent $event ): bool{
-        
+
         $item = $event->getItem();
         $block = $event->getBlock();
 		$player = $event->getPlayer();
@@ -2076,7 +2072,7 @@ class Main extends PluginBase implements Listener{
         ){
             return $o; // might be allowed to spawn under different flag
         }
-        
+
         $nm =  ''; //
         if( method_exists($e,'getName') && null !== $e->getName() ){
           $nm = $e instanceof Item ? $e->getItem()->getName() : $e->getName();
@@ -2448,23 +2444,23 @@ class Main extends PluginBase implements Listener{
 
 	/** Area Player Monitor/Task
 	 * @param area Area
-	 * @param PlayerMoveEvent $ev 
+	 * @param PlayerMoveEvent $ev
 	 * Set/refresh effects & status
 	 */
     public function AreaPlayerMonitor( Area $area, PlayerMoveEvent $ev ): void{
         $player = $ev->getPlayer();
-        if( $area->contains( $player->getPosition(), $player->getLevel()->getName() ) ){ 
-            if( $this->skippTime(5, strtolower($player->getName()) ) ){ 
+        if( $area->contains( $player->getPosition(), $player->getLevel()->getName() ) ){
+            if( $this->skippTime(5, strtolower($player->getName()) ) ){
                 // start / renew effects
                 //$msg = TextFormat::YELLOW . "Time passing in area " . $area->getName();
                 //$this->areaMessage( $msg, $player );
             }
         }
     }
-    
+
 	/** Area event barrier cross by op
 	 * @param area Area
-	 * @param PlayerMoveEvent $ev 
+	 * @param PlayerMoveEvent $ev
 	 * @return false
 	 */
 	public function barrierCrossByOp(Area $area, PlayerMoveEvent $ev): void{
@@ -2473,14 +2469,14 @@ class Main extends PluginBase implements Listener{
 			$msg = TextFormat::WHITE . $area->getName(). TextFormat::RED . " " . Language::translate("enter-barrier-area");
 			$player->areaMessage( $msg );
 		}
-		return; 
+		return;
 	}
-	
+
 	/**
 	 * Area event barrier enter
 	 * @param area Area
 	 * @param PlayerMoveEvent $ev
-	 * @return false 
+	 * @return false
 	 */
 	public function barrierEnterArea(Area $area, PlayerMoveEvent $ev): void{
 		$player = $ev->getPlayer();
@@ -2504,7 +2500,7 @@ class Main extends PluginBase implements Listener{
 		$msg = '';
 		$ev->getPlayer()->teleport($ev->getFrom());
 		if( !$area->getFlag("msg")  || $this->msgOpDsp( $area, $player ) ){
-			if( $this->skippTime( 2, strtolower($player->getName()) ) ){ 
+			if( $this->skippTime( 2, strtolower($player->getName()) ) ){
 				$msg = TextFormat::YELLOW . Language::translate("cannot-leave-area") . " " . $area->getName();
 			}
 			if( $msg != ''){
@@ -2529,7 +2525,7 @@ class Main extends PluginBase implements Listener{
 			}
 			if( $msg != ''){
 				$this->areaMessage( $msg, $player );
-			} 
+			}
 		}
 		$playerName = strtolower( $player->getName() );
 
@@ -2542,7 +2538,7 @@ class Main extends PluginBase implements Listener{
                 $player->removeEffect($effect->getId());
             }
         }
-		$this->runAreaEvent($area, $ev, "enter"); 
+		$this->runAreaEvent($area, $ev, "enter");
 		return;
 	}
 
@@ -2584,7 +2580,7 @@ class Main extends PluginBase implements Listener{
 		if( $msg != ''){
 			$this->areaMessage( $msg, $player );
 		}
-        
+
 		$playerName = strtolower( $player->getName() );
 		$this->inArea[$playerName][] = strtolower( $area->getName() )."center";
 		$this->runAreaEvent($area, $ev, "center");
@@ -2663,8 +2659,8 @@ class Main extends PluginBase implements Listener{
             }
 
         }
-	} 
-	
+	}
+
 	/** Command string filter
 	 * @param str $command
 	 * @param PlayerMoveEvent $event
@@ -2674,8 +2670,8 @@ class Main extends PluginBase implements Listener{
         $playername =  $event->getPlayer()->getName();
 		if( strpos( $command, "{player}" ) !== false ) {
         	$command = str_replace("{player}", $playername, $command); // replaces {player} with the player name
-		}else if( strpos( $command, "@p" ) !== false ) { // only if {player} is not used - untill we know why @p does not work 
-            $command = str_replace("@p", $playername, $command); // replaces @p with the player name 
+		}else if( strpos( $command, "@p" ) !== false ) { // only if {player} is not used - untill we know why @p does not work
+            $command = str_replace("@p", $playername, $command); // replaces @p with the player name
 		}
 		return $command;
 	}
@@ -2704,15 +2700,15 @@ class Main extends PluginBase implements Listener{
     public function skippTime($sec, $nm){
 		$t = false;
         if(!isset($this->skipsec[$nm])){
-            $this->skipsec[$nm] = time();  
+            $this->skipsec[$nm] = time();
         }else{
             if( ( ( time() - $sec ) > $this->skipsec[$nm]) || !$this->skipsec[$nm] ){
                 $this->skipsec[$nm] = time();
-                $t = true;  
+                $t = true;
             }
         }
 		return $t;
-	} 
+	}
 
     /** AreaMessage
     * define message type
@@ -2806,9 +2802,9 @@ class Main extends PluginBase implements Listener{
         if(count($ap) > 0 ){
             $l .=  "\n". TextFormat::GRAY . "  - ". Language::translate("players-in-area") .": \n " . TextFormat::GOLD . implode(", ", $ap );
         }
-        
+
         // Area Flag
-		$flgs = $area->getFlags(); 
+		$flgs = $area->getFlags();
 		$l .= "\n". TextFormat::GRAY . "  - ". Language::translate("flags")  ." :";
 		foreach($flgs as $fi => $flg){
 			$l .= "\n". TextFormat::GOLD . "    ". $fi . ": ";
