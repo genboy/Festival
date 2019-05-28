@@ -19,6 +19,8 @@
     "make-pos2": "Połóż albo zniszcz drugą pozycję.",
     "make-radius-distance": "Przerwij lub umieść blok, aby określić duży promień.",
     "radius-distance-to-position": "Odległość promienia do pozycji",
+    "make-diameter-distance": "Please place or break to select the diameter direction and distance.",
+    "diameter-distance-to-position": "Diameter distance to position",
     "give-area-name": "Podaj nazwę dla tego obszaru.",
 
     "in-unknown-area": "Jesteś w nieznanym obszarze",
@@ -31,7 +33,8 @@
     "players": "gracze",
     "the-area": "Strefa",
     "the-level": "Poziom",
-    "area-created": "Obszar utworzony!",
+    "cube-area-created": "Wykonano obszar kostki!",
+    "sphere-area-created": "Wykonano obszar sfery!",
     "created-by":"utworzony przez",
     "area-here": "Obszar tutaj",
     "area-no-area-available": "Brak dostępnego obszaru",

@@ -452,7 +452,10 @@ Thank you
   **Since v1.1.3**
   - new class ForceUTF8 for json encoding translations
   - new FlightControl option to disable flight flag
-
+  
+  **Since v1.1.4**
+  - Sphere shape area /fe pos1 + /fe radius 
+  
 ------ 
  
 
