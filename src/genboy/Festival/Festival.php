@@ -1,9 +1,10 @@
 <?php
 /** Festival 1.1.4
- * src/genboy/Festival/Main.php
+ * src/genboy/Festival/Festival.php
  * copyright Genbay 2019
- * Options in config.yml
- * language: en/nl, Msgtype: msg/title/tip/pop, Areadisplay: off/op/on, Msgdisplay: off/op/on
+ *
+ * Options in config.yml (v 1.1.3 )
+ * language: en/nl, Msgtype: msg/title/tip/pop, Areadisplay: off/op/on, Msgdisplay: off/op/on, AutoWhitelist: on/off, FlightControl: on/off
  * Flags: god, pvp, flight, edit, touch, mobs, animals, effects, msg, passage, drop, tnt, fire, explode, shoot, hunger, perms, falldamage, cmdmode
  *
  */
@@ -13,6 +14,7 @@ declare(strict_types = 1);
 namespace genboy\Festival;
 
 use neitanod\ForceUTF8\Encoding;
+use genboy\Festival\Helper;
 use genboy\Festival\lang\Language;
 
 use pocketmine\command\Command;
