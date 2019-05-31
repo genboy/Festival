@@ -19,6 +19,8 @@
     "make-pos2": "Por favor coloque o rompa la segunda posición.",
     "make-radius-distance": "Romper o colocar un bloque para determinar el radio grande.",
     "radius-distance-to-position": "Radio distancia a la posición",
+    "make-diameter-distance": "Please place or break to select the diameter direction and distance.",
+    "diameter-distance-to-position": "Diameter distance to position",
     "give-area-name": "Por favor, especifique un nombre para esta área.",
 
     "in-unknown-area": "Estas en un area desconocida",
@@ -31,7 +33,8 @@
     "players": "jugadores",
     "the-area": "La zona",
     "the-level": "El nivel",
-    "area-created": "Área creada!",
+    "cube-area-created": "Area de cubos hecha!",
+    "sphere-area-created": "Area de esfera hecha!",
     "created-by":"creado por",
     "area-here": "Area aqui",
     "area-no-area-available": "No hay área disponible",

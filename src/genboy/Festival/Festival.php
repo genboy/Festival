@@ -60,6 +60,9 @@ use pocketmine\event\player\PlayerQuitEvent;
 
 class Festival extends PluginBase implements Listener{
 
+	/** @var obj */
+	public $helper; // helper class
+
 	/** @var array[] */
 	private $levels        = []; // list of level flags
 	/** @var Area[] */
@@ -114,12 +117,17 @@ class Festival extends PluginBase implements Listener{
 	private $selectingSecond   = [];
 	/** @var bool[] */
 	private $selectingRadius   = [];
+	/** @var bool[] */
+	private $selectingDiameter   = [];
+
 	/** @var Vector3[] */
 	private $firstPosition     = [];
 	/** @var Vector3[] */
 	private $secondPosition    = [];
 	/** @var int */
 	private $radiusPosition    = [];
+	/** @var int */
+	private $diameterPosition    = [];
 
 	/** @var array[]
      * list of playernames with areanames they're in
@@ -148,6 +156,9 @@ class Festival extends PluginBase implements Listener{
 	public function onEnable() : void{
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this); // Load data & configurations
+
+        $this->helper = new Helper($this);
+
         $newchange = []; // list of missing config flags/options
 		if(!is_dir($this->getDataFolder())){
 			mkdir($this->getDataFolder());
@@ -439,7 +450,6 @@ class Festival extends PluginBase implements Listener{
         /** console output */
         $this->getLogger()->info( Language::translate("enabled-console-msg") );
 
-        $this->codeSigned(); // codesign
 
 		$ca = 0; // plugin area command count
 		$fa = 0; // plugin area flag count
@@ -462,6 +472,9 @@ class Festival extends PluginBase implements Listener{
 			     $this->getLogger()->info( $ttl . ": " . $txt );
             }
 		}
+
+        $this->codeSigned(); // codesign
+
 	}
 
     /** load language ( v1.0.7.7-dev )
@@ -475,22 +488,27 @@ class Festival extends PluginBase implements Listener{
         if( !$languageCode ){
             $languageCode = 'en';
         }
-        $langfile1 = $this->getDataFolder() . "resources" . DIRECTORY_SEPARATOR . "translations" . DIRECTORY_SEPARATOR. "en.json";
-        if( file_exists( $langfile1 )){
-            $text = Encoding::toUTF8( file_get_contents($langfile1, true) );
-            $default = json_decode($text, true); // php decode utf-8
-        }
-        $langfile2 = $this->getDataFolder() . "resources" . DIRECTORY_SEPARATOR . "translations" . DIRECTORY_SEPARATOR. $languageCode .".json";
-        if( file_exists( $langfile2 )){
-            $text = Encoding::toUTF8( file_get_contents($langfile2, true) );
-            $setting = json_decode($text, true); // php decode utf-8
-        }
-        if(isset($setting)){
+
+        $resources = $this->getResources(); // read files in resources folder
+        foreach($resources as $resource){
+            if($resource->getFilename() === "en.json"){
+              //$text = utf8_encode( file_get_contents($resource->getPathname(), true) ); // json content in utf-8
+              $text = Encoding::toUTF8( file_get_contents($resource->getPathname(), true) );
+              $default = json_decode($text, true); // php decode utf-8
+            }
+            if($resource->getFilename() === $languageCode.".json"){
+              //$text = utf8_encode( file_get_contents($resource->getPathname(), true) );
+              $text = Encoding::toUTF8( file_get_contents($resource->getPathname(), true) );
+              $setting = json_decode($text, true); // php decode utf-8
+            }
+          }
+          if(isset($setting)){
             $langJson = $setting;
-        }else{
+          }else{
             $langJson = $default;
-        }
-        new Language($this, $langJson);
+          }
+          new Language($this, $langJson);
+
     }
 
     /** set language
@@ -644,7 +662,7 @@ class Festival extends PluginBase implements Listener{
 			case "pos":
 			case "pos1":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.pos1")){
-					if(isset($this->selectingFirst[$playerName]) || isset($this->selectingSecond[$playerName])){
+					if( isset($this->selectingFirst[$playerName]) || isset($this->selectingSecond[$playerName]) || isset($this->selectingRadius[$playerName]) || isset($this->selectingDiameter[$playerName]) ){
                         $o = TextFormat::RED . Language::translate("pos-select-active"); //$o = TextFormat::RED . "You're already selecting a position!";
 					}else{
 						$this->selectingFirst[$playerName] = true;
@@ -658,7 +676,7 @@ class Festival extends PluginBase implements Listener{
             case "rad":
             case "radius":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.create")){
-					if(isset($this->selectingFirst[$playerName]) || isset($this->selectingRadius[$playerName])){
+					if(isset($this->selectingFirst[$playerName]) || isset($this->selectingSecond[$playerName]) || isset($this->selectingRadius[$playerName]) || isset($this->selectingDiameter[$playerName]) ){
                         $o = TextFormat::RED . Language::translate("pos-select-active"); //$o = TextFormat::RED . "You're already selecting a position!";
 					}else{
 						$this->selectingRadius[$playerName] = true;
@@ -668,9 +686,23 @@ class Festival extends PluginBase implements Listener{
                     $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); //$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
 			break;
+            // case radius or rad
+            case "dia":
+            case "diameter":
+				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.create")){
+					if( isset($this->selectingFirst[$playerName]) || isset($this->selectingSecond[$playerName]) || isset($this->selectingRadius[$playerName]) || isset($this->selectingDiameter[$playerName]) ){
+                        $o = TextFormat::RED . Language::translate("pos-select-active"); //$o = TextFormat::RED . "You're already selecting a position!";
+					}else{
+						$this->selectingDiameter[$playerName] = true;
+						$o = TextFormat::GREEN . Language::translate("make-diameter-distance"); //$o = TextFormat::GREEN . "Please place or break to select the diameter direction and distance.";
+					}
+				}else{
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); //$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+				}
+			break;
 			case "pos2":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.pos2")){
-					if(isset($this->selectingFirst[$playerName]) || isset($this->selectingSecond[$playerName])){
+					if( isset($this->selectingFirst[$playerName]) || isset($this->selectingSecond[$playerName]) || isset($this->selectingRadius[$playerName]) || isset($this->selectingDiameter[$playerName]) ){
                         $o = TextFormat::RED . Language::translate("pos-select-active"); //$o = TextFormat::RED . "You're already selecting a position!";
 					}else{
 						$this->selectingSecond[$playerName] = true;
@@ -683,7 +715,7 @@ class Festival extends PluginBase implements Listener{
 			case "create":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.area") || $sender->hasPermission("festival.command.fe.create")){
 					if(isset($args[1])){
-						if(isset($this->firstPosition[$playerName]) && ( isset($this->secondPosition[$playerName]) || isset($this->radiusPosition[$playerName]) ) ){
+						if(isset($this->firstPosition[$playerName]) && ( isset($this->secondPosition[$playerName]) || isset($this->radiusPosition[$playerName]) || isset($this->diameterPosition[$playerName])) ){
 							if( $args[1] != '' && $args[1] != ' ' ){
                                 if( !isset($this->areas[strtolower($args[1])]) ){
                                     // get level default flags
@@ -702,18 +734,29 @@ class Festival extends PluginBase implements Listener{
 
                                     if( !isset($this->secondPosition[$playerName]) && isset($this->radiusPosition[$playerName]) ){
                                         $pos2 = new Vector3(0,0,0);
+                                    }elseif( !isset($this->secondPosition[$playerName]) && isset($this->diameterPosition[$playerName]) ){
+                                        $pos2 = new Vector3(0,0,0);
                                     }else{
                                         $pos2 = $this->secondPosition[$playerName];
                                     }
 
                                     if( !isset($this->secondPosition[$playerName]) && isset($this->radiusPosition[$playerName]) ){
-
-
+                                        // sphere by radius
                                         $p1 = $this->firstPosition[$playerName];
                                         $p2 = $this->radiusPosition[$playerName];
-
                                         $radius = $this->get_3d_distance($p1,$p2);
 
+                                    }elseif( !isset($this->secondPosition[$playerName]) && isset($this->diameterPosition[$playerName]) ){
+                                        // sphere by diameter
+                                        $p1 = $this->firstPosition[$playerName];
+                                        $p2 = $this->diameterPosition[$playerName];
+
+                                        $cx = $p2->getX() + ( ( $p1->getX() - $p2->getX() ) / 2 );
+                                        $cy = $p2->getY() + ( ( $p1->getY() - $p2->getY() ) / 2 );
+                                        $cz = $p2->getZ() + ( ( $p1->getZ() - $p2->getZ() ) / 2 );
+
+                                        $pos1 = new Position( $cx, $cy, $cz, $sender->getLevel() ); // center
+                                        $radius = $this->get_3d_distance($p1, $pos1);
                                     }else{
                                         $radius = intval( 0 );
                                     }
@@ -752,10 +795,18 @@ class Festival extends PluginBase implements Listener{
                                     );
 
                                     $this->saveAreas();
-                                    unset($this->firstPosition[$playerName], $this->secondPosition[$playerName]);
-                                    $this->checkAreaTitles( $sender, $sender->getPosition()->getLevel() );
 
-                                    $o = TextFormat::AQUA . Language::translate("area-created"); //$o = TextFormat::AQUA . "Area created!";
+                                    // area type created message
+                                    if( isset($this->radiusPosition[$playerName]) || isset($this->diameterPosition[$playerName]) ){
+                                        $o = TextFormat::AQUA . Language::translate("sphere-area-created"); //$o = TextFormat::AQUA . "Area created!";
+                                    }else{
+                                        $o = TextFormat::AQUA . Language::translate("cube-area-created"); //$o = TextFormat::AQUA . "Area created!";
+                                    }
+                                    // reset area titles
+                                    $this->checkAreaTitles( $sender, $sender->getPosition()->getLevel() );
+                                    // unset selecting positions
+                                    unset($this->firstPosition[$playerName], $this->secondPosition[$playerName],$this->radiusPosition[$playerName],$this->diameterPosition[$playerName]);
+
                                 }else{
                                     $o = TextFormat::RED . Language::translate("area-name-excist"); //$o = TextFormat::RED . "An area with that name already exists.";
                                 }
@@ -1491,6 +1542,18 @@ class Festival extends PluginBase implements Listener{
             $player->sendMessage( TextFormat::GREEN . language::translate("radius-distance-to-position"). ": " . $radius . " blocks (" . $p1->getX() . ", " . $p1->getY() . ", " . $p1->getZ() . " to " . $p2->getX() . ", " . $p2->getY() . ", " . $p2->getZ() . ")");
             // $player->sendMessage(TextFormat::GREEN . language::translate("pos2")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
 			$event->setCancelled();
+        }elseif(isset($this->selectingDiameter[$playerName])){
+            unset($this->selectingDiameter[$playerName]);
+            $this->diameterPosition[$playerName] = $block->asVector3();
+
+            $p1 = $this->firstPosition[$playerName];
+            $p2 = $this->diameterPosition[$playerName];
+            $diameter = $this->get_3d_distance($p1,$p2);
+
+            // Diameter distance to position:
+            $player->sendMessage( TextFormat::GREEN . language::translate("diameter-distance-to-position"). ": " . $diameter . " blocks (" . $p1->getX() . ", " . $p1->getY() . ", " . $p1->getZ() . " to " . $p2->getX() . ", " . $p2->getY() . ", " . $p2->getZ() . ")");
+            // $player->sendMessage(TextFormat::GREEN . language::translate("pos2")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
+			$event->setCancelled();
         }else{
             //  .. canUseTNT( $player, $block )
             if( $block->getID() == Block::TNT && !$this->canUseTNT( $player, $block ) ){
@@ -1527,8 +1590,26 @@ class Festival extends PluginBase implements Listener{
 		}elseif(isset($this->selectingRadius[$playerName])){
             unset($this->selectingRadius[$playerName]);
             $this->radiusPosition[$playerName] = $block->asVector3();
-            $player->sendMessage(TextFormat::GREEN . "Radius distance to position: (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
-            //$player->sendMessage(TextFormat::GREEN . language::translate("pos2")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
+
+            $p1 = $this->firstPosition[$playerName];
+            $p2 = $this->radiusPosition[$playerName];
+            $radius = $this->get_3d_distance($p1,$p2);
+
+            // Radius distance to position:
+            $player->sendMessage( TextFormat::GREEN . language::translate("radius-distance-to-position"). ": " . $radius . " blocks (" . $p1->getX() . ", " . $p1->getY() . ", " . $p1->getZ() . " to " . $p2->getX() . ", " . $p2->getY() . ", " . $p2->getZ() . ")");
+            // $player->sendMessage(TextFormat::GREEN . language::translate("pos2")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
+			$event->setCancelled();
+        }elseif(isset($this->selectingDiameter[$playerName])){
+            unset($this->selectingDiameter[$playerName]);
+            $this->diameterPosition[$playerName] = $block->asVector3();
+
+            $p1 = $this->firstPosition[$playerName];
+            $p2 = $this->diameterPosition[$playerName];
+            $diameter = $this->get_3d_distance($p1,$p2);
+
+            // Diameter distance to position:
+            $player->sendMessage( TextFormat::GREEN . language::translate("diameter-distance-to-position"). ": " . $diameter . " blocks (" . $p1->getX() . ", " . $p1->getY() . ", " . $p1->getZ() . " to " . $p2->getX() . ", " . $p2->getY() . ", " . $p2->getZ() . ")");
+            // $player->sendMessage(TextFormat::GREEN . language::translate("pos2")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
 			$event->setCancelled();
         }else{
 			if(!$this->canEdit($player, $block)){
@@ -1657,17 +1738,26 @@ class Festival extends PluginBase implements Listener{
         $e = $event->getEntity();
         //($e instanceof Fire && !$this->canBurn( $e->getPosition() )) || (
         if( !($e instanceof Player) && !$this->canEntitySpawn( $e ) ){
-            //$e->flagForDespawn() to slow / ? $e->close(); private..
-            $this->getServer()->getPluginManager()->callEvent(new EntityDespawnEvent($e));
-            $e->despawnFromAll();
-            if($e->chunk !== null){
-                $e->chunk->removeEntity($e);
-                $e->chunk = null;
-            }
-            if($e->isValid()){
-                $e->level->removeEntity($e);
-                $e->setLevel(null);
-            }
+
+           if( $this->helper->isPluginLoaded( "Slapper" )  ){ // && ($e instanceof SlapperEntity || $e instanceof SlapperHuman)
+
+                $e->flagForDespawn(); // https://github.com/jojoe77777/Slapper/blob/master/src/slapper/Main.php
+
+            }else{
+
+                $this->getServer()->getPluginManager()->callEvent(new EntityDespawnEvent($e));
+                $e->despawnFromAll();
+                if($e->chunk !== null){
+                    $e->chunk->removeEntity($e);
+                    $e->chunk = null;
+                }
+                if($e->isValid()){ // !error with isClosed check and slapper
+                    $e->level->removeEntity($e);
+                    $e->setLevel(null);
+                }
+
+           }
+
         }
 
     }
@@ -2086,8 +2176,8 @@ class Festival extends PluginBase implements Listener{
 
         if($pos && $nm != ''){
 
-            $animals =[ 'bat','chicken','cow','horse','llama','donkey','mule','ocelot','parrot','fish','dolphin','squit','pig','rabbit','sheep','pufferfish','salmon','turtle','tropical_fish','cod','balloon'];
-
+            $animals =[ 'bat','chicken','cow', 'cat', 'chicken', 'fox', 'horse','donkey', 'mule', 'ocelot', 'parrot', 'fish', 'squit', 'pig','rabbit', 'panda', 'sheep', 'salmon','turtle', 'tropical_fish', 'cod', 'balloon', 'mooshroom', 'trader_llama', 'wolf', 'spider', 'cave_spider', 'dolphin', 'llama', 'polar_bear', 'pufferfish']; // passive <- wolf -> neutral
+            $thisarea = '';
             if( in_array( strtolower($nm), $animals ) ){
                 // check animal flag
                 $a = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Animals"] : $this->animals);
@@ -2096,6 +2186,7 @@ class Festival extends PluginBase implements Listener{
                 }
                 foreach ($this->areas as $area) {
                     if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
+                        $thisarea = $area->getName();
                         if ($area->getFlag("animals")) {
                             $o = false;
                         }
@@ -2105,14 +2196,14 @@ class Festival extends PluginBase implements Listener{
                     }
                 }
             }else{
-                // check mob flag
+                // check other entities (mob) flag
                 $m = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Mobs"] : $this->mobs);
                 if ($m) {
                     $o = false;
                 }
                 foreach ($this->areas as $area) {
                     if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
-
+                        $thisarea = $area->getName();
                         if ($area->getFlag("mobs")) {
                             $o = false;
                         }
@@ -2123,10 +2214,11 @@ class Festival extends PluginBase implements Listener{
                 }
             }
         }
-        /* if($o){
-            $this->getLogger()->info( 'Spawn '.$nm.' entity allowed' );
+        /*
+        if($o){
+            $this->getLogger()->info( 'Spawn '.$nm.' entity allowed in area '.$thisarea.' in '.$pos->getLevel()->getName() );
         }else{
-            $this->getLogger()->info( 'Spawn '.$nm.' entity canceled' );
+            $this->getLogger()->info( 'Spawn '.$nm.' entity canceled in area '.$thisarea.' in '.$pos->getLevel()->getName());
         } */
         return $o;
     }
