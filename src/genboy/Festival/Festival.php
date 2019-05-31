@@ -60,6 +60,9 @@ use pocketmine\event\player\PlayerQuitEvent;
 
 class Festival extends PluginBase implements Listener{
 
+	/** @var obj */
+	public $helper; // helper class
+
 	/** @var array[] */
 	private $levels        = []; // list of level flags
 	/** @var Area[] */
@@ -153,6 +156,9 @@ class Festival extends PluginBase implements Listener{
 	public function onEnable() : void{
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this); // Load data & configurations
+
+        $this->helper = new Helper($this);
+
         $newchange = []; // list of missing config flags/options
 		if(!is_dir($this->getDataFolder())){
 			mkdir($this->getDataFolder());
@@ -482,22 +488,27 @@ class Festival extends PluginBase implements Listener{
         if( !$languageCode ){
             $languageCode = 'en';
         }
-        $langfile1 = $this->getDataFolder() . "resources" . DIRECTORY_SEPARATOR . "translations" . DIRECTORY_SEPARATOR. "en.json";
-        if( file_exists( $langfile1 )){
-            $text = Encoding::toUTF8( file_get_contents($langfile1, true) );
-            $default = json_decode($text, true); // php decode utf-8
-        }
-        $langfile2 = $this->getDataFolder() . "resources" . DIRECTORY_SEPARATOR . "translations" . DIRECTORY_SEPARATOR. $languageCode .".json";
-        if( file_exists( $langfile2 )){
-            $text = Encoding::toUTF8( file_get_contents($langfile2, true) );
-            $setting = json_decode($text, true); // php decode utf-8
-        }
-        if(isset($setting)){
+
+        $resources = $this->getResources(); // read files in resources folder
+        foreach($resources as $resource){
+            if($resource->getFilename() === "en.json"){
+              //$text = utf8_encode( file_get_contents($resource->getPathname(), true) ); // json content in utf-8
+              $text = Encoding::toUTF8( file_get_contents($resource->getPathname(), true) );
+              $default = json_decode($text, true); // php decode utf-8
+            }
+            if($resource->getFilename() === $languageCode.".json"){
+              //$text = utf8_encode( file_get_contents($resource->getPathname(), true) );
+              $text = Encoding::toUTF8( file_get_contents($resource->getPathname(), true) );
+              $setting = json_decode($text, true); // php decode utf-8
+            }
+          }
+          if(isset($setting)){
             $langJson = $setting;
-        }else{
+          }else{
             $langJson = $default;
-        }
-        new Language($this, $langJson);
+          }
+          new Language($this, $langJson);
+
     }
 
     /** set language
@@ -1727,17 +1738,26 @@ class Festival extends PluginBase implements Listener{
         $e = $event->getEntity();
         //($e instanceof Fire && !$this->canBurn( $e->getPosition() )) || (
         if( !($e instanceof Player) && !$this->canEntitySpawn( $e ) ){
-            //$e->flagForDespawn() to slow / ? $e->close(); private..
-            $this->getServer()->getPluginManager()->callEvent(new EntityDespawnEvent($e));
-            $e->despawnFromAll();
-            if($e->chunk !== null){
-                $e->chunk->removeEntity($e);
-                $e->chunk = null;
-            }
-            if($e->isValid()){
-                $e->level->removeEntity($e);
-                $e->setLevel(null);
-            }
+
+           if( $this->helper->isPluginLoaded( "Slapper" )  ){ // && ($e instanceof SlapperEntity || $e instanceof SlapperHuman)
+
+                $e->flagForDespawn(); // https://github.com/jojoe77777/Slapper/blob/master/src/slapper/Main.php
+
+            }else{
+
+                $this->getServer()->getPluginManager()->callEvent(new EntityDespawnEvent($e));
+                $e->despawnFromAll();
+                if($e->chunk !== null){
+                    $e->chunk->removeEntity($e);
+                    $e->chunk = null;
+                }
+                if($e->isValid()){ // !error with isClosed check and slapper
+                    $e->level->removeEntity($e);
+                    $e->setLevel(null);
+                }
+
+           }
+
         }
 
     }
@@ -2156,8 +2176,8 @@ class Festival extends PluginBase implements Listener{
 
         if($pos && $nm != ''){
 
-            $animals =[ 'bat','chicken','cow','horse','llama','donkey','mule','ocelot','parrot','fish','dolphin','squit','pig','rabbit','sheep','pufferfish','salmon','turtle','tropical_fish','cod','balloon'];
-
+            $animals =[ 'bat','chicken','cow', 'cat', 'chicken', 'fox', 'horse','donkey', 'mule', 'ocelot', 'parrot', 'fish', 'squit', 'pig','rabbit', 'panda', 'sheep', 'salmon','turtle', 'tropical_fish', 'cod', 'balloon', 'mooshroom', 'trader_llama', 'wolf', 'spider', 'cave_spider', 'dolphin', 'llama', 'polar_bear', 'pufferfish']; // passive <- wolf -> neutral
+            $thisarea = '';
             if( in_array( strtolower($nm), $animals ) ){
                 // check animal flag
                 $a = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Animals"] : $this->animals);
@@ -2166,6 +2186,7 @@ class Festival extends PluginBase implements Listener{
                 }
                 foreach ($this->areas as $area) {
                     if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
+                        $thisarea = $area->getName();
                         if ($area->getFlag("animals")) {
                             $o = false;
                         }
@@ -2175,14 +2196,14 @@ class Festival extends PluginBase implements Listener{
                     }
                 }
             }else{
-                // check mob flag
+                // check other entities (mob) flag
                 $m = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Mobs"] : $this->mobs);
                 if ($m) {
                     $o = false;
                 }
                 foreach ($this->areas as $area) {
                     if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
-
+                        $thisarea = $area->getName();
                         if ($area->getFlag("mobs")) {
                             $o = false;
                         }
@@ -2193,10 +2214,11 @@ class Festival extends PluginBase implements Listener{
                 }
             }
         }
-        /* if($o){
-            $this->getLogger()->info( 'Spawn '.$nm.' entity allowed' );
+        /*
+        if($o){
+            $this->getLogger()->info( 'Spawn '.$nm.' entity allowed in area '.$thisarea.' in '.$pos->getLevel()->getName() );
         }else{
-            $this->getLogger()->info( 'Spawn '.$nm.' entity canceled' );
+            $this->getLogger()->info( 'Spawn '.$nm.' entity canceled in area '.$thisarea.' in '.$pos->getLevel()->getName());
         } */
         return $o;
     }
