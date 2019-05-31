@@ -18,4 +18,10 @@ class Helper {
 
     }
 
+    public function isPluginLoaded(string $pluginName){
+
+        return ($findplugin = $this->plugin->getServer()->getPluginManager()->getPlugin($pluginName)) !== null and $findplugin->isEnabled();
+
+    }
+
 }

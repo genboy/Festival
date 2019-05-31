@@ -19,6 +19,8 @@
     "make-pos2": "Breek of plaats een blok voor het tweede coordinaat.",
     "make-radius-distance": "Breek of plaats een blok om de radius grote te bepalen.",
     "radius-distance-to-position": "Radius afstand tot positie",
+    "make-diameter-distance": "Please place or break to select the diameter direction and distance.",
+    "diameter-distance-to-position": "Diameter distance to position",
     "give-area-name": "Geef het gebied een naam.",
 
     "in-unknown-area": "Je ben in onbekend gebied",
@@ -31,7 +33,8 @@
     "players": "spelers",
     "the-area": "Het gebied",
     "the-level": "Het level",
-    "area-created": "Gebied gemaakt!",
+    "cube-area-created": "Kubus gebied gemaakt!",
+    "sphere-area-created": "Bol gebied gemaakt!",
     "created-by":"gemaakt door",
     "area-here": "Gebied hier",
     "area-no-area-available": "Geen gebied beschikbaar",
