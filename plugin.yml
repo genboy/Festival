@@ -29,6 +29,9 @@ permissions:
               festival.command.fe.lang:
                 description: "Allows access to the Festival lang subcommand."
                 default: op
+              festival.command.fe.priority:
+                description: "Allows access to the Festival priority subcommand."
+                default: op
               festival.command.fe.titles:
                 description: "Allows access to the Festival titles subcommand."
                 default: op

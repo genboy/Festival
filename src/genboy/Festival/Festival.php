@@ -4,8 +4,8 @@
  * copyright Genbay 2019
  *
  * Options in config.yml (v 1.1.3 )
- * language: en/nl, Msgtype: msg/title/tip/pop, Areadisplay: off/op/on, Msgdisplay: off/op/on, AutoWhitelist: on/off, FlightControl: on/off
- * Flags: god, pvp, flight, edit, touch, mobs, animals, effects, msg, passage, drop, tnt, fire, explode, shoot, hunger, perms, falldamage, cmdmode
+ * language: en/nl, msgposition: msg/title/tip/pop, msgdisplay: off/op/on, Msgdisplay: off/op/on, autowhitelist: on/off, flightcontrol: on/off
+ * Flags: god, pvp, flight, edit, touch, mobs, animals, effects, msg, pass, drop, tnt, fire, explode, shoot, hunger, perms, falldamage, cmdmode
  *
  */
 
@@ -62,55 +62,12 @@ class Festival extends PluginBase implements Listener{
 
 	/** @var obj */
 	public $helper; // helper class
-
 	/** @var array[] */
-	private $levels        = []; // list of level flags
+	public $config        = [];    // list of config options
+	/** @var array[] */
+	public $levels        = [];    // list of level objects
 	/** @var Area[] */
-	public $areas          = []; // list of area objects
-	/** @var array[] */
-	public $flagset        = []; // list of area flags
-	/** @var array[] */
-	public $options        = []; // config options
-
-	/** @var bool */
-	private $god           = false;
-	/** @var bool */
-	private $pvp           = false;
-	/** @var bool */
-	private $flight        = false;
-	/** @var bool */
-	private $edit          = false;
-	/** @var bool */
-	private $touch         = false;
-	/** @var bool */
-	private $mobs          = false;
-	/** @var bool */
-	private $animals       = false;
-	/** @var bool */
-	private $effects       = false;
-	/** @var bool */
-	private $msg           = false;
-	/** @var bool */
-	private $passage       = false;
-	/** @var bool */
-	private $drop          = false;
-	/** @var bool */
-	private $explode       = false;
-	/** @var bool */
-	private $tnt           = false;
-	/** @var bool */
-	private $fire          = false;
-	/** @var bool */
-	private $shoot         = false;
-	/** @var bool */
-	private $hunger        = false;
-	/** @var bool */
-	private $perms         = false;
-	/** @var bool */
-	private $falldamage    = false;
-	/** @var bool */
-	private $cmdmode       = false;
-
+	public $areas          = [];   // list of area objects
 	/** @var bool[] */
 	private $selectingFirst    = [];
 	/** @var bool[] */
@@ -119,7 +76,6 @@ class Festival extends PluginBase implements Listener{
 	private $selectingRadius   = [];
 	/** @var bool[] */
 	private $selectingDiameter   = [];
-
 	/** @var Vector3[] */
 	private $firstPosition     = [];
 	/** @var Vector3[] */
@@ -128,15 +84,14 @@ class Festival extends PluginBase implements Listener{
 	private $radiusPosition    = [];
 	/** @var int */
 	private $diameterPosition    = [];
-
+	/** @var array[]
+     * list of areanames with the full area objects (recreated in saveAreas function)
+     */
+	public $areaList  = [];
 	/** @var array[]
      * list of playernames with areanames they're in
      */
 	private $inArea    = [];
-	/** @var array[]
-     * list of areanames with the full area objects (recreated in saveAreas function)
-     */
-	private $areaList  = [];
 	/** @var array[]
      * list of areanames with active floatingtextparticle objects
      */
@@ -149,333 +104,61 @@ class Festival extends PluginBase implements Listener{
      * list of playernames who have fall damage/teleport protection (skipptime)
      */
 	public $playerTP   = [];
-
 	/** Enable
 	 * @return $this
 	 */
 	public function onEnable() : void{
-
         $this->getServer()->getPluginManager()->registerEvents($this, $this); // Load data & configurations
-
         $this->helper = new Helper($this);
-
-        $newchange = []; // list of missing config flags/options
-		if(!is_dir($this->getDataFolder())){
-			mkdir($this->getDataFolder());
-		}
-		if(!file_exists($this->getDataFolder() . "areas.json")){
-			file_put_contents($this->getDataFolder() . "areas.json", "[]");
-		}
-		if(!file_exists($this->getDataFolder() . "config.yml")){
-			$c = $this->getResource("config.yml");
-			$o = stream_get_contents($c);
-			fclose($c);
-			file_put_contents($this->getDataFolder() . "config.yml", str_replace("DEFAULT", $this->getServer()->getDefaultLevel()->getName(), $o));
-            $newchange['Config'] = 'Festival setup..';
-		}
-
-		/** load default language translation class */
-        $this->loadLanguage();
-
-		$c = yaml_parse_file($this->getDataFolder() . "config.yml");
-
-		// innitialize configurations & update options
-		if( isset( $c["Options"] ) && is_array( $c["Options"] ) ){
-            if(!isset($c["Options"]["Language"])){
-				$c["Options"]["Language"] = 'en';
-				$newchange['Msgtype'] = "! Language ".Language::translate("option-missing-in-config")." 'en'; ". Language::translate("option-see-configfile");
-            }else if(isset($c["Options"]["Language"])){
-                $this->loadLanguage($c["Options"]["Language"]);
-			}
-			if(!isset($c["Options"]["Msgtype"])){
-				$c["Options"]["Msgtype"] = 'pop';
-				$newchange['Msgtype'] = "! Msgtype ".Language::translate("option-missing-in-config")." 'pop'; ". Language::translate("option-see-configfile");
-			}
-			if(!isset($c["Options"]["Msgdisplay"])){
-				$c["Options"]["Msgdisplay"] = 'off';
-				$newchange['Msgtype'] = "! Msgdisplay ".Language::translate("option-missing-in-config")." 'off'; ". Language::translate("option-see-configfile");
-			}
-			if(!isset($c["Options"]["Areadisplay"])){
-				$c["Options"]["Areadisplay"] = 'off';
-				$newchange['Areadisplay'] = "! Areadisplay ".Language::translate("option-missing-in-config")." 'off'; ". Language::translate("option-see-configfile");
-			}
-            if(!isset($c["Options"]["FlightControl"])){ // check since v1.1.3
-				$c["Options"]["FlightControl"] = 'on';
-				$newchange['Msgtype'] = "! FlightControl ".Language::translate("option-missing-in-config")." 'on'; ". Language::translate("option-see-configfile");
-			}
-            if(!isset($c["Options"]["AutoWhitelist"])){ // check since v1.0.5-12
-				$c["Options"]["AutoWhitelist"] = 'on';
-				$newchange['Msgtype'] = "! AutoWhitelist ".Language::translate("option-missing-in-config")." 'on'; ". Language::translate("option-see-configfile");
-			}
-			$this->options = $c["Options"];
-		}else{
-            $this->options = array("Language"=>"en", "Msgtype"=>"pop", "Msgdisplay"=>"off", "FlightControl"=>"on", "AutoWhitelist"=>"on"); // Fallback defaults
-            //$newchange['Options'] = "! Config Options missing in config.yml, defaults are set for now; please see /resources/config.yml";
-            $newchange['Options'] = "! ".Language::translate("option-missing-in-config")."; ". Language::translate("option-see-configfile");
-		}
-
-        // set defaults
-		if(!isset($c["Default"]["God"])) {
-			$c["Default"]["God"] = false;
-		}
-		if(!isset($c["Default"]["Edit"])) {
-			$c["Default"]["Edit"] = true;
-		}
-		if(!isset($c["Default"]["Touch"])) {
-			$c["Default"]["Touch"] = false;
-		}
-		if(!isset($c["Default"]["Msg"])) { // new in v1.0.3
-			$c["Default"]["Msg"] = false;
-		}
-		if( isset($c["Default"]["Barrier"]) ){ // new in v1.0.4-11
-			$c["Default"]["Passage"] =  $c["Default"]["Barrier"];
-		}else if(!isset($c["Default"]["Passage"])) { // replaced in v1.0.5-11
-			$c["Default"]["Passage"] = false;
-		}
-		if(!isset($c["Default"]["Perms"])) { // new in v1.0.4-11
-			$c["Default"]["Perms"] = false;
-		}
-		if(!isset($c["Default"]["Drop"])) { // new in v1.0.4-11
-			$c["Default"]["Drop"] = false;
-		}
-		if(!isset($c["Default"]["Animals"])) { // new in v1.0.7.5-dev
-			$c["Default"]["Animals"] = false;
-		}
-		if(!isset($c["Default"]["Mobs"])) { // new in v1.0.7.5-dev
-			$c["Default"]["Mobs"] = false;
-		}
-		if(!isset($c["Default"]["Effects"])) { // new in v1.0.5-12
-			$c["Default"]["Effects"] = false;
-		}
-		if(!isset($c["Default"]["PVP"])) { // new in v1.0.6-13
-			$c["Default"]["PVP"] = false;
-		}
-		if(!isset($c["Default"]["Flight"])) { // new in v1.0.6-13
-			$c["Default"]["Flight"] = false;
-		}
-		if(!isset($c["Default"]["Explode"])) { // new in v1.0.7.9
-			$c["Default"]["Explode"] = false;
-            if( isset($c["Default"]["TNT"]) ){
-                $c["Default"]["Explode"] = true;
-            }
-		}
-		if(!isset($c["Default"]["TNT"])) { // new in v1.0.7.3
-			$c["Default"]["TNT"] = false;
-		}
-		if(!isset($c["Default"]["Fire"])) { // new in v1.0.7.9
-			$c["Default"]["Fire"] = false;
-            if( isset($c["Default"]["TNT"]) ){
-                $c["Default"]["Fire"] = true;
-            }
-		}
-		if(!isset($c["Default"]["Shoot"])) { // new in v1.0.7
-			$c["Default"]["Shoot"] = false;
-		}
-		if(!isset($c["Default"]["Hunger"])) { // new in v1.0.7
-			$c["Default"]["Hunger"] = false;
-		}
-		if(!isset($c["Default"]["FallDamage"])) {
-			$c["Default"]["FallDamage"] = false; // new in v1.0.7.3
-		}
-		if(!isset($c["Default"]["CMDmode"])) {
-			$c["Default"]["CMDmode"] = false; // new in v1.0.7.8
-		}
-
-        // world default flag settings
-		$this->god            = $c["Default"]["God"]; // original
-		$this->edit           = $c["Default"]["Edit"]; // original
-		$this->touch          = $c["Default"]["Touch"]; // original
-		$this->msg            = $c["Default"]["Msg"]; // new in v1.0.2
-		$this->passage        = $c["Default"]["Passage"]; // changed in v1.0.3-11
-		$this->perms          = $c["Default"]["Perms"]; // new in v1.0.4-11
-		$this->drop           = $c["Default"]["Drop"]; // new in v1.0.4-11
-		$this->animals        = $c["Default"]["Animals"]; // new in v1.0.7.5-dev
-		$this->mobs           = $c["Default"]["Mobs"]; // new in v1.0.7.5-dev
-		$this->effects        = $c["Default"]["Effects"]; // new in v1.0.5-12
-		$this->pvp            = $c["Default"]["PVP"]; // new in v1.0.6-13
-		$this->flight         = $c["Default"]["Flight"]; // new in v1.0.6-13
-		$this->explode        = $c["Default"]["Explode"]; // new in v1.0.7.9
-		$this->tnt            = $c["Default"]["TNT"]; // new in v1.0.7.3
-		$this->fire           = $c["Default"]["Fire"]; // new in v1.0.7.9
-		$this->hunger         = $c["Default"]["Hunger"]; // new in v1.0.7.3
-		$this->falldamage     = $c["Default"]["FallDamage"]; // new in  1.0.7.2-dev(1.0.8)
-		$this->shoot          = $c["Default"]["Shoot"]; // new in  1.0.7.2-dev(1.0.8)
-		$this->cmdmode        = $c["Default"]["CMDmode"]; // new in  1.0.7.8-dev(1.0.8)
-
-        $this->flagset        = $c['Default']; // all flags :) new in v1.0.5-12
-
-        // specified world default flag settings
-		if(is_array( $c["Worlds"] )){
-			foreach($c["Worlds"] as $level => $flags){
-				if( isset($flags["Barrier"]) ){ // check since v1.0.3-11
-					$flags["Passage"] = $flags["Barrier"]; // replaced in v1.0.5-11
-					unset($flags["Barrier"]);
-				}
-				if( !isset($flags["Passage"]) ){ // changed in v1.0.3-11
-					$flags["Passage"] = $this->passage;
-				}
-				if( !isset($flags["Perms"]) ){ // new v1.0.4-11
-					$flags["Perms"] = $this->perms;
-				}
-				if( !isset($flags["Drop"]) ){ // new v1.0.4-11
-					$flags["Drop"] = $this->drop;
-				}
-				if( !isset($flags["Animals"]) ){ // new v1.0.7.5-dev
-					$flags["Animals"] = $this->animals;
-				}
-				if( !isset($flags["Mobs"]) ){ // new v1.0.7.5-dev
-					$flags["Mobs"] = $this->effects;
-				}
-				if( !isset($flags["Effects"]) ){ // new v1.0.5-12
-					$flags["Effects"] = $this->effects;
-				}
-				if( !isset($flags["PVP"]) ){ // new v1.0.6-13
-					$flags["PVP"] = $this->pvp;
-				}
-				if( !isset($flags["Flight"]) ){ // new v1.0.6-13
-					$flags["Flight"] = $this->flight;
-				}
-				if( !isset($flags["Explode"]) ){ // new v1.0.7.9
-					$flags["Explode"] = $this->explode;
-				}
-				if( !isset($flags["TNT"]) ){ // new v1.0.7.3
-					$flags["TNT"] = $this->tnt;
-				}
-				if( !isset($flags["Fire"]) ){ // new v1.0.7.9
-					$flags["Fire"] = $this->fire;
-				}
-				if( !isset($flags["Hunger"]) ){ // new v1.0.7
-					$flags["Hunger"] = $this->hunger;
-				}
-				if( !isset($flags["FallDamage"]) ){ // new in v1.0.7.2
-					$flags["FallDamage"] = $this->falldamage;
-				}
-				if( !isset($flags["Shoot"]) ){ // new v1.0.7.2
-					$flags["Shoot"] = $this->shoot;
-				}
-				if( !isset($flags["CMD"]) ){ // new in v1.0.7.2
-					$flags["CMDmode"] = $this->cmdmode;
-				}
-				$this->levels[$level] = $flags;
-			}
-		}
-
-        // innitialize default flags & update data
-		$data = json_decode(file_get_contents($this->getDataFolder() . "areas.json"), true);
-
-		if( isset( $data ) && is_array( $data ) ){
-            foreach($data as $datum){
-
-                if( !isset($datum["radius"]) ){ // new radius variable v 1.1.4
-                    $datum["radius"] = 0;
-                    $newchange['Radius'] = Language::translate("new-radius-variable");
+        $this->dataSetup();
+        $this->getLogger()->info( "Genboy copyright 2019" );
+	}
+    /** dataSetup
+	 * @class Helper
+	 * @func Helper getSource
+	 * @var $plugin->options
+     */
+    public function dataSetup(): bool{
+        // check config file and defaults
+        $o = "";
+        $config = $this->helper->getDataSet( "config" ); // latest json type config file in datafolder
+        if( isset( $config["options"] ) && is_array( $config["options"] ) ){
+            $this->config = $config;
+            $o = "Configuration ready!";
+        }else{
+            $prevconfig = $this->helper->getDataSet( "config", "yml" ); // check previous used config.yml in datafolder
+            if( isset( $prevconfig["Options"] ) && is_array( $prevconfig["Options"] ) && isset( $prevconfig["Default"] ) && is_array( $prevconfig["Default"] ) ){
+                $this->config = $this->helper->formatOldConfigs( $prevconfig );
+                $o = "Previous config.yml used for configuration!";
+            }else{
+                $oldconfig = $this->helper->getSource( "config", "yml" ); // use default config.yml in resource folder
+                //var_dump( $oldconfig );
+                if( isset( $oldconfig["Options"] ) && is_array( $oldconfig["Options"] ) && isset( $oldconfig["Default"] ) && is_array( $oldconfig["Default"] ) ){
+                    $this->config = $this->helper->formatOldConfigs( $oldconfig ); // levels not loaded..
+                    $o = "File config.yml not found in datafolder, resourced configuration loaded!";
+                }else{
+                    $this->config = $this->helper->newConfigPreset(); // levels not loaded..
+                    $o = "No config.yml found or incorrect config format, default configuration loaded!";
                 }
-
-                $flags = $datum["flags"];
-                if( isset($datum["flags"]["barrier"]) ){
-                    $flags["passage"] = $datum["flags"]["barrier"]; // replaced in v1.0.5-11 can use both
-                    unset($flags["barrier"]);
-                    $newchange['Passage'] = "! " . Language::translate("barrier-is-passage-flag");
-                }
-                if( !isset($datum["flags"]["perms"]) ){ // new flags v 1.0.5-12
-                    $flags["perms"] = false;
-				    $newchange['Perms'] = "! Perms ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
-                }
-                if( !isset($datum["flags"]["drop"]) ){ // new flags v 1.0.5-12
-                    $flags["drop"] = false;
-				    $newchange['canInteract'] = "! Drop ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
-                }
-                if( !isset($datum["flags"]["animals"]) ){ // new flags v 1.0.7.5-dev
-                    $flags["animals"] = false;
-				    $newchange['Animals'] = "! Animals ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
-                }
-                if( !isset($datum["flags"]["mobs"]) ){ // new flags v 1.0.7.5-dev
-                    $flags["mobs"] = false;
-				    $newchange['Mobs'] = "! Mobs ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
-                }
-                if( !isset($datum["flags"]["effects"]) ){ // new flags v 1.0.5-12
-                    $flags["effects"] = false;
-				    $newchange['Effects'] = "! Effects ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
-                }
-                if( !isset($datum["flags"]["pvp"]) ){ //new flags v 1.0.6-13
-                    $flags["pvp"] = false;
-				    $newchange['PVP'] = "! PVP ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
-                }
-                if( !isset($datum["flags"]["flight"]) ){ //new flags v 1.0.6-13
-                    $flags["flight"] = false;
-				    $newchange['Flight'] = "! Flight ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
-                }
-                if( !isset($datum["flags"]["explode"]) ){ // new flags v 1.0.7.9
-                    $flags["explode"] = false;
-				    $newchange['Explode'] = "! Explode ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
-                }
-                if( !isset($datum["flags"]["tnt"]) ){ // new flags v 1.0.7.3
-                    $flags["tnt"] = false;
-				    $newchange['TNT'] = "! TNT ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
-                }
-                if( !isset($datum["flags"]["fire"]) ){ // new flags v 1.0.7.9
-                    $flags["fire"] = false;
-				    $newchange['Fire'] = "! Fire ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
-                }
-                if( !isset($datum["flags"]["hunger"]) ){ // new flags v 1.0.7
-                    $flags["hunger"] = false;
-				    $newchange['Hunger'] = "! Hunger ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
-                }
-                if( isset($datum["flags"]["nofalldamage"]) ){
-                    $flags["falldamage"] = $datum["flags"]["nofalldamage"]; // replaced in v1.0.5-11 can use both
-                    unset($flags["nofalldamage"]);
-                    $newchange['FallDamage'] = "! " . Language::translate("no-is-falldamage-flag");
-                }
-                if( !isset($datum["flags"]["falldamage"]) ){ //new in v1.0.7.3
-                    $flags["falldamage"] = false;
-				    $newchange['FallDamage'] = "! FallDamage ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
-                }
-                if( !isset($datum["flags"]["shoot"]) ){ //new in v1.0.7.4
-                    $flags["shoot"] = false;
-				    $newchange['Shoot'] = "! Shoot ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
-                }
-                if( !isset($datum["flags"]["cmdmode"]) ){ //new in v1.0.7.4
-                    $flags["cmdmode"] = false;
-				    $newchange['CMDmode'] = "! Event Command mode ".Language::translate("flag-missing-in-config")." 'false'; ". Language::translate("option-see-configfile");
-                }
-                // setup area's to use
-                new Area($datum["name"], $datum["desc"], $flags, new Vector3($datum["pos1"]["0"], $datum["pos1"]["1"], $datum["pos1"]["2"]), new Vector3($datum["pos2"]["0"], $datum["pos2"]["1"], $datum["pos2"]["2"]), $datum["radius"], $datum["level"], $datum["whitelist"], $datum["commands"], $datum["events"], $this);
             }
         }
-		$this->saveAreas(); // all save $this->areaList available :)
-
-		/** load language translation class */
-        $this->loadLanguage( $this->options["Language"] );
-
+        $this->helper->saveDataSet( "config", $this->config );
+        $this->loadLanguage( $this->config["options"]["lang"] );
+        $this->getLogger()->info( $o );
+        /// check levels
+        if( !$this->helper->loadLevels() || empty( $this->levels ) ){
+            $this->helper->loadDefaultLevels();
+        }
+        // check areas
+        if( !$this->helper->loadAreas() || empty( $this->areas ) ){
+            $this->helper->loadDefaultAreas();
+        }
         /** console output */
         $this->getLogger()->info( Language::translate("enabled-console-msg") );
+        return true;
 
+    }
 
-		$ca = 0; // plugin area command count
-		$fa = 0; // plugin area flag count
-		foreach( $this->areas as $a ){
-            foreach($a->flags as $flag){
-                if($flag){
-                    $fa++;
-                }
-            }
-			$ca = $ca + count( $a->getCommands() );
-		}
-
-		$levelsloaded = count( $this->getServerWorlds() );
-
-        $this->getLogger()->info( $fa.' '.Language::translate("flags").' '.Language::translate("select-and").' '. $ca .' '. Language::translate("cmds") .' '.Language::translate("select-in").' '. count($this->areas)  .' '.  Language::translate("areas").' ('.$levelsloaded.' '.Language::translate("levels").')');
-
-		// warnings changes
-		if( count($newchange) > 0 ){
-            foreach($newchange as $ttl => $txt){
-			     $this->getLogger()->info( $ttl . ": " . $txt );
-            }
-		}
-
-        $this->codeSigned(); // codesign
-
-	}
 
     /** load language ( v1.0.7.7-dev )
 	 * @var plugin config[]
@@ -516,101 +199,11 @@ class Festival extends PluginBase implements Listener{
 	 * @var obj Player
 	 */
     public function setLanguage( $lang, $player ){
-        $this->options["Language"] = strtolower( $lang );
-        $this->loadLanguage( $this->options["Language"] );
+        $this->config["options"]["lang"] = strtolower( $lang );
+        $this->loadLanguage( $this->config["options"]["lang"] );
         $msg = TextFormat::AQUA . Language::translate("language-selected");
         $this->areaMessage( $msg, $player );
     }
-
-    /** Flag check (synonym to original name)
-	 * @param string $flag
-	 * @return str $flag
-     */
-    public function isFlag( $str ){
-        // flag names
-        $names = [
-            "god","save",
-            "pvp",
-            "flight", "fly",
-            "edit","build","break","place",
-            "touch","interact",
-            "mobs","mob",
-            "animals","animal",
-            "effects","magic","effect",
-            "tnt",
-            "explode","explosion","explosions",
-            "fire","fires","burn",
-            "hunger","starve",
-            "drop",
-            "msg","message",
-            "passage","pass","barrier",
-            "perms","perm",
-			"falldamage","nofalldamage","fd","nfd","fall",
-            "shoot", "launch",
-            "cmdmode","commandmode","cmdm",
-        ];
-        $str = strtolower( $str );
-        $flag = false;
-        if( in_array( $str, $names ) ) {
-            $flag = $str;
-            if( $str == "save" ){
-                $flag = "god";
-            }
-            if( $str == "fly" ){
-                $flag = "flight";
-            }
-            if( $str == "build" || $str == "break" || $str == "place" ){
-                $flag = "edit";
-            }
-            if( $str == "touch" || $str == "interact" ){
-                $flag = "touch";
-            }
-            if( $str == "animals" || $str == "animal" ){
-                $flag = "animals";
-            }
-            if( $str == "mob" || $str == "mobs" ){
-                $flag = "mobs";
-            }
-            if( $str == "magic" || $str == "effect" ){
-                $flag = "effects";
-            }
-            if( $str == "message" ){
-                $flag = "msg";
-            }
-            if( $str == "perm" ){
-                $flag = "perms";
-            }
-            if( $str == "pass" || $str == "barrier" ){
-                $flag = "passage";
-            }
-            if( $str == "explosion" || $str == "explosions" || $str == "explode" ){
-                $flag = "explode";
-            }
-            if( $str == "tnt"  ){
-                $flag = "tnt";
-            }
-            if( $str == "fire" || $str == "fires" || $str == "burn" ){
-                $flag = "fire";
-            }
-            if( $str == "shoot" || $str == "launch" ){
-                $flag = "shoot";
-            }
-            if( $str == "effect" || $str == "effects" ){
-                $flag = "effects";
-            }
-            if( $str == "hunger" || $str == "starve" ){
-                $flag = "hunger";
-            }
-			if( $str == "nofalldamage" || $str == "falldamage" || $str == "fd" || $str == "nfd" || $str == "fall"){
-				$flag = "falldamage";
-			}
-            if( $str == "cmdmode" || $str == "commandmode" || $str == "cmdm"){ // ! command is used as function..
-                $flag = "cmdmode";
-            }
-        }
-        return $flag;
-    }
-
 
     /** COMMANDS
 	 * @param CommandSender $sender
@@ -641,7 +234,7 @@ class Festival extends PluginBase implements Listener{
             break;
             case "titles":
 				if( $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->isOp() || $this->isWhitelisted($sender) ){
-                    if( $this->options["Areadisplay"] == 'op' ||  $this->options["Areadisplay"] == 'on' ){
+                    if( $this->config["options"]["msgdisplay"] == 'op' ||  $this->config["options"]["msgdisplay"] == 'on' ){
                         if( isset($this->areaTitles[strtolower($sender->getName())]) && count($this->areaTitles[strtolower($sender->getName())]) > 0 ){
                             foreach($this->areas as $area){
                                 $this->hideAreaTitle( $sender, $sender->getPosition()->getLevel(), $area );
@@ -719,16 +312,18 @@ class Festival extends PluginBase implements Listener{
 							if( $args[1] != '' && $args[1] != ' ' ){
                                 if( !isset($this->areas[strtolower($args[1])]) ){
                                     // get level default flags
-                                    $flags = $this->flagset;
+                                    $flags = $this->config["defaults"];
                                     if( isset($this->levels[$sender->getLevel()->getName()]) ){
                                         if( is_array( $this->levels[$sender->getLevel()->getName()] ) ){
                                             $flags = $this->levels[$sender->getLevel()->getName()];
                                         }
                                     }
                                     $whitelist = []; // get default whitelisting
-                                    if( $this->options["AutoWhitelist"] == "on" ){
+                                    if( $this->config["options"]["autowhitelist"] == "on" ){
                                         $whitelist = [$playerName];
                                     }
+
+
 
                                     $pos1 = $this->firstPosition[$playerName];
 
@@ -761,28 +356,31 @@ class Festival extends PluginBase implements Listener{
                                         $radius = intval( 0 );
                                     }
 
+                                    $priority = intval( 0 );
+
                                     new Area(
                                         strtolower($args[1]),
                                         "",
-                                        [   "edit" => $flags['Edit'],
-                                            "god" => $flags['God'],
-                                            "pvp" => $flags["PVP"],
-                                            "flight"=> $flags["Flight"],
-                                            "touch" => $flags['Touch'],
-                                            "animals" => $flags['Animals'],
-                                            "mobs" => $flags['Mobs'],
-                                            "effects" => $flags['Effects'],
-                                            "msg" => $flags['Msg'],
-                                            "passage" => $flags['Passage'],
-                                            "drop" => $flags['Drop'],
-                                            "explode" => $flags['Explode'],
-                                            "tnt" => $flags['TNT'],
-                                            "fire" => $flags['Fire'],
-                                            "shoot" => $flags['Shoot'],
-                                            "hunger" => $flags['Hunger'],
-                                            "perms" => $flags['Perms'],
-                                            "falldamage" => $flags['FallDamage'],
-                                            "cmdmode" => $flags['CMDmode']
+                                        $priority,
+                                        [   "edit" => $flags['edit'],
+                                            "hurt" => $flags['hurt'],
+                                            "pvp" => $flags["pvp"],
+                                            "flight"=> $flags["flight"],
+                                            "touch" => $flags['touch'],
+                                            "animals" => $flags['animals'],
+                                            "mobs" => $flags['mobs'],
+                                            "effect" => $flags['effect'],
+                                            "msg" => $flags['msg'],
+                                            "pass" => $flags['pass'],
+                                            "drop" => $flags['drop'],
+                                            "explode" => $flags['explode'],
+                                            "tnt" => $flags['tnt'],
+                                            "fire" => $flags['fire'],
+                                            "shoot" => $flags['shoot'],
+                                            "hunger" => $flags['hunger'],
+                                            "perms" => $flags['perms'],
+                                            "fall" => $flags['fall'],
+                                            "cmd" => $flags['cmd']
                                         ],
                                         $pos1,
                                         $pos2,
@@ -849,6 +447,36 @@ class Festival extends PluginBase implements Listener{
 					}
 				}else{
                     $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); // You do not have permission to use this subcommand
+				}
+            break;
+            case "priority":
+            case "prior":
+            case "pri":
+				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.priority")){
+					if(isset($args[1])){
+						if(isset($this->areas[strtolower($args[1])])){
+							if(isset($args[2]) ){
+                                if(is_numeric($args[2])){
+                                    $ar = $args[1];
+                                    $priority = intval($args[2]);
+                                    $area = $this->areas[strtolower($ar)];
+                                    $area->priority = $priority;
+                                    $this->saveAreas();
+                                    $o = TextFormat::GREEN . Language::translate("area") . ' ' . TextFormat::LIGHT_PURPLE . $area->getName() . ' ' . TextFormat::GREEN . " prioriteit opgeslagen";//Language::translate("desc-saved");
+                                }else{
+                                    $o = 'not a number'; // TextFormat::RED . Language::translate("desc-write-usage"); // Please write the description. Usage /fe desc <areaname> <..>
+							    }
+							}else{
+                                $o = 'geef een nummer, 0 is default, 1 - 999 geeft hierachi, hogere prioriteit geeft meer voorrang'; // TextFormat::RED . Language::translate("desc-write-usage"); // Please write the description. Usage /fe desc <areaname> <..>
+							}
+						}else{
+                            $o = 'gebied bestaan niet'; //TextFormat::RED . Language::translate("area-not-excist"); // Area does not excist
+						}
+					}else{
+                        $o = 'geef aan welk gebied'; //TextFormat::RED . Language::translate("desc-specify-area"); // Please specify an area to edit the description. Usage: /fe desc <areaname> <desc>
+					}
+				}else{
+                    $o = 'geen toestemming voor dit commando'; //TextFormat::RED . Language::translate("cmd-noperms-subcommand"); // You do not have permission to use this subcommand
 				}
             break;
 			case "list":
@@ -923,7 +551,9 @@ class Festival extends PluginBase implements Listener{
 
                     $area = $this->areas[strtolower($args[1])];
                     $position = $sender->getPosition();
-                    $perms = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[ $position->getLevel()->getName() ]["Perms"] : $this->perms);
+
+                    $perms = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("perms") : $this->config["defaults"]["perms"]);
+                    //$perms = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[ $position->getLevel()->getName() ]["Perms"] : $this->perms);
 
                     if( $perms || $area->isWhitelisted($playerName) || $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe.tp")){
 
@@ -976,9 +606,10 @@ class Festival extends PluginBase implements Listener{
 			case "effects":
 			case "edit":
 			case "god":
+			case "hurt":
 			case "msg":
-			case "pass":
 			case "passage":
+			case "pass":
 			case "barrier":
 			case "perm":
 			case "perms":
@@ -1000,7 +631,7 @@ class Festival extends PluginBase implements Listener{
             case "nfd":
             case "cmdmode":
             case "commandmode":
-            case "cmdm":
+            case "cmd":
 
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.flag")){
 					if(isset($args[1])){
@@ -1009,7 +640,7 @@ class Festival extends PluginBase implements Listener{
 						* Revert a flag in all area's (v1.0.4-11)
 						*/
 						if($args[1] == 'swappall'){
-                            $flag = $this->isFlag( $args[0] ); // since v1.0.6-13
+                            $flag = $this->helper->isFlag( $args[0] ); // since v1.0.6-13
                             if( $flag ){
 								foreach($this->areas as $area){
 									if($area->getFlag($flag)){
@@ -1028,7 +659,7 @@ class Festival extends PluginBase implements Listener{
 
 						}else if(isset($this->areas[strtolower($args[1])])){
 							$area = $this->areas[strtolower($args[1])];
-							$flag = $this->isFlag( $args[0] ); // v1.0.6-13
+							$flag = $this->helper->isFlag( $args[0] ); // v1.0.6-13
                             if( $flag ){
 								if( isset($args[2]) && ( $args[2] == "true" ||  $args[2] == "on" ||  $args[2] == "false" ||  $args[2] == "off" ) ){
 									$mode = strtolower($args[2]);
@@ -1085,11 +716,11 @@ class Festival extends PluginBase implements Listener{
                                         $o = TextFormat::GREEN . Language::translate("flag") . " " . $flag . " ". Language::translate("set-to") . " " . $status . " ". Language::translate("for-area") . " " . $area->getName() . "!";
 									}else{
 
-										//$o = TextFormat::RED . "Flag not found. (Flags: god, pvp, flight, edit, touch, animals, mobs, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)";
+										//$o = TextFormat::RED . "Flag not found. (Flags: god, pvp, flight, edit, touch, animals, mobs, effects, msg, pass, drop, tnt, shoot, hunger, perms, falldamage)";
                                         $o = TextFormat::RED . Language::translate("flag-not-found-list");
 									}
 								}else{
-									//$o = TextFormat::RED . "Please specify a flag. (Flags: god, pvp, flight, edit, touch, animals, mobs, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)";
+									//$o = TextFormat::RED . "Please specify a flag. (Flags: god, pvp, flight, edit, touch, animals, mobs, effects, msg, pass, drop, tnt, shoot, hunger, perms, falldamage)";
                                     $o = TextFormat::RED . Language::translate("flag-not-specified-list");
 								}
 							}
@@ -1452,7 +1083,7 @@ class Festival extends PluginBase implements Listener{
 			$this->inArea[$playerName] = [];
 		}
 		foreach($this->areas as $area){
-            if( $area->getFlag("passage") ){ // Player area passage
+            if( $area->getFlag("pass") ){ // Player area pass
 				if( $player->isOp() || $area->isWhitelisted( strtolower( $player->getName() )  ) || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
 					if( ( $area->contains( $player->getPosition(), $player->getLevel()->getName() ) && !$area->contains( $ev->getFrom(), $player->getLevel()->getName() ) )
 					|| !$area->contains( $player->getPosition(), $player->getLevel()->getName() ) && $area->contains( $ev->getFrom(), $player->getLevel()->getName() ) ){
@@ -1503,7 +1134,7 @@ class Festival extends PluginBase implements Listener{
             // Area Player Monitor  $this->AreaPlayerMonitor($area, $ev);
 		}
 
-        if( $this->options["FlightControl"] == "on" ){ // since v.1.1.3 flight flag usage can be turn off
+        if( $this->config["options"]["flightcontrol"] == "on" ){ // since v.1.1.3 flight flag usage can be turn off
             $this->checkPlayerFlying( $ev->getPlayer() );
         }
 		return;
@@ -1832,23 +1463,28 @@ class Festival extends PluginBase implements Listener{
 			return true;
 		}
 		$o = true;
-		$e = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Edit"] : $this->edit);
+        $e = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("edit") : $this->config["defaults"]["edit"]);
+		//$e = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Edit"] : $this->edit);
 		if($e){
 			$o = false;
 		}
 
         $playername = strtolower($player->getName());
-
+        $priority = 0;
         foreach ($this->areas as $area) {
             if ($area->contains(new Vector3($position->getX(), $position->getY(), $position->getZ()), $position->getLevel()->getName() )) {
-                if($area->getFlag("edit")){
-                    $o = false;
-                }
-                if(!$area->getFlag("edit") && $e){
-                    $o = true;
-                }
-                if($area->isWhitelisted($playername)){
-                    $o = true;
+                if( $area->getPriority() >= $priority ){
+                    $priority = $area->getPriority();
+
+                    if($area->getFlag("edit")){
+                        $o = false;
+                    }
+                    if(!$area->getFlag("edit") && $e){
+                        $o = true;
+                    }
+                    if($area->isWhitelisted($playername)){
+                        $o = true;
+                    }
                 }
             }
         }
@@ -1865,23 +1501,29 @@ class Festival extends PluginBase implements Listener{
 			return true;
 		}
         $playername = strtolower($player->getName());
+        $priority = 0;
 		$o = true;
 
-		$t = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Touch"] : $this->touch);
+        $t = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("touch") : $this->config["defaults"]["touch"]);
+		//$t = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Touch"] : $this->touch);
 		if($t){
 			$o = false;
 		}
 
         foreach ($this->areas as $area) {
             if ($area->contains(new Vector3($position->getX(), $position->getY(), $position->getZ()), $position->getLevel()->getName() )) {
-                if($area->getFlag("touch")){
-                    $o = false;
-                }
-                if(!$area->getFlag("touch") && $t){
-                    $o = true;
-                }
-                if($area->isWhitelisted($playername)){
-                    $o = true;
+                if( $area->getPriority() >= $priority ){
+                    $priority = $area->getPriority();
+
+                    if($area->getFlag("touch")){
+                        $o = false;
+                    }
+                    if(!$area->getFlag("touch") && $t){
+                        $o = true;
+                    }
+                    if($area->isWhitelisted($playername)){
+                        $o = true;
+                    }
                 }
             }
         }
@@ -1934,23 +1576,29 @@ class Festival extends PluginBase implements Listener{
 	public function canGetHurt(Entity $entity) : bool{
 		$o = true;
         if( $entity instanceof Player){
-            $g = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["God"] : $this->god);
+            $g = (isset($this->levels[strtolower($entity->getLevel()->getName())]) ? $this->levels[strtolower($entity->getLevel()->getName())]->getFlag("hurt") : $this->config["defaults"]["hurt"]);
+            //$g = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["God"] : $this->god);
             if($g){
                 $o = false;
             }
             $playername =  strtolower($entity->getName());
+            $priority = 0;
             if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
                 foreach($this->inArea[$playername] as $areaname){
                     if( isset($this->areaList[ $areaname ]) ){
                         $area = $this->areaList[ $areaname ];
-                        if($area->getFlag("god")){
-                            $o = false;
-                        }
-                        if(!$area->getFlag("god") && $g ){
-                            $o = true;
-                        }
-                        if($area->isWhitelisted($playername)){
-                            $o = false;
+                        if( $area->getPriority() >= $priority ){
+                            $priority = $area->getPriority();
+
+                            if($area->getFlag("god")){
+                                $o = false;
+                            }
+                            if(!$area->getFlag("god") && $g ){
+                                $o = true;
+                            }
+                            if($area->isWhitelisted($playername)){
+                                $o = false;
+                            }
                         }
                     }
                 }
@@ -1969,23 +1617,28 @@ class Festival extends PluginBase implements Listener{
 
 		$o = true;
         if( $entity instanceof Player ){
-            $f = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["FallDamage"] : $this->falldamage);
+            $f = (isset($this->levels[strtolower($entity->getLevel()->getName())]) ? $this->levels[strtolower($entity->getLevel()->getName())]->getFlag("fall") : $this->config["defaults"]["fall"]);
+            //$f = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["FallDamage"] : $this->falldamage);
             if($f){
                 $o = false;
             }
             $playername = strtolower($entity->getName());
+            $priority = 0;
             if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
                 foreach($this->inArea[$playername] as $areaname){
                     if( isset($this->areaList[ $areaname ]) ){
                         $area = $this->areaList[$areaname];
-                        if($area->getFlag("falldamage")){
-                            $o = false;
-                        }
-                        if(!$area->getFlag("falldamage") && $f){
-                            $o = true;
-                        }
-                        if($area->isWhitelisted($playername)){
-                            $o = false;
+                        if( $area->getPriority() >= $priority ){
+                            $priority = $area->getPriority();
+                            if($area->getFlag("falldamage")){
+                                $o = false;
+                            }
+                            if(!$area->getFlag("falldamage") && $f){
+                                $o = true;
+                            }
+                            if($area->isWhitelisted($playername)){
+                                $o = false;
+                            }
                         }
                     }
                 }
@@ -2006,23 +1659,27 @@ class Festival extends PluginBase implements Listener{
         if($ev instanceof EntityDamageByEntityEvent){
             if($ev->getEntity() instanceof Player && $ev->getDamager() instanceof Player){
                 $entity = $ev->getEntity();
-                $p = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["PVP"] : $this->pvp);
+                $p = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["pvp"] : $this->config["defaults"]["pvp"]);
                 if($p){
                     $o = false;
                 }
                 $playername = $entity->getName();
                 $pos = $entity->getPosition();
+                $priority = 0;
                 foreach ($this->areas as $area) {
                     if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
-                        $god = $area->getFlag("god");
-                        if($area->getFlag("pvp")){
-                            $o = false;
-                        }
-                        if( !$area->getFlag("pvp") && $p){
-                            $o = true;
-                        }
-                        if($area->isWhitelisted($playername)){
-                            $o = false;
+                        if( $area->getPriority() >= $priority ){
+                            $priority = $area->getPriority();
+                            $god = $area->getFlag("hurt");
+                            if($area->getFlag("pvp")){
+                                $o = false;
+                            }
+                            if( !$area->getFlag("pvp") && $p){
+                                $o = true;
+                            }
+                            if($area->isWhitelisted($playername)){
+                                $o = false;
+                            }
                         }
                     }
                 }
@@ -2088,8 +1745,9 @@ class Festival extends PluginBase implements Listener{
         $falldamage = false;
 		$position = $player->getPosition();
         $playername = strtolower($player->getName());
+        $priority = 0;
 
-        $f = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Flight"] : $this->flight);
+        $f = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("flight") : $this->config["defaults"]["flight"]);
         if( $f ){
             $fly = false; // flag default
         }
@@ -2097,17 +1755,20 @@ class Festival extends PluginBase implements Listener{
             foreach($this->inArea[$playername] as $areaname){
                 if( isset($this->areaList[ $areaname ]) ){
                     $area = $this->areaList[$areaname];
-                    if(  $area->getFlag("flight") && !$area->isWhitelisted( $playername ) ){
-                        $fly = false; // flag area
-                    }
-                    if(!$area->getFlag("flight") && $f){
-                        $fly = true;
-                    }
-                    if( !$area->getFlag("msg") ){
-                        $sendmsg = true;
-                    }
-                    if( $area->getFlag("falldamage") ){
-                        $falldamage = true;
+                    if( $area->getPriority() >= $priority ){
+                        $priority = $area->getPriority();
+                        if(  $area->getFlag("flight") && !$area->isWhitelisted( $playername ) ){
+                            $fly = false; // flag area
+                        }
+                        if(!$area->getFlag("flight") && $f){
+                            $fly = true;
+                        }
+                        if( !$area->getFlag("msg") ){
+                            $sendmsg = true;
+                        }
+                        if( $area->getFlag("falldamage") ){
+                            $falldamage = true;
+                        }
                     }
                 }
             }
@@ -2180,35 +1841,48 @@ class Festival extends PluginBase implements Listener{
             $thisarea = '';
             if( in_array( strtolower($nm), $animals ) ){
                 // check animal flag
-                $a = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Animals"] : $this->animals);
+
+                $a = (isset($this->levels[strtolower($pos->getLevel()->getName())]) ? $this->levels[strtolower($pos->getLevel()->getName())]->getFlag("animals") : $this->config["defaults"]["animals"]);
+                //$a = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Animals"] : $this->animals);
                 if ($a) {
                     $o = false;
                 }
+                $priority = 0;
+
                 foreach ($this->areas as $area) {
                     if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
-                        $thisarea = $area->getName();
-                        if ($area->getFlag("animals")) {
-                            $o = false;
-                        }
-                        if(!$area->getFlag("animals") && $a){
-                            $o = true;
+                        if( $area->getPriority() >= $priority ){
+                            $priority = $area->getPriority();
+                            $thisarea = $area->getName();
+                            if ($area->getFlag("animals")) {
+                                $o = false;
+                            }
+                            if(!$area->getFlag("animals") && $a){
+                                $o = true;
+                            }
                         }
                     }
                 }
             }else{
                 // check other entities (mob) flag
-                $m = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Mobs"] : $this->mobs);
+                $m = (isset($this->levels[strtolower($pos->getLevel()->getName())]) ? $this->levels[strtolower($pos->getLevel()->getName())]->getFlag("mobs") : $this->config["defaults"]["mobs"]);
+                //$m = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Mobs"] : $this->mobs);
                 if ($m) {
                     $o = false;
                 }
+                $priority = 0;
+
                 foreach ($this->areas as $area) {
                     if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
-                        $thisarea = $area->getName();
-                        if ($area->getFlag("mobs")) {
-                            $o = false;
-                        }
-                        if(!$area->getFlag("mobs") && $m){
-                            $o = true;
+                        if( $area->getPriority() >= $priority ){
+                            $priority = $area->getPriority();
+                            $thisarea = $area->getName();
+                            if ($area->getFlag("mobs")) {
+                                $o = false;
+                            }
+                            if(!$area->getFlag("mobs") && $m){
+                                $o = true;
+                            }
                         }
                     }
                 }
@@ -2235,8 +1909,10 @@ class Festival extends PluginBase implements Listener{
 
         $position = $player->getPosition();
         $playername = strtolower($player->getName());
+        $priority = 0;
 		$o = true;
-		$e = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Effects"] : $this->effects);
+        $e = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("effect") : $this->config["defaults"]["effect"]);
+		//$e = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Effects"] : $this->effects);
 		if($e){
 			$o = false;
 		}
@@ -2245,14 +1921,17 @@ class Festival extends PluginBase implements Listener{
             foreach($this->inArea[$playername] as $areaname){
                 if( isset($this->areaList[ $areaname ]) ){
                     $area = $this->areaList[$areaname];
-                    if($area->getFlag("effects")){
-                        $o = false;
-                    }
-                    if(!$area->getFlag("effects") && $e){
-                        $o = true;
-                    }
-                    if( $area->isWhitelisted( $playername ) ){
-                        $o = true;
+                    if( $area->getPriority() >= $priority ){
+                        $priority = $area->getPriority();
+                        if($area->getFlag("effects")){
+                            $o = false;
+                        }
+                        if(!$area->getFlag("effects") && $e){
+                            $o = true;
+                        }
+                        if( $area->isWhitelisted( $playername ) ){
+                            $o = true;
+                        }
                     }
                 }
             }
@@ -2272,30 +1951,36 @@ class Festival extends PluginBase implements Listener{
 			return true;
 		}
 		$o = true;
-		$d = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Drop"] : $this->drop);
+        $d = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("effect") : $this->config["defaults"]["effect"]);
+		//$d = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Drop"] : $this->drop);
 		if($d){
 			$o = false;
 		}
         $playername = strtolower($player->getName());
+        $priority = 0;
 
         if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
             foreach($this->inArea[$playername] as $areaname){
                 if( isset($this->areaList[ $areaname ]) ){
                     $area = $this->areaList[$areaname];
-                    if($area->getFlag("drop")){
-                        $o = false;
-                    }
-                    if(!$area->getFlag("drop") && $d){
-                        $o = true;
-                    }
-                    if($area->isWhitelisted($playername)){
-                        $o = true;
+                    if( $area->getPriority() >= $priority ){
+                        $priority = $area->getPriority();
+                        if($area->getFlag("drop")){
+                            $o = false;
+                        }
+                        if(!$area->getFlag("drop") && $d){
+                            $o = true;
+                        }
+                        if($area->isWhitelisted($playername)){
+                            $o = true;
+                        }
                     }
                 }
             }
-        }else{
-            $o = false;
         }
+        /*else{
+            $o = false;
+        }*/
 		return $o;
 	}
 
@@ -2309,18 +1994,23 @@ class Festival extends PluginBase implements Listener{
      */
     public function canBurn( Position $pos ): bool{
         $o = true;
-        $e = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Fire"] : $this->fire);
+        $priority = 0;
+        $e = (isset($this->levels[strtolower($pos->getLevel()->getName())]) ? $this->levels[strtolower($pos->getLevel()->getName())]->getFlag("fire") : $this->config["defaults"]["fire"]);
+        //$e = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Fire"] : $this->fire);
         if ($e) {
             $o = false;
         }
         // including entities/mobs in any area
         foreach ($this->areas as $area) {
             if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
-                if ($area->getFlag("fire")) {
-                    $o = false;
-                }
-                if(!$area->getFlag("fire") && $e){
-                    $o = true;
+                if( $area->getPriority() >= $priority ){
+                    $priority = $area->getPriority();
+                    if ($area->getFlag("fire")) {
+                        $o = false;
+                    }
+                    if(!$area->getFlag("fire") && $e){
+                        $o = true;
+                    }
                 }
             }
         }
@@ -2338,18 +2028,27 @@ class Festival extends PluginBase implements Listener{
     public function canExplode( Position $pos ): bool{
 
         $o = true;
-        $e = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Explode"] : $this->explode);
+        $priority = 0;
+        $e = (isset($this->levels[strtolower($pos->getLevel()->getName())]) ? $this->levels[strtolower($pos->getLevel()->getName())]->getFlag("explode") : $this->config["defaults"]["explode"]);
+        // $e = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Explode"] : $this->explode);
         if ($e) {
             $o = false;
         }
         // including entities/mobs in any area
         foreach ($this->areas as $area) {
             if ($area->contains(new Vector3($pos->getX(), $pos->getY(), $pos->getZ()), $pos->getLevel()->getName() )) {
-                if ($area->getFlag("explode")) {
-                    $o = false;
-                }
-                if(!$area->getFlag("explode") && $e){
-                    $o = true;
+                if( $area->getPriority() >= $priority ){
+                    $priority = $area->getPriority();
+                    if ($area->getFlag("explode")) {
+                        $o = false;
+                    }
+                    if(!$area->getFlag("explode") && $e){
+                        $o = true;
+                    }
+                    /*
+                    if( !$this->canTNTExplode( $pos ) ){
+                        $o = false;
+                    }*/
                 }
             }
         }
@@ -2368,22 +2067,28 @@ class Festival extends PluginBase implements Listener{
 			return true;
 		}
 		$o = true;
-		$d = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["TNT"] : $this->tnt);
+        $d = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("tnt") : $this->config["defaults"]["tnt"]);
+		//$d = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["TNT"] : $this->tnt);
 		if($d){
 			$o = false;
 		}
         $playername = strtolower($player->getName());
-
+        $priority = 0;
         foreach ($this->areas as $area) {
             if ($area->contains(new Vector3($position->getX(), $position->getY(), $position->getZ()), $position->getLevel()->getName() )) {
-                if($area->getFlag("tnt")){
-                    $o = false;
-                }
-                if(!$area->getFlag("tnt") && $d){
-                    $o = true;
-                }
-                if($area->isWhitelisted($playername)){
-                    $o = true;
+                // check priorities on location
+                if( $area->getPriority() >= $priority ){
+                    $priority = $area->getPriority();
+
+                    if($area->getFlag("tnt")){
+                        $o = false;
+                    }
+                    if(!$area->getFlag("tnt") && $d){
+                        $o = false;
+                    }
+                    if($area->isWhitelisted($playername)){
+                        $o = true;
+                    }
                 }
             }
         }
@@ -2400,18 +2105,24 @@ class Festival extends PluginBase implements Listener{
 	public function canTNTExplode( Position $position ) : bool{
 
 		$o = true;
-        $e = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["TNT"] : $this->tnt);
+        $priority = 0;
+        $e = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("tnt") : $this->config["defaults"]["tnt"]);
+        //$e = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["TNT"] : $this->tnt);
         if ($e) {
             $o = false;
         }
         // look for any area
         foreach ($this->areas as $area) {
             if ($area->contains(new Vector3($position->getX(), $position->getY(), $position->getZ()), $position->getLevel()->getName() )) {
-                if ($area->getFlag("tnt")) {
-                    $o = false;
-                }
-                if(!$area->getFlag("tnt") && $e){
-                    $o = true;
+                if( $area->getPriority() >= $priority ){
+                    $priority = $area->getPriority();
+
+                    if ($area->getFlag("tnt")) {
+                        $o = false;
+                    }
+                    if(!$area->getFlag("tnt") && $e){
+                        $o = true;
+                    }
                 }
             }
         }
@@ -2431,9 +2142,12 @@ class Festival extends PluginBase implements Listener{
 
         $position = $player->getPosition();
         $playername = strtolower($player->getName());
+        $priority = 0;
 		$o = true;
         $m = true;
-		$s = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Shoot"] : $this->shoot);
+
+        $s = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("shoot") : $this->config["defaults"]["shoot"]);
+		//$s = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["Shoot"] : $this->shoot);
 		if($s){
 			$o = false;
 		}
@@ -2442,17 +2156,20 @@ class Festival extends PluginBase implements Listener{
             foreach($this->inArea[$playername] as $areaname){
                 if( isset($this->areaList[ $areaname ]) ){
                     $area = $this->areaList[$areaname];
-                    if($area->getFlag("shoot")){
-                        $o = false;
-                    }
-                    if(!$area->getFlag("shoot") && $s){
-                        $o = true;
-                    }
-                    if($area->isWhitelisted($playername)){
-                        $o = true;
-                    }
-                    if( $area->getFlag("msg") ){
-                       $m = false;
+                    if( $area->getPriority() >= $priority ){
+                        $priority = $area->getPriority();
+                        if($area->getFlag("shoot")){
+                            $o = false;
+                        }
+                        if(!$area->getFlag("shoot") && $s){
+                            $o = true;
+                        }
+                        if($area->isWhitelisted($playername)){
+                            $o = true;
+                        }
+                        if( $area->getFlag("msg") ){
+                           $m = false;
+                        }
                     }
                 }
             }
@@ -2482,7 +2199,9 @@ class Festival extends PluginBase implements Listener{
 
 		$position = $player->getPosition();
 		$o = true;
-		$p = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[ $position->getLevel()->getName() ]["Perms"] : $this->perms);
+
+        $p = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("shoot") : $this->config["defaults"]["shoot"]);
+		//$p = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[ $position->getLevel()->getName() ]["Perms"] : $this->perms);
 		if($p){
 			$o = false;
 		}
@@ -2508,8 +2227,11 @@ class Festival extends PluginBase implements Listener{
     public function canHunger( PlayerExhaustEvent $event ): bool{
         $pos = $event->getPlayer()->getPosition();
         $playername = strtolower($event->getPlayer()->getName());
+        $priority = 0;
         $o = true;
-        $h = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Hunger"] : $this->hunger);
+
+        $h = (isset($this->levels[strtolower($pos->getLevel()->getName())]) ? $this->levels[strtolower($pos->getLevel()->getName())]->getFlag("hunger") : $this->config["defaults"]["hunger"]);
+        //$h = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Hunger"] : $this->hunger);
         if ($h) {
             $o = false;
         }
@@ -2517,14 +2239,17 @@ class Festival extends PluginBase implements Listener{
             foreach($this->inArea[$playername] as $areaname){
                 if( isset($this->areaList[ $areaname ]) ){
                     $area = $this->areaList[$areaname];
-                    if ($area->getFlag("hunger")) {
-                        $o = false;
-                    }
-                    if(!$area->getFlag("hunger") && $h){
-                        $o = true;
-                    }
-                    if($area->isWhitelisted($playername)){
-                        $o = false;
+                    if( $area->getPriority() >= $priority ){
+                        $priority = $area->getPriority();
+                        if ($area->getFlag("hunger")) {
+                            $o = false;
+                        }
+                        if(!$area->getFlag("hunger") && $h){
+                            $o = true;
+                        }
+                        if($area->isWhitelisted($playername)){
+                            $o = false;
+                        }
                     }
                 }
             }
@@ -2716,7 +2441,7 @@ class Festival extends PluginBase implements Listener{
         $playername = strtolower($player->getName());
 
         $runcmd = true;
-        $c = (isset($this->levels[$position->getLevel()->getName()]) ? $this->levels[$position->getLevel()->getName()]["CMDmode"] : $this->cmdmode);
+        $c = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("cmd") : $this->config["defaults"]["cmd"]);
         if( $c ){
             $runcmd = false; // flag default
         }
@@ -2812,12 +2537,12 @@ class Festival extends PluginBase implements Listener{
     * @return true function
     */
 	public function areaMessage( $msg , $player ){
-        if($this->options['Msgtype'] == 'msg'){
+        if($this->config["options"]['msgposition'] == 'msg'){
             $player->sendMessage($msg);
-        }else if( $this->options['Msgtype'] == 'title'){
+        }else if( $this->config["options"]['msgposition'] == 'title'){
             $player->addTitle($msg);
             // $player->addTitle("Title", "Subtitle", $fadeIn = 20, $duration = 60, $fadeOut = 20);
-        }else if($this->options['Msgtype'] == 'tip'){
+        }else if($this->config["options"]['msgposition'] == 'tip'){
 			$player->sendTip($msg);
 		}else{
 			$player->sendPopup($msg);
@@ -2832,10 +2557,10 @@ class Festival extends PluginBase implements Listener{
 	 * @return bool
 	 */
 	public function msgOpDsp( $area, $player ){
-		if( isset( $this->options['Msgdisplay'] ) && $player->isOp() ){
-			if( $this->options['Msgdisplay'] == 'on' ){
+		if( isset( $this->config["options"]['Msgdisplay'] ) && $player->isOp() ){
+			if( $this->config["options"]['Msgdisplay'] == 'on' ){
 				return true;
-			}else if( $this->options['Msgdisplay'] == 'op' && $area->isWhitelisted(strtolower($player->getName())) ){
+			}else if( $this->config["options"]['Msgdisplay'] == 'op' && $area->isWhitelisted(strtolower($player->getName())) ){
 				return true;
 			}else{
 				return false;
@@ -2897,6 +2622,8 @@ class Festival extends PluginBase implements Listener{
             $l .=  "\n". TextFormat::GRAY . "  - ". Language::translate("players-in-area") .": \n " . TextFormat::GOLD . implode(", ", $ap );
         }
 
+        $l .=  "\n". TextFormat::GRAY . "  - priority: \n " . TextFormat::GOLD . $area->getPriority();
+
         // Area Flag
 		$flgs = $area->getFlags();
 		$l .= "\n". TextFormat::GRAY . "  - ". Language::translate("flags")  ." :";
@@ -2912,6 +2639,7 @@ class Festival extends PluginBase implements Listener{
 		// Area Commands by event
 		if( $cmds = $area->getCommands() && count( $area->getCommands() ) > 0 ){
 			$l.= "\n". TextFormat::GRAY . "  - ".Language::translate("cmds").":";
+
 			foreach( $area->getEvents() as $type => $list ){
 				$ids = explode(",",$list);
 				$l .= "\n". TextFormat::GOLD . "    On ". $type;
@@ -2956,8 +2684,8 @@ class Festival extends PluginBase implements Listener{
         foreach($this->areas as $area){
             $this->hideAreaTitle( $player, $level, $area );
             if( $level->getName() == $area->getLevelName() &&
-               (( $this->options["Areadisplay"] == 'on' && ( !$area->getFlag("msg") || $area->isWhitelisted( strtolower( $player->getName() ) ) ) ) ||
-                ( $this->options["Areadisplay"] == 'op' && ( $player->isOp() || $area->isWhitelisted( strtolower( $player->getName() ) ) )
+               (( $this->config["options"]["msgdisplay"] == 'on' && ( !$area->getFlag("msg") || $area->isWhitelisted( strtolower( $player->getName() ) ) ) ) ||
+                ( $this->config["options"]["msgdisplay"] == 'op' && ( $player->isOp() || $area->isWhitelisted( strtolower( $player->getName() ) ) )
                 ))){
                 $this->placeAreaTitle( $player, $level, $area );
             }
@@ -3017,8 +2745,9 @@ class Festival extends PluginBase implements Listener{
 	 */
 	public function saveAreas() : void{
 		$areas = [];
+
 		foreach($this->areas as $area){
-			$areas[] = ["name" => $area->getName(), "desc" => $area->getDesc(), "flags" => $area->getFlags(), "pos1" => [$area->getFirstPosition()->getFloorX(), $area->getFirstPosition()->getFloorY(), $area->getFirstPosition()->getFloorZ()] , "pos2" => [$area->getSecondPosition()->getFloorX(), $area->getSecondPosition()->getFloorY(), $area->getSecondPosition()->getFloorZ()], "radius" => $area->getRadius(), "level" => $area->getLevelName(), "whitelist" => $area->getWhitelist(), "commands" => $area->getCommands(), "events" => $area->getEvents()];
+			$areas[] = ["name" => $area->getName(), "desc" => $area->getDesc(), "priority" => $area->getPriority(), "flags" => $area->getFlags(), "pos1" => [$area->getFirstPosition()->getFloorX(), $area->getFirstPosition()->getFloorY(), $area->getFirstPosition()->getFloorZ()] , "pos2" => [$area->getSecondPosition()->getFloorX(), $area->getSecondPosition()->getFloorY(), $area->getSecondPosition()->getFloorZ()], "radius" => $area->getRadius(), "level" => $area->getLevelName(), "whitelist" => $area->getWhitelist(), "commands" => $area->getCommands(), "events" => $area->getEvents()];
 
             $this->areaList[strtolower( $area->getName() )] = $area; // name associated area list for inArea check
 		}
@@ -3029,6 +2758,7 @@ class Festival extends PluginBase implements Listener{
      *   makes it easy to find Festival console output fast
      */
     public function codeSigned(){
+        $this->getLogger()->info( "Copyright Genboy 2019" );
         $this->getLogger()->info( "Copyright Genboy 2019" );
     }
 
