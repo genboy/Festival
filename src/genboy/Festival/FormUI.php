@@ -169,19 +169,19 @@ class FormUI{
             $this->plugin->config["options"]["itemid"] = $data["itemid"];
 
             $msgpos_opt = ["msg", "title", "tip", "pop"];
-            $this->plugin->config["options"]["msgpos"] = $msgpos_opt[ $data["msgpos"] ];
+            $this->plugin->config["options"]["msgposition"] = $msgpos_opt[ $data["msgposition"] ];
 
             $msgdsp_opt = ["on", "op", "off"];
-            $this->plugin->config["options"]["msgdsp"] = $msgdsp_opt[ $data["msgdsp"] ];
+            $this->plugin->config["options"]["msgdisplay"] = $msgdsp_opt[ $data["msgdisplay"] ];
 
             $areadsp_opt = ["on", "op", "off"];
-            $this->plugin->config["options"]["areadsp"] = $areadsp_opt[ $data["areadsp"] ];
+            $this->plugin->config["options"]["areatitledisplay"] = $areadsp_opt[ $data["areatitledisplay"] ];
 
             /*$newautolist = "off";
             if(  $data["autolist"] == true){
                 $newautolist = "on";
             }*/
-            $this->plugin->config["options"]["autolist"] =  $data["autolist"];
+            $this->plugin->config["options"]["autowhitelist"] =  $data["autowhitelist"];
 
             $c = 5; // after 5 options all input are flags
             foreach( $this->plugin->config["defaults"] as $flag => $set){
@@ -204,24 +204,24 @@ class FormUI{
 
         $msgpos_tlt = "Area messages position";
         $msgpos_opt = ["msg", "title", "tip", "pop"];
-        $msgpos_slc = array_search( $optionset["msgpos"], $msgpos_opt);
-        $form->addStepSlider( $msgpos_tlt, $msgpos_opt, $msgpos_slc, "msgpos" );
+        $msgpos_slc = array_search( $optionset["msgposition"], $msgpos_opt);
+        $form->addStepSlider( $msgpos_tlt, $msgpos_opt, $msgpos_slc, "msgposition" );
 
         $msgdsp_tlt = "Area messages visible";
         $msgdsp_opt = ["on", "op", "off"];
-        $msgdsp_slc = array_search( $optionset["msgdsp"], $msgdsp_opt);
-        $form->addStepSlider( $msgdsp_tlt, $msgdsp_opt, $msgdsp_slc, "msgdsp" );
+        $msgdsp_slc = array_search( $optionset["msgdisplay"], $msgdsp_opt);
+        $form->addStepSlider( $msgdsp_tlt, $msgdsp_opt, $msgdsp_slc, "msgdisplay" );
 
         $areadsp_tlt = "Area titles visible";
         $areadsp_opt = ["on", "op", "off"];
-        $areadsp_slc = array_search( $optionset["areadsp"], $areadsp_opt);
-        $form->addStepSlider( $areadsp_tlt, $areadsp_opt, $areadsp_slc, "areadsp" );
+        $areadsp_slc = array_search( $optionset["areatitledisplay"], $areadsp_opt);
+        $form->addStepSlider( $areadsp_tlt, $areadsp_opt, $areadsp_slc, "areatitledisplay" );
 
         $autolist = false;
-        if( $optionset["autolist"] != false){
+        if( $optionset["autowhitelist"] != false){
             $autolist = true;
         }
-        $form->addToggle("Auto whitelist", $autolist, "autolist" );
+        $form->addToggle("Auto whitelist", $autolist, "autowhitelist" );
 
         $nr = $optionset['itemid'];
         $form->addInput( "Action item", "block itemid", "$nr", "itemid" );
@@ -564,8 +564,9 @@ class FormUI{
                             }else{
                                 $newarea["flags"] = $this->plugin->defaults;
                             }
+                            $newarea["priority"] = 0;
 
-                            new FeArea( $newarea["name"], $newarea["desc"], $newarea["flags"], $newarea["pos1"], $newarea["pos2"], $newarea["radius"], $newarea["level"], [], [], [], $this->plugin);
+                            new FeArea( $newarea["name"], $newarea["desc"], $newarea["priority"], $newarea["flags"], $newarea["pos1"], $newarea["pos2"], $newarea["radius"], $newarea["level"], [], [], [], $this->plugin);
                             $this->plugin->helper->saveAreas();
                             $this->areaSelectForm( $sender, "New area named ".$newarea["name"]." created!"  );
 
@@ -782,7 +783,7 @@ class FormUI{
                 }
                 if(  $selectlist[ $data[0] - 1 ] ){
                     $areaname = $selectlist[ $data[0] - 1 ];
-                    Server::getInstance()->dispatchCommand($sender, "fc tp ".$areaname );
+                    Server::getInstance()->dispatchCommand($sender, "fe tp ".$areaname );
                 }
             }
         });

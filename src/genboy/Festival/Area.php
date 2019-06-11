@@ -77,6 +77,15 @@ class Area{
 	}
 
     /**
+	 * @param string
+	 */
+	public function setDesc( $str ) : string {
+		$this->desc = $str;
+		return $this->desc;
+	}
+
+
+    /**
 	 * @param int
 	 */
 	public function setPriority( $int ) : int{

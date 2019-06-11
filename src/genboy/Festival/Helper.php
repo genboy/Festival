@@ -260,7 +260,7 @@ class Helper {
 
 
         if( !$this->loadLevels() ){ // no level.json available
-            $worldlist = $this->plugin->helper->getServerWorlds(); // available levels (world folderr)
+            $worldlist = $this->getServerWorlds(); // available levels (world folderr)
             foreach( $worldlist as $ln){
                 $desc = "Festival Area ". $ln;
                 if( isset( $c['Worlds'][ $ln ] ) && is_array( $c['Worlds'][ $ln ] ) ){ // create level from old config
