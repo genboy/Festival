@@ -52,9 +52,18 @@
     "player-allready-unwhitelisted": "ya está excluido en la lista blanca del área",
     "whitelist-specify-action": "Por favor, especifique una acción válida. Usé: /area whitelist <areaname> <add/list/remove> <playername>",
 
+    "name-saved": "renamed to",
+    "name-write-usage": "Assign a new name. Use /fe rename <areaname> <..>",
+    "name-specify-area": "Please specify an area to edit the name. Usage: /fe rename <areaname> <name>",
+
     "desc-saved": "Descripción guardada.",
     "desc-write-usage": "Por favor escriba la descripción. Usé: /fe desc <areaname> <..>",
     "desc-specify-area": "Por favor, especifique un área para editar la descripción. Usé: /fe desc <areaname> <desc>",
+
+    "priority-saved": "priority saved.",
+    "priority-write-usage": "Assign a number. Use /fe priority <areaname> <number 0-999>",
+    "priority-number-usage": "Assign a number, 0 is default, 1 - 999 assigns higher priority. Use /fe priority <areaname> <number 0-999>",
+    "priority-specify-area": "Please specify an area to edit the priority. Use /fe priority <areaname> <number 0-999>",
 
     "area-deleted": "Área eliminada!",
     "deleted-by":"eliminado por",
@@ -98,6 +107,7 @@
     "status-off": "Apagado",
     "set-to": "ajustado a",
     "for-area": "Por área",
+    "number-to-write": "Assign a number",
 
     "all-players-are-god": "¡Todos los jugadores son dios en esta área!",
     "no-pvp-area": "¡Estás en un área sin PVP!",

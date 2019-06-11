@@ -6,7 +6,6 @@
  *
  */
 
-
 namespace genboy\Festival;
 
 use pocketmine\level\Level;
@@ -17,7 +16,7 @@ class Area{
 	/** @var bool[] */
 	public $flags;
 	/** @var string */
-	private $name;
+	public $name;
 	/** @var string */
 	public $desc;
 	/** @var int */
@@ -62,6 +61,14 @@ class Area{
 		return $this->name;
 	}
 
+    /**
+	 * @param string
+	 */
+	public function setName( $str) : string {
+		$this->name = $str;
+		return $this->name;
+	}
+
 	/**
 	 * @return string
 	 */
@@ -74,6 +81,7 @@ class Area{
 	 */
 	public function setPriority( $int ) : int{
 		$this->priority = $int;
+        return $int;
 	}
 	/**
 	 * @return int
@@ -101,6 +109,7 @@ class Area{
 	 */
 	public function setRadius( $int ) : int{
 		$this->radius = $int;
+        return $int;
 	}
 	/**
 	 * @return int

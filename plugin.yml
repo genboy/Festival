@@ -53,6 +53,9 @@ permissions:
               festival.command.fe.tp:
                 description: "Allows access to the Festival tp subcommand."
                 default: op
+              festival.command.fe.rename:
+                description: "Allows access to the Festival rename subcommand."
+                default: op
               festival.command.fe.desc:
                 description: "Allows access to the Festival description subcommand."
                 default: op

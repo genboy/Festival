@@ -52,9 +52,18 @@
     "player-allready-unwhitelisted": "is allready unwhitelisted from area",
     "whitelist-specify-action": "Please specify a valid action. Usage: /area whitelist <areaname> <add/list/remove> <playername>",
 
+    "name-saved": "renamed to",
+    "name-write-usage": "Assign a new name. Use /fe rename <areaname> <..>",
+    "name-specify-area": "Please specify an area to edit the name. Usage: /fe rename <areaname> <name>",
+
     "desc-saved": "description saved.",
     "desc-write-usage": "Please write the description. Usage /fe desc <areaname> <..>",
     "desc-specify-area": "Please specify an area to edit the description. Usage: /fe desc <areaname> <desc>",
+
+    "priority-saved": "priority saved.",
+    "priority-write-usage": "Assign a number. Use /fe priority <areaname> <number 0-999>",
+    "priority-number-usage": "Assign a number, 0 is default, 1 - 999 assigns higher priority. Use /fe priority <areaname> <number 0-999>",
+    "priority-specify-area": "Please specify an area to edit the priority. Use /fe priority <areaname> <number 0-999>",
 
     "area-deleted": "Area deleted!",
     "deleted-by":"deleted by",
@@ -98,6 +107,7 @@
     "status-off": "off",
     "set-to": "set to",
     "for-area": "for area",
+    "number-to-write": "Assign a number",
 
     "all-players-are-god": "All players are God in this Area!",
     "no-pvp-area": "You are in a No-PVP Area!",

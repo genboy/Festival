@@ -50,11 +50,20 @@
     "player-allready-whitelisted": "is al whitelisted in gebied",
     "player-has-been-unwhitelisted": "is unwhitelisted van gebied",
     "player-allready-unwhitelisted": "is al unwhitelisted van gebied",
-    "whitelist-specify-action": "Geef een actie op. Gebruik: /area whitelist <areaname> <add/list/remove> <playername>",
+    "whitelist-specify-action": "Geef een actie op. Gebruik: /area whitelist <gebiedsnaam> <add/list/remove> <spelernaam>",
+
+    "name-saved": "naam aangepast naar",
+    "name-write-usage": "Schrijf de nieuwe naam. Gebruik /fe rename <gebiedsnaam> <..>",
+    "name-specify-area": "Geef een gebied aan om de naam aan te passen. Gebruik: /fe rename <gebiedsnaam> <naam>",
 
     "desc-saved": "omschrijving opgeslagen.",
-    "desc-write-usage": "Schrijf de beschrijving. Gebruik /fe desc <areaname> <..>",
-    "desc-specify-area": "Geef een gebied aan om de omschrijving aan te passen. Gebruik: /fe desc <areaname> <desc>",
+    "desc-write-usage": "Schrijf de beschrijving. Gebruik /fe desc <gebiedsnaam> <..>",
+    "desc-specify-area": "Geef een gebied aan om de omschrijving aan te passen. Gebruik: /fe desc <gebiedsnaam> <omschrijving>",
+
+    "priority-saved": "prioriteit opgeslagen.",
+    "priority-write-usage": "Geef een nummer op. Gebruik /fe priority <gebiedsnaam> <nummer 0-999>",
+    "priority-number-usage": "Geef een nummer op, 0 is default, 1 - 999 geeft hogere prioriteit. Gebruik /fe priority <gebiedsnaam> <nummer 0-999>",
+    "priority-specify-area": "Geef een gebied aan om de prioriteit aan te passen. Gebruik: /fe priority <gebiedsnaam> <nummer 0-999>",
 
     "area-deleted": "Gebied verwijderd!",
     "deleted-by":"verwijderd door",
@@ -98,6 +107,7 @@
     "status-off": "uit",
     "set-to": "aangepast naar",
     "for-area": "voor gebied",
+    "number-to-write": "Geef een nummer op",
 
     "all-players-are-god": "Alle spelers hebben god-mode in dit gebied!",
     "no-pvp-area": "Dit is geen PVP area!",

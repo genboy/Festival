@@ -15,6 +15,7 @@ namespace genboy\Festival;
 
 use neitanod\ForceUTF8\Encoding;
 use genboy\Festival\Helper;
+use genboy\Festival\FormUI;
 use genboy\Festival\lang\Language;
 
 use pocketmine\command\Command;
@@ -50,6 +51,7 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
 use pocketmine\Server;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\player\PlayerLoginEvent;
 use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerCommandPreprocessEvent;
@@ -64,10 +66,36 @@ class Festival extends PluginBase implements Listener{
 	public $helper; // helper class
 	/** @var array[] */
 	public $config        = [];    // list of config options
+    /** @var obj */
+    public $form;
 	/** @var array[] */
 	public $levels        = [];    // list of level objects
 	/** @var Area[] */
 	public $areas          = [];   // list of area objects
+
+
+
+	/** @var array[]
+     * list of playernames with areanames they're in
+     */
+	private $inArea    = [];
+
+	/** @var array[]
+     * list of areanames with active floatingtextparticle objects
+     */
+	private $areaTitles  = [];
+	/** @var array[]
+     * list of playernames in a global delay counter per player (skipptime)
+     */
+	private $skipsec   = [];
+	/** @var array[]
+     * list of playernames who have fall damage/teleport protection (skipptime)
+     */
+	public $playerTP   = [];
+
+	/** @var array[] */
+	public $players        = [];   // todo: make class
+
 	/** @var bool[] */
 	private $selectingFirst    = [];
 	/** @var bool[] */
@@ -84,32 +112,14 @@ class Festival extends PluginBase implements Listener{
 	private $radiusPosition    = [];
 	/** @var int */
 	private $diameterPosition    = [];
-	/** @var array[]
-     * list of areanames with the full area objects (recreated in saveAreas function)
-     */
-	public $areaList  = [];
-	/** @var array[]
-     * list of playernames with areanames they're in
-     */
-	private $inArea    = [];
-	/** @var array[]
-     * list of areanames with active floatingtextparticle objects
-     */
-	private $areaTitles  = [];
-	/** @var array[]
-     * list of playernames in a global delay counter per player (skipptime)
-     */
-	private $skipsec   = [];
-	/** @var array[]
-     * list of playernames who have fall damage/teleport protection (skipptime)
-     */
-	public $playerTP   = [];
+
 	/** Enable
 	 * @return $this
 	 */
 	public function onEnable() : void{
         $this->getServer()->getPluginManager()->registerEvents($this, $this); // Load data & configurations
         $this->helper = new Helper($this);
+        $this->form = new FormUI($this);
         $this->dataSetup();
         $this->getLogger()->info( "Genboy copyright 2019" );
 	}
@@ -158,6 +168,8 @@ class Festival extends PluginBase implements Listener{
         return true;
 
     }
+
+
 
 
     /** load language ( v1.0.7.7-dev )
@@ -421,6 +433,34 @@ class Festival extends PluginBase implements Listener{
                     $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); //$o = TextFormat::RED . "You do not have permission to use this subcommand.";
 				}
             break;
+            case "rename":
+				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.rename")){
+					if(isset($args[1])){
+						if(isset($this->areas[strtolower($args[1])])){
+							if(isset($args[2])){
+				                $oldname = $args[1];
+								unset($args[0]);
+								unset($args[1]);
+								$newname = implode(" ", $args);
+								$area = $this->areas[strtolower($oldname)];
+								$area->setName( $newname ); //$area->name = $newname;
+								$this->areas[strtolower($newname)] = $area;
+                                unset($this->areas[strtolower($oldname)]);
+								$this->saveAreas();
+								$o = TextFormat::GREEN . Language::translate("area") . ' ' . TextFormat::GRAY . $oldname . ' ' . TextFormat::GREEN . Language::translate("name-saved") . ' ' . TextFormat::LIGHT_PURPLE . $newname;
+							}else{
+                                $o = TextFormat::RED . Language::translate("name-write-usage"); // Please write the description. Usage /fe desc <areaname> <..>
+							}
+						}else{
+                            $o = TextFormat::RED . Language::translate("area-not-excist"); // Area does not excist
+						}
+					}else{
+                        $o = TextFormat::RED . Language::translate("name-specify-area"); // Please specify an area to edit the description. Usage: /fe desc <areaname> <desc>
+					}
+				}else{
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); // You do not have permission to use this subcommand
+				}
+            break;
 			case "desc":
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.desc")){
 					if(isset($args[1])){
@@ -462,21 +502,21 @@ class Festival extends PluginBase implements Listener{
                                     $area = $this->areas[strtolower($ar)];
                                     $area->priority = $priority;
                                     $this->saveAreas();
-                                    $o = TextFormat::GREEN . Language::translate("area") . ' ' . TextFormat::LIGHT_PURPLE . $area->getName() . ' ' . TextFormat::GREEN . " prioriteit opgeslagen";//Language::translate("desc-saved");
+                                    $o = TextFormat::GREEN . Language::translate("area") . ' ' . TextFormat::LIGHT_PURPLE . $area->getName() . ' ' . TextFormat::GREEN . Language::translate("priority-saved");
                                 }else{
-                                    $o = 'not a number'; // TextFormat::RED . Language::translate("desc-write-usage"); // Please write the description. Usage /fe desc <areaname> <..>
+                                    $o = TextFormat::RED . Language::translate("number-to-write") . " (0-999)";
 							    }
 							}else{
-                                $o = 'geef een nummer, 0 is default, 1 - 999 geeft hierachi, hogere prioriteit geeft meer voorrang'; // TextFormat::RED . Language::translate("desc-write-usage"); // Please write the description. Usage /fe desc <areaname> <..>
+                                $o = TextFormat::RED . Language::translate("priority-number-usage");
 							}
 						}else{
-                            $o = 'gebied bestaan niet'; //TextFormat::RED . Language::translate("area-not-excist"); // Area does not excist
+                            $o = TextFormat::RED . Language::translate("area-not-excist"); // Area does not excist
 						}
 					}else{
-                        $o = 'geef aan welk gebied'; //TextFormat::RED . Language::translate("desc-specify-area"); // Please specify an area to edit the description. Usage: /fe desc <areaname> <desc>
+                        $o = TextFormat::RED . Language::translate("priority-specify-area");
 					}
 				}else{
-                    $o = 'geen toestemming voor dit commando'; //TextFormat::RED . Language::translate("cmd-noperms-subcommand"); // You do not have permission to use this subcommand
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); // You do not have permission to use this subcommand
 				}
             break;
 			case "list":
@@ -528,8 +568,8 @@ class Festival extends PluginBase implements Listener{
 					$o = "";
                     $playername = strtolower($sender->getName());
                     foreach($this->inArea[$playername] as $areaname){
-                        if( isset($this->areaList[ $areaname ]) ){
-                            $area = $this->areaList[$areaname];
+                        if( isset($this->areas[strtolower($areaname)]) ){
+                            $area = $this->areas[strtolower($areaname)];
                             $o .= TextFormat::DARK_PURPLE ."---- ".Language::translate("area-here")." ----\n";
                             $o .= $this->areaInfoDisplayList( $area );
 							$o .= TextFormat::DARK_PURPLE ."----------------\n";
@@ -712,26 +752,26 @@ class Festival extends PluginBase implements Listener{
 										}else{
 											$status = "off";
 										}
-										//$o = TextFormat::GREEN . "Flag " . $flag . " set to " . $status . " for area " . $area->getName() . "!";
+										// flag set
                                         $o = TextFormat::GREEN . Language::translate("flag") . " " . $flag . " ". Language::translate("set-to") . " " . $status . " ". Language::translate("for-area") . " " . $area->getName() . "!";
 									}else{
 
-										//$o = TextFormat::RED . "Flag not found. (Flags: god, pvp, flight, edit, touch, animals, mobs, effects, msg, pass, drop, tnt, shoot, hunger, perms, falldamage)";
+										// flag not found
                                         $o = TextFormat::RED . Language::translate("flag-not-found-list");
 									}
 								}else{
-									//$o = TextFormat::RED . "Please specify a flag. (Flags: god, pvp, flight, edit, touch, animals, mobs, effects, msg, pass, drop, tnt, shoot, hunger, perms, falldamage)";
+									// flag missing
                                     $o = TextFormat::RED . Language::translate("flag-not-specified-list");
 								}
 							}
 						}else{
-                            $o = TextFormat::RED . Language::translate("area-not-excist"); //$o = TextFormat::RED . "Area doesn't exist.";
+                            $o = TextFormat::RED . Language::translate("area-not-excist"); // Area doesn't exist
 						}
 					}else{
-                        $o = TextFormat::RED . Language::translate("specify-to-flag");  //$o = TextFormat::RED . "Please specify the area you would like to flag.";
+                        $o = TextFormat::RED . Language::translate("specify-to-flag");  // Area not specified
 					}
 				}else{
-                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); //$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); // No permission
 				}
                 break;
 
@@ -744,15 +784,15 @@ class Festival extends PluginBase implements Listener{
 							$area = $this->areas[strtolower($args[1])];
                             $this->hideAreaTitle( $sender, $sender->getPosition()->getLevel(), $area ); // $this->checkAreaTitles( $sender, $sender->getPosition()->getLevel() );
 							$area->delete();
-                            $o = TextFormat::GREEN . Language::translate("area-deleted"); //$o = TextFormat::GREEN . "Area deleted!";
+                            $o = TextFormat::GREEN . Language::translate("area-deleted"); // Area deleted
 						}else{
-                            $o = TextFormat::RED . Language::translate("area-not-excist"); //$o = TextFormat::RED . "Area does not exist.";
+                            $o = TextFormat::RED . Language::translate("area-not-excist"); // Area does not exist
 						}
 					}else{
-                        $o = TextFormat::RED . Language::translate("specify-to-delete"); //$o = TextFormat::RED . "Please specify an area to delete.";
+                        $o = TextFormat::RED . Language::translate("specify-to-delete"); // Area not specified
 					}
 				}else{
-                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); //$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); // No permission
 				}
                 break;
 
@@ -800,7 +840,7 @@ class Festival extends PluginBase implements Listener{
 						$o = TextFormat::RED . Language::translate("area-not-excist") . " ( /area whitelist <area> <add/list/remove> [player] )";
 					}
 				}else{
-                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); //$o = TextFormat::RED . "You do not have permission to use this subcommand.";
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); // No permission
 				}
                 break;
 
@@ -951,7 +991,7 @@ class Festival extends PluginBase implements Listener{
 												foreach($area->events as $e => $i){
 													$evs = explode(",", $i);
 													foreach($evs as $k => $ci){
-														if($ci == $cid || $ci == ''){ //also remove empty values
+														if($ci == $cid || $ci == ''){ // also remove empty values
 															unset($evs[$k]);
 														}
 													}
@@ -967,12 +1007,10 @@ class Festival extends PluginBase implements Listener{
 											$this->saveAreas();
 											$o = TextFormat::GREEN .'Command (id:'.$cid.') deleted';
 										}else{
-											//$o = TextFormat::RED .'Command ID not found. See the commands with /fe event command <areaname> list';
-                                            $o = TextFormat::RED . Language::translate("cmd-id-not-found") . '.';
+                                            $o = TextFormat::RED . Language::translate("cmd-id-not-found") . '.'; // Command ID not found
 										}
 									}else{
-										//$o = TextFormat::RED .'Please specify the command ID to delete. Usage /fe event command <areaname> del <COMMANDID>';
-                                        $o = TextFormat::RED . Language::translate("cmd-specify-id-to-delete") . '.';
+                                        $o = TextFormat::RED . Language::translate("cmd-specify-id-to-delete") . '.'; // Command ID not specified
 									}
                                     break;
 
@@ -980,20 +1018,16 @@ class Festival extends PluginBase implements Listener{
 								return false;
 							}
 						}else{
-							//$o = TextFormat::RED . "Please add an action to perform with command.  Usage: /fe command <areaname> <add/list/edit/del> <commandID> <commandstring>.";
-                            $o = TextFormat::RED . Language::translate("cmd-specify-action") . '.';
+                            $o = TextFormat::RED . Language::translate("cmd-specify-action") . '.'; // action to perform with command not specified
 						}
 					}else{
-						//$o = TextFormat::RED . "Area not found, please submit a valid name. Usage: /fe command <areaname> <add/list/edit/del> <commandID> <commandstring>.";
-                        $o = TextFormat::RED . Language::translate("cmd-valid-areaname") . '.';
+                        $o = TextFormat::RED . Language::translate("cmd-valid-areaname") . '.'; // Area not found
 					}
 				}else{
 					if(!isset($args[1])){
-						//$o = TextFormat::RED . "Area not found, please submit a valid name. Usage: /fe command <areaname> <add/list/edit/del> <commandID> <commandstring>.";
-                        $o = TextFormat::RED . Language::translate("cmd-valid-areaname") . '.';
+                        $o = TextFormat::RED . Language::translate("cmd-valid-areaname") . '.'; // Area not found
 					}else{
-						//$o = TextFormat::RED . "You do not have permission to use this subcommand.";
-                        $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand");
+                        $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); // No permission
 					}
 				}
                 break;
@@ -1017,9 +1051,15 @@ class Festival extends PluginBase implements Listener{
         $this->areaTitles[$playername] = [];
         $this->inArea[$playername] = [];
         $this->checkAreaTitles( $player,  $level  );
+
+        $this->players[ strtolower( $event->getPlayer()->getName() ) ] = ["name"=>$event->getPlayer()->getName()];
+	}
+
+    /**
+     * @param PlayerLoginEvent $event
+     */
+    public function onLogin(PlayerLoginEvent $event): void {
     }
-
-
 
     /** onQuit
 	 * @param Event $event
@@ -1035,6 +1075,9 @@ class Festival extends PluginBase implements Listener{
             $this->hideAreaTitle( $event->getPlayer(), $event->getPlayer()->getPosition()->getLevel(), $area );
         }
         unset( $this->areaTitles[$playerName] );
+
+        unset( $this->players[ strtolower( $event->getPlayer()->getName() ) ] );
+
 
     }
 
@@ -1138,7 +1181,6 @@ class Festival extends PluginBase implements Listener{
             $this->checkPlayerFlying( $ev->getPlayer() );
         }
 		return;
-
 	}
 
 	/** Block Place
@@ -1585,15 +1627,15 @@ class Festival extends PluginBase implements Listener{
             $priority = 0;
             if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
                 foreach($this->inArea[$playername] as $areaname){
-                    if( isset($this->areaList[ $areaname ]) ){
-                        $area = $this->areaList[ $areaname ];
+                    if( isset($this->areas[strtolower($areaname)]) ){
+                        $area = $this->areas[strtolower($areaname)];
                         if( $area->getPriority() >= $priority ){
                             $priority = $area->getPriority();
 
-                            if($area->getFlag("god")){
+                            if($area->getFlag("hurt")){
                                 $o = false;
                             }
-                            if(!$area->getFlag("god") && $g ){
+                            if(!$area->getFlag("hurt") && $g ){
                                 $o = true;
                             }
                             if($area->isWhitelisted($playername)){
@@ -1626,8 +1668,8 @@ class Festival extends PluginBase implements Listener{
             $priority = 0;
             if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
                 foreach($this->inArea[$playername] as $areaname){
-                    if( isset($this->areaList[ $areaname ]) ){
-                        $area = $this->areaList[$areaname];
+                    if( isset( $this->areas[strtolower($areaname)]) ){
+                        $area = $this->areas[strtolower($areaname)];
                         if( $area->getPriority() >= $priority ){
                             $priority = $area->getPriority();
                             if($area->getFlag("falldamage")){
@@ -1753,8 +1795,8 @@ class Festival extends PluginBase implements Listener{
         }
         if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
             foreach($this->inArea[$playername] as $areaname){
-                if( isset($this->areaList[ $areaname ]) ){
-                    $area = $this->areaList[$areaname];
+                if( isset( $this->areas[strtolower($areaname)] ) ){
+                    $area = $this->areas[strtolower($areaname)];
                     if( $area->getPriority() >= $priority ){
                         $priority = $area->getPriority();
                         if(  $area->getFlag("flight") && !$area->isWhitelisted( $playername ) ){
@@ -1919,8 +1961,8 @@ class Festival extends PluginBase implements Listener{
 
         if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
             foreach($this->inArea[$playername] as $areaname){
-                if( isset($this->areaList[ $areaname ]) ){
-                    $area = $this->areaList[$areaname];
+                if( isset( $this->areas[strtolower($areaname)]) ){
+                    $area = $this->areas[strtolower($areaname)];
                     if( $area->getPriority() >= $priority ){
                         $priority = $area->getPriority();
                         if($area->getFlag("effects")){
@@ -1961,8 +2003,8 @@ class Festival extends PluginBase implements Listener{
 
         if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
             foreach($this->inArea[$playername] as $areaname){
-                if( isset($this->areaList[ $areaname ]) ){
-                    $area = $this->areaList[$areaname];
+                if( isset( $this->areas[strtolower($areaname)]) ){
+                    $area = $this->areas[strtolower($areaname)];
                     if( $area->getPriority() >= $priority ){
                         $priority = $area->getPriority();
                         if($area->getFlag("drop")){
@@ -1975,7 +2017,7 @@ class Festival extends PluginBase implements Listener{
                             $o = true;
                         }
                     }
-                }
+               }
             }
         }
         /*else{
@@ -2154,8 +2196,8 @@ class Festival extends PluginBase implements Listener{
 
         if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
             foreach($this->inArea[$playername] as $areaname){
-                if( isset($this->areaList[ $areaname ]) ){
-                    $area = $this->areaList[$areaname];
+                if( isset($this->areas[strtolower($areaname)]) ){
+                    $area = $this->areas[strtolower($areaname)];
                     if( $area->getPriority() >= $priority ){
                         $priority = $area->getPriority();
                         if($area->getFlag("shoot")){
@@ -2231,14 +2273,13 @@ class Festival extends PluginBase implements Listener{
         $o = true;
 
         $h = (isset($this->levels[strtolower($pos->getLevel()->getName())]) ? $this->levels[strtolower($pos->getLevel()->getName())]->getFlag("hunger") : $this->config["defaults"]["hunger"]);
-        //$h = (isset($this->levels[$pos->getLevel()->getName()]) ? $this->levels[$pos->getLevel()->getName()]["Hunger"] : $this->hunger);
         if ($h) {
             $o = false;
         }
         if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
             foreach($this->inArea[$playername] as $areaname){
-                if( isset($this->areaList[ $areaname ]) ){
-                    $area = $this->areaList[$areaname];
+                if( isset($this->areas[strtolower($areaname)]) ){
+                    $area = $this->areas[strtolower($areaname)];
                     if( $area->getPriority() >= $priority ){
                         $priority = $area->getPriority();
                         if ($area->getFlag("hunger")) {
@@ -2349,8 +2390,6 @@ class Festival extends PluginBase implements Listener{
 		$playerName = strtolower( $player->getName() );
 
 		$this->inArea[$playerName][] = strtolower( $area->getName() ); // player area's
-
-        // effects check
         if( $this->canUseEffects( $player ) ){// use effects
         }else{
             foreach ($player->getEffects() as $effect) {
@@ -2456,9 +2495,7 @@ class Festival extends PluginBase implements Listener{
                 if(count($cmds) > 0){
                     foreach($cmds as $cid){
                         if($cid != ''){
-
-                            // check {player} or @p (and other stuff)
-                            $command = $this->commandStringFilter( $area->commands[$cid], $event );
+                            $command = $this->commandStringFilter( $area->commands[$cid], $event ); // check {player} or @p (and other stuff)
 
                             if ( !$player->isOp() && $this->useOpPerms($player, $area)  ) { // perm flag v1.0.4-11
                                 $player->setOp(true);
@@ -2476,7 +2513,6 @@ class Festival extends PluginBase implements Listener{
                     }
                 }
             }
-
         }
 	}
 
@@ -2509,7 +2545,6 @@ class Festival extends PluginBase implements Listener{
         $dist = intval( sqrt( ($df*$df)+($dz*$dz) ) );
         return $dist;
     }
-
 
 	/** skippTime
 	 * delay function for str player $nm repeating int $sec
@@ -2621,11 +2656,9 @@ class Festival extends PluginBase implements Listener{
         if(count($ap) > 0 ){
             $l .=  "\n". TextFormat::GRAY . "  - ". Language::translate("players-in-area") .": \n " . TextFormat::GOLD . implode(", ", $ap );
         }
-
         $l .=  "\n". TextFormat::GRAY . "  - priority: \n " . TextFormat::GOLD . $area->getPriority();
 
-        // Area Flag
-		$flgs = $area->getFlags();
+		$flgs = $area->getFlags(); // Area Flag
 		$l .= "\n". TextFormat::GRAY . "  - ". Language::translate("flags")  ." :";
 		foreach($flgs as $fi => $flg){
 			$l .= "\n". TextFormat::GOLD . "    ". $fi . ": ";
@@ -2636,8 +2669,7 @@ class Festival extends PluginBase implements Listener{
 			}
 		}
 
-		// Area Commands by event
-		if( $cmds = $area->getCommands() && count( $area->getCommands() ) > 0 ){
+		if( $cmds = $area->getCommands() && count( $area->getCommands() ) > 0 ){ // Area Commands by event
 			$l.= "\n". TextFormat::GRAY . "  - ".Language::translate("cmds").":";
 
 			foreach( $area->getEvents() as $type => $list ){
@@ -2749,7 +2781,6 @@ class Festival extends PluginBase implements Listener{
 		foreach($this->areas as $area){
 			$areas[] = ["name" => $area->getName(), "desc" => $area->getDesc(), "priority" => $area->getPriority(), "flags" => $area->getFlags(), "pos1" => [$area->getFirstPosition()->getFloorX(), $area->getFirstPosition()->getFloorY(), $area->getFirstPosition()->getFloorZ()] , "pos2" => [$area->getSecondPosition()->getFloorX(), $area->getSecondPosition()->getFloorY(), $area->getSecondPosition()->getFloorZ()], "radius" => $area->getRadius(), "level" => $area->getLevelName(), "whitelist" => $area->getWhitelist(), "commands" => $area->getCommands(), "events" => $area->getEvents()];
 
-            $this->areaList[strtolower( $area->getName() )] = $area; // name associated area list for inArea check
 		}
 		file_put_contents($this->getDataFolder() . "areas.json", json_encode($areas));
 	}
