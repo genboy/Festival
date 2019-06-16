@@ -57,7 +57,10 @@ Download the latest .phar files from [poggit.pmmp.io](https://poggit.pmmp.io/p/F
 - Create and manage area’s ingame
   (like WorldGuard/iProtector)
 
-    - Define cuboid area by tapping 2 positions
+    - Define area's by tapping 2 positions
+      - diagonal for cube
+      - radius for sphere
+      - diameter for sphere
     - create/delete/list area’s
     - add area description
     - whitelist players for the area
@@ -71,15 +74,15 @@ Download the latest .phar files from [poggit.pmmp.io](https://poggit.pmmp.io/p/F
   ie. edit: true (on) means no breaking/building by players. shoot: true (on) means no shooting by players.
   
     - edit: the area is save from building/breaking
-    - god: players in the area are save in god mode
+    - hurt: players in the area are save (previous god flag)
     - pvp: players in the area are save from PVP
     - flight: players in the area are not allowed to fly
     - touch: area is save from player interaction with doors/chests/signs etc.
     - animals: no animal spawning (including spawners & eggs)
     - mobs: no mobs spawning (including spawners & eggs)
-    - effects: player can not keep using effects in the area
+    - effect: player can not keep using effects in the area
     - msg: do not display area enter/leave messages
-    - passage: no passage for non-whitelisted players! (previously barrier flag)
+    - pass: no passage for non-whitelisted players! (previously barrier flag)
     - drop: players can not drop things
     - tnt: explosions protected area
     - fire: fire protected area (including spreading & lava)
@@ -87,8 +90,8 @@ Download the latest .phar files from [poggit.pmmp.io](https://poggit.pmmp.io/p/F
     - shoot: player can not shoot (bow)
     - perms: player permissions are used to determine area command execution
     - hunger: player does not exhaust / hunger
-    - falldamage: player will not have fall damage (no fall damage)
-    - cmdmode: area event commands are only executed for ops (test area commands)
+    - fall: player will not have fall damage
+    - cmd: area event commands are only executed for ops (test area commands)
 
 
 **Events & Commands**
@@ -128,6 +131,8 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   #### Setup
 
   ### Install & Configure
+  
+  - ! Update Festival 2 in development using ingame UI for configurations
 
   - Standard Plugin installation; Upload .phar file to server 'plugin' folder (or upload .zip if you have latest devtools installed), restart the server, go to  folder plugins/Festival;
 
@@ -145,7 +150,7 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   ##### !Before update always copy your config.yml and areas.json files to a save place, with this you can revert your Festival installation
   - after .phar install and first restart/reload plugins; check console info and your areas.json and config.yml; restart after adjusted correctly 
   
-
+  - ! Update Festival 2 in development translating resource config.yml or your mainfolder config.yml and areas.json on install
   
 
   #### Usage Graphic
@@ -170,25 +175,44 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 
   #### Create area
   
-  First command '/fe pos1' and tab or break a block for position 1 (holding a block, not an item), 
+  - ! Update Festival 2 in development with sphere area and Full Capitalized Multiple Word Area Name and strings
   
-  then command '/fe pos2' and tab or break a block to set position2, 
+  First command '/fe pos' or '/fe pos1' and tab or break a block for position 1 (holding a block, not an item), 
+  
+  then either 1: command '/fe pos2' and tab or break a block to set position 2 for cube area, 
   
   these are the endpoints of the area longest diagonal.
 
 	/fe pos1
 	/fe pos2
 
+  or 2: command '/fe rad' or '/fe radius' and tab or break a block to set position 2 for sphere area,
+  
+  these are the center and the endpoint of the area radius.
 
+	/fe pos
+	/fe rad
+
+  or 3: command '/fe dia' or '/fe diameter' and tab or break a block to set position 2 for sphere area,
+  
+  these are the start- and the endpoint of the area diameter.
+
+	/fe pos
+	/fe dia
+    
   Then name/save the selected area
 
 	/fe create <AREANAME>  
 
-  Now the area is ready to use
+  Now the area is ready to use (flags set by level = default)
   
   You might want to set or edit the area description line
    
     /fe desc <AREANAME> <description>
+    
+  or rename the area
+   
+    /fe rename <AREANAME> to <NEWAREANAME>
 
 
   #### Set area flags 
@@ -197,9 +221,12 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   
       /fe <edit/god/pvp/flight/touch/mobs/animals/effects/tnt/fire/explode/shoot/drop/msg/pass/hunger/perms/falldamage/cmdmode> <AREANAME>
 
+    ! Default flags in Festival 2 are set with the UI configuration and level settings
   
     Area flag defaults are set in the config.yml, server defaults and world specific default flag. 
     
+    
+    ! Following will be deprecated in Festival 2
     
     The basic command to control area flags:
   
@@ -249,8 +276,12 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 
   
   #### Manage  whitelist
-	
+  
+  - ! deprecated .. Update Festival 2 in development with Full Capitalized Multiple Word Area Name and strings	
+  
     /fe whitelist <AREANAME> <add/list/remove(del,delete)> <PLAYERNAME>
+    
+  - Festival 2: /fe whitelist <add/list/remove(del,delete)> <PLAYERNAME> for <AREANAME>
 
 
   #### Area event commands
@@ -269,6 +300,8 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
       - make sure the command works! (when you are op)
       
       
+    - ! deprecated .. Update Festival 2 in development with Full Capitalized Multiple Word Area Name and strings	
+    
     /fe command <AREANAME> <add/list/edit/event*/del> <COMMANDID> <COMMANDSTRING/enter*/leave*/center*> 
  
 	

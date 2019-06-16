@@ -50,19 +50,19 @@
     "player-allready-whitelisted": "is allready whitelisted in area",
     "player-has-been-unwhitelisted": "has been unwhitelisted from area",
     "player-allready-unwhitelisted": "is allready unwhitelisted from area",
-    "whitelist-specify-action": "Please specify a valid action. Usage: /area whitelist <areaname> <add/list/remove> <playername>",
+    "whitelist-specify-action": "Please specify a valid action. Usage: /area whitelist <add/list/show/remove(del,delete)> <playername> for <areaname> ",
 
     "name-saved": "renamed to",
-    "name-write-usage": "Assign a new name. Use /fe rename <areaname> <..>",
-    "name-specify-area": "Please specify an area to edit the name. Usage: /fe rename <areaname> <name>",
+    "name-write-usage": "Assign a new name. Use /fe rename <areaname> to <..>",
+    "name-specify-area": "Please specify an area to edit the name. Usage: /fe rename <areaname> to <name>",
 
     "desc-saved": "description saved.",
-    "desc-write-usage": "Please write the description. Usage /fe desc <areaname> <..>",
+    "desc-write-usage": "Please write the description. Usage /fe desc <areaname> set <..>",
     "desc-specify-area": "Please specify an area to edit the description. Usage: /fe desc <areaname> <desc>",
 
     "priority-saved": "priority saved.",
     "priority-write-usage": "Assign a number. Use /fe priority <areaname> <number 0-999>",
-    "priority-number-usage": "Assign a number, 0 is default, 1 - 999 assigns higher priority. Use /fe priority <areaname> <number 0-999>",
+    "priority-number-usage": "Assign a number, 0 is default, 1 - 999 assigns higher priority. Use /fe priority <areaname> set <number 0-999>",
     "priority-specify-area": "Please specify an area to edit the priority. Use /fe priority <areaname> <number 0-999>",
 
     "area-deleted": "Area deleted!",
@@ -71,8 +71,8 @@
 
     "flag": "Flag",
     "flags": "flags",
-    "flag-not-found-list": "Flag not found. (Flags: god, pvp, flight, edit, touch, animals, mobs, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)",
-    "flag-not-specified-list": "Please specify a flag. (Flags: god, pvp, flight, edit, touch, animals, mobs, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)",
+    "flag-not-found-list": "Flag not found. (Flag names: hurt, pvp, flight, edit, touch, animals, mobs, effect, msg, pass, drop, tnt, shoot, hunger, perms, fall)",
+    "flag-not-specified-list": "Please specify a flag. Usage /fe <flagname> <areaname> (Flag names: hurt, pvp, flight, edit, touch, animals, mobs, effect, msg, pass, drop, tnt, shoot, hunger, perms, fall)",
     "specify-to-flag": "Please specify the area you would like to flag.",
 
     "tp-to-area-active": "You are teleporting to Area",

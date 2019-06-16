@@ -103,19 +103,19 @@ class FormUI{
             }
             switch ($data) {
                case 0:
-                    $this->areaNewForm( $sender ); // new
-               break;
-               case 1:
                     $this->areaEditForm( $sender );
                 break;
-                case 2:
+                case 1:
                     $this->areaCommandForm( $sender );
                 break;
-                case 3:
+                case 2:
                     $this->areaWhitelistForm( $sender );
                 break;
-                case 4:
+                case 3:
                     $this->areaDeleteForm( $sender ); // del
+                break;
+                case 4:
+                    $this->areaNewForm( $sender ); // new
                 break;
                 default:
                     $this->selectForm( $sender );
@@ -131,21 +131,22 @@ class FormUI{
             $form->setContent("Select an option");
         }
 
+        // edit area flags
+        $form->addButton("Edit area flags", 0, "textures/items/diamond_pickaxe");
+
+        // edit area commands
+        $form->addButton("Edit area commands", 0, "textures/blocks/command_block");
+
+        // edit area whitelist
+        $form->addButton("Edit area whitelist", 0, "textures/items/book_written");
+
+
+        // delete area
+        $form->addButton("Delete an area", 0, "textures/blocks/pumpkin_face_off");
 
         // new area
         $form->addButton("Create new area", 0, "textures/blocks/stonebrick_carved");
 
-        // edit area flags
-        $form->addButton("Edit flags & options", 0, "textures/items/diamond_pickaxe");
-
-        // edit area commands
-        $form->addButton("Edit commands", 0, "textures/blocks/command_block");
-
-        // edit area whitelist
-        $form->addButton("Edit whitelist", 0, "textures/items/book_written");
-
-        // delete area
-        $form->addButton("Delete an area", 0, "textures/blocks/pumpkin_face_off");
 
         $form->addButton("Go back");
 
@@ -257,15 +258,8 @@ class FormUI{
                 if( isset( $this->plugin->areas[ $areaname ] ) ){
                     $area = $this->plugin->areas[ $areaname ];
 
-                    if( isset( $data["newareaname"] ) && !empty( $data["newareaname"] ) ){
-                        $this->plugin->hideAreaTitle( $sender, $sender->getPosition()->getLevel(), $area );
-                        $area->setName( $data["newareaname"] );
-                    }
                     if( isset( $data["newareadesc"] ) && !empty( $data["newareadesc"] ) ){
                         $area->setDesc( $data["newareadesc"] );
-                    }
-                    if( isset( $data["newareapriority"] ) && !empty( $data["newareapriority"] ) ){
-                        $area->setPriority( intval( $data["newareapriority"] ) );
                     }
                     $c = 1;
                     $flagset = $area->getFlags();
@@ -277,7 +271,6 @@ class FormUI{
                     }
                     $area->save();
                     $this->plugin->helper->saveAreas();
-                    $this->plugin->checkAreaTitles( $sender, $sender->getPosition()->getLevel() );
                     $this->selectForm( $sender, "Area ". $areaname . " saved! Select an option"  );
                 }else{
                     $this->areaForm( $sender, "Area ". $areaname . " not found! Try again, select an option" );
@@ -288,9 +281,7 @@ class FormUI{
             $areaname = $areasnames[$input["selectedArea"]];
             $form->setTitle( TextFormat::DARK_PURPLE . "Manage area " . TextFormat::DARK_PURPLE . $areaname );
             //$form->addInput("Name", "Area name (id)", $this->plugin->areas[$areaname]->getNAme(), "newareaname" );
-            $form->addInput("Name", "Area name", $this->plugin->areas[$areaname]->getName(), "newareaname" );
             $form->addInput("Description", "Area description", $this->plugin->areas[$areaname]->getDesc(), "newareadesc" );
-            $form->addInput("Priority", "Area priority", strval( $this->plugin->areas[$areaname]->getPriority() ), "newareapriority" );
             $flgs = $this->plugin->areas[$areaname]->getFlags();
             foreach( $flgs as $flag => $set){
                 $form->addToggle( $flag, $set );
@@ -342,7 +333,7 @@ class FormUI{
                 }
                 if( isset( $this->plugin->players[ strtolower( $sender->getName() ) ]["edit"] ) ){
                     $areaname = $this->plugin->players[ strtolower( $sender->getName() ) ]["edit"];
-                    $area = $this->plugin->areas[$areaname];
+                    $area = $this->plugin->areas[strtolower($areaname)];
                     unset( $this->plugin->players[ strtolower( $sender->getName() ) ]["edit"] );
                 }
 
@@ -360,12 +351,12 @@ class FormUI{
 					   $eventarr = explode(",", $area->events[$event] );
                        $eventarr[] = $id;
 					   $eventstr = implode(",", $eventarr );
-				       $this->plugin->areas[$areaname]->events[$event] = $eventstr;
+				       $this->plugin->areas[strtolower($areaname)]->events[$event] = $eventstr;
                     }else{
-                        $this->plugin->areas[$areaname]->events[$event] = "$id";
+                        $this->plugin->areas[strtolower($areaname)]->events[$event] = "$id";
                     }
 
-                    $this->plugin->areas[$areaname]->commands[$id] = $newcmd;
+                    $this->plugin->areas[strtolower($areaname)]->commands[$id] = $newcmd;
 
 					$this->plugin->helper->saveAreas();
 
@@ -375,30 +366,13 @@ class FormUI{
                     // delete
                     if( isset( $data["delcommand"] ) && $data["delcommand"] != ""  ){
                         $id = $data["delcommand"];
-                        if( isset($this->plugin->areas[$areaname]->commands[$id]) ){
-                            unset($this->plugin->areas[$areaname]->commands[$id]);
+                        if( isset($this->plugin->areas[strtolower($areaname)]->commands[$id]) ){
+                            unset($this->plugin->areas[strtolower($areaname)]->commands[$id]);
                             $this->plugin->helper->saveAreas();
                             $this->areaSelectForm( $sender, "Area ". $areaname . " command ". $id ." deleted! Select an option"  );
                         }else{
                             $this->areaSelectForm( $sender, "Command id not found! Try again or select another option"  );
                         }
-                        if( isset($this->plugin->areas[$areaname]->events) ){
-                            foreach($this->plugin->areas[$areaname]->events as $e => $i){
-								$evs = explode(",", $i);
-								foreach($evs as $k => $ci){
-								    if($ci == $id || $ci == ''){ // also remove empty values
-								        unset($evs[$k]);
-								    }
-								}
-								$str = trim( implode(",",$evs), ",");
-								if( $str != ""){
-								    $area->events[$e] = $str;
-								}else{
-								    unset($area->events[$e]);
-								}
-				            }
-                        }
-
                     }else{
                         $this->areaSelectForm( $sender, "Command empty and not saved! Try again or select another option"  );
                     }
@@ -411,7 +385,7 @@ class FormUI{
 
             $areasnames = $this->plugin->helper->getAreaNameList();
             $areaname = $areasnames[$input["selectedArea"]];
-            $area = $this->plugin->areas[$areaname]; // check is area exsists
+            $area = $this->plugin->areas[strtolower($areaname)];
 
             $form->setTitle( TextFormat::DARK_PURPLE . "Commands for area " . TextFormat::DARK_PURPLE . $areaname );
 
@@ -483,7 +457,7 @@ class FormUI{
 
             $areasnames = $this->plugin->helper->getAreaNameList();
             $areaname = $areasnames[$input["selectedArea"]];
-            $area = $this->plugin->areas[$areaname];
+            $area = $this->plugin->areas[strtolower($areaname)];
 
             if( isset( $input["selectedArea"] ) ){
                 $areaname = $areasnames[$input["selectedArea"]];
@@ -497,7 +471,7 @@ class FormUI{
                     }
                     if( isset( $this->plugin->players[ strtolower( $sender->getName() ) ]["edit"] ) ){
                         $areaname = $this->plugin->players[ strtolower( $sender->getName() ) ]["edit"];
-                        $area = $this->plugin->areas[$areaname];
+                        $area = $this->plugin->areas[strtolower($areaname)];
                         unset( $this->plugin->players[ strtolower( $sender->getName() ) ]["edit"] );
                     }
                     $players = $this->plugin->players;
@@ -559,23 +533,17 @@ class FormUI{
     }
 
 
-    /** areaNewForm
+    /** areaNewForm (old)
      * @class formUI
 	 * @param Player $sender
 	 * @param string $msg
-    */
-
+     */
     public function areaNewForm( Player $sender , $input = false, $msg = false) : void {
-
         if( $input != false ){
-
             if( isset($input["type"]) && ( !isset( $this->plugin->players[ strtolower( $sender->getName() ) ]["makearea"]["newname"] ) ||  $this->plugin->players[ strtolower( $sender->getName() ) ]["makearea"]["newname"] == "" ) ){
-
                 $form = new CustomForm(function ( Player $sender, ?ARRAY $data ) {
-
                     if( $data === null){
                         $sender->sendMessage("Form data corrupted or not available, please try again.");
-                        return;
                     }else{
 
                         if( isset( $data["name"] ) && $data["name"] != "" && !isset( $this->plugin->areas[ $data["name"] ] ) ){ // check and save area
@@ -601,7 +569,6 @@ class FormUI{
 
                             new FeArea( $newarea["name"], $newarea["desc"], $newarea["priority"], $newarea["flags"], $newarea["pos1"], $newarea["pos2"], $newarea["radius"], $newarea["level"], [], [], [], $this->plugin);
                             $this->plugin->helper->saveAreas();
-                            $this->plugin->checkAreaTitles( $sender, $sender->getPosition()->getLevel() );
                             $this->areaSelectForm( $sender, "New area named ".$newarea["name"]." created!"  );
 
                         }else{
@@ -627,25 +594,19 @@ class FormUI{
             $form = new SimpleForm(function ( Player $sender, ?int $data ) {
                 if( $data === null){
                     $sender->sendMessage("Form data corrupted or not available, please try again.");
-                    return;
                 }else{
                     switch ($data) {
                         case 0:
                             $this->plugin->players[ strtolower( $sender->getName() ) ]["makearea"]["type"] = "cube";
-                            $o = TextFormat::GREEN . "Tab the first diagonal position for new cube area";
+                            $o = TextFormat::GREEN . "Tab position 1 for new cube area (right mouse block place)";
                             $sender->sendMessage($o);
                         break;
                         case 1:
-                            $this->plugin->players[ strtolower( $sender->getName() ) ]["makearea"]["type"] = "radius";
-                            $o = TextFormat::GREEN . "Tab the center position for the new sphere area";
+                            $this->plugin->players[ strtolower( $sender->getName() ) ]["makearea"]["type"] = "sphere";
+                            $o = TextFormat::GREEN . "Tab the center position for the new sphere area (right mouse block place)";
                             $sender->sendMessage($o);
                         break;
                         case 2:
-                            $this->plugin->players[ strtolower( $sender->getName() ) ]["makearea"]["type"] = "diameter";
-                            $o = TextFormat::GREEN . "Tab the first diameter position for the new sphere area";
-                            $sender->sendMessage($o);
-                        break;
-                        case 3:
                             $this->areaSelectForm( $sender ); // goback
                         break;
                         default:
@@ -659,11 +620,10 @@ class FormUI{
             if($msg){
                 $form->setContent($msg);
             }else{
-                $form->setContent("Select new area creation type");
+                $form->setContent("Select new area type");
             }
-            $form->addButton("Cube Diagonal - select 2 diagonal positions"); // cube area
-            $form->addButton("Sphere Radius - select center and radius distance"); // sphere area
-            $form->addButton("Sphere Diameter - select 2 diameter positions"); // sphere area
+            $form->addButton("Cube area (select 2 positions)"); // cube area
+            $form->addButton("Sphere Area (select center and radius)"); // sphere area
             $form->addButton("Go back");
             $form->sendToPlayer($sender);
         }
@@ -692,7 +652,6 @@ class FormUI{
                 }
                 if( isset( $this->plugin->areas[ $areaname ] ) ){
                     $area = $this->plugin->areas[ $areaname ];
-                    $this->plugin->hideAreaTitle( $sender, $sender->getPosition()->getLevel(), $area );
                     $area->delete();
                     $this->plugin->helper->saveAreas();
                     $this->selectForm( $sender, "Area ". $areaname . " deleted! Select an option"  );
@@ -822,7 +781,7 @@ class FormUI{
             if( isset( $data[0] ) ){
                 $selectlist = array();
                 foreach($this->plugin->areas as $area){
-                    $selectlist[]= $area->getName();
+                    $selectlist[]= strtolower( $area->getName() );
                 }
                 if(  $selectlist[ $data[0] - 1 ] ){
                     $areaname = $selectlist[ $data[0] - 1 ];
@@ -833,9 +792,9 @@ class FormUI{
 
         $form->setTitle("Teleport to Area");
         $selectlist = array();
-        $selectlist[] = "Select destination area";
+        $selectlist[]= "Select destination area";
         foreach($this->plugin->areas as $area){
-            $selectlist[] = $area->getName();
+            $selectlist[]= strtolower( $area->getName() );
         }
         $form->addDropdown("TP to area", $selectlist );
         $form->sendToPlayer($sender);

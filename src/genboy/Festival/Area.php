@@ -39,7 +39,7 @@ class Area{
 	private $plugin;
 
 	public function __construct(string $name, string $desc, int $priority, array $flags, Vector3 $pos1, Vector3 $pos2, int $radius, string $levelName, array $whitelist, array $commands, array $events, Festival $plugin){
-		$this->name = strtolower($name);
+		$this->name = $name;
 		$this->desc = $desc;
 		$this->priority = $priority;
 		$this->flags = $flags;

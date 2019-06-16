@@ -91,8 +91,6 @@ class Helper {
 
             foreach($this->plugin->areas as $area){
                 $areas[] = ["name" => $area->getName(), "desc" => $area->getDesc(), "priority" => $area->getPriority(), "flags" => $area->getFlags(), "pos1" => [$area->getFirstPosition()->getFloorX(), $area->getFirstPosition()->getFloorY(), $area->getFirstPosition()->getFloorZ()] , "pos2" => [$area->getSecondPosition()->getFloorX(), $area->getSecondPosition()->getFloorY(), $area->getSecondPosition()->getFloorZ()], "radius" => $area->getRadius(), "level" => $area->getLevelName(), "whitelist" => $area->getWhitelist(), "commands" => $area->getCommands(), "events" => $area->getEvents()];
-
-                $this->plugin->areaList[strtolower( $area->getName() )] = $area; // name associated area list for inArea check
             }
 
             $this->saveDataSet( "areas", $areas );
