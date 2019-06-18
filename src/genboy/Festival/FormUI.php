@@ -176,13 +176,19 @@ class FormUI{
             $areadsp_opt = ["on", "op", "off"];
             $this->plugin->config["options"]["areatitledisplay"] = $areadsp_opt[ $data["areatitledisplay"] ];
 
-            /*$newautolist = "off";
-            if(  $data["autolist"] == true){
+            $newautolist = "off";
+            if(  $data["autowhitelist"] == true){
                 $newautolist = "on";
-            }*/
-            $this->plugin->config["options"]["autowhitelist"] =  $data["autowhitelist"];
+            }
+            $this->plugin->config["options"]["autowhitelist"] =  $newautolist;
 
-            $c = 5; // after 5 options all input are flags
+            $newflightcontrol = "off";
+            if(  $data["flightcontrol"] == true){
+                $newflightcontrol = "on";
+            }
+            $this->plugin->config["options"]["flightcontrol"] =  $newflightcontrol;
+
+            $c = 6; // after 5 options all input are flags
             foreach( $this->plugin->config["defaults"] as $flag => $set){
                 $c++;
                 $defaults[$flag] = $data[$c];
@@ -217,10 +223,16 @@ class FormUI{
         $form->addStepSlider( $areadsp_tlt, $areadsp_opt, $areadsp_slc, "areatitledisplay" );
 
         $autolist = false;
-        if( $optionset["autowhitelist"] != false){
+        if( $optionset["autowhitelist"] === true || $optionset["autowhitelist"] == "on"){
             $autolist = true;
         }
         $form->addToggle("Auto whitelist", $autolist, "autowhitelist" );
+
+        $flightcontrol = false;
+        if( $optionset["flightcontrol"] === true || $optionset["flightcontrol"] == "on"){
+            $flightcontrol = true;
+        }
+        $form->addToggle("Flight Control", $flightcontrol, "flightcontrol" );
 
         $nr = $optionset['itemid'];
         $form->addInput( "Action item", "block itemid", "$nr", "itemid" );
@@ -267,7 +279,7 @@ class FormUI{
                     if( isset( $data["newareapriority"] ) && !empty( $data["newareapriority"] ) ){
                         $area->setPriority( intval( $data["newareapriority"] ) );
                     }
-                    $c = 1;
+                    $c = 3; // 3 variables, others are flags..
                     $flagset = $area->getFlags();
                     foreach( $flagset as $nm => $set){
                         if( isset( $data[$c] ) ){

@@ -303,9 +303,6 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
     - ! deprecated .. Update Festival 2 in development with Full Capitalized Multiple Word Area Name and strings	
     
     /fe command <AREANAME> <add/list/edit/event*/del> <COMMANDID> <COMMANDSTRING/enter*/leave*/center*> 
- 
-	
-    
     
   #### Add a command:
 

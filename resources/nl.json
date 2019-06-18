@@ -9,8 +9,6 @@
     "cmd-noperms-msg": "Je kunt dit commando niet gebruiken",
     "cmd-noperms-subcommand": "Je hebt geen toestemming om dit subcommando te gebruiken.",
 
-    "new-radius-variable": "! Nieuwe radius integer-variabele toegevoegd om gebieden van het bol-type te maken.",
-
     "pos-select-active": "Je bent al een coordinaat aan het selecteren!",
     "select-both-pos-first":"Je moet eerst allebei de coordinaten selecteren.",
     "pos1": "coordinaat 1",
@@ -50,20 +48,24 @@
     "player-allready-whitelisted": "is al whitelisted in gebied",
     "player-has-been-unwhitelisted": "is unwhitelisted van gebied",
     "player-allready-unwhitelisted": "is al unwhitelisted van gebied",
-    "whitelist-specify-action": "Geef een actie op. Gebruik: /area whitelist <gebiedsnaam> <add/list/remove> <spelernaam>",
+    "whitelist-specify-action": "Geef een actie op. Gebruik: /area whitelist <add/list/show/remove(del,delete)> <playername> for <areaname>",
+    "whitelist-specify-for-area": "Gebruik a.u.b. 'for' in deze commando regel. Gebruik: /area whitelist <add/list/show/remove(del,delete)> <playername> for <areaname>",
 
     "name-saved": "naam aangepast naar",
-    "name-write-usage": "Schrijf de nieuwe naam. Gebruik /fe rename <gebiedsnaam> <..>",
-    "name-specify-area": "Geef een gebied aan om de naam aan te passen. Gebruik: /fe rename <gebiedsnaam> <naam>",
+    "name-write-usage": "Schrijf de nieuwe naam. Gebruik: /fe rename <gebiedsnaam> to <..>",
+    "name-specify-area": "Geef een gebied aan om de naam aan te passen. Gebruik: /fe rename <gebiedsnaam> to <naam>",
+    "name-specify-to-area": "Gebruik a.u.b. 'to' in deze commando regel. Gebruik: /fe rename <gebiedsnaam> to <naam>",
 
     "desc-saved": "omschrijving opgeslagen.",
-    "desc-write-usage": "Schrijf de beschrijving. Gebruik /fe desc <gebiedsnaam> <..>",
-    "desc-specify-area": "Geef een gebied aan om de omschrijving aan te passen. Gebruik: /fe desc <gebiedsnaam> <omschrijving>",
+    "desc-write-usage": "Schrijf a.u.b. de beschrijving. Gebruik /fe desc <areaname> set <..>",
+    "desc-specify-area": "Geef a.u.b. een gebied aan om de omschrijving aan te passen. Gebruik: /fe desc <areaname> set <desc>",
+    "desc-specify-set-area": "Gebruik a.u.b. 'set' in deze commando regel. Gebruik: /fe desc <areaname> set <desc>",
 
     "priority-saved": "prioriteit opgeslagen.",
-    "priority-write-usage": "Geef een nummer op. Gebruik /fe priority <gebiedsnaam> <nummer 0-999>",
-    "priority-number-usage": "Geef een nummer op, 0 is default, 1 - 999 geeft hogere prioriteit. Gebruik /fe priority <gebiedsnaam> <nummer 0-999>",
-    "priority-specify-area": "Geef een gebied aan om de prioriteit aan te passen. Gebruik: /fe priority <gebiedsnaam> <nummer 0-999>",
+    "priority-specify-set-area":  "Gebruik a.u.b. 'set' in deze commando regel. Gebruik: /fe priority <areaname> set <number int 0-999>",
+    "priority-write-usage": "Geef a.u.b. een nummer op. Gebruik: /fe priority <areaname> set <number int 0-999>",
+    "priority-number-usage": "Geef a.u.b. een nummer op, 0 is default, 1 - 999 geeft hogere prioriteit. Gebruik /fe priority <areaname> set <number int 0-999>",
+    "priority-specify-area": "Geef a.u.b. een gebied aan om de prioriteit aan te passen. Gebruik: /fe priority <areaname> set <number int 0-999>",
 
     "area-deleted": "Gebied verwijderd!",
     "deleted-by":"verwijderd door",
@@ -72,11 +74,11 @@
     "flag": "Flag",
     "flags": "flaggen",
     "flag-not-found-list": "Flag niet gevonden. (Flaggen: god, pvp, flight, edit, touch, animals, mobs, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)",
-    "flag-not-specified-list": "Specificeer een vlag. (Flaggen: god, pvp, flight, edit, touch, animals, mobs, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)",
-    "specify-to-flag": "Geef de naam van het gebied op om te vlaggen.",
+    "flag-not-specified-list": "Specificeer a.u.b. een vlag. Gebruik: /fe <flagname> <areaname> (Flaggen: god, pvp, flight, edit, touch, animals, mobs, effects, msg, passage, drop, tnt, shoot, hunger, perms, falldamage)",
+    "specify-to-flag": "Geef a.u.b. de naam van het gebied op om te vlaggen.",
 
     "tp-to-area-active": "Je teleporteerd naar gebied",
-    "specify-excisting-area-name": "Geef een bestaande naam van een gebied. (zie /fe list)",
+    "specify-excisting-area-name": "Geef a.u.b. een bestaande naam van een gebied. (Info: /fe list)",
 
     "cmd": "Commando",
     "cmds": "Commando's",
@@ -88,11 +90,11 @@
 	"allready-used-for": "al in gebruik voor",
     "allready-set-for-area": "al toegevoegd aan gebied",
     "edit-id-or-other": ", bewerk deze id of bewerk een andere id",
-	"cmd-specify-id-and-command-usage": "Geef een uniek id en comando regel om toe te voegen. Gebruik: /fe command <areaname> add <COMMANDID> <COMMANDSTRING>",
+	"cmd-specify-id-and-command-usage": "Geef een uniek id en comando regel om toe te voegen. Gebruik: /fe command <areaname> <add(enter/center/leave)/list/edit/del> <COMMANDID> <COMMANDSTRING>",
+    "cmd-valid-areaname": "Gebied niet gevonden, geef een bestaande naam op. Gebruik: /fe command <areaname> <add(enter/center/leave)/list/edit/del> <commandID> <commandstring>.",
 
-    "cmd-valid-areaname": "Gebied niet gevonden, geef een bestaande naam op. Gebruik: /fe command <areaname> <add/list/edit/del> <commandID> <commandstring>.",
-    "cmd-id-not-found": "Comando ID niet gevonden. Bekijk de comando's met /fe event command <areaname> list",
-    "cmd-specify-id-to-delete": "Geef het comando ID om het te verwijderen. Gebruik /fe event command <areaname> del <COMMANDID>",
+    "cmd-id-not-found": "Comando ID niet gevonden. Bekijk de comando's met /fe command <areaname> list",
+    "cmd-specify-id-to-delete": "Geef het comando ID om het te verwijderen. Gebruik /fe command <areaname> del <COMMANDID>",
     "cmd-specify-action": "Voeg een actie toe voor het comando.  Geruik: /fe command <areaname> <add/list/edit/del> <commandID> <commandstring>.",
 
     "event": "event",
@@ -109,7 +111,7 @@
     "for-area": "voor gebied",
     "number-to-write": "Geef een nummer op",
 
-    "all-players-are-god": "Alle spelers hebben god-mode in dit gebied!",
+    "all-players-are-save": "Alle spelers zijn veilig in dit gebied!",
     "no-pvp-area": "Dit is geen PVP area!",
     "no-flight-area": "Vliegen is hier niet toegstaan!",
     "flight-area": "Vliegen is hier toegestaand!",
