@@ -5,6 +5,7 @@
 namespace genboy\Festival;
 
 use genboy\Festival\Festival;
+use genboy\Festival\lang\Language;
 use genboy\Festival\Area as FeArea;
 use xenialdan\customui\CustomForm;
 use xenialdan\customui\SimpleForm;
@@ -73,18 +74,18 @@ class FormUI{
             return false;
         });
 
-        $form->setTitle("Festival Manager");
+        $form->setTitle( Language::translate("ui-festival-manager") ); // Festival Manager
         if($msg){
             $form->setContent($msg);
         }else{
-            $form->setContent("Select an option");
+            $form->setContent( Language::translate("ui-select-an-option") );
         }
 
         // teleport to area
-        $form->addButton("Area Teleport", 0, "textures/items/sign");
-        $form->addButton("Area Management", 0, "textures/blocks/stonebrick_carved");
-        $form->addButton("Level Management", 0, "textures/items/name_tag");
-        $form->addButton("Configuration", 0, "textures/blocks/command_block");
+        $form->addButton( Language::translate("ui-area-teleport"), 0, "textures/items/sign");
+        $form->addButton( Language::translate("ui-area-management"), 0, "textures/blocks/stonebrick_carved");
+        $form->addButton( Language::translate("ui-level-management"), 0, "textures/items/name_tag");
+        $form->addButton( Language::translate("ui-config-management"), 0, "textures/blocks/command_block");
 
         $form->sendToPlayer($sender);
 
@@ -98,6 +99,7 @@ class FormUI{
      */
     public function areaSelectForm( Player $sender, $msg = false ) : void {
         $form = new SimpleForm(function ( Player $sender, ?int $data ) {
+
             if( $data === null){
                 return;
             }
@@ -124,30 +126,30 @@ class FormUI{
             return false;
         });
 
-        $form->setTitle("Festival Area Manager");
+        $form->setTitle( Language::translate("ui-area-manager") );
         if($msg){
             $form->setContent($msg);
         }else{
-            $form->setContent("Select an option");
+            $form->setContent( Language::translate("ui-select-an-option") );
         }
 
 
         // new area
-        $form->addButton("Create new area", 0, "textures/blocks/stonebrick_carved");
+        $form->addButton( Language::translate("ui-create-area"), 0, "textures/blocks/stonebrick_carved");
 
         // edit area flags
-        $form->addButton("Edit flags & options", 0, "textures/items/diamond_pickaxe");
+        $form->addButton( Language::translate("ui-edit-area-options"), 0, "textures/items/diamond_pickaxe");
 
         // edit area commands
-        $form->addButton("Edit commands", 0, "textures/blocks/command_block");
+        $form->addButton( Language::translate("ui-edit-area-commands"), 0, "textures/blocks/command_block");
 
         // edit area whitelist
-        $form->addButton("Edit whitelist", 0, "textures/items/book_written");
+        $form->addButton( Language::translate("ui-edit-area-whitelist"), 0, "textures/items/book_written");
 
         // delete area
-        $form->addButton("Delete an area", 0, "textures/blocks/pumpkin_face_off");
+        $form->addButton( Language::translate("ui-delete-area"), 0, "textures/blocks/pumpkin_face_off");
 
-        $form->addButton("Go back");
+        $form->addButton( Language::translate("ui-go-back") );
 
         $form->sendToPlayer($sender);
 
@@ -197,27 +199,27 @@ class FormUI{
             $this->plugin->config["defaults"] = $defaults;
             $this->plugin->helper->saveConfig( $this->plugin->config );
 
-            $msg = "Configs saved!";
+            $msg = Language::translate("ui-go-back") . "!";
             $this->selectForm($sender, $msg);
 
         });
 
         $optionset = $this->plugin->config["options"];
 
-        $form->setTitle("Festival Configuration");
-        $form->addLabel("Config Options & default flags");
+        $form->setTitle( Language::translate("ui-festival-configuration") );
+        $form->addLabel( Language::translate("ui-config-flags-options") );
 
-        $msgpos_tlt = "Area messages position";
+        $msgpos_tlt = Language::translate("ui-config-msg-position"); //"Area messages position";
         $msgpos_opt = ["msg", "title", "tip", "pop"];
         $msgpos_slc = array_search( $optionset["msgposition"], $msgpos_opt);
         $form->addStepSlider( $msgpos_tlt, $msgpos_opt, $msgpos_slc, "msgposition" );
 
-        $msgdsp_tlt = "Area messages visible";
+        $msgdsp_tlt = Language::translate("ui-config-msg-visible"); //"Area messages visible";
         $msgdsp_opt = ["on", "op", "off"];
         $msgdsp_slc = array_search( $optionset["msgdisplay"], $msgdsp_opt);
         $form->addStepSlider( $msgdsp_tlt, $msgdsp_opt, $msgdsp_slc, "msgdisplay" );
 
-        $areadsp_tlt = "Area titles visible";
+        $areadsp_tlt = Language::translate("ui-config-floating-titles"); //"Area floating titles visible";
         $areadsp_opt = ["on", "op", "off"];
         $areadsp_slc = array_search( $optionset["areatitledisplay"], $areadsp_opt);
         $form->addStepSlider( $areadsp_tlt, $areadsp_opt, $areadsp_slc, "areatitledisplay" );
@@ -226,16 +228,16 @@ class FormUI{
         if( $optionset["autowhitelist"] === true || $optionset["autowhitelist"] == "on"){
             $autolist = true;
         }
-        $form->addToggle("Auto whitelist", $autolist, "autowhitelist" );
+        $form->addToggle( Language::translate("ui-config-auto-whitelist"), $autolist, "autowhitelist" );
 
         $flightcontrol = false;
         if( $optionset["flightcontrol"] === true || $optionset["flightcontrol"] == "on"){
             $flightcontrol = true;
         }
-        $form->addToggle("Flight Control", $flightcontrol, "flightcontrol" );
+        $form->addToggle( Language::translate("ui-config-flight-control"), $flightcontrol, "flightcontrol" );
 
         $nr = $optionset['itemid'];
-        $form->addInput( "Action item", "block itemid", "$nr", "itemid" );
+        $form->addInput( Language::translate("ui-config-action-itemid"), "block itemid", "$nr", "itemid" );
 
 
         foreach( $this->plugin->config["defaults"] as $flag => $set){
@@ -384,6 +386,7 @@ class FormUI{
                     $this->areaSelectForm( $sender, "Area ". $areaname . " new $event command $id saved! Select an option"  );
 
                 }else{
+
                     // delete
                     if( isset( $data["delcommand"] ) && $data["delcommand"] != ""  ){
                         $id = $data["delcommand"];

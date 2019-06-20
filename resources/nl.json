@@ -14,12 +14,12 @@
     "pos1": "coordinaat 1",
     "pos2": "coordinaat 2",
     "make-pos1": "Breek of plaats een blok voor het eerste coordinaat.",
-    "make-pos2": "Breek of plaats een blok voor het tweede coordinaat.",
-    "make-radius-distance": "Breek of plaats een blok om de radius grote te bepalen.",
+    "make-pos2": "Breek of plaats a.u.b. positie 2 voor de langste diagonaal in het nieuwe kubus gebied.",
+    "make-radius-distance": "Breek of plaats a.u.b. positie 2 voor de radius maat van het nieuwe bol gebied.",
     "radius-distance-to-position": "Radius afstand tot positie",
-    "make-diameter-distance": "Please place or break to select the diameter direction and distance.",
-    "diameter-distance-to-position": "Diameter distance to position",
-    "give-area-name": "Geef het gebied een naam.",
+    "make-diameter-distance": "Breek of plaats a.u.b. positie 2 voor de diameter maat van het nieuwe bol gebied.",
+    "diameter-distance-to-position": "Diameter afstand tot positie",
+    "give-area-name": "Geef het gebied een naam. Gebruik: /fe create <gebiedsnaam>",
 
     "in-unknown-area": "Je ben in onbekend gebied",
 
@@ -48,8 +48,10 @@
     "player-allready-whitelisted": "is al whitelisted in gebied",
     "player-has-been-unwhitelisted": "is unwhitelisted van gebied",
     "player-allready-unwhitelisted": "is al unwhitelisted van gebied",
-    "whitelist-specify-action": "Geef een actie op. Gebruik: /area whitelist <add/list/show/remove(del,delete)> <playername> for <areaname>",
-    "whitelist-specify-for-area": "Gebruik a.u.b. 'for' in deze commando regel. Gebruik: /area whitelist <add/list/show/remove(del,delete)> <playername> for <areaname>",
+    "whitelist-specify-action": "Geef een actie op. Gebruik: /area whitelist <add/list/show/remove(del,delete)> <spelernaam> for <gebiedsnaam>",
+    "whitelist-specify-for-area": "Gebruik a.u.b. 'for' in deze commando regel. Gebruik: /area whitelist <add/list/show/remove(del,delete)> <spelernaam> for <gebiedsnaam>",
+
+    "area-floating-titles": "Zwevende gebiedsnamen",
 
     "name-saved": "naam aangepast naar",
     "name-write-usage": "Schrijf de nieuwe naam. Gebruik: /fe rename <gebiedsnaam> to <..>",
@@ -101,6 +103,8 @@
     "event-is-now": "event is nu",
     "change-failed": "change-failed!",
 
+    "not-available": "niet beschikbaar",
+    "deleted": "verwijderd",
     "select-and": "en",
     "select-in": "in",
     "select-yes": "Ja",
@@ -113,8 +117,9 @@
 
     "all-players-are-save": "Alle spelers zijn veilig in dit gebied!",
     "no-pvp-area": "Dit is geen PVP area!",
-    "no-flight-area": "Vliegen is hier niet toegstaan!",
-    "flight-area": "Vliegen is hier toegestaand!",
+    "no-flight-area": "Vliegen is hier niet toegestaan!",
+    "flight-area": "Vliegen is hier toegestaan!",
+    "no-shoot-area": "NIET schieten hier",
 
     "leaving-area": "verlaat",
     "enter-area": "betreedt",
@@ -123,6 +128,34 @@
     "cannot-enter-area": "Je kunt dit gebied niet betreden",
     "cannot-leave-area": "Je kunt dit gebied niet verlaten",
     "enter-barrier-area": "passeerde net een grens van een geblokeerd gebied!",
+
+    "ui-festival-manager": "Festival Manager",
+    "ui-new-area-setup": "Nieuw gebied aanmaken",
+    "ui-select-an-option": "Selecteer een optie",
+    "ui-go-back": "Ga terug",
+
+    "ui-area-teleport": "Area Teleport",
+
+    "ui-area-management": "Gebiedsbeheer",
+    "ui-area-manager": "Festival gebiedsbeheer",
+    "ui-create-area":"Maak nieuw gebied",
+    "ui-edit-area-options":"Beheer flaggen & opties",
+    "ui-edit-area-commands":"Beheer commando's",
+    "ui-edit-area-whitelist":"Beheer whitelist",
+    "ui-delete-area":"Verwijder een gebied",
+
+    "ui-level-management": "Level Management",
+
+    "ui-config-management": "Configuratie",
+    "ui-festival-configuration":"Festival Configuratie",
+    "ui-config-flags-options":"Config opties & default flaggen",
+    "ui-config-msg-position":"Gebieds berichten positie",
+    "ui-config-msg-visible":"Gebieds berichten weergave",
+    "ui-config-floating-titles":"Zwevende gebiedsnamen weergave",
+    "ui-config-auto-whitelist":"Auto whitelist",
+    "ui-config-flight-control":"Flight Control",
+    "ui-config-action-itemid":"Actie item id",
+    "ui-configs-saved": "Configs opgeslagen",
 
     "option-missing-in-config": "optie mist in config.yml, nu aangepast naar",
     "flag-missing-in-config": "vlag default ontbreekt, nu aangepast naar",

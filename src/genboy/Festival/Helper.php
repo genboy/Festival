@@ -108,7 +108,7 @@ class Helper {
         $c = 0;
         foreach( $this->plugin->areas as $nm => $area ){
             if($cur != false && $sender != false){
-                if( isset( $this->plugin->inArea[strtolower( $sender->getName() )][strtolower( $nm )] )  ){
+                if( isset( $this->plugin->inArea[strtolower( $sender->getName() )][$nm] )  ){
                     $slct = $c;
                 }
             }

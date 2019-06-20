@@ -10,16 +10,16 @@
     "cmd-noperms-subcommand": "You do not have permission to use this subcommand.",
 
     "pos-select-active": "You're already selecting a position!",
-    "select-both-pos-first":"Please select both positions first.",
+    "select-both-pos-first":"Please select 2 coordinates by placing or breaking 2 positions first.",
     "pos1": "position 1",
     "pos2": "position 2",
     "make-pos1": "Please place or break the first position.",
-    "make-pos2": "Please place or break the second position.",
-    "make-radius-distance": "Please place or break to select the radius direction and distance.",
+    "make-pos2": "Please place or break position 2 to set the longest diagonal in the new cube area.",
+    "make-radius-distance": "Please place or break position 2 to set the radius for new sphere area.",
     "radius-distance-to-position": "Radius distance to position",
-    "make-diameter-distance": "Please place or break to select the diameter direction and distance.",
+    "make-diameter-distance": "Please place or break position 2 to set the diameter for new sphere area.",
     "diameter-distance-to-position": "Diameter distance to position",
-    "give-area-name": "Please specify a name for this area.",
+    "give-area-name": "Please specify a name for this area. Use: /fe create <areaname>",
 
     "in-unknown-area": "You are in an unknown area",
 
@@ -51,9 +51,11 @@
     "whitelist-specify-action": "Please specify a valid action. Use: /area whitelist <add/list/show/remove(del,delete)> <playername> for <areaname>",
     "whitelist-specify-for-area": "Please use 'for' in this command string. Use: /area whitelist <add/list/show/remove(del,delete)> <playername> for <areaname>",
 
+    "area-floating-titles": "Area floating titles",
+
     "name-saved": "renamed to",
     "name-write-usage": "Assign a new name. Use: /fe rename <areaname> to <..>",
-    "name-specify-area": "Please specify an area to edit the name. Use: /fe rename <areaname> to <name>",
+    "name-specify-area": "Please specify an area to rename. Use: /fe rename <areaname> to <newname>",
     "name-specify-to-area": "Please use 'to' in this command string. Use: /fe rename <areaname> to <name>",
 
     "desc-saved": "description saved.",
@@ -90,8 +92,8 @@
 	"allready-used-for": "allready used for",
     "allready-set-for-area": "allready set for area",
     "edit-id-or-other": ", edit this id or use another id",
-	"cmd-specify-id-and-command-usage": "Please specify the command ID and command string to add. Usage: /fe command <areaname> <add(enter/center/leave)/list/edit/del> <COMMANDID> <COMMANDSTRING>",
-    "cmd-valid-areaname": "Area not found, please submit a valid name. Usage: /fe command <areaname> <add(enter/center/leave)/list/edit/del> <commandID> <commandstring>.",
+	"cmd-specify-id-and-command-usage": "Please specify the command ID and command string to add. Use: /fe command <areaname> <add(enter/center/leave)/list/edit/del> <COMMANDID> <COMMANDSTRING>",
+    "cmd-valid-areaname": "Area not found, please submit a valid name. Use: /fe command <areaname> <add(enter/center/leave)/list/edit/del> <commandID> <commandstring>.",
 
     "cmd-id-not-found": "Command ID not found. See the commands with /fe command <areaname> list'",
     "cmd-specify-id-to-delete": "Please specify the command ID to delete. Usage /fe command <areaname> del <COMMANDID>",
@@ -101,6 +103,8 @@
     "event-is-now": "event is now",
     "change-failed": "change-failed!",
 
+    "not-available": "not available",
+    "deleted": "deleted",
     "select-and": "and",
     "select-in": "in",
     "select-yes": "Yes",
@@ -115,6 +119,7 @@
     "no-pvp-area": "You are in a No-PVP Area!",
     "no-flight-area": "NO Flying here!",
     "flight-area": "Flying allowed here!",
+    "no-shoot-area": "NO Shooting here",
 
     "leaving-area": "leaving",
     "enter-area": "enter",
@@ -123,6 +128,34 @@
     "cannot-enter-area": "You can not enter area",
     "cannot-leave-area": "You can not leave area",
     "enter-barrier-area": "just past a barrier!",
+
+    "ui-festival-manager": "Festival Manager",
+    "ui-new-area-setup": "New area setup",
+    "ui-select-an-option": "Select an option",
+    "ui-go-back": "Go back",
+
+    "ui-area-teleport": "Area Teleport",
+
+    "ui-area-management": "Area Management",
+    "ui-area-manager": "Festival Area Manager",
+    "ui-create-area":"Create new area",
+    "ui-edit-area-options":"Edit flags & options",
+    "ui-edit-area-commands":"Edit commands",
+    "ui-edit-area-whitelist":"Edit whitelist",
+    "ui-delete-area":"Delete an area",
+
+    "ui-level-management": "Level Management",
+
+    "ui-config-management": "Configuration",
+    "ui-festival-configuration":"Festival Configuration",
+    "ui-config-flags-options":"Config Options & default flags",
+    "ui-config-msg-position":"Area messages position",
+    "ui-config-msg-visible":"Area messages visible",
+    "ui-config-floating-titles":"Area floating titles visible",
+    "ui-config-auto-whitelist":"Auto whitelist",
+    "ui-config-flight-control":"Flight Control",
+    "ui-config-action-itemid":"Action item id",
+    "ui-configs-saved": "Configs saved",
 
     "option-missing-in-config": "option missing in config.yml, now set to",
     "flag-missing-in-config": "flag defaults missing, now set to",
