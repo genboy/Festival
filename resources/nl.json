@@ -133,6 +133,11 @@
     "ui-new-area-setup": "Nieuw gebied aanmaken",
     "ui-select-an-option": "Selecteer een optie",
     "ui-go-back": "Ga terug",
+    "ui-saved": "saved!",
+    "ui-new":"new",
+    "ui-deleted": "deleted!",
+    "ui-not-found": "not found!",
+    "ui-try-again": "Try again",
 
     "ui-area-teleport": "Area Teleport",
 
@@ -156,11 +161,4 @@
     "ui-config-flight-control":"Flight Control",
     "ui-config-action-itemid":"Actie item id",
     "ui-configs-saved": "Configs opgeslagen",
-
-    "option-missing-in-config": "optie mist in config.yml, nu aangepast naar",
-    "flag-missing-in-config": "vlag default ontbreekt, nu aangepast naar",
-    "barrier-is-passage-flag": "Oude Barrier config gebruikt, nu aangepast naar 'false'; Hernoem 'Barrier' naar 'Passage' in config.yml",
-    "no-is-falldamage-flag": "Oude Nofalldamge config gebruikt, nu aangepast naar 'false'; Hernoem 'Nofalldamage' naar 'falldamage' in config.yml",
-    "option-see-configfile": "zie originele configs in /resources/config.yml"
-
 }

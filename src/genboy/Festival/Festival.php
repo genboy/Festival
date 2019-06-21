@@ -1026,7 +1026,7 @@ class Festival extends PluginBase implements Listener{
 									}
 									unset($area->commands[$cmdid]);
 									$this->saveAreas();
-									$o = TextFormat::GREEN . Language::translate("cmd-id") . Language::translate("deleted") . '!';
+									$o = TextFormat::GREEN . Language::translate("cmd-id") . " " . Language::translate("deleted") . '!';
 								}else{
                                     $o = TextFormat::RED . Language::translate("cmd-id-not-found") . '.'; // Command ID not found
 								}

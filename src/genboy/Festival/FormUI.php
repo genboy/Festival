@@ -292,19 +292,19 @@ class FormUI{
                     $area->save();
                     $this->plugin->helper->saveAreas();
                     $this->plugin->checkAreaTitles( $sender, $sender->getPosition()->getLevel() );
-                    $this->selectForm( $sender, "Area ". $areaname . " saved! Select an option"  );
+                    $this->selectForm( $sender, Language::translate("area") . " " . $areaname . " " . Language::translate("ui-saved") . " " . Language::translate("ui-select-an-option")  );
                 }else{
-                    $this->areaForm( $sender, "Area ". $areaname . " not found! Try again, select an option" );
+                    $this->areaForm( $sender, Language::translate("area") . " " . $areaname . " " . Language::translate("ui-not-found") . " " . Language::translate("ui-try-again") . ". " . Language::translate("ui-select-an-option")  );
                 }
                 return false;
             });
             $areasnames = $this->plugin->helper->getAreaNameList();
             $areaname = $areasnames[$input["selectedArea"]];
-            $form->setTitle( TextFormat::DARK_PURPLE . "Manage area " . TextFormat::DARK_PURPLE . $areaname );
+            $form->setTitle( TextFormat::DARK_PURPLE . Language::translate("ui-manage-area") . " " . TextFormat::DARK_PURPLE . $areaname );
             //$form->addInput("Name", "Area name (id)", $this->plugin->areas[$areaname]->getNAme(), "newareaname" );
-            $form->addInput("Name", "Area name", $this->plugin->areas[$areaname]->getName(), "newareaname" );
-            $form->addInput("Description", "Area description", $this->plugin->areas[$areaname]->getDesc(), "newareadesc" );
-            $form->addInput("Priority", "Area priority", strval( $this->plugin->areas[$areaname]->getPriority() ), "newareapriority" );
+            $form->addInput( Language::translate("ui-name"), "Area name", $this->plugin->areas[$areaname]->getName(), "newareaname" );
+            $form->addInput(Language::translate("ui-description"), "Area description", $this->plugin->areas[$areaname]->getDesc(), "newareadesc" );
+            $form->addInput( Language::translate("ui-priority"), "Area priority", strval( $this->plugin->areas[$areaname]->getPriority() ), "newareapriority" );
             $flgs = $this->plugin->areas[$areaname]->getFlags();
             foreach( $flgs as $flag => $set){
                 $form->addToggle( $flag, $set );
@@ -320,14 +320,14 @@ class FormUI{
                 $this->areaEditForm( $sender, $data );
                 return false;
             });
-            $form->setTitle( TextFormat::DARK_PURPLE . "Manage area's");
+            $form->setTitle( TextFormat::DARK_PURPLE . Language::translate("ui-manage-areas") );
             if($msg){
                 $form->addLabel( $msg);
             }
             $areasnames = $this->plugin->helper->getAreaNameList( $sender, true );
             $options = $areasnames[0];
             $slct = $areasnames[1];
-            $form->addDropdown( "Select to edit an area", $options, $slct, "selectedArea");
+            $form->addDropdown( Language::translate("ui-select-edit-area"), $options, $slct, "selectedArea");
             $form->sendToPlayer($sender);
 
        }
@@ -383,7 +383,7 @@ class FormUI{
 
 					$this->plugin->helper->saveAreas();
 
-                    $this->areaSelectForm( $sender, "Area ". $areaname . " new $event command $id saved! Select an option"  );
+                    $this->areaSelectForm( $sender, Language::translate("area") . " ". $areaname . " " . Language::translate("ui-new") . " " . $event . " " . Language::translate("cmd") . " " .  $id . " " .  Language::translate("ui-saved"). " ". Language::translate("ui-select-an-option")  );
 
                 }else{
 
@@ -393,9 +393,9 @@ class FormUI{
                         if( isset($this->plugin->areas[$areaname]->commands[$id]) ){
                             unset($this->plugin->areas[$areaname]->commands[$id]);
                             $this->plugin->helper->saveAreas();
-                            $this->areaSelectForm( $sender, "Area ". $areaname . " command ". $id ." deleted! Select an option"  );
+                            $this->areaSelectForm( $sender, Language::translate("area") . " ". $areaname . " " . Language::translate("cmd") . " " .  $id . " " .  Language::translate("ui-deleted"). " " . Language::translate("ui-select-an-option")  );
                         }else{
-                            $this->areaSelectForm( $sender, "Command id not found! Try again or select another option"  );
+                            $this->areaSelectForm( $sender, Language::translate("ui-cmd-id-not-found")  );
                         }
                         if( isset($this->plugin->areas[$areaname]->events) ){
                             foreach($this->plugin->areas[$areaname]->events as $e => $i){
@@ -415,7 +415,7 @@ class FormUI{
                         }
 
                     }else{
-                        $this->areaSelectForm( $sender, "Command empty and not saved! Try again or select another option"  );
+                        $this->areaSelectForm( $sender, Language::translate("ui-cmd-empty-not-saved")  );
                     }
 
                 }
@@ -428,10 +428,10 @@ class FormUI{
             $areaname = $areasnames[$input["selectedArea"]];
             $area = $this->plugin->areas[$areaname]; // check is area exsists
 
-            $form->setTitle( TextFormat::DARK_PURPLE . "Commands for area " . TextFormat::DARK_PURPLE . $areaname );
+            $form->setTitle( TextFormat::DARK_PURPLE . Language::translate("ui-edit-area-commands") ." ". Language::translate("for-area") . " " . TextFormat::DARK_PURPLE . $areaname );
 
 
-            $form->addLAbel( "-------  Area command list: -------");
+            $form->addLAbel( "-------  ". Language::translate("ui-area-command-list") .": -------");
 
             foreach($area->events as $type => $list){
 				if( trim($list,",") != "" ){
@@ -446,18 +446,18 @@ class FormUI{
                     }
                 }
             }
-            $form->addLAbel( "-------- Add new command: --------");
+            $form->addLAbel( "-------- ". Language::translate("ui-area-add-command") .": --------");
 
-            $msgdsp_tlt = "Add command event type";
+            $msgdsp_tlt = Language::translate("ui-area-add-command-event");
             $msgdsp_opt = ["enter", "center", "leave"];
             $form->addStepSlider( $msgdsp_tlt, $msgdsp_opt, 0, "newcommandevent" );
 
-            $form->addInput("New command:", "add new Command (without / )", "", "newcommand" );
+            $form->addInput(Language::translate("ui-area-add-new-command"), "add new Command (without / )", "", "newcommand" );
 
 
-            $form->addLAbel( "-------- Delete command: --------");
+            $form->addLAbel( "-------- ". Language::translate("ui-area-del-command") .": --------");
 
-            $form->addInput("Type id here to delete:", "input command id to delete", "", "delcommand" );
+            $form->addInput(Language::translate("ui-area-type-command-id-del"), "input command id to delete", "", "delcommand" );
 
 
             $form->sendToPlayer($sender);
@@ -472,14 +472,14 @@ class FormUI{
                 $this->areaCommandForm( $sender, $data );
                 return false;
             });
-            $form->setTitle( TextFormat::DARK_PURPLE . "Manage area commands");
+            $form->setTitle( TextFormat::DARK_PURPLE . Language::translate("ui-manage-area-commands"));
             if($msg){
                 $form->addLabel( $msg);
             }
             $areasnames = $this->plugin->helper->getAreaNameList( $sender, true );
             $options = $areasnames[0];
             $slct = $areasnames[1];
-            $form->addDropdown( "Select area", $options, $slct, "selectedArea");
+            $form->addDropdown( Language::translate("ui-select-area"), $options, $slct, "selectedArea");
             $form->sendToPlayer($sender);
 
        }
@@ -526,13 +526,13 @@ class FormUI{
                             $area->setWhitelisted($nm,false);
                         }
                     }
-                    $this->areaWhitelistForm( $sender, false, "Whitelist saved." );
+                    $this->areaWhitelistForm( $sender, false, Language::translate("ui-area-whitelist-saved") );
 
 
                 });
 
 
-                $form->setTitle( TextFormat::DARK_PURPLE . "Manage area whitelist");
+                $form->setTitle( TextFormat::DARK_PURPLE . Language::translate("ui-manage-area-whitelist") );
 
                 if($msg){
                     $form->addLabel( $msg);
@@ -557,16 +557,16 @@ class FormUI{
                 $this->areaWhitelistForm( $sender, $data );
                 return false;
             });
-            $form->setTitle( TextFormat::DARK_PURPLE . "Manage area whitelist");
+            $form->setTitle( TextFormat::DARK_PURPLE . Language::translate("ui-manage-area-whitelist"));
             if($msg){
                 $form->addLabel( $msg);
             }else{
-                $form->addLabel( "Select whitelist area");
+                $form->addLabel( Language::translate("ui-whitelist-select-area") );
             }
             $areasnames = $this->plugin->helper->getAreaNameList( $sender, true );
             $options = $areasnames[0];
             $slct = $areasnames[1];
-            $form->addDropdown( "Select area", $options, $slct, "selectedArea");
+            $form->addDropdown( Language::translate("ui-select-area"), $options, $slct, "selectedArea");
             $form->sendToPlayer($sender);
 
         }
@@ -589,7 +589,7 @@ class FormUI{
                 $form = new CustomForm(function ( Player $sender, ?ARRAY $data ) {
 
                     if( $data === null){
-                        $sender->sendMessage("Form data corrupted or not available, please try again.");
+                        $sender->sendMessage(Language::translate("ui-formdate-not-available-try-again"));
                         return;
                     }else{
 
@@ -617,22 +617,22 @@ class FormUI{
                             new FeArea( $newarea["name"], $newarea["desc"], $newarea["priority"], $newarea["flags"], $newarea["pos1"], $newarea["pos2"], $newarea["radius"], $newarea["level"], [], [], [], $this->plugin);
                             $this->plugin->helper->saveAreas();
                             $this->plugin->checkAreaTitles( $sender, $sender->getPosition()->getLevel() );
-                            $this->areaSelectForm( $sender, "New area named ".$newarea["name"]." created!"  );
+                            $this->areaSelectForm( $sender, Language::translate("ui-new-area-named") ." ". $newarea["name"] ." ". Language::translate("ui-created") );
 
                         }else{
-                            $this->areaNewForm( $sender , $data, $msg = "New area name not correct or allready used. Please try another name:");
+                            $this->areaNewForm( $sender , $data, $msg = Language::translate("ui-areaname-allready-used-try-again") );
                         }
                     }
                 });
 
-                $form->setTitle("Festival Area Maker");
+                $form->setTitle( Language::translate("ui-area-maker") );
                 if($msg){
                     $form->addLabel($msg);
                 }else{
-                    $form->addLabel("Create area");
+                    $form->addLabel(Language::translate("ui-create-area"));
                 }
-                $form->addInput( "Area name", "area name", "", "name" );
-                $form->addInput( "Area decription", "area description", "", "desc" );
+                $form->addInput( Language::translate("ui-area-name"), "area name", "", "name" );
+                $form->addInput( Language::translate("ui-area-desc"), "area description", "", "desc" );
                 $form->sendToPlayer($sender);
             }
         }else{
@@ -641,23 +641,23 @@ class FormUI{
             // simple form select cube or sphere
             $form = new SimpleForm(function ( Player $sender, ?int $data ) {
                 if( $data === null){
-                    $sender->sendMessage("Form data corrupted or not available, please try again.");
+                    $sender->sendMessage( Language::translate("ui-formdate-not-available-try-again") );
                     return;
                 }else{
                     switch ($data) {
                         case 0:
                             $this->plugin->players[ strtolower( $sender->getName() ) ]["makearea"]["type"] = "cube";
-                            $o = TextFormat::GREEN . "Tab the first diagonal position for new cube area";
+                            $o = TextFormat::GREEN . Language::translate("ui-tab-pos1-diagonal");
                             $sender->sendMessage($o);
                         break;
                         case 1:
                             $this->plugin->players[ strtolower( $sender->getName() ) ]["makearea"]["type"] = "radius";
-                            $o = TextFormat::GREEN . "Tab the center position for the new sphere area";
+                            $o = TextFormat::GREEN . Language::translate("ui-tab-pos1-radius");
                             $sender->sendMessage($o);
                         break;
                         case 2:
                             $this->plugin->players[ strtolower( $sender->getName() ) ]["makearea"]["type"] = "diameter";
-                            $o = TextFormat::GREEN . "Tab the first diameter position for the new sphere area";
+                            $o = TextFormat::GREEN . Language::translate("ui-tab-pos1-diameter");
                             $sender->sendMessage($o);
                         break;
                         case 3:
@@ -670,16 +670,16 @@ class FormUI{
                 }
             });
 
-            $form->setTitle("Festival Area Maker");
+            $form->setTitle( Language::translate("ui-area-maker") );
             if($msg){
                 $form->setContent($msg);
             }else{
-                $form->setContent("Select new area creation type");
+                $form->setContent( Language::translate("ui-select-new-area-type") );
             }
-            $form->addButton("Cube Diagonal - select 2 diagonal positions"); // cube area
-            $form->addButton("Sphere Radius - select center and radius distance"); // sphere area
-            $form->addButton("Sphere Diameter - select 2 diameter positions"); // sphere area
-            $form->addButton("Go back");
+            $form->addButton( Language::translate("ui-make-cube-diagonal") ); // cube area
+            $form->addButton( Language::translate("ui-make-sphere-radius") ); // sphere area
+            $form->addButton( Language::translate("ui-make-sphere-diameter") ); // sphere area
+            $form->addButton( Language::translate("ui-go-back") );
             $form->sendToPlayer($sender);
         }
     }
@@ -710,16 +710,16 @@ class FormUI{
                     $this->plugin->hideAreaTitle( $sender, $sender->getPosition()->getLevel(), $area );
                     $area->delete();
                     $this->plugin->helper->saveAreas();
-                    $this->selectForm( $sender, "Area ". $areaname . " deleted! Select an option"  );
+                    $this->selectForm( $sender, Language::translate("area"). " ". $areaname . " ". Language::translate("ui-deleted")." ".Language::translate("ui-select-an-option") );
                 }else{
-                    $this->areaForm( $sender, "Area ". $areaname . " not found, sorry. Select an option" );
+                    $this->areaForm( $sender, Language::translate("area"). " ". $areaname . " ". Language::translate("ui-not-found")." ".Language::translate("ui-select-an-option") );
                 }
                 return false;
             });
             $areasnames = $this->plugin->helper->getAreaNameList();
             $areaname = $areasnames[$input["deleteArea"]];
-            $form->setTitle( TextFormat::RED . "! Delete area " . TextFormat::WHITE . $areaname );
-            $form->addLabel( TextFormat::RED ."You are going to delete area ".  $areaname );
+            $form->setTitle( TextFormat::RED . Language::translate("ui-delete-this-area") . " " . TextFormat::WHITE . $areaname );
+            $form->addLabel( TextFormat::RED . Language::translate("ui-gonna-delete-area") . " ".  $areaname );
             $form->sendToPlayer($sender);
         }else{
             $form = new CustomForm(function ( Player $sender, ?array $data ) {
@@ -729,16 +729,16 @@ class FormUI{
                 $this->areaDeleteForm( $sender, $data );
                 return false;
             });
-            $form->setTitle( TextFormat::DARK_PURPLE . "Delete an area");
+            $form->setTitle( TextFormat::DARK_PURPLE . Language::translate("ui-delete-an-area"));
             if($msg){
                 $form->addLabel( $msg);
             }else{
-                $form->addLabel( "Select area to delete");
+                $form->addLabel( Language::translate("ui-select-area-delete"));
             }
             $areasnames = $this->plugin->helper->getAreaNameList( $sender, true );
             $options = $areasnames[0];
             $slct = $areasnames[1];
-            $form->addDropdown( "Select to delete area", $options, $slct, "deleteArea");
+            $form->addDropdown( Language::translate("ui-select-to-delete-area"), $options, $slct, "deleteArea");
             $form->sendToPlayer($sender);
        }
     }
