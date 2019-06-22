@@ -129,7 +129,6 @@
     "cannot-leave-area": "You can not leave area",
     "enter-barrier-area": "just past a barrier!",
 
-
     "option-missing-in-config": "option missing in config.yml, now set to",
     "flag-missing-in-config": "flag defaults missing, now set to",
     "barrier-is-passage-flag": "Old Barrier config was used, now set to 'false'; please rename 'Barrier' to 'Passage' in config.yml",
@@ -148,6 +147,9 @@
     "ui-try-again": "Try again",
 
     "ui-area-teleport": "Area Teleport",
+    "ui-teleport-to-area": "Teleport to Area",
+    "ui-teleport-select-destination": "Select destination area",
+    "ui-tp-to-area": "TP to area",
 
     "ui-area-management": "Area Management",
     "ui-area-manager": "Festival Area Manager",
@@ -200,6 +202,12 @@
     "ui-gonna-delete-area": "You are going to delete area",
 
     "ui-level-management": "Level Management",
+    "ui-manage-levels": "Manage levels",
+    "ui-level-select": "Level select",
+    "ui-select-level-edit": "Select level to edit flags",
+    "ui-level-flag-management": "Manage level flags",
+    "ui-level": "Level",
+    "ui-flags-saved": "flagset saved!",
 
     "ui-config-management": "Configuration",
     "ui-festival-configuration": "Festival Configuration",

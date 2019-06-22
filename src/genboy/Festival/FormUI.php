@@ -784,16 +784,16 @@ class FormUI{
                     }
                     $lvl->save();
                     $this->plugin->helper->saveLevels();
-                    $this->selectForm( $sender, "Level ". $levelname . " flagset saved! Select an option"  );
+                    $this->selectForm( $sender, "ui-level". " ". $levelname . " ". "ui-flags-saved" . "ui-select-an-option"  );
                 }else{
                     // add new level configs?
                     $worlds = $this->plugin->helper->getServerWorlds();
                     if( in_array( strtolower($levelname), $worlds ) ){
                         var_dump($data);
-                        $this->levelForm( $sender, false, "Level ". $levelname . " not found! Try again, select an option" );
+                        $this->levelForm( $sender, false, Language::translate("ui-level"). " " . $levelname . " " . Language::translate("ui-not-found") . " " . Language::translate("ui-try-again") . " " . Language::translate("ui-select-an-option") );
 
                     }else{
-                        $this->levelForm( $sender, false, "Level ". $levelname . " not found! Try again, select an option" );
+                        $this->levelForm( $sender, false, Language::translate("ui-level") . " " . $levelname . " " . Language::translate("ui-not-found") . " " . Language::translate("ui-try-again") . " " . Language::translate("ui-select-an-option") );
                     }
                 }
                 return false;
@@ -801,7 +801,7 @@ class FormUI{
 
             $levels =$this->plugin->helper->getServerWorlds();
             $levelname = $levels[$inputs["selectedLevel"]];
-            $form->setTitle( TextFormat::DARK_PURPLE . "Manage level flags " . TextFormat::DARK_PURPLE . $levelname );
+            $form->setTitle( TextFormat::DARK_PURPLE . Language::translate("ui-level-flag-management"). " " . TextFormat::DARK_PURPLE . $levelname );
 
             $flgs = $this->plugin->levels[strtolower($levelname)]->getFlags();
             foreach( $flgs as $flag => $set){
@@ -817,16 +817,16 @@ class FormUI{
                 $this->levelForm( $sender, $data );
                 return false;
             });
-            $form->setTitle( TextFormat::DARK_PURPLE . "Manage levels");
+            $form->setTitle( TextFormat::DARK_PURPLE . Language::translate("ui-manage-levels") );
             if( $msg ){
                 $form->addLabel( $msg );
             }else{
-                $form->addLabel( "Select level to edit flags");
+                $form->addLabel(  Language::translate("ui-select-level-edit") );
             }
             $levels = $this->plugin->helper->getServerWorlds();
             $current = $sender->getLevel()->getName();
             $slct = array_search( $current, $levels);
-            $form->addDropdown( "Level select", $levels, $slct, "selectedLevel");
+            $form->addDropdown( Language::translate("ui-level-select"), $levels, $slct, "selectedLevel");
             $form->sendToPlayer($sender);
        }
     }
@@ -853,13 +853,13 @@ class FormUI{
             }
         });
 
-        $form->setTitle("Teleport to Area");
+        $form->setTitle( Language::translate("Teleport to Area") );
         $selectlist = array();
-        $selectlist[] = "Select destination area";
+        $selectlist[] = Language::translate("Select destination area");
         foreach($this->plugin->areas as $area){
             $selectlist[] = $area->getName();
         }
-        $form->addDropdown("TP to area", $selectlist );
+        $form->addDropdown( Language::translate("TP to area") , $selectlist );
         $form->sendToPlayer($sender);
     }
 }
