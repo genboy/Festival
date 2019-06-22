@@ -63,10 +63,13 @@ class FormUI{
                 case 1:
                     $this->areaSelectForm( $sender );
                 break;
-                case 2:
+               case 2:
+                    $this->areaNewForm( $sender ); // new
+               break;
+                case 3:
                     $this->levelForm( $sender );
                 break;
-                case 3:
+                case 4:
                 default:
                     $this->configForm( $sender );
                 break;
@@ -83,8 +86,17 @@ class FormUI{
 
         // teleport to area
         $form->addButton( Language::translate("ui-area-teleport"), 0, "textures/items/sign");
+
+        // manage areas
         $form->addButton( Language::translate("ui-area-management"), 0, "textures/blocks/stonebrick_carved");
+
+        // new area
+        $form->addButton( Language::translate("ui-create-area"), 0, "textures/items/diamond_pickaxe");
+
+        // manage levels
         $form->addButton( Language::translate("ui-level-management"), 0, "textures/items/name_tag");
+
+        // manage config
         $form->addButton( Language::translate("ui-config-management"), 0, "textures/blocks/command_block");
 
         $form->sendToPlayer($sender);
@@ -98,6 +110,7 @@ class FormUI{
 	 * @param string $msg
      */
     public function areaSelectForm( Player $sender, $msg = false ) : void {
+
         $form = new SimpleForm(function ( Player $sender, ?int $data ) {
 
             if( $data === null){
@@ -105,18 +118,15 @@ class FormUI{
             }
             switch ($data) {
                case 0:
-                    $this->areaNewForm( $sender ); // new
-               break;
-               case 1:
                     $this->areaEditForm( $sender );
                 break;
-                case 2:
+                case 1:
                     $this->areaCommandForm( $sender );
                 break;
-                case 3:
+                case 2:
                     $this->areaWhitelistForm( $sender );
                 break;
-                case 4:
+                case 3:
                     $this->areaDeleteForm( $sender ); // del
                 break;
                 default:
@@ -133,9 +143,6 @@ class FormUI{
             $form->setContent( Language::translate("ui-select-an-option") );
         }
 
-
-        // new area
-        $form->addButton( Language::translate("ui-create-area"), 0, "textures/blocks/stonebrick_carved");
 
         // edit area flags
         $form->addButton( Language::translate("ui-edit-area-options"), 0, "textures/items/diamond_pickaxe");
@@ -661,10 +668,10 @@ class FormUI{
                             $sender->sendMessage($o);
                         break;
                         case 3:
-                            $this->areaSelectForm( $sender ); // goback
+                            $this->selectForm( $sender ); // goback
                         break;
                         default:
-                            $this->areaSelectForm( $sender ); // goback
+                            $this->selectForm( $sender ); // goback
                         break;
                     }
                 }
