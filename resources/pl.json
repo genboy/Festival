@@ -9,8 +9,6 @@
     "cmd-noperms-msg": "Nie możesz użyć tego polecenia Festival",
     "cmd-noperms-subcommand": "Nie masz uprawnień do używania tej podkomendy.",
 
-    "new-radius-variable": "! Nowa zmienna całkowita promienia dodana w celu utworzenia obszaru typu sfery.",
-
     "pos-select-active": "Już wybrałeś pozycję!",
     "select-both-pos-first":"Najpierw wybierz obie pozycje.",
     "pos1": "Pozycja 1",
@@ -50,11 +48,24 @@
     "player-allready-whitelisted": "jest już na białej liście w tym obszarze",
     "player-has-been-unwhitelisted": "został usunięty z obszaru",
     "player-allready-unwhitelisted": "już został usunięty z obszaru",
-    "whitelist-specify-action": "Podaj prawidłowe działanie. Stosowanie: /area whitelist <nazwa_obszaru> <add/list/remove> <nazwa_gracza>",
+    "whitelist-specify-action": "Podaj prawidłowe działanie. Stosowanie: /area whitelist <add/list/show/remove(del,delete)> <nazwa_obszaru> for <nazwa_gracza>",
+    "whitelist-specify-for-area": "Użyj 'for' w tym ciągu poleceń. Stosowanie: /area whitelist <add/list/show/remove(del,delete)> <nazwa_obszaru> for <nazwa_gracza>",
+
+    "name-saved": "zmieniono nazwę na",
+    "name-write-usage": "Przypisz nową nazwę. Stosowanie: /fe rename <nazwa_obszaru> to <..>",
+    "name-specify-area": "Określ obszar do edycji nazwy. Stosowanie: /fe rename <nazwa_obszaru> to <nowe imie>",
+    "name-specify-to-area": "Użyj 'to' w tym ciągu poleceń. Stosowanie: /fe rename <nazwa_obszaru> to <nowe imie>",
 
     "desc-saved": "opis zapisany.",
-    "desc-write-usage": "Zapisz opis. Stosowanie: /fe desc <nazwa_obszaru> <..>",
-    "desc-specify-area": "Określ obszar do edycji opisu. Stosowanie: /fe desc <nazwa_obszaru> <opis>",
+    "desc-write-usage": "Zapisz opis. Stosowanie: /fe desc <nazwa_obszaru> set <..>",
+    "desc-specify-area": "Określ obszar do edycji opisu. Stosowanie: /fe desc <nazwa_obszaru> set <opis>",
+    "desc-specify-set-area": "Użyj 'set' w tym ciągu poleceń. Stosowanie: /fe desc <nazwa_obszaru> set <opis>",
+
+    "priority-saved": "priorytet zapisany.",
+    "priority-specify-set-area":  "Użyj 'set' w tym ciągu poleceń. Stosowanie: /fe priority <nazwa_obszaru> set <numer 0-999>",
+    "priority-write-usage": "Proszę przypisać numer. Stosowanie: /fe priority <nazwa_obszaru> set <numer 0-999>",
+    "priority-number-usage": "Proszę przypisać numer, 0 jest domyślne, 1 - 999 przypisuje wyższy priorytet. Stosowanie: /fe priority <nazwa_obszaru> set <numer 0-999>",
+    "priority-specify-area": "Określ obszar do edycji priorytetu. Stosowanie: /fe priority <areaname> set<numer 0-999>",
 
     "area-deleted": "Obszar usunięty!",
     "deleted-by":"usunięte przez",
@@ -98,8 +109,9 @@
     "status-off": "wyłączony",
     "set-to": "ustawione na",
     "for-area": "dla obszaru",
+    "number-to-write": "Assign a number",
 
-    "all-players-are-god": "Wszyscy gracze są Bogami w tym obszarze!",
+    "all-players-are-save": "Wszyscy gracze są zapisywani w tym obszarze!",
     "no-pvp-area": "Jesteś w obszarze bez PVP!",
     "no-flight-area": "Nie ma Latania!",
     "flight-area": "Latanie tutaj dozwolone!",
