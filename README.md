@@ -1,18 +1,39 @@
 
-## Festival (v2)
 
-If you like to use Festival consider [sharing your experience and issues](https://github.com/genboy/Festival/issues) to fix any usability problems before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1)!
-That way it will improve Festival, my coding skills, your Pocketmine-MP insights and strenghten the PMMP community, thank you!
- 
-![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png) 
-
-
-!Take notice of the Copyright Statement if you use Festival for the first time since 27 April 2019. 
-Read the Legal Notice at the bottom of this README file or the Legal Notice tab at poggit.pmmp.io/p/Festival
-
+# Festival v2.0.0-dev)
 Create a festival with this custom area events plugin for Pocketmine Server:
+#####  Manage area's and run commmands attachted to area events. 
+(latest stable version [@ poggit https://poggit.pmmp.io/p/Festival](https://poggit.pmmp.io/p/Festival)
 
-### Manage area's and run commmands attachted to area events. 
+![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png)
+### Early bird Development version for testing only! 
+Please report bugs -thank you!
+
+**Download development version**: 
+.phar zippackage [phar zipped https://genboy.net/wp-content/uploads/2019/06/Festival_v2.0.0-dev.zip](https://genboy.net/wp-content/uploads/2019/06/Festival_v2.0.0-dev.zip)
+
+or use [devtools plugin](https://poggit.pmmp.io/p/DevTools/1.13.0) and [download zip package https://github.com/genboy/Festival/archive/master.zip](https://github.com/genboy/Festival/archive/master.zip)
+
+**Install**: *(always save copies of your previous used config.yml and areas.json before re-install)*
+1. place phar in plugins folder and restart, 
+2. after restart;
+ 2a. if need previous used configs and areas: delete config.json and areas.json from the root folder 
+and put your config.yml and areas.json in Festival (root) folder
+ 2b. if clean start (no areas)  edit /resources/config.yml to your likes and delete config.json from the root folder
+3. Then restart again, now areas.json, levels.json and config.json in Festival (root) folder are used.
+
+
+
+**Management UI in game**: 
+**command** /fe ui(form, config, data)
+or **hold magic item** ( default item 201 - Purpur Pillar block - change in config management) 
+
+or use the commands (now with Multi wORLd Full Capitalized names possible)
+
+If you like to use Festival consider [sharing your experience and issues](https://github.com/genboy/Festival/issues) to fix any usability problems before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1)! That way it will improve Festival, my coding skills, your Pocketmine-MP insights and strenghten the PMMP community, thank you!
+ 
+!Take notice of the Copyright Statement if you use Festival for the first time since 27 April 2019. 
+**Read the Legal Notice** at the bottom of this README file or the Legal Notice tab at poggit.pmmp.io/p/Festival
 
 ###### Copyright [Genboy](https://genboy.net) 2018 
  
@@ -33,7 +54,6 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 > magic item to open UI by default id 201 - Purpur Pillar block - see config.json
 
 ### + Sphere type area's by radius or diameter :)
-
 **Config**
 - set default options in config.yml;
   - language: en - select language English = en, Dutch = nl, es = Español, pl = Polskie - translate please !
@@ -102,18 +122,6 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 
 
 ## Usage 
-
-
-  #### Setup
-  
-  ### Re-instal Festival 2
-  
-  - keep your config.yml and areas.json in the Festival root folder
-  - or use a new config.yml setup in the Festival/resources folder
-  
-  > auto creation of config.json, renewed areas.json and levels.json files in the Festival root folder. 
-
-  ### Install & Configure
   
   - ! Update Festival 2 in development using ingame UI for configurations
 
@@ -122,10 +130,8 @@ Create a festival with this custom area events plugin for Pocketmine Server:
   - read [wiki on configurations](https://github.com/genboy/Festival/wiki/2.-Install,-Configure-&-Update)
 
   - Edit config.yml; set the defaults for options, default area flags and the default area flags for specific worlds.
-  
-  - ##### Read the wiki carefully about how the flags work!
-  
-  
+
+ 
   ### Updates
   
   Updates available at [poggit](https://poggit.pmmp.io/ci/genboy/Festival/Festival) and [github](https://github.com/genboy/Festival/releases)
@@ -134,7 +140,6 @@ Create a festival with this custom area events plugin for Pocketmine Server:
   - after .phar install and first restart/reload plugins; check console info and your areas.json and config.yml; restart after adjusted correctly 
   
   - ! Update Festival 2 in development translating resource config.yml or your mainfolder config.yml and areas.json on install
-  
 
   #### Usage Graphic
 
@@ -147,7 +152,7 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 
  
   #### Language
-  
+  Command: /fe lang <en/nl>
   Set Festival language en/nl/es/pl for area and command returned messages. 
   en = english
   nl = nederlands 
@@ -175,3 +180,4 @@ You are legally bind to read the Festival Copyright statement.
 In short this change of Copyright statement does not change the usage levels as stated in the GPU, for a part it now prohibits any entities to sell the software without the knowledge of the owner. 
 
 -- end legal notice -- 
+ ###### Copyright [Genboy](https://genboy.net) 2018 - markdown edited with [stackedit.io](https://stackedit.io) 

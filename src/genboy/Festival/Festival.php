@@ -237,6 +237,17 @@ class Festival extends PluginBase implements Listener{
 		$action = strtolower($args[0]);
 		$o = "";
 		switch($action){
+
+			case "ui": // v2.0.0
+            case "form":
+            case "data":
+
+                if( !isset( $this->players[ $playerName ]["makearea"] ) ){
+                    //$sender->getInventory()->setItem($sender->getInventorySlot(), Item::get( $this->config['options']['itemid']) );
+                    $this->form->openUI($sender);
+                }
+
+            break;
             case "lang": // experiment v1.0.7.7-dev
                 if( isset($args[1]) ){
                     if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe.lang")){
