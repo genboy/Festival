@@ -4,6 +4,9 @@
 Options:
   # select a language: English = en, Dutch = nl, Español = es, Polskie = pl  ( todo: 日本人 = ja, 中文 = zh, 한국어 = ko, русский = ru, italiano = it, Indonesia = in, translate please)
   Language: en
+
+  # Hold Magic block/item to enter Menu
+  ItemID: 201
   
   # Area Messages Display position (msg/title/tip/pop)
   Msgtype: msg

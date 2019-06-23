@@ -59,9 +59,14 @@ and put your config.yml and areas.json in Festival (root) folder
 ## Info
 ### Features
 
+
+**Menu**
+In version 2.0.0 the Festival Management Menu (FormUI) is introduced
+
 **Config**
 - set default options in config.yml;
-  - language: en - select language English = en, Dutch = nl, es = Español, pl = Polskie - translate please !
+  - Language: en - select language English = en, Dutch = nl, es = Español, pl = Polskie - translate please !
+  - ItemID: Hold this Magic block/item to enter Menu (default item 201 - Purpur Pillar block)
   - Msgtype: msg - Area Messages Display position (msg/title/tip/pop)
   - Msgdisplay: off - Area Messages persist display to ops (off/op/on)
   - Areadisplay: op - Area Floating Title display to ops (off/op/on)
@@ -71,12 +76,11 @@ and put your config.yml and areas.json in Festival (root) folder
 **Area**
 
 - Create and manage area’s ingame
-  (like WorldGuard/iProtector)
 
     - Define area's by tapping 2 positions
-      - diagonal for cube
-      - radius for sphere
-      - diameter for sphere
+      - **diagonal** for cube
+      - **radius** for sphere
+      - **diameter** for sphere
     - create/delete/list area’s
     - add area description
     - whitelist players for the area
@@ -162,6 +166,8 @@ Manage area commands
 Add command
 
 ![Edit or add commands to area](https://genboy.net/wp-content/uploads/2019/06/cmds_2.jpg)
+
+
 Manage area Whitelist
 
 ![Manage area whitelist](https://genboy.net/wp-content/uploads/2019/06/area_whitelist.jpg)
@@ -414,4 +420,4 @@ You are legally bind to read the Festival Copyright statement.
 In short this change of Copyright statement does not change the usage levels as stated in the GPU, for a part it now prohibits any entities to sell the software without the knowledge of the owner. 
 
 -- end legal notice -- 
-###### Copyright [Genboy](https://genboy.net) 2018 - 2019- markdown edited with [stackedit.io](https://stackedit.io)
+###### Copyright [Genboy](https://genboy.net) 2018 - 2019- markdown edited with [stackedit.io](https://stackedit.io) 
