@@ -28,7 +28,7 @@ and put your config.yml and areas.json in Festival (root) folder
 **command** /fe ui(form, config, data)
 or **hold magic item** ( default item 201 - Purpur Pillar block - change in config management) 
 
-or use the commands (now with Multi wORLd Full Capitalized names possible)
+or use the commands (now with Multi wORd FULLY CapitAlized nameS possible)
 
 If you like to use Festival consider [sharing your experience and issues](https://github.com/genboy/Festival/issues) to fix any usability problems before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1)! That way it will improve Festival, my coding skills, your Pocketmine-MP insights and strenghten the PMMP community, thank you!
  
@@ -180,4 +180,4 @@ You are legally bind to read the Festival Copyright statement.
 In short this change of Copyright statement does not change the usage levels as stated in the GPU, for a part it now prohibits any entities to sell the software without the knowledge of the owner. 
 
 -- end legal notice -- 
- ###### Copyright [Genboy](https://genboy.net) 2018 - markdown edited with [stackedit.io](https://stackedit.io) 
+ ###### Copyright [Genboy](https://genboy.net) 2018 - markdown edited with [stackedit.io](https://stackedit.io)
