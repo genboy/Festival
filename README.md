@@ -129,17 +129,36 @@ and put your config.yml and areas.json in Festival (root) folder
 
 #### Areas
 ![Area option menu](https://genboy.net/wp-content/uploads/2019/06/manager_area_options.jpg)
+
+Select area to manage
 ![Select area](https://genboy.net/wp-content/uploads/2019/06/manager_area_select.jpg)
+
+Manage area settings
 ![Edit area settings](https://genboy.net/wp-content/uploads/2019/06/manage_areas_settings.jpg)
-![Edit area flags](https://genboy.net/wp-content/uploads/2019/06/manage_areas_settings.jpg)
+
+Manage area flags
+![Edit area flags](https://genboy.net/wp-content/uploads/2019/06/manager_area_options_end.jpg)
+
+Manage area commands
 ![Manage commands to area](https://genboy.net/wp-content/uploads/2019/06/cmds_1_Minecraft-27-1-2019-16_50_24.jpg)
+
+Add command
 ![Edit or add commands to area](https://genboy.net/wp-content/uploads/2019/06/cmds_2.jpg)
+Manage area Whitelist
 ![Manage area whitelist](https://genboy.net/wp-content/uploads/2019/06/area_whitelist.jpg)
+
+Select area to delete
 ![Delete area](https://genboy.net/wp-content/uploads/2019/06/delete_area1.jpg)
+
+Confirm to delete area
 ![Cofirm area delete](https://genboy.net/wp-content/uploads/2019/06/delete_area2.jpg)
 
 #### Create
+Select new area type
+
 ![Select new area type](https://genboy.net/wp-content/uploads/2019/06/start_make_area.jpg)
+
+Set area positions
 ###### Cube Diagonal 
     1. Place or break the first diagonal position for new cube area
     2. Place or break position 2 to set the longest diagonal in the new cube area
@@ -149,17 +168,23 @@ and put your config.yml and areas.json in Festival (root) folder
 ###### Sphere Diameter
     1. Place or break the first diameter position for the new sphere area
     2. Place or break position 2 to set the diameter for new sphere area
-    
+ 
+Create area with Name (and description)
 ![Create area with name and description](https://genboy.net/wp-content/uploads/2019/06/create_new_area.jpg)
 
 #### Levels
+
+
+Select level to manage flags 
 ![Select level](https://genboy.net/wp-content/uploads/2019/06/manage_level_select.jpg)
+
+Manage level flags options
 ![Edit level flags(defaults)](https://genboy.net/wp-content/uploads/2019/06/manage_level_flags2.jpg)
 
 #### Configuration
-![Manage configuration](https://genboy.net/wp-content/uploads/2019/06/manager_configuration.png)
-+ below full list of default flags
 
+Manage Festival configuration options and set default flags 
+![Manage configuration](https://genboy.net/wp-content/uploads/2019/06/manager_configuration.png)
 ###### Copyright [Genboy](https://genboy.net) 2018 - 2019- markdown edited with [stackedit.io]
 
 ## Usage 
@@ -363,4 +388,4 @@ You are legally bind to read the Festival Copyright statement.
 In short this change of Copyright statement does not change the usage levels as stated in the GPU, for a part it now prohibits any entities to sell the software without the knowledge of the owner. 
 
 -- end legal notice -- 
-###### Copyright [Genboy](https://genboy.net) 2018 - 2019- markdown edited with [stackedit.io](https://stackedit.io)
+###### Copyright [Genboy](https://genboy.net) 2018 - 2019- markdown edited with [stackedit.io](https://stackedit.io) 
