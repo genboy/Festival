@@ -1,28 +1,25 @@
 
 
-# Festival v2.0.0-dev)
+# Festival v2.0.0-dev
 Create a festival with this custom area events plugin for Pocketmine Server:
-#####  Manage area's and run commmands attachted to area events. 
-(latest stable version [@ poggit https://poggit.pmmp.io/p/Festival](https://poggit.pmmp.io/p/Festival)
+###  Manage area's and run commmands attachted to area events. 
+( latest stable version 1.1.3 [@ poggit https://poggit.pmmp.io/p/Festival](https://poggit.pmmp.io/p/Festival) )
 
 ![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png)
+###### Copyright [Genboy](https://genboy.net) 2018 - 2019 
+--- 
+# Festival
+Stable version
+[![](https://poggit.pmmp.io/shield.state/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.api/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.dl.total/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.dl/Festival)](https://poggit.pmmp.io/p/Festival)
+[issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
+
 ### Early bird Development version for testing only! 
-Please report bugs -thank you!
-
-**Download development version**: 
-.phar zippackage [phar zipped https://genboy.net/wp-content/uploads/2019/06/Festival_v2.0.0-dev.zip](https://genboy.net/wp-content/uploads/2019/06/Festival_v2.0.0-dev.zip)
-
-or use [devtools plugin](https://poggit.pmmp.io/p/DevTools/1.13.0) and [download zip package https://github.com/genboy/Festival/archive/master.zip](https://github.com/genboy/Festival/archive/master.zip)
-
-**Install**: *(always save copies of your previous used config.yml and areas.json before re-install)*
-1. place phar in plugins folder and restart, 
-2. after restart;
- 2a. if need previous used configs and areas: delete config.json and areas.json from the root folder 
-and put your config.yml and areas.json in Festival (root) folder
- 2b. if clean start (no areas)  edit /resources/config.yml to your likes and delete config.json from the root folder
-3. Then restart again, now areas.json, levels.json and config.json in Festival (root) folder are used.
-
-
+### 2.0.0 Features
+> - Festival Manager Menu (UI) - or use the commands
+> - Cube AND Sphere area's set with diagonal, radius or diameter
+> - Area, Config AND Level flags managed from menu
+> - Area name (and desc) can now be Full string inCluDing MuLti wORds CaPitaLized
+> - Experimental Area Priority level 
 
 **Management UI in game**: 
 **command** /fe ui(form, config, data)
@@ -30,30 +27,32 @@ or **hold magic item** ( default item 201 - Purpur Pillar block - change in conf
 
 or use the commands (now with Multi wORd FULLY CapitAlized nameS possible)
 
+**Download development version**: 
+.phar zippackage [phar zipped https://genboy.net/wp-content/uploads/2019/06/Festival_v2.0.0-dev.zip](https://genboy.net/wp-content/uploads/2019/06/Festival_v2.0.0-dev.zip)
+Please report bugs -thank you! [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
+
+or use [devtools plugin](https://poggit.pmmp.io/p/DevTools/1.13.0) and [download zip package https://github.com/genboy/Festival/archive/master.zip](https://github.com/genboy/Festival/archive/master.zip)
+
+
+**Festival version 2.0.0-dev Install**: 
+*(always save copies of your previous used config.yml and areas.json before re-install)*
+1. place phar or unzipped folder in plugins folder and restart, 
+2. after restart;
+ 2a. if need previous used configs and areas: delete config.json and areas.json from the root folder 
+and put your config.yml and areas.json in Festival (root) folder
+ 2b. if clean start (no areas)  edit /resources/config.yml to your likes and delete config.json from the root folder
+3. Then restart again, now areas.json, levels.json and config.json in Festival (root) folder are used.
+
+( or download latest stable version [@ poggit https://poggit.pmmp.io/p/Festival](https://poggit.pmmp.io/p/Festival) - no Festival menu, only command usage)
+
 If you like to use Festival consider [sharing your experience and issues](https://github.com/genboy/Festival/issues) to fix any usability problems before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1)! That way it will improve Festival, my coding skills, your Pocketmine-MP insights and strenghten the PMMP community, thank you!
  
 !Take notice of the Copyright Statement if you use Festival for the first time since 27 April 2019. 
 **Read the Legal Notice** at the bottom of this README file or the Legal Notice tab at poggit.pmmp.io/p/Festival
 
-###### Copyright [Genboy](https://genboy.net) 2018 
- 
---- 
+---
+## Basic Features
 
-# Festival
-
-[![](https://poggit.pmmp.io/shield.state/Festival)](https://poggit.pmmp.io/p/Festival) 
-[![](https://poggit.pmmp.io/shield.api/Festival)](https://poggit.pmmp.io/p/Festival)
-[![](https://poggit.pmmp.io/shield.dl.total/Festival)](https://poggit.pmmp.io/p/Festival)
-[![](https://poggit.pmmp.io/shield.dl/Festival)](https://poggit.pmmp.io/p/Festival)
-
-
-#### Features
-
-### UI forms for area, level & config management!
-
-> magic item to open UI by default id 201 - Purpur Pillar block - see config.json
-
-### + Sphere type area's by radius or diameter :)
 **Config**
 - set default options in config.yml;
   - language: en - select language English = en, Dutch = nl, es = Español, pl = Polskie - translate please !
@@ -62,7 +61,7 @@ If you like to use Festival consider [sharing your experience and issues](https:
   - Areadisplay: op - Area Floating Title display to ops (off/op/on)
   - FlightControl: on - To disable flight flag for all Festival usage (on/off)
   - AutoWhitelist: on - Auto whitelist area creator (on/off)
-  
+
 **Area**
 
 - Create and manage area’s ingame
@@ -119,19 +118,13 @@ If you like to use Festival consider [sharing your experience and issues](https:
 
 **Specific**
 
-
-
 ## Usage 
   
-  - ! Update Festival 2 in development using ingame UI for configurations
-
-  - Standard Plugin installation; Upload .phar file to server 'plugin' folder (or upload .zip if you have latest devtools installed), restart the server, go to  folder plugins/Festival;
-
-  - read [wiki on configurations](https://github.com/genboy/Festival/wiki/2.-Install,-Configure-&-Update)
-
+  - ! Update Festival 2 in development 
   - Edit config.yml; set the defaults for options, default area flags and the default area flags for specific worlds.
-
- 
+  - using ingame Festival Menu (UI) for configurations
+  - older versions (1.1.3) read [wiki on configurations](https://github.com/genboy/Festival/wiki/2.-Install,-Configure-&-Update)
+  - 
   ### Updates
   
   Updates available at [poggit](https://poggit.pmmp.io/ci/genboy/Festival/Festival) and [github](https://github.com/genboy/Festival/releases)
@@ -147,7 +140,7 @@ If you like to use Festival consider [sharing your experience and issues](https:
   
   To be updated soon..
   
-  ###### Copyright [Genboy](https://genboy.net) 2018
+  ###### Copyright [Genboy](https://genboy.net) 2018 - 2019
   
 
  
@@ -168,7 +161,7 @@ The area code derives from the [iProctector plugin](https://github.com/LDX-MCPE/
 
 The Festival code is written and tested by Genboy and first released on 12 Feb 2018, first extending the area object with area events (enter and leave messages) and soon added functions and ingame commands to attach a commandstring to a area-event. Since v1.0.7 the area's and players can be protected with 12 flags, and trigger commands on areaEnter, areaCenter and areaLeave. 
 
-## Legal Notice
+## Legal Notice 
 
 -- Legal notice --
 
@@ -180,4 +173,4 @@ You are legally bind to read the Festival Copyright statement.
 In short this change of Copyright statement does not change the usage levels as stated in the GPU, for a part it now prohibits any entities to sell the software without the knowledge of the owner. 
 
 -- end legal notice -- 
- ###### Copyright [Genboy](https://genboy.net) 2018 - markdown edited with [stackedit.io](https://stackedit.io)
+ ###### Copyright [Genboy](https://genboy.net) 2018 - 2019- markdown edited with [stackedit.io](https://stackedit.io)
