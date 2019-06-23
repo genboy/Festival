@@ -9,8 +9,6 @@
     "cmd-noperms-msg": "No puedes usar este comando del Festival.",
     "cmd-noperms-subcommand": "No tienes permiso para usar este subcomando.",
 
-    "new-radius-variable": "! Se agregó una nueva variable de entero de radio para crear el área de tipo de esfera.",
-
     "pos-select-active": "¡Ya estás seleccionando una posición!",
     "select-both-pos-first":"Por favor, seleccione ambas posiciones primero.",
     "pos1": "posición 1",
@@ -19,8 +17,8 @@
     "make-pos2": "Por favor coloque o rompa la segunda posición.",
     "make-radius-distance": "Romper o colocar un bloque para determinar el radio grande.",
     "radius-distance-to-position": "Radio distancia a la posición",
-    "make-diameter-distance": "Please place or break to select the diameter direction and distance.",
-    "diameter-distance-to-position": "Diameter distance to position",
+    "make-diameter-distance": "Por favor, coloque o rompa para seleccionar la dirección del diámetro y la distancia.",
+    "diameter-distance-to-position": "Diámetro distancia a la posición",
     "give-area-name": "Por favor, especifique un nombre para esta área.",
 
     "in-unknown-area": "Estas en un area desconocida",
@@ -50,11 +48,24 @@
     "player-allready-whitelisted": "Ya está en la lista blanca en el área",
     "player-has-been-unwhitelisted": "Ha sido excluido de la lista blanca de está area",
     "player-allready-unwhitelisted": "ya está excluido en la lista blanca del área",
-    "whitelist-specify-action": "Por favor, especifique una acción válida. Usé: /area whitelist <areaname> <add/list/remove> <playername>",
+    "whitelist-specify-action": "Por favor, especifique una acción válida. Usé: /area whitelist <add/list/show/remove(del,delete)> <Nombre del jugador> for <Nombre del área>",
+    "whitelist-specify-for-area": "Por favor use 'for' en esta cadena de comando. Use: /area whitelist <add/list/show/remove(del,delete)> <Nombre del jugador> for <Nombre del área>",
+
+    "name-saved": "renombrado a",
+    "name-write-usage": "Asignar un nombre nuevo. Usé: /fe rename <Nombre del área> to <..>",
+    "name-specify-area": "Por favor, especifique un área para editar el nombre. Usé: /fe rename <Nombre del área> to <name>",
+    "name-specify-to-area": "Por favor use 'to' en esta cadena de comando. Usé: /fe rename <Nombre del área> to <name>",
 
     "desc-saved": "Descripción guardada.",
-    "desc-write-usage": "Por favor escriba la descripción. Usé: /fe desc <areaname> <..>",
-    "desc-specify-area": "Por favor, especifique un área para editar la descripción. Usé: /fe desc <areaname> <desc>",
+    "desc-write-usage": "Por favor escriba la descripción. Usé: /fe desc <Nombre del área> set <..>",
+    "desc-specify-area": "Por favor, especifique un área para editar la descripción. Usé: /fe desc <Nombre del área> set <desc>",
+    "desc-specify-set-area": "Por favor use 'set' en esta cadena de comando. Usé: /fe desc <Nombre del área> set <desc>",
+
+    "priority-saved": "prioridad guardada.",
+    "priority-specify-set-area":  "Por favor use 'set' en esta cadena de comando. Usé: /fe priority <Nombre del área> set <numero 0-999>",
+    "priority-write-usage": "Por favor, asigne un número. Usé: /fe priority <Nombre del área> set <numero 0-999>",
+    "priority-number-usage": "Por favor, asigne un número, 0 es el valor predeterminado, 1 - 999 asigna mayor prioridad. Usé: /fe priority <Nombre del área> set <numero 0-999>",
+    "priority-specify-area": "Por favor, especifique un área para editar la prioridad. Usé: /fe priority <Nombre del área> set <numero 0-999>",
 
     "area-deleted": "Área eliminada!",
     "deleted-by":"eliminado por",
@@ -98,8 +109,9 @@
     "status-off": "Apagado",
     "set-to": "ajustado a",
     "for-area": "Por área",
+    "number-to-write": "Assign a number",
 
-    "all-players-are-god": "¡Todos los jugadores son dios en esta área!",
+    "all-players-are-save": "¡Todos los jugadores están guardados en esta área!",
     "no-pvp-area": "¡Estás en un área sin PVP!",
     "no-flight-area": "NO puede volar aquí!",
     "flight-area": "¡Se permite volar aquí!",

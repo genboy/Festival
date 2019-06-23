@@ -1,6 +1,6 @@
 name: Festival
 author: Genboy
-version: 1.1.4
+version: 2.0.0
 main: genboy\Festival\Festival
 load: POSTWORLD
 api: [3.0.0]
@@ -29,6 +29,9 @@ permissions:
               festival.command.fe.lang:
                 description: "Allows access to the Festival lang subcommand."
                 default: op
+              festival.command.fe.priority:
+                description: "Allows access to the Festival priority subcommand."
+                default: op
               festival.command.fe.titles:
                 description: "Allows access to the Festival titles subcommand."
                 default: op
@@ -49,6 +52,9 @@ permissions:
                 default: op
               festival.command.fe.tp:
                 description: "Allows access to the Festival tp subcommand."
+                default: op
+              festival.command.fe.rename:
+                description: "Allows access to the Festival rename subcommand."
                 default: op
               festival.command.fe.desc:
                 description: "Allows access to the Festival description subcommand."
