@@ -1242,10 +1242,11 @@ class Festival extends PluginBase implements Listener{
                     $cz = $p2->getZ() + ( ( $p1->getZ() - $p2->getZ() ) / 2 );
                     $pos1 = new Position( $cx, $cy, $cz, $player->getLevel() ); // center
                     $radius = $this->get_3d_distance($p1, $pos1);
+                    $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $pos1;
                 }
                 $this->players[ strtolower( $playerName ) ]["makearea"]["radius"] = $radius;
                 // back to form
-                $this->form->areaNewForm( $player , ["type"=>$newareatype,"pos1"=>$p1,"pos2"=>$p2,"radius"=>$radius], $msg = language::translate("ui-new-area-setup") . ":");
+                $this->form->areaNewForm( $player , ["type"=>$newareatype,"pos1"=>$pos1,"pos2"=>$p2,"radius"=>$radius], $msg = language::translate("ui-new-area-setup") . ":");
                 return;
             }
         }else if(isset($this->selectingFirst[$playerName])){
@@ -1333,10 +1334,11 @@ class Festival extends PluginBase implements Listener{
                     $cz = $p2->getZ() + ( ( $p1->getZ() - $p2->getZ() ) / 2 );
                     $pos1 = new Position( $cx, $cy, $cz, $player->getLevel() ); // center
                     $radius = $this->get_3d_distance($p1, $pos1);
+                    $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $pos1;
                 }
                 $this->players[ strtolower( $playerName ) ]["makearea"]["radius"] = $radius;
                 // back to form
-                $this->form->areaNewForm( $player , ["type"=>$newareatype,"pos1"=>$p1,"pos2"=>$p2,"radius"=>$radius], $msg = language::translate("New area setup") . ":");
+                $this->form->areaNewForm( $player , ["type"=>$newareatype,"pos1"=>$pos1,"pos2"=>$p2,"radius"=>$radius], $msg = language::translate("ui-new-area-setup") . ":");
                 return;
             }
         }else if(isset($this->selectingFirst[$playerName])){
