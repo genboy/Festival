@@ -420,4 +420,6 @@ You are legally bind to read the Festival Copyright statement.
 In short this change of Copyright statement does not change the usage levels as stated in the GPU, for a part it now prohibits any entities to sell the software without the knowledge of the owner. 
 
 -- end legal notice -- 
-###### Copyright [Genboy](https://genboy.net) 2018 - 2019- markdown edited with [stackedit.io](https://stackedit.io) 
+###### Copyright [Genboy](https://genboy.net) 2018 - 2019 
+markdown edited with [stackedit.io](https://stackedit.io) and 
+translated to html with [browserling.com](https://www.browserling.com/tools/markdown-to-html)
