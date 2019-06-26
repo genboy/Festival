@@ -237,6 +237,17 @@ class Festival extends PluginBase implements Listener{
 		$action = strtolower($args[0]);
 		$o = "";
 		switch($action){
+
+			case "ui": // v2.0.0
+            case "form":
+            case "data":
+
+                if( !isset( $this->players[ $playerName ]["makearea"] ) ){
+                    //$sender->getInventory()->setItem($sender->getInventorySlot(), Item::get( $this->config['options']['itemid']) );
+                    $this->form->openUI($sender);
+                }
+
+            break;
             case "lang": // experiment v1.0.7.7-dev
                 if( isset($args[1]) ){
                     if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe.lang")){
@@ -1231,10 +1242,11 @@ class Festival extends PluginBase implements Listener{
                     $cz = $p2->getZ() + ( ( $p1->getZ() - $p2->getZ() ) / 2 );
                     $pos1 = new Position( $cx, $cy, $cz, $player->getLevel() ); // center
                     $radius = $this->get_3d_distance($p1, $pos1);
+                    $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $pos1;
                 }
                 $this->players[ strtolower( $playerName ) ]["makearea"]["radius"] = $radius;
                 // back to form
-                $this->form->areaNewForm( $player , ["type"=>$newareatype,"pos1"=>$p1,"pos2"=>$p2,"radius"=>$radius], $msg = language::translate("ui-new-area-setup") . ":");
+                $this->form->areaNewForm( $player , ["type"=>$newareatype,"pos1"=>$pos1,"pos2"=>$p2,"radius"=>$radius], $msg = language::translate("ui-new-area-setup") . ":");
                 return;
             }
         }else if(isset($this->selectingFirst[$playerName])){
@@ -1322,10 +1334,11 @@ class Festival extends PluginBase implements Listener{
                     $cz = $p2->getZ() + ( ( $p1->getZ() - $p2->getZ() ) / 2 );
                     $pos1 = new Position( $cx, $cy, $cz, $player->getLevel() ); // center
                     $radius = $this->get_3d_distance($p1, $pos1);
+                    $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $pos1;
                 }
                 $this->players[ strtolower( $playerName ) ]["makearea"]["radius"] = $radius;
                 // back to form
-                $this->form->areaNewForm( $player , ["type"=>$newareatype,"pos1"=>$p1,"pos2"=>$p2,"radius"=>$radius], $msg = language::translate("New area setup") . ":");
+                $this->form->areaNewForm( $player , ["type"=>$newareatype,"pos1"=>$pos1,"pos2"=>$p2,"radius"=>$radius], $msg = language::translate("ui-new-area-setup") . ":");
                 return;
             }
         }else if(isset($this->selectingFirst[$playerName])){

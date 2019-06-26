@@ -1,66 +1,86 @@
 
 ## Festival
 
-If you like to use Festival consider [sharing your experience and issues](https://github.com/genboy/Festival/issues) to fix any usability problems before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1)!
-That way it will improve Festival, my coding skills, your Pocketmine-MP insights and strenghten the PMMP community, thank you!
- 
-![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png) 
-
-
-!Take notice of the Copyright Statement if you use Festival for the first time since 27 April 2019. 
-Read the Legal Notice at the bottom of this README file or the Legal Notice tab at poggit.pmmp.io/p/Festival
-
 Create a festival with this custom area events plugin for Pocketmine Server:
+###  Manage area's and run commmands attachted to area events. 
+( latest stable version 1.1.3 [@ poggit https://poggit.pmmp.io/p/Festival](https://poggit.pmmp.io/p/Festival) )
 
-### Manage area's and run commmands attachted to area events. 
-
- 
-![Festival creation & usage](https://genboy.net/wp-content/uploads/2019/04/festival_usage_v1.1.3.png)  
-
-
-###### Copyright [Genboy](https://genboy.net) 2018 
- 
+![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png)
+###### Copyright [Genboy](https://genboy.net) 2018 - 2019 
 --- 
-
-## Info
-Since Festival 1.1.3 the config option to disable Flight flag (flight control off) is available!
-Festival 2 is being implemented step by step now, [development](https://github.com/genboy/Festival/projects/2) including FormUI for easy control, a new code structure and some of the flags will be completely rewritten. Just to let you know ..
-
 # Festival
-
-[![](https://poggit.pmmp.io/shield.state/Festival)](https://poggit.pmmp.io/p/Festival) 
-[![](https://poggit.pmmp.io/shield.api/Festival)](https://poggit.pmmp.io/p/Festival)
-[![](https://poggit.pmmp.io/shield.dl.total/Festival)](https://poggit.pmmp.io/p/Festival)
-[![](https://poggit.pmmp.io/shield.dl/Festival)](https://poggit.pmmp.io/p/Festival)
-
+Stable version
+[![](https://poggit.pmmp.io/shield.state/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.api/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.dl.total/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.dl/Festival)](https://poggit.pmmp.io/p/Festival)
 [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
-	
-More info also available at [the Festival Wiki](https://github.com/genboy/Festival/wiki) 
 
-Download the latest .phar files from [poggit.pmmp.io](https://poggit.pmmp.io/p/Festival/1.1.3), also available at [mcpehost.ru](https://panel.mcpehost.ru/repository/plugin?name=Festival)
 
-!Please before asking; first double-check your server basic world configurations, other plugins configurations (ie. worldguard) and the used player permissions incl. Festival whitelistings.
+![Festival 2.0.0 Command usage](https://genboy.net/wp-content/uploads/2019/06/festival_usage_v2.0.0.png)
 
-#### Features
+If you like to use Festival consider [sharing your experience and issues](https://github.com/genboy/Festival/issues) to fix any usability problems before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1)! That way it will improve Festival, my coding skills, your Pocketmine-MP insights and strenghten the PMMP community, thank you!
+ 
+!Take notice of the Copyright Statement if you use Festival for the first time since 27 April 2019. 
+**Read the Legal Notice** at the bottom of this README file or the Legal Notice tab at poggit.pmmp.io/p/Festival
+
+
+## 2.0.0
+
+### 2.0.0 Features
+> - Festival Manager Menu (UI) - or use the commands
+> - Cube AND Sphere area's set with diagonal, radius or diameter
+> - Area, Config AND Level flags managed from menu
+> - Area name (and desc) can now be Full string inCluDing MuLti wORds CaPitaLized
+> - Experimental Area Priority level 
+
+**Management UI in game**: 
+**command** /fe ui(form, config, data)
+or **hold magic item** ( default item 201 - Purpur Pillar block - change in config management) 
+
+or use the commands (now with Multi wORd FULLY CapitAlized nameS possible)
+
+**Download development version**: 
+.phar zippackage [phar zipped https://genboy.net/wp-content/uploads/2019/06/Festival_v2.0.0-dev.zip](https://genboy.net/wp-content/uploads/2019/06/Festival_v2.0.0-dev.zip)
+Please report bugs -thank you! [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
+
+or use [devtools plugin](https://poggit.pmmp.io/p/DevTools/1.13.0) and [download zip package https://github.com/genboy/Festival/archive/master.zip](https://github.com/genboy/Festival/archive/master.zip)
+
+
+**Festival version 2.0.0-dev Install**: 
+*(always save copies of your previous used config.yml and areas.json before re-install)*
+1. place phar or unzipped folder in plugins folder and restart, 
+2. after restart;
+ 2a. if need previous used configs and areas: delete config.json and areas.json from the root folder 
+and put your config.yml and areas.json in Festival (root) folder
+ 2b. if clean start (no areas)  edit /resources/config.yml to your likes and delete config.json from the root folder
+3. Then restart again, now areas.json, levels.json and config.json in Festival (root) folder are used.
+
+( or download latest stable version [@ poggit https://poggit.pmmp.io/p/Festival](https://poggit.pmmp.io/p/Festival) - no Festival menu, only command usage)
+
+---
+## Info
+### Features
+
+
+**Menu**
+In version 2.0.0 the Festival Management Menu (FormUI) is introduced
 
 **Config**
 - set default options in config.yml;
-  - language: en - select language English = en, Dutch = nl, es = Español, pl = Polskie - translate please !
+  - Language: en - select language English = en, Dutch = nl, es = Español, pl = Polskie - translate please !
+  - ItemID: Hold this Magic block/item to enter Menu (default item 201 - Purpur Pillar block)
   - Msgtype: msg - Area Messages Display position (msg/title/tip/pop)
   - Msgdisplay: off - Area Messages persist display to ops (off/op/on)
   - Areadisplay: op - Area Floating Title display to ops (off/op/on)
   - FlightControl: on - To disable flight flag for all Festival usage (on/off)
   - AutoWhitelist: on - Auto whitelist area creator (on/off)
-  
+
 **Area**
 
 - Create and manage area’s ingame
-  (like WorldGuard/iProtector)
 
     - Define area's by tapping 2 positions
-      - diagonal for cube
-      - radius for sphere
-      - diameter for sphere
+      - **diagonal** for cube
+      - **radius** for sphere
+      - **diameter** for sphere
     - create/delete/list area’s
     - add area description
     - whitelist players for the area
@@ -106,33 +126,111 @@ Download the latest .phar files from [poggit.pmmp.io](https://poggit.pmmp.io/p/F
     - change event of area commands 
 
 
-**Specific**
-
-  - World flags: Default & level(world) specific flags in config.yml are used for level default flag settings and new area flags settings
-  - Flight: if server allows flight, and level flight-flag is true, an area in that level has still flight enabled untill flight flag is set true
-  - Perms: Area event commands are executed by default with op-permissions by players or, if perms flag true: area uses the player permissions
-  - Area Titles: Set area titles to display, for ops or any player (in config.yml), ops can select display ingame with /fe titles
-  - CMDmode: The cmdmode flag disables event commands for (whitelisted)players, allows ops to test area event commands.
-	
-!Please first check festival and other plugins configs (ie. worldguard) and the used player permissions incl. Festival whitelistings.
-
-  
-
-###### Created by [Genboy](https://genboy.net) 2018
-
-Credits for the area creation and protection code go to iProtector creator [LDX-MCPE](https://github.com/LDX-MCPE) 
-and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
-
 ---
 
+## Menu (UI)
+
+#### Festival Menu
+
+Festival main menu
+
+![Start menu select management option](https://genboy.net/wp-content/uploads/2019/06/manager_start.jpg)
+#### Teleport
+
+Select teleport destination
+
+![Select teleport destination](https://genboy.net/wp-content/uploads/2019/06/area_teleport_select.jpg)
+
+#### Areas
+
+Area management option menu
+
+![Area option menu](https://genboy.net/wp-content/uploads/2019/06/manager_area_options.jpg)
+
+Select area to manage
+
+![Select area](https://genboy.net/wp-content/uploads/2019/06/manager_area_select.jpg)
+
+Manage area settings
+
+![Edit area settings](https://genboy.net/wp-content/uploads/2019/06/manage_areas_settings.jpg)
+
+Manage area flags
+
+![Edit area flags](https://genboy.net/wp-content/uploads/2019/06/manager_area_options_end.jpg)
+
+Manage area commands
+
+![Manage commands to area](https://genboy.net/wp-content/uploads/2019/06/cmds_1_Minecraft-27-1-2019-16_50_24.jpg)
+
+Add command
+
+![Edit or add commands to area](https://genboy.net/wp-content/uploads/2019/06/cmds_2.jpg)
+
+
+Manage area Whitelist
+
+![Manage area whitelist](https://genboy.net/wp-content/uploads/2019/06/area_whitelist.jpg)
+
+Select area to delete
+
+![Delete area](https://genboy.net/wp-content/uploads/2019/06/delete_area1.jpg)
+
+Confirm to delete area
+
+![Cofirm area delete](https://genboy.net/wp-content/uploads/2019/06/delete_area2.jpg)
+
+#### Create
+
+Select new area type
+
+![Select new area type](https://genboy.net/wp-content/uploads/2019/06/start_make_area.jpg)
+
+Set area positions
+###### Cube Diagonal 
+    1. Place or break the first diagonal position for new cube area
+    2. Place or break position 2 to set the longest diagonal in the new cube area
+###### Sphere Radius 
+    1. Place or break the center position for the new sphere area
+    2. Place or break position 2 to set the radius for new sphere area
+###### Sphere Diameter
+    1. Place or break the first diameter position for the new sphere area
+    2. Place or break position 2 to set the diameter for new sphere area
+ 
+Create area with Name (and description)
+
+![Create area with name and description](https://genboy.net/wp-content/uploads/2019/06/create_new_area.jpg)
+
+#### Levels
+
+
+Select level to manage flags 
+
+![Select level](https://genboy.net/wp-content/uploads/2019/06/manage_level_select.jpg)
+
+Manage level flags options
+
+![Edit level flags(defaults)](https://genboy.net/wp-content/uploads/2019/06/manage_level_flags2.jpg)
+
+#### Configuration
+
+Manage Festival configuration options and set default flags 
+
+![Manage configuration](https://genboy.net/wp-content/uploads/2019/06/manager_configuration.png)
+###### Copyright [Genboy](https://genboy.net) 2018 - 2019- markdown edited with [stackedit.io]
+
 ## Usage 
-
-
-  #### Setup
-
-  ### Install & Configure
   
-  - ! Update Festival 2 in development using ingame UI for configurations
+  - Edit config.yml; set the defaults for options, default area flags and the default area flags for specific worlds.
+  - using ingame Festival Menu (UI) for configurations
+  - older versions (1.1.3) read [wiki on configurations](https://github.com/genboy/Festival/wiki/2.-Install,-Configure-&-Update)
+
+![Festival 2.0.0 Command usage](https://genboy.net/wp-content/uploads/2019/06/festival_usage_v2.0.0.png)
+
+
+#### Setup
+
+### Install & Configure
 
   - Standard Plugin installation; Upload .phar file to server 'plugin' folder (or upload .zip if you have latest devtools installed), restart the server, go to  folder plugins/Festival;
 
@@ -143,148 +241,103 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
   - ##### Read the config comments carefully about how the flags work!
   
   
-  ### Updates
+#### Updates
   
   Updates available at [poggit](https://poggit.pmmp.io/ci/genboy/Festival/Festival) and [github](https://github.com/genboy/Festival/releases)
   
-  ##### !Before update always copy your config.yml and areas.json files to a save place, with this you can revert your Festival installation
-  - after .phar install and first restart/reload plugins; check console info and your areas.json and config.yml; restart after adjusted correctly 
-  
-  - ! Update Festival 2 in development translating resource config.yml or your mainfolder config.yml and areas.json on install
-  
-
-  #### Usage Graphic
-
-  ##### A visualisation of Festival command usage
-  
-  ![Festival creation & usage](https://genboy.net/wp-content/uploads/2019/04/festival_usage_v1.1.3.png) 
+##### !Before update always copy your config.yml and areas.json files to a save place, with this you can revert your Festival installation
+  - after .phar install and first restart/reload plugins; check console info and your areas.json and config.yml; restart after adjusted correctly
   
   ###### Copyright [Genboy](https://genboy.net) 2018
   
-
- 
-  #### Language
+#### Language
   
   Set Festival language en/nl/es/pl for area and command returned messages. 
   en = english
   nl = nederlands 
-  es = Espanol
-  pl = Polski
+  (es = Espanol)
+  (pl = Polski)
   __ = your language, please help [translate __.js](https://github.com/genboy/Festival/blob/master/resources/en.json)
   
 
-  #### Create area
+#### Create area
   
-  - ! Update Festival 2 in development with sphere area and Full Capitalized Multiple Word Area Name and strings
+  First command '/fe pos1' and tab or break a block for position 1 (holding a block, not an item), 
   
-  First command '/fe pos' or '/fe pos1' and tab or break a block for position 1 (holding a block, not an item), 
-  
-  then either 1: command '/fe pos2' and tab or break a block to set position 2 for cube area, 
+  then command '/fe pos2' and tab or break a block to set position2, 
   
   these are the endpoints of the area longest diagonal.
 
 	/fe pos1
 	/fe pos2
 
-  or 2: command '/fe rad' or '/fe radius' and tab or break a block to set position 2 for sphere area,
-  
-  these are the center and the endpoint of the area radius.
 
-	/fe pos
-	/fe rad
-
-  or 3: command '/fe dia' or '/fe diameter' and tab or break a block to set position 2 for sphere area,
-  
-  these are the start- and the endpoint of the area diameter.
-
-	/fe pos
-	/fe dia
-    
   Then name/save the selected area
 
 	/fe create <AREANAME>  
 
-  Now the area is ready to use (flags set by level = default)
+  Now the area is ready to use
   
   You might want to set or edit the area description line
    
     /fe desc <AREANAME> <description>
-    
-  or rename the area
-   
-    /fe rename <AREANAME> to <NEWAREANAME>
 
 
-  #### Set area flags 
+#### Set area flags 
   
     Festival v1.0.1-11 introduced a fast toggle for flags:
   
-      /fe <edit/god/pvp/flight/touch/mobs/animals/effects/tnt/fire/explode/shoot/drop/msg/pass/hunger/perms/falldamage/cmdmode> <AREANAME>
+      /fe <edit/hurt/pvp/flight/touch/mobs/animals/effect/tnt/fire/explode/shoot/drop/msg/pass/hunger/perms/fall/cmd> <AREANAME>
 
-    ! Default flags in Festival 2 are set with the UI configuration and level settings
-  
     Area flag defaults are set in the config.yml, server defaults and world specific default flag. 
     
-    
-    ! Following will be deprecated in Festival 2
-    
-    The basic command to control area flags:
-  
-	  /fe flag(f) <AREANAME> <edit/god/pvp/flight/touch/mobs/animals/effects/tnt/fire/explode/shoot/drop/msg/pass/hunger/perms/falldamage/cmdmode> <true/false>
-  
-    Area flag listing
-  
       /fe flag <AREANAME> list
       
   
-  #### Delete an area
+#### Delete an area
 	
 	/fe delete(del,remove) <AREANAME>   
     
   
-  #### Position info
+#### Position info
 	
     See area information at position
     
 	/fe here
 
 
-  #### List all area's
+#### List all area's
 	
     See all area info, optional per level
     
 	/fe list (<LEVELNAME>)
 
 
-  #### Teleport to area
+#### Teleport to area
 	
     Teleporting to area center top, drop with no falldamage (if falldamage flag true)
     
 	/fe tp <AREANAME>
 
 
-  #### Toggle level area's floating title display
+#### Toggle level area's floating title display
 	
     Area floating title display (default set in config.yml)
     
 	/fe titles
 
 
-  #### Set description
+#### Set description
 		
 	/fe desc <AREANAME> <DESCRIPTION>
 
   
-  #### Manage  whitelist
-  
-  - ! deprecated .. Update Festival 2 in development with Full Capitalized Multiple Word Area Name and strings	
-  
+#### Manage  whitelist
+	
     /fe whitelist <AREANAME> <add/list/remove(del,delete)> <PLAYERNAME>
-    
-  - Festival 2: /fe whitelist <add/list/remove(del,delete)> <PLAYERNAME> for <AREANAME>
 
 
-  #### Area event commands
+#### Area event commands
 
     **This is the fun part of Festival: assign commands to area events**
     
@@ -300,11 +353,10 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
       - make sure the command works! (when you are op)
       
       
-    - ! deprecated .. Update Festival 2 in development with Full Capitalized Multiple Word Area Name and strings	
-    
     /fe command <AREANAME> <add/list/edit/event*/del> <COMMANDID> <COMMANDSTRING/enter*/leave*/center*> 
-    
-  #### Add a command:
+ 
+	
+#### Add a command:
 
 	/fe command <AREANAME> add <COMMANDID> <COMMANDSTRING>
 
@@ -312,181 +364,42 @@ and all [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
 	  Using 'enter', 'center' or 'leave' instead of 'add' attaches the new command to 
 	  the given eventtype: i.e. /fe command <areaname> center <commandid> <commandstring>
 
-  #### List area commands:
+#### List area commands:
 	
 	/fe command <AREANAME> list
 		
-  #### Edit command:
+#### Edit command:
 	
 	/fe command <AREANAME> edit <COMMANDID> <COMMANDSTRING>
-	
-  #### Change command event:
+
+#### Change command event:
 	 
 	/fe command <AREANAME> event <COMMANDID> <enter/center/leave>
 		
-  #### Remove command:
+#### Remove command:
 	
 	/fe command <AREANAME> del <COMMANDID>
 
+
 ---
-
-## Development
-
-The Festival plugin is in active development.
-
- ##### Development on [github.com/genboy/Festival](https://github.com/genboy/Festival)
-
-If you like to help improve this plugin;
-
-- download/use the plugin and give your feedback
-- look at the code and give feedback
-- help translating [__.js](https://github.com/genboy/Festival/blob/master/resources/en.json)
-- both by submitting [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival) 
-
-or send an email to msg @ genboy.net 
-	
-Thank you
-
-
-### Milestones v1.0.0-11 - v1.0.3-11
-
-  - [x] area protection and flag management is stable 
-  (core [iProtector](https://github.com/poggit-orphanage/iProtector), [9876ca3](https://github.com/poggit-orphanage/iProtector/commit/9876ca3acd48830599b3715346a1cf8ac964bdbd) Dec 2017) 
-
-  - [x] Area messages and msg/description management are stable
-  - [x] Commands can be attachted to specific events at the area: 
-  - [x] enter: on entering the area
-  - [x] center: when in the center of the area
-  - [x] leave: when leaving the area 
-  - [x] Submit to poggit
-  - [x] Testing expected possibilities; use as portals and shields, design a minigame park, create a quest/parcour.. 
-  - [x] Passage flag; turning the area into a barrier, no one in, no one out.
-  - [x] /fe tp <areaname> now sends player to the area top-center and prevents fall damage  
-   
-### Milestones v1.0.3-11 - v1.0.7
-
-  - [x] Config options:
-    - Messages out of chat (tip/pop)  
-    - Messages persist display to ops (off/op/on)
-    - Auto whitelist area creator (on/off)
-  - [x] Effects flag: remove players effects in area
-  - [x] Perms flag: player perms used for area commands (vs OP pems)
-  - [x] Drop flag: player can not drop things 
-  - [x] PVP flag: players can not PvP (warn message)
-  - [x] Flight flag: players can not fly (incl. no fall damage & allowed messages)
-  - [x] Area Commands: playerName can be used as **{player}** or **@p** in area event commands
-  - [x] TNT flag: explosion free area's
-  - [x] Hunger flag: players do not exhaust 
-  - [x] Fire (animation) extinguished when player is save 
-  - [x] No shooting (bow)
-  - [x] No Fall Damage flag (was implemented as effect for TP dropping and flight break)
+### Updates
+  
+ Updates available at [poggit](https://poggit.pmmp.io/ci/genboy/Festival/Festival) and [github](https://github.com/genboy/Festival/releases)
+  
+  ##### !Before update always copy your config.yml and areas.json files to a save place, with this you can revert your Festival installation
+  - after .phar install and first restart/reload plugins; check console info and your areas.json and config.yml; restart after adjusted correctly 
+  
+  - ! Update Festival 2 in development translating resource config.yml or your mainfolder config.yml and areas.json on install
  
-### Milestones v1.0.7 - v1.0.7.9
-
-  - [x] Areas floating title
-    - set config option Areadisplay (off/op/on)
-    - never or on command (off)
-    - for ops only always (op)
-    - for all players if msg flag true (on)
-    - display toggle /fe titles for ops
-  - [x] Add translation options
-    - set config option language (en/nl/..)
-    - ops change language  /fe lang <en/nl/..>
-    - English en
-    - Nederlands nl
-  - [x] Enhancements Edit Flag 
-    - No Farmland creation
-    - No Fire from Flint & Steel 
-    - protect item in frame use
-  - [x] Enhancements TNT Flag (experimental)
-    - No TNT placing
-    - No TNT ignition with Flint & Steel
-  - [x] Spawning: Prevent mob spawning (and spawners/eggs) in area's 
-    - Prevent spawn (incl. spawners/eggs) (EntitySpawnEvent)!
-      - Mobs flag prevent mobs from spawning in area
-      - Animals flag prevent animals from spawning in area
-  - [x] Area messages display in chat with config option Msgtype 'msg' 
-  - [x] cmd flag: area event commands for ops or whitelisted players only
- 
- 
- 
- ### History
+#### Language
+  Command: /fe lang <en/nl>
+  Set Festival language en/nl/es/pl for area and command returned messages. 
+  en = english
+  nl = nederlands 
   
-  **Since v1.0.3-11+**
+  todo: es = Espanol, pl = Polski
   
-  - pass(passage) flag gives the area a barrier for non ops/whitelisted
-  - configuration for area messages (taken out of chat)
-    - Msgtype: tip or pop (prefer depend on other plugin message display) 
-    - Msgdisplay: 
-        off = hidden for all players
-        op = only ops see all area enter/leave messages
-        on = all players see the area messages
-  
-  **Since v1.0.4-11**
-
-  - areas are updated with the new flags, configuration should be updated manually; example [resources/config.yml](https://github.com/genboy/Festival/blob/master/resources/config.yml)
-
-  **Since v1.0.5-12**
-
-  - configuration should be updated with AutoWhitelist option & new Effects flag; example [resources/config.yml](https://github.com/genboy/Festival/blob/master/resources/config.yml)
-
-  **Since v1.0.6-13**
-
-  - new PVP flag
-  - new Flight flag
-  - /fe list LEVELNAME - Area list of all area's in all levels, or for specified level 
-  - configuration should be updated [resources/config.yml](https://github.com/genboy/Festival/blob/master/resources/config.yml)
- 
-  **Since v1.0.7**
-  - new TNT flag
-  - new Hunger flag
-  - Fire is now extinguished when player does not get damage (aka. in area with god flag on)
-  - new shoot flag (experimental no shooting/launching)
-  - new falldamage flag
-  - new animals and mobs (spawning) flag 
-  - Fixes itemframe and farmland edit  
-
-  **Since v1.0.8**
-  - /fe lang <en/nl/..> - set  Festival language
-  - Edit flag includes No Farmland creation
-  - Edit flag includes protect item in frame use
-  - !NEW Fire flag includes No Fire from Flint & Steel and No lava 
-  - !NEW TNT flag includes No TNT placing or tnt explosions 
-  - !NEW Explode flag includes No entity explosions  
-  - Areas floating title
-  - Add translation options (en/nl/..)
-  - Spawning: Prevent mob/animal spawning (and spawners/eggs) in area's 
-  - Mobs flag prevent mobs from spawning in area
-  - Animals flag prevent animals from spawning in area
-  - Area messages display in chat with config option Msgtype 'msg' 
-  - cmd flag: area event commands for ops or whitelisted players only 
-
-  **Since v1.0.9**
-  - gmc flying allowed by default
-  - fix inArea Player availabillity
-  - fix player damage cause check
-    
-  **Since v1.1.0**
-  - fix griefing bug: adjusted in some functions to determine the needed position to validate the action(flag).
-      
-  **Since v1.1.2**
-  - fix translation bug: adjusted utf-8 json encoding, 
-  - Thanks to [@bptube](https://github.com/bptube) now including Spanish language! 
-  
-  **Since v1.1.1**
-  - fix transalation and mobs/animals error + @bptube added & reviewed Español(/fe lang es)
-  
-  **Since v1.1.2**
-  - new pl.json and @dearminder reviewed Polskie(/fe lang pl)
-  
-  **Since v1.1.3**
-  - new class ForceUTF8 for json encoding translations
-  - new FlightControl option to disable flight flag
-  
-  **Since v1.1.4**
-  - Sphere shape area /fe pos1 + /fe radius 
-  
------- 
+  __ = your language, please help [translate __.js](https://github.com/genboy/Festival/blob/master/resources/en.json)
  
 
 ## Credits
@@ -507,3 +420,6 @@ You are legally bind to read the Festival Copyright statement.
 In short this change of Copyright statement does not change the usage levels as stated in the GPU, for a part it now prohibits any entities to sell the software without the knowledge of the owner. 
 
 -- end legal notice -- 
+###### Copyright [Genboy](https://genboy.net) 2018 - 2019 
+markdown edited with [stackedit.io](https://stackedit.io) and 
+translated to html with [browserling.com](https://www.browserling.com/tools/markdown-to-html)

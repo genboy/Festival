@@ -853,13 +853,13 @@ class FormUI{
             }
         });
 
-        $form->setTitle( Language::translate("Teleport to Area") );
+        $form->setTitle( Language::translate("ui-area-teleport") );
         $selectlist = array();
-        $selectlist[] = Language::translate("Select destination area");
+        $selectlist[] = Language::translate("ui-teleport-select-destination");
         foreach($this->plugin->areas as $area){
             $selectlist[] = $area->getName();
         }
-        $form->addDropdown( Language::translate("TP to area") , $selectlist );
+        $form->addDropdown( Language::translate("ui-tp-to-area") , $selectlist );
         $form->sendToPlayer($sender);
     }
 }
