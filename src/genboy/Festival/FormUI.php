@@ -340,12 +340,12 @@ class FormUI{
        }
     }
 
-
-    /** areaCommandForm
+  /** areaCommandForm
      * @class formUI
 	 * @param Player $sender
 	 * @param string $msg
-     */
+    */
+
     public function areaCommandForm( Player $sender , $input = false, $msg = false) : void {
 
         if( $input != false && ( isset( $input["selectedArea"] ) || isset( $input["newcommand"] ) ) ){
@@ -372,23 +372,14 @@ class FormUI{
                     // new
                     $event_opt = $data["newcommandevent"];
                     $msgdsp_opt = ["enter", "center", "leave"];
-                    $event = $msgdsp_opt[$event_opt];
+                    $event = $msgdsp_opt[$event_opt]; // 0, 1, 2
                     $clist = $area->getCommands();
                     $newcmd = $data["newcommand"];
-                    $id = count($clist);
+                    $id = count($clist) + 1;
 
-                    if( isset($area->events[$event]) ){
-					   $eventarr = explode(",", $area->events[$event] );
-                       $eventarr[] = $id;
-					   $eventstr = implode(",", $eventarr );
-				       $this->plugin->areas[$areaname]->events[$event] = $eventstr;
-                    }else{
-                        $this->plugin->areas[$areaname]->events[$event] = "$id";
-                    }
+                    $command = "fe command " . $areaname . " " . $event . " " . $id . " " . $newcmd;
 
-                    $this->plugin->areas[$areaname]->commands[$id] = $newcmd;
-
-					$this->plugin->helper->saveAreas();
+                    $sender->getServer()->dispatchCommand($sender, $command);
 
                     $this->areaSelectForm( $sender, Language::translate("area") . " ". $areaname . " " . Language::translate("ui-new") . " " . $event . " " . Language::translate("cmd") . " " .  $id . " " .  Language::translate("ui-saved"). " ". Language::translate("ui-select-an-option")  );
 
@@ -483,6 +474,7 @@ class FormUI{
             if($msg){
                 $form->addLabel( $msg);
             }
+
             $areasnames = $this->plugin->helper->getAreaNameList( $sender, true );
             $options = $areasnames[0];
             $slct = $areasnames[1];
@@ -492,7 +484,6 @@ class FormUI{
        }
 
     }
-
 
     /** areaWhitelistForm
      * @class formUI
@@ -683,6 +674,8 @@ class FormUI{
             }else{
                 $form->setContent( Language::translate("ui-select-new-area-type") );
             }
+            //
+            $form->addButton( Language::translate("ui-area-teleport"), 0, "textures/items/sign");
             $form->addButton( Language::translate("ui-make-cube-diagonal") ); // cube area
             $form->addButton( Language::translate("ui-make-sphere-radius") ); // sphere area
             $form->addButton( Language::translate("ui-make-sphere-diameter") ); // sphere area
@@ -784,7 +777,7 @@ class FormUI{
                     }
                     $lvl->save();
                     $this->plugin->helper->saveLevels();
-                    $this->selectForm( $sender, "ui-level". " ". $levelname . " ". "ui-flags-saved" . "ui-select-an-option"  );
+                    $this->selectForm( $sender, Language::translate("ui-level"). " ". $levelname . " ". Language::translate("ui-flags-saved") . Language::translate("ui-select-an-option")  );
                 }else{
                     // add new level configs?
                     $worlds = $this->plugin->helper->getServerWorlds();
