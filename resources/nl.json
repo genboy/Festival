@@ -186,8 +186,10 @@
     "ui-area-add-command": "Nieuw commando toevoegen",
     "ui-area-add-command-event": "Selecteer commando event type",
     "ui-area-add-new-command": "Nieuw commando:",
-    "ui-area-del-command": "Verwijder commando",
-    "ui-area-type-command-id-del": "Verwijder commando id:",
+    "ui-area-change-command": "Change command",
+    "ui-area-type-command-id-change": "Change cmd id:",
+    "ui-area-del-command": "Delete command",
+    "ui-area-type-command-id-del": "Delete cmd id:",
 
     "ui-manage-area-whitelist": "Beheer gebied whitelist",
     "ui-area-whitelist-saved": "Whitelist opgeslagen.",

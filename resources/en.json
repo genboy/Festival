@@ -186,8 +186,10 @@
     "ui-area-add-command": "Add new command",
     "ui-area-add-command-event": "Add command event type",
     "ui-area-add-new-command": "New command:",
+    "ui-area-change-command": "Change command",
+    "ui-area-type-command-id-change": "Change cmd id:",
     "ui-area-del-command": "Delete command",
-    "ui-area-type-command-id-del": "Type cmd id here to delete:",
+    "ui-area-type-command-id-del": "Delete cmd id:",
 
     "ui-manage-area-whitelist": "Manage area whitelist",
     "ui-area-whitelist-saved": "Whitelist saved.",
