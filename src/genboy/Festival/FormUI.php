@@ -358,7 +358,7 @@ class FormUI{
             $areasnames = $this->plugin->helper->getAreaNameList();
 
             if( isset( $input["selectedArea"] ) ){
-                $areaname = $areasnames[$input["selectedArea"]];
+                $areaname = $areasnames[ $input["selectedArea"] ];
                 $this->plugin->players[ strtolower( $sender->getName() ) ]["edit"] = $areaname;
             }
 
@@ -372,7 +372,7 @@ class FormUI{
                     unset( $this->plugin->players[ strtolower( $sender->getName() ) ]["edit"] );
                 }
 
-                if( isset( $data["newcommand"] ) && $data["newcommand"] != "" && isset( $data["newcommandevent"] ) ){
+                if( isset( $data["newcommand"] ) && $data["newcommand"] != "" && isset( $data["newcommandevent"] ) &&  !isset( $data["editid"] ) ){
 
                     // new
                     $event_opt = $data["newcommandevent"];
@@ -387,11 +387,52 @@ class FormUI{
                     $sender->getServer()->dispatchCommand($sender, $command);
 
                     $this->areaSelectForm( $sender, Language::translate("area") . " ". $areaname . " " . Language::translate("ui-new") . " " . $event . " " . Language::translate("cmd") . " " .  $id . " " .  Language::translate("ui-saved"). " ". Language::translate("ui-select-an-option")  );
+                    //$this->areaCommandForm( $sender , array("selectedArea" => $areaname), Language::translate("area") . " ". $areaname . " " . Language::translate("ui-new") . " " . $event . " " . Language::translate("cmd") . " " .  $id . " " .  Language::translate("ui-saved"). " ". Language::translate("ui-select-an-option") );
+
+                }else if( isset( $data["editid"] ) && $data["editid"] != "" ){
+
+                    $clist = $area->getCommands();
+                    if( isset($this->plugin->areas[$areaname]->commands[$data["editid"]]) ){
+
+                        // edit
+                        $cmdid = $data["editid"];
+                        // !> find command event
+                        $newevent = false;
+
+                        if( isset( $data["newcommandevent"] ) ){
+                            $event_opt = $data["newcommandevent"];
+                            $msgdsp_opt = ["enter", "center", "leave"];
+                            $newevent = $msgdsp_opt[$event_opt]; // 0, 1, 2
+
+                            $command = "fe command " . $areaname . " event " . $cmdid  . " " . $newevent;
+                            $sender->getServer()->dispatchCommand($sender, $command);
+                        }
+
+
+                        $newcmd = $this->plugin->areas[$areaname]->commands[$data["editid"]];
+                        if( isset( $data["newcommand"] ) && $data["newcommand"] != ""  ){
+                            $newcmd = $data["newcommand"];
+
+                            $command = "fe command " . $areaname . " edit " . $cmdid  . " " . $newcmd;
+                            $sender->getServer()->dispatchCommand($sender, $command);
+
+                        }
+
+                        $this->areaSelectForm(  $sender , Language::translate("cmd") . " " .  $cmdid . " " .  Language::translate("ui-saved") . " " . Language::translate("ui-select-an-option") );
+
+                    }else{
+
+                        $this->areaSelectForm( $sender, Language::translate("ui-cmd-id-not-found")  );
+                        //$this->areaCommandForm( $sender , array("selectedArea" => $areaname), Language::translate("ui-cmd-id-not-found") );
+
+                    }
+
 
                 }else{
 
                     // delete
                     if( isset( $data["delcommand"] ) && $data["delcommand"] != ""  ){
+
                         $id = $data["delcommand"];
                         if( isset($this->plugin->areas[$areaname]->commands[$id]) ){
                             unset($this->plugin->areas[$areaname]->commands[$id]);
@@ -400,6 +441,7 @@ class FormUI{
                         }else{
                             $this->areaSelectForm( $sender, Language::translate("ui-cmd-id-not-found")  );
                         }
+
                         if( isset($this->plugin->areas[$areaname]->events) ){
                             foreach($this->plugin->areas[$areaname]->events as $e => $i){
 								$evs = explode(",", $i);
@@ -418,7 +460,10 @@ class FormUI{
                         }
 
                     }else{
+
                         $this->areaSelectForm( $sender, Language::translate("ui-cmd-empty-not-saved")  );
+                        //$this->areaCommandForm( $sender , array("selectedArea" => $areaname), Language::translate("ui-cmd-id-not-found") );
+
                     }
 
                 }
@@ -434,33 +479,34 @@ class FormUI{
             $form->setTitle( TextFormat::DARK_PURPLE . Language::translate("ui-edit-area-commands") ." ". Language::translate("for-area") . " " . TextFormat::DARK_PURPLE . $areaname );
 
 
-            $form->addLAbel( "-------  ". Language::translate("ui-area-command-list") .": -------");
+            $form->addLAbel(  Language::translate("ui-area-command-list") );
 
             foreach($area->events as $type => $list){
 				if( trim($list,",") != "" ){
-                    $form->addLabel("$type :");
+                    $form->addLabel( TextFormat::AQUA . "$type :");
                     $cmds = explode(",", trim($list,",") );
                     $clist = $area->getCommands();
                     foreach( $cmds as $ci ){
                         if(isset($area->commands[$ci])){
-                            $com =$area->commands[$ci];
+                            $com = $area->commands[$ci];
                             $form->addLabel("$ci: $com");
                         }
                     }
                 }
             }
-            $form->addLAbel( "-------- ". Language::translate("ui-area-add-command") .": --------");
+            $form->addLAbel( TextFormat::GREEN . Language::translate("ui-area-add-command") );
 
             $msgdsp_tlt = Language::translate("ui-area-add-command-event");
             $msgdsp_opt = ["enter", "center", "leave"];
             $form->addStepSlider( $msgdsp_tlt, $msgdsp_opt, 0, "newcommandevent" );
+            $form->addInput( Language::translate("ui-area-add-new-command"), "add new Command (without / )", "", "newcommand" );
 
-            $form->addInput(Language::translate("ui-area-add-new-command"), "add new Command (without / )", "", "newcommand" );
 
+            $form->addLAbel( Language::translate("ui-area-change-command") );
+            $form->addInput( Language::translate("ui-area-type-command-id-change"), "input command id to edit", "", "editid" );
 
-            $form->addLAbel( "-------- ". Language::translate("ui-area-del-command") .": --------");
-
-            $form->addInput(Language::translate("ui-area-type-command-id-del"), "input command id to delete", "", "delcommand" );
+            $form->addLAbel( TextFormat::RED . Language::translate("ui-area-del-command") );
+            $form->addInput( Language::translate("ui-area-type-command-id-del"), "input command id to delete", "", "delcommand" );
 
 
             $form->sendToPlayer($sender);
