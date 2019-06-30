@@ -372,24 +372,7 @@ class FormUI{
                     unset( $this->plugin->players[ strtolower( $sender->getName() ) ]["edit"] );
                 }
 
-                if( isset( $data["newcommand"] ) && $data["newcommand"] != "" && isset( $data["newcommandevent"] ) &&  !isset( $data["editid"] ) ){
-
-                    // new
-                    $event_opt = $data["newcommandevent"];
-                    $msgdsp_opt = ["enter", "center", "leave"];
-                    $event = $msgdsp_opt[$event_opt]; // 0, 1, 2
-                    $clist = $area->getCommands();
-                    $newcmd = $data["newcommand"];
-                    $id = count($clist) + 1;
-
-                    $command = "fe command " . $areaname . " " . $event . " " . $id . " " . $newcmd;
-
-                    $sender->getServer()->dispatchCommand($sender, $command);
-
-                    $this->areaSelectForm( $sender, Language::translate("area") . " ". $areaname . " " . Language::translate("ui-new") . " " . $event . " " . Language::translate("cmd") . " " .  $id . " " .  Language::translate("ui-saved"). " ". Language::translate("ui-select-an-option")  );
-                    //$this->areaCommandForm( $sender , array("selectedArea" => $areaname), Language::translate("area") . " ". $areaname . " " . Language::translate("ui-new") . " " . $event . " " . Language::translate("cmd") . " " .  $id . " " .  Language::translate("ui-saved"). " ". Language::translate("ui-select-an-option") );
-
-                }else if( isset( $data["editid"] ) && $data["editid"] != "" ){
+                if( isset( $data["editid"] ) && $data["editid"] != "" ){
 
                     $clist = $area->getCommands();
                     if( isset($this->plugin->areas[$areaname]->commands[$data["editid"]]) ){
@@ -427,6 +410,23 @@ class FormUI{
 
                     }
 
+
+                }else if( isset( $data["newcommand"] ) && $data["newcommand"] != "" && isset( $data["newcommandevent"] ) ){
+
+                    // new
+                    $event_opt = $data["newcommandevent"];
+                    $msgdsp_opt = ["enter", "center", "leave"];
+                    $event = $msgdsp_opt[$event_opt]; // 0, 1, 2
+                    $clist = $area->getCommands();
+                    $newcmd = $data["newcommand"];
+                    $id = count($clist) + 1;
+
+                    $command = "fe command " . $areaname . " " . $event . " " . $id . " " . $newcmd;
+
+                    $sender->getServer()->dispatchCommand($sender, $command);
+
+                    $this->areaSelectForm( $sender, Language::translate("area") . " ". $areaname . " " . Language::translate("ui-new") . " " . $event . " " . Language::translate("cmd") . " " .  $id . " " .  Language::translate("ui-saved"). " ". Language::translate("ui-select-an-option")  );
+                    //$this->areaCommandForm( $sender , array("selectedArea" => $areaname), Language::translate("area") . " ". $areaname . " " . Language::translate("ui-new") . " " . $event . " " . Language::translate("cmd") . " " .  $id . " " .  Language::translate("ui-saved"). " ". Language::translate("ui-select-an-option") );
 
                 }else{
 
