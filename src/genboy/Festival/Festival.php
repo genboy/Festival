@@ -1322,6 +1322,7 @@ class Festival extends PluginBase implements Listener{
                 $this->players[ strtolower( $playerName ) ]["makearea"]["pos2"] = $block->asVector3();
                 $p1 = $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"];
                 $p2 = $this->players[ strtolower( $playerName ) ]["makearea"]["pos2"];
+                $pos1 = $p1;
                 $radius = intval( 0 );
                 if( $newareatype == "radius" ){
                     $dy = $p1->getY() - $p2->getY();

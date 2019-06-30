@@ -183,11 +183,11 @@
 
     "ui-manage-area-commands": "Manage area commands",
     "ui-area-command-list": "Area command list",
-    "ui-area-add-command": "Add new command",
+    "ui-area-add-command": "Add new or edit command:",
     "ui-area-add-command-event": "Add command event type",
-    "ui-area-add-new-command": "New command:",
-    "ui-area-change-command": "Change command",
-    "ui-area-type-command-id-change": "Change cmd id:",
+    "ui-area-add-new-command": "Insert command:",
+    "ui-area-change-command": "Change/edit command",
+    "ui-area-type-command-id-change": "Edit cmd id:",
     "ui-area-del-command": "Delete command",
     "ui-area-type-command-id-del": "Delete cmd id:",
 
