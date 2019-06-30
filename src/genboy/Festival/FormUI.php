@@ -77,6 +77,9 @@ class FormUI{
             return false;
         });
 
+
+        unset( $this->plugin->players[ strtolower( $sender->getName() ) ]["makearea"] );
+
         $form->setTitle( Language::translate("ui-festival-manager") ); // Festival Manager
         if($msg){
             $form->setContent($msg);
@@ -135,6 +138,8 @@ class FormUI{
             }
             return false;
         });
+
+        unset( $this->plugin->players[ strtolower( $sender->getName() ) ]["makearea"] );
 
         $form->setTitle( Language::translate("ui-area-manager") );
         if($msg){
@@ -674,8 +679,8 @@ class FormUI{
             }else{
                 $form->setContent( Language::translate("ui-select-new-area-type") );
             }
-            //
-            $form->addButton( Language::translate("ui-area-teleport"), 0, "textures/items/sign");
+
+            //$form->addButton( Language::translate("ui-area-teleport"), 0, "textures/blocks/impulse_command_block");
             $form->addButton( Language::translate("ui-make-cube-diagonal") ); // cube area
             $form->addButton( Language::translate("ui-make-sphere-radius") ); // sphere area
             $form->addButton( Language::translate("ui-make-sphere-diameter") ); // sphere area
