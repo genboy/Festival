@@ -379,6 +379,8 @@ class Festival extends PluginBase implements Listener{
                                         $radius = intval( 0 );
                                     }
                                     $priority = intval( 0 );
+                                    $sizeUp = intval( 0 ); // 0 = off, 1-9998 = max. up, 9999 = unlimited
+                                    $sizeDown = intval( 0 ); // 0 = off, 1-9998 = max. down, 9999 = unlimited
 
 
                                     new Area(
@@ -408,6 +410,8 @@ class Festival extends PluginBase implements Listener{
                                         $pos1,
                                         $pos2,
                                         $radius,
+                                        $sizeUp,
+                                        $sizeDown,
                                         $sender->getLevel()->getName(),
                                         $whitelist,
                                         [],
@@ -415,7 +419,7 @@ class Festival extends PluginBase implements Listener{
                                         $this
                                     );
 
-                                    $this->saveAreas();
+                                    $this->helper->saveAreas();
                                     // area type created message
                                     if( isset($this->radiusPosition[$playerName]) || isset($this->diameterPosition[$playerName]) ){
                                         $o = TextFormat::AQUA . Language::translate("sphere-area-created"); //$o = TextFormat::AQUA . "Area created!";
@@ -468,7 +472,7 @@ class Festival extends PluginBase implements Listener{
                                     $area->setName( $newname ); //$area->name = $newname;
                                     $this->areas[$newname] = $area;
                                     unset($this->areas[$oldname]);
-                                    $this->saveAreas();
+                                    $this->helper->saveAreas();
                                     $this->checkAreaTitles( $sender,  $sender->getPosition()->getLevel()  );
 
                                     $o = TextFormat::GREEN . Language::translate("area") . ' ' . TextFormat::GRAY . $oldname . ' ' . TextFormat::GREEN . Language::translate("name-saved") . ' ' . TextFormat::LIGHT_PURPLE . $newname;
@@ -509,7 +513,7 @@ class Festival extends PluginBase implements Listener{
                                 if( isset($newdesc) && $newdesc != "" ){
                                     $area = $this->areas[$name];
                                     $area->desc = $newdesc;
-                                    $this->saveAreas();
+                                    $this->helper->saveAreas();
                                     $o = TextFormat::GREEN . Language::translate("area") . ' ' . TextFormat::LIGHT_PURPLE . $area->getName() . ' ' . TextFormat::GREEN . Language::translate("desc-saved");
                                 }else{
                                     $o = TextFormat::RED . Language::translate("desc-write-usage"); // Please write the description. Usage /fe desc <areaname> <..>
@@ -551,7 +555,7 @@ class Festival extends PluginBase implements Listener{
                                     if(is_numeric($priority)){
                                         $area = $this->areas[$name];
                                         $area->priority = intval($priority);
-                                        $this->saveAreas();
+                                        $this->helper->saveAreas();
                                         $o = TextFormat::GREEN . Language::translate("area") . ' ' . TextFormat::LIGHT_PURPLE . $area->getName() . ' ' . TextFormat::GREEN . Language::translate("priority-saved");
                                     }else{
                                         $o = TextFormat::RED . Language::translate("number-to-write") . " (0-999)";
@@ -574,6 +578,81 @@ class Festival extends PluginBase implements Listener{
                     $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); // You do not have permission to use this subcommand
 				}
             break;
+
+            case "scale":
+                // fe top/bottom/floor/height <areaname> set <int>
+				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.scale")){
+					if(isset($args[1])){
+
+                        unset($args[0]);
+				        $string = implode(" ", $args);
+
+                        $dir = 'top';
+                        if( strpos($string, 'top') !== false ){
+                            $arr = explode(" top ", $string, 2);
+                            $dir = 'top';
+                        }else if( strpos($string, 'height') !== false ){
+                            $arr = explode(" height ", $string, 2);
+                            $dir = 'top';
+                        }else if( strpos($string, 'up') !== false ){
+                            $arr = explode(" up ", $string, 2);
+                            $dir = 'top';
+                        }else if( strpos($string, 'bottom') !== false ){
+                            $arr = explode(" bottom ", $string, 2);
+                            $dir = 'bottom';
+                        }else if( strpos($string, 'down') !== false ){
+                            $arr = explode(" down ", $string, 2);
+                            $dir = 'bottom';
+                        }else if( strpos($string, 'floor') !== false ){
+                            $arr = explode(" floor ", $string, 2);
+                            $dir = 'bottom';
+                        }
+                        if( strpos($string, 'top') !== false || strpos($string, 'height') !== false || strpos($string, 'bottom') !== false || strpos($string, 'floor') !== false || strpos($string, 'up') !== false || strpos($string, 'down') !== false ){
+
+                            $name = $arr[0];
+                            $variable = $arr[1];
+
+                            if(isset($this->areas[$name])){
+
+                                if( isset($variable) ){
+
+                                    if(is_numeric($variable)){
+                                        $area = $this->areas[$name];
+                                        if( $dir == "top" ){
+                                            $area->setTop( intval($variable) );
+                                        }else{
+                                            $area->setBottom( intval($variable) );
+                                        }
+                                        $this->helper->saveAreas();
+
+                                        $o = TextFormat::GREEN . Language::translate("area") . ' ' . TextFormat::LIGHT_PURPLE . $area->getName() . ' ';
+                                        if( $dir == "top" ){
+                                            $o .= TextFormat::GREEN . Language::translate("scaling-height-saved");
+                                        }else{
+                                            $o .= TextFormat::GREEN . Language::translate("scaling-floor-saved");
+                                        }
+                                    }else{
+                                        $o = TextFormat::RED . Language::translate("number-to-write") . " (0-999)";
+                                    }
+
+                                }else{
+                                    $o = TextFormat::RED . Language::translate("scaling-number-usage");
+                                }
+
+                            }else{
+                                $o = TextFormat::RED . Language::translate("area-not-excist"); // Area does not excist
+                            }
+                        }else{
+				            $o = TextFormat::RED . Language::translate("scaling-specify-set-area");
+                        }
+					}else{
+                        $o = TextFormat::RED . Language::translate("scaling-specify-area");
+					}
+				}else{
+                    $o = TextFormat::RED . Language::translate("cmd-noperms-subcommand"); // You do not have permission to use this subcommand
+				}
+            break;
+
 			case "list":
 				if( $sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.list")){
                     $levelNamesArray = $this->helper->getServerWorlds(); // scandir($this->getServer()->getDataPath() . "worlds/");
@@ -732,7 +811,7 @@ class Festival extends PluginBase implements Listener{
 										$area->setFlag($flag, true);
 									}
 								}
-								$this->saveAreas();
+								$this->helper->saveAreas();
 								$o = TextFormat::RED . "All ". $flag ." flags for all areas have been swapped";
                             }else{
                                 unset($args[0]);
@@ -930,7 +1009,7 @@ class Festival extends PluginBase implements Listener{
 									}
 
 									$area->commands[$cmdid] = $cmdstring;
-									$this->saveAreas();
+									$this->helper->saveAreas();
 									$o = TextFormat::GREEN . Language::translate("cmd-id") .' ' . $cmdid . ' ' . Language::translate("added-to-area") . ' ' .$areaname;
 								}else{
 									$o = TextFormat::RED . Language::translate("cmd-id").': ' . $cmdid . ' ' . Language::translate("allready-set-for-area") . ' ' . $areaname. ', ' . Language::translate("edit-id-or-other");
@@ -955,7 +1034,7 @@ class Festival extends PluginBase implements Listener{
 										}
 									}else{
 										unset($ar->events[$type]);
-										$this->saveAreas();
+										$this->helper->saveAreas();
 									}
 								}
 							}
@@ -991,7 +1070,7 @@ class Festival extends PluginBase implements Listener{
 								        $ts = 1;
 								    }
 								    if($ts == 1){
-								        $this->saveAreas();
+								        $this->helper->saveAreas();
 								        $o = TextFormat::GREEN . Language::translate("cmd-id") .' '.$cmdid.' '. Language::translate("event-is-now").' '.$evt;
 								    }else{
 								        $o = TextFormat::RED . Language::translate("cmd-id") .' '.$cmdid.' '.Language::translate("event").' '.$evt.' '. Language::translate("change-failed");
@@ -1006,7 +1085,7 @@ class Festival extends PluginBase implements Listener{
 								$cmds = $area->commands;
 								if( isset($cmds[$cmdid]) ){
 									$area->commands[$cmdid] = $cmdstring;
-									$this->saveAreas();
+									$this->helper->saveAreas();
 									$o = TextFormat::GREEN . Language::translate("cmd-id"). ' '.$cmdid.' '. Language::translate("set-to") . '"'.$cmdstring.'"';
 								}else{
 									$o = TextFormat::RED .Language::translate("cmd-id"). ' '.$cmdid.' '. Language::translate("cmd-id-not-found");
@@ -1037,7 +1116,7 @@ class Festival extends PluginBase implements Listener{
 										}
 									}
 									unset($area->commands[$cmdid]);
-									$this->saveAreas();
+									$this->helper->saveAreas();
 									$o = TextFormat::GREEN . Language::translate("cmd-id") . " " . Language::translate("deleted") . '!';
 								}else{
                                     $o = TextFormat::RED . Language::translate("cmd-id-not-found") . '.'; // Command ID not found
@@ -2548,7 +2627,7 @@ class Festival extends PluginBase implements Listener{
 		return $command;
 	}
 
-    /** get distance between 2 3d vector coordinates
+    /** get 3d distance between 2 3d vector coordinates
 	 * delay function for str player $nm repeating int $sec
 	 * @param string $sec
      * @return false
@@ -2562,6 +2641,21 @@ class Festival extends PluginBase implements Listener{
         $dist = intval( sqrt( ($df*$df)+($dz*$dz) ) );
         return $dist;
     }
+
+
+    /** get flat distance between 2 3d vector xz coordinates
+	 * @param vector3 $p1,$p2
+     * @return int
+     */
+    public function get_flat_distance($p1,$p2){
+        $dist = intval( 0 );
+        $dz = $p1->getZ() - $p2->getZ();
+        $dx = $p1->getX() - $p2->getX();
+        $dist = intval( sqrt( ($dx*$dx)+($dz*$dz) ) );
+        return $dist;
+    }
+
+
 
 	/** skippTime
 	 * delay function for str player $nm repeating int $sec
@@ -2670,9 +2764,10 @@ class Festival extends PluginBase implements Listener{
             }
         }
         if(count($ap) > 0 ){
-            $l .=  "\n". TextFormat::GRAY . "  - ". Language::translate("players-in-area") .": \n " . TextFormat::GOLD . implode(", ", $ap );
+            $l .=  "\n". TextFormat::GRAY . "  - ". Language::translate("players-in-area") .": " . TextFormat::GOLD . implode(", ", $ap );
         }
-        $l .=  "\n". TextFormat::GRAY . "  - priority: \n " . TextFormat::GOLD . $area->getPriority();
+
+        $l .=  "\n". TextFormat::GRAY . "  - priority: " . TextFormat::GOLD . $area->getPriority();
 
 		$flgs = $area->getFlags(); // Area Flag
 		$l .= "\n". TextFormat::GRAY . "  - ". Language::translate("flags")  ." :";
@@ -2784,15 +2879,15 @@ class Festival extends PluginBase implements Listener{
 	/** Save areas
 	 * @var obj area
 	 * @file areas.json
-	 */
+
 	public function saveAreas() : void{
 		$areas = [];
 		foreach($this->areas as $area){
-			$areas[] = ["name" => $area->getName(), "desc" => $area->getDesc(), "priority" => $area->getPriority(), "flags" => $area->getFlags(), "pos1" => [$area->getFirstPosition()->getFloorX(), $area->getFirstPosition()->getFloorY(), $area->getFirstPosition()->getFloorZ()] , "pos2" => [$area->getSecondPosition()->getFloorX(), $area->getSecondPosition()->getFloorY(), $area->getSecondPosition()->getFloorZ()], "radius" => $area->getRadius(), "level" => $area->getLevelName(), "whitelist" => $area->getWhitelist(), "commands" => $area->getCommands(), "events" => $area->getEvents()];
-
+			$areas[] = ["name" => $area->getName(), "desc" => $area->getDesc(), "priority" => $area->getPriority(), "flags" => $area->getFlags(), "pos1" => [$area->getFirstPosition()->getFloorX(), $area->getFirstPosition()->getFloorY(), $area->getFirstPosition()->getFloorZ()] , "pos2" => [$area->getSecondPosition()->getFloorX(), $area->getSecondPosition()->getFloorY(), $area->getSecondPosition()->getFloorZ()], "radius" => $area->getRadius(), "top" => $area->getTop(), "bottom" => $area->getBottom(), "level" => $area->getLevelName(), "whitelist" => $area->getWhitelist(), "commands" => $area->getCommands(), "events" => $area->getEvents()];
 		}
 		file_put_contents($this->getDataFolder() . "areas.json", json_encode($areas));
 	}
+*/
 
     /**  Festival Console Sign Flag for developers
      *   makes it easy to find Festival console output fast
