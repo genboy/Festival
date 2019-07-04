@@ -69,6 +69,13 @@
     "priority-number-usage": "Please assign a number, 0 is default, 1 - 999 assigns higher priority. Use: /fe priority <areaname> set <number int 0-999>",
     "priority-specify-area": "Please specify an area to edit the priority. Use: /fe priority <areaname> set <number int 0-999>",
 
+    "scaling-height-saved": "area scaling height saved.",
+    "scaling-floor-saved": "area scaling floor saved.",
+    "scaling-specify-set-area":  "Please use 'up'(top) or 'down'(bottom) in this command string. Use: /fe scale <areaname> <up/down> <number 0-9999>",
+    "scaling-write-usage": "Please assign a number. Use: /fe scale <areaname> <up/down> <number int 0-9999>",
+    "scaling-number-usage": "Please assign a number, 0 is default, 1 - 9998 assigns scaling, 9999 is unlimited. Use: /fe scale <areaname> <up/down> <number int 0-9999>",
+    "scaling-specify-area": "Please specify an area to edit the scaling (top/bottom). Use: /fe scale <areaname> <up/down> <number int 0-9999>",
+
     "area-deleted": "Area deleted!",
     "deleted-by":"deleted by",
     "specify-to-delete":"Please specify an area to delete.",
@@ -167,6 +174,9 @@
     "ui-select-edit-area": "Select to edit an area",
     "ui-cmd-id-not-found": "Command ID not found! Try again or select another option",
     "ui-cmd-empty-not-saved": "Command empty and not saved! Try again or select another option",
+
+    "ui-scale-height": "Scale height",
+    "ui-scale-floor": "Scale floor",
 
     "ui-area-maker": "Festival Area Maker",
     "ui-select-new-area-type": "Select new area creation type",

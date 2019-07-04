@@ -69,6 +69,13 @@
     "priority-number-usage": "Geef a.u.b. een nummer op, 0 is default, 1 - 999 geeft hogere prioriteit. Gebruik /fe priority <areaname> set <number int 0-999>",
     "priority-specify-area": "Geef a.u.b. een gebied aan om de prioriteit aan te passen. Gebruik: /fe priority <areaname> set <number int 0-999>",
 
+    "scaling-height-saved": "area scaling height saved.",
+    "scaling-floor-saved": "area scaling floor saved.",
+    "scaling-specify-set-area":  "Please use 'up'(top) or 'down'(bottom) in this command string. Use: /fe scale <areaname> <up/down> <number 0-9999>",
+    "scaling-write-usage": "Please assign a number. Use: /fe scale <areaname> <up/down> <number int 0-9999>",
+    "scaling-number-usage": "Please assign a number, 0 is default, 1 - 9998 assigns scaling, 9999 is unlimited. Use: /fe scale <areaname> <up/down> <number int 0-9999>",
+    "scaling-specify-area": "Please specify an area to edit the scaling (top/bottom). Use: /fe scale <areaname> <up/down> <number int 0-9999>",
+
     "area-deleted": "Gebied verwijderd!",
     "deleted-by":"verwijderd door",
     "specify-to-delete":"Geef de naam van het gebied aan om te verwijderen. (zie /fe list)",
@@ -167,6 +174,9 @@
     "ui-select-edit-area": "Selecteer om een gebied te beheren",
     "ui-cmd-id-not-found": "Commando ID niet gevonden! Probeer opnieuw of selecteer een andere optie",
     "ui-cmd-empty-not-saved": "Commando is leeg en niet bewaard! Probeer opnieuw of selecteer een andere optie",
+
+    "ui-scale-height": "Naar boven oprekken",
+    "ui-scale-floor": "Naar beneden oprekken",
 
     "ui-area-maker": "Festival gebied maker",
     "ui-select-new-area-type": "Selecteer nieuw gebied soort",

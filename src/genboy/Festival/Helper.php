@@ -41,14 +41,24 @@ class Helper {
     public function loadAreas(): bool{
         // create a list of current areas from saved json
         $adata = $this->getDataSet( "areas" );
+        //
+        $worlds = $this->getServerWorlds();
+
         if( isset($adata) && is_array($adata) ){
 
             foreach($adata as $area){
+
                 if( !isset($area["priority"]) ){
                     $area["priority"] = 0;
                 }
                 if( !isset($area["radius"]) ){
                     $area["radius"] = 0;
+                }
+                if( !isset($area["top"]) ){
+                    $area["top"] = 0;
+                }
+                if( !isset($area["bottom"]) ){
+                    $area["bottom"] = 0;
                 }
                 $newflags = []; // translated to new flag names
                 foreach( $area["flags"] as $f => $set ){
@@ -56,7 +66,11 @@ class Helper {
                     $newflags[$flagname] = $set;
                 }
 
-                new FeArea($area["name"], $area["desc"], $area["priority"], $newflags, new Vector3($area["pos1"]["0"], $area["pos1"]["1"], $area["pos1"]["2"]), new Vector3($area["pos2"]["0"], $area["pos2"]["1"], $area["pos2"]["2"]), $area["radius"], $area["level"], $area["whitelist"], $area["commands"], $area["events"], $this->plugin);
+                // check if level excists
+                if( in_array( $area["level"], $worlds ) ){
+                    new FeArea($area["name"], $area["desc"], $area["priority"], $newflags, new Vector3($area["pos1"]["0"], $area["pos1"]["1"], $area["pos1"]["2"]), new Vector3($area["pos2"]["0"], $area["pos2"]["1"], $area["pos2"]["2"]), $area["radius"], $area["top"], $area["bottom"], $area["level"], $area["whitelist"], $area["commands"], $area["events"], $this->plugin);
+                }
+
             }
             //$this->plugin->getLogger()->info( "Festival has ".count($adata)." area's set!" );
 
@@ -72,7 +86,7 @@ class Helper {
                 }
                 $ca = $ca + count( $a->getCommands() );
             }
-            $levelsloaded = count( $this->getServerWorlds() );
+            $levelsloaded = count( $worlds );
             $this->plugin->getLogger()->info( $fa.' '.Language::translate("flags").' '.Language::translate("select-and").' '. $ca .' '. Language::translate("cmds") .' '.Language::translate("select-in").' '. count($this->plugin->areas)  .' '.  Language::translate("areas").' ('.$levelsloaded.' '.Language::translate("levels").')');
             return true;
         }
@@ -90,7 +104,7 @@ class Helper {
         if( isset($this->plugin->areas) && is_array($this->plugin->areas) ){
 
             foreach($this->plugin->areas as $area){
-                $areas[] = ["name" => $area->getName(), "desc" => $area->getDesc(), "priority" => $area->getPriority(), "flags" => $area->getFlags(), "pos1" => [$area->getFirstPosition()->getFloorX(), $area->getFirstPosition()->getFloorY(), $area->getFirstPosition()->getFloorZ()] , "pos2" => [$area->getSecondPosition()->getFloorX(), $area->getSecondPosition()->getFloorY(), $area->getSecondPosition()->getFloorZ()], "radius" => $area->getRadius(), "level" => $area->getLevelName(), "whitelist" => $area->getWhitelist(), "commands" => $area->getCommands(), "events" => $area->getEvents()];
+                $areas[] = ["name" => $area->getName(), "desc" => $area->getDesc(), "priority" => $area->getPriority(), "flags" => $area->getFlags(), "pos1" => [$area->getFirstPosition()->getFloorX(), $area->getFirstPosition()->getFloorY(), $area->getFirstPosition()->getFloorZ()] , "pos2" => [$area->getSecondPosition()->getFloorX(), $area->getSecondPosition()->getFloorY(), $area->getSecondPosition()->getFloorZ()], "radius" => $area->getRadius(), "top" => $area->getTop(), "bottom" => $area->getBottom(), "level" => $area->getLevelName(), "whitelist" => $area->getWhitelist(), "commands" => $area->getCommands(), "events" => $area->getEvents()];
             }
 
             $this->saveDataSet( "areas", $areas );
