@@ -580,7 +580,7 @@ class Festival extends PluginBase implements Listener{
             break;
 
             case "scale":
-                // fe top/bottom/floor/height <areaname> set <int>
+                // fe scale <areaname> <up/top/down/bottom> <int 0 - 9999>
 				if($sender->hasPermission("festival") || $sender->hasPermission("festival.command") ||  $sender->hasPermission("festival.command.fe.scale")){
 					if(isset($args[1])){
 
@@ -926,13 +926,12 @@ class Festival extends PluginBase implements Listener{
                 break;
 
 			case "c":
-			case "cmd":
 			case "command": //fe command <areaname> <add|list|edit|event*|del> <COMMANDID> <COMMANDSTRING|enter*|leave*|center*>
 				if( isset($args[1]) && (  $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe.command") ) ){
                     unset($args[0]);
                     $string = implode(" ", $args);
                     // actions
-                    $do = false;
+                    $do = "add";
                     if( strpos($string, 'event') === false && (strpos($string, 'add') !== false || strpos($string, 'edit') !== false || strpos($string, 'enter') !== false || strpos($string, 'center') !== false || strpos($string, 'leave') !== false )) {
                         if (strpos($string, 'add') !== false ){
                             $do = "add";
@@ -951,7 +950,7 @@ class Festival extends PluginBase implements Listener{
                         }
                         $arr = explode(" $do ", $string, 2);
                         $areaname = $arr[0];
-                        if( isset( $arr[1] ) && strpos($arr[1], " ") !== false ){
+                        if( isset( $arr[1] ) && strpos($arr[1], " ") !== false ){ //
                             $cmdarr = explode(" ", $arr[1], 2);
                             $cmdid = $cmdarr[0];
                             $cmdstring = $cmdarr[1];
@@ -1020,24 +1019,28 @@ class Festival extends PluginBase implements Listener{
                             break;
 
 				        case "list":
-							$ar = $this->areas[$areaname];
-							if( isset($ar->commands) ){
-								$o = TextFormat::WHITE . $areaname . TextFormat::AQUA .' '. Language::translate("cmd-list").': ';
-								foreach($ar->events as $type => $list){
-									if( trim($list,",") != "" ){
-										$o .= "\n". TextFormat::YELLOW  . $type . ": ";
-										$cmds = explode(",", trim($list,",") );
-										foreach($cmds as $cmdid){
-											if(isset($ar->commands[$cmdid])){
-												$o .= "\n". TextFormat::LIGHT_PURPLE . $cmdid .": ". $ar->commands[$cmdid];
-											}
-										}
-									}else{
-										unset($ar->events[$type]);
-										$this->helper->saveAreas();
-									}
-								}
-							}
+                            if( in_array($areaname, $this->areas ) ){
+                                $ar = $this->areas[$areaname];
+                                if( isset($ar->commands) ){
+                                    $o = TextFormat::WHITE . $areaname . TextFormat::AQUA .' '. Language::translate("cmd-list").': ';
+                                    foreach($ar->events as $type => $list){
+                                        if( trim($list,",") != "" ){
+                                            $o .= "\n". TextFormat::YELLOW  . $type . ": ";
+                                            $cmds = explode(",", trim($list,",") );
+                                            foreach($cmds as $cmdid){
+                                                if(isset($ar->commands[$cmdid])){
+                                                    $o .= "\n". TextFormat::LIGHT_PURPLE . $cmdid .": ". $ar->commands[$cmdid];
+                                                }
+                                            }
+                                        }else{
+                                            unset($ar->events[$type]);
+                                            $this->helper->saveAreas();
+                                        }
+                                    }
+                                }
+                            }else{
+                                $o = TextFormat::RED . Language::translate("cmd-specify-id-and-command-usage");
+				            }
                             break;
 
 						case "event":
@@ -2592,7 +2595,7 @@ class Festival extends PluginBase implements Listener{
                 $cmds = explode( "," , $areaevents[$eventtype] );
                 if(count($cmds) > 0){
                     foreach($cmds as $cid){
-                        if($cid != ''){
+                        if($cid != '' && isset( $area->commands[$cid] ) ){
                             $command = $this->commandStringFilter( $area->commands[$cid], $event ); // check {player} or @p (and other stuff)
                             if ( !$player->isOp() && $this->useOpPerms($player, $area)  ) { // perm flag v1.0.4-11
                                 $player->setOp(true);
