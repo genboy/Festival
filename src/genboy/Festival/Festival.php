@@ -1576,6 +1576,10 @@ class Festival extends PluginBase implements Listener{
         $e = $event->getEntity();
         //($e instanceof Fire && !$this->canBurn( $e->getPosition() )) || (
         if( !($e instanceof Player) && !$this->canEntitySpawn( $e ) ){
+
+            $e->flagForDespawn(); // https://github.com/jojoe77777/Slapper/blob/master/src/slapper/Main.php
+
+            /*
             // the slapper problem (entities)
             if( $this->helper->isPluginLoaded( "Slapper" )  ){ // && ($e instanceof SlapperEntity || $e instanceof SlapperHuman)
                 $e->flagForDespawn(); // https://github.com/jojoe77777/Slapper/blob/master/src/slapper/Main.php
@@ -1591,6 +1595,7 @@ class Festival extends PluginBase implements Listener{
                     $e->setLevel(null);
                 }
             }
+            */
         }
     }
 
