@@ -4,8 +4,8 @@
  * copyright Genbay 2019
  *
  * Options in config.yml (v 1.1.3 )
- * language: en/nl, msgposition: msg/title/tip/pop, msgdisplay: off/op/on, Msgdisplay: off/op/on, autowhitelist: on/off, flightcontrol: on/off
- * Flags: god, pvp, flight, edit, touch, mobs, animals, effects, msg, pass, drop, tnt, fire, explode, shoot, hunger, perms, falldamage, cmdmode
+ * language: en/nl,  ItemID: 201, msgposition: msg/title/tip/pop, msgdisplay: off/op/on, Msgdisplay: off/op/on, autowhitelist: on/off, flightcontrol: on/off
+ * Flags: hurt, pvp, flight, edit, touch, mobs, animals, effect, msg, pass, drop, tnt, fire, explode, shoot, hunger, perms, fall, cmd
  *
  */
 
@@ -242,12 +242,12 @@ class Festival extends PluginBase implements Listener{
             case "menu":
             case "form":
             case "data":
-
-                if( !isset( $this->players[ $playerName ]["makearea"] ) ){
+                if( isset( $this->players[ $playerName ]["makearea"] ) || isset($this->selectingFirst[$playerName]) || isset($this->selectingSecond[$playerName]) || isset($this->selectingRadius[$playerName]) || isset($this->selectingDiameter[$playerName]) ){
+                    $o = TextFormat::RED . Language::translate("pos-select-active"); //$o = TextFormat::RED . "You're already selecting a position!";
+                }else{
                     //$sender->getInventory()->setItem($sender->getInventorySlot(), Item::get( $this->config['options']['itemid']) );
                     $this->form->openUI($sender);
                 }
-
             break;
             case "lang": // experiment v1.0.7.7-dev
                 if( isset($args[1]) ){
@@ -1849,7 +1849,7 @@ class Festival extends PluginBase implements Listener{
         if($ev instanceof EntityDamageByEntityEvent){
             if($ev->getEntity() instanceof Player && $ev->getDamager() instanceof Player){
                 $entity = $ev->getEntity();
-                $p = (isset($this->levels[$entity->getLevel()->getName()]) ? $this->levels[$entity->getLevel()->getName()]["pvp"] : $this->config["defaults"]["pvp"]);
+                $p = (isset($this->levels[strtolower($entity->getLevel()->getName())]) ? $this->levels[strtolower($entity->getLevel()->getName())]->getFlag("pvp") : $this->config["defaults"]["pvp"]);
                 if($p){
                     $o = false;
                 }
@@ -2588,8 +2588,9 @@ class Festival extends PluginBase implements Listener{
         $position = $player->getPosition();
         $playername = strtolower($player->getName());
         $runcmd = true;
+
         $c = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("cmd") : $this->config["defaults"]["cmd"]);
-        if( $c ){
+        if( $c && $area->getPriority() < 1 ){ // listen to level & default configs
             $runcmd = false; // flag default
         }
         if( $area->getFlag("cmdmode")  ){
