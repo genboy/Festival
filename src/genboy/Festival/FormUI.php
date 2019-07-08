@@ -672,7 +672,7 @@ class FormUI{
                                 $level = $this->plugin->levels[ strtolower( $newarea["level"]) ];
                                 $newarea["flags"] = $level->getFlags();
                             }else{
-                                $newarea["flags"] = $this->plugin->defaults;
+                                $newarea["flags"] = $this->plugin->config["defaults"];
                             }
                             $newarea["priority"] = 0;
                             $newarea["top"] = 0;
