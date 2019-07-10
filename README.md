@@ -14,7 +14,7 @@ Stable version
 [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
 
 
-![Festival 2.0.0 Command usage](https://genboy.net/wp-content/uploads/2019/06/festival_usage_v2.0.0.png)
+![Festival 2.0.0 Command usage](https://genboy.net/wp-content/uploads/2019/07/festival_usage_v2.0.0-release.png)
 
 If you like to use Festival consider [sharing your experience and issues](https://github.com/genboy/Festival/issues) to fix any usability problems before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1)! That way it will improve Festival, my coding skills, your Pocketmine-MP insights and strenghten the PMMP community, thank you!
  
@@ -29,22 +29,23 @@ If you like to use Festival consider [sharing your experience and issues](https:
 > - Cube AND Sphere area's set with diagonal, radius or diameter
 > - Area, Config AND Level flags managed from menu
 > - Area name (and desc) can now be Full string inCluDing MuLti wORds CaPitaLized
+> - Stretching area's up and down with y scaling
 > - Experimental Area Priority level 
 
 **Management UI in game**: 
-**command** /fe ui(form, config, data)
+**command** /fe menu(ui, form, data)
 or **hold magic item** ( default item 201 - Purpur Pillar block - change in config management) 
 
-or use the commands (now with Multi wORd FULLY CapitAlized nameS possible)
+or use the commands (now with Multi wORd FULLY CapitAlized nameS possible) 
 
 **Download development version**: 
-.phar zippackage [phar zipped https://genboy.net/wp-content/uploads/2019/06/Festival_v2.0.0-dev.zip](https://genboy.net/wp-content/uploads/2019/06/Festival_v2.0.0-dev.zip)
+[Poggit development](https://poggit.pmmp.io/ci/genboy/Festival/Festival)
 Please report bugs -thank you! [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
 
 or use [devtools plugin](https://poggit.pmmp.io/p/DevTools/1.13.0) and [download zip package https://github.com/genboy/Festival/archive/master.zip](https://github.com/genboy/Festival/archive/master.zip)
 
 
-**Festival version 2.0.0-dev Install**: 
+**Festival version 2.0.0 Install**: 
 *(always save copies of your previous used config.yml and areas.json before re-install)*
 1. place phar or unzipped folder in plugins folder and restart, 
 2. after restart;
@@ -226,7 +227,7 @@ Manage Festival configuration options and set default flags
   - using ingame Festival Menu (UI) for configurations
   - older versions (1.1.3) read [wiki on configurations](https://github.com/genboy/Festival/wiki/2.-Install,-Configure-&-Update)
 
-![Festival 2.0.0 Command usage](https://genboy.net/wp-content/uploads/2019/06/festival_usage_v2.0.0.png)
+![Festival 2.0.0 Command usage](https://genboy.net/wp-content/uploads/2019/07/festival_usage_v2.0.0-release.png) 
 
 
 #### Setup
