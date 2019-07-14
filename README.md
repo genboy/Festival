@@ -1,9 +1,10 @@
 
+
 ## Festival
 
 Create a festival with this custom area events plugin for Pocketmine Server:
 ###  Manage area's and run commmands attachted to area events. 
-( latest stable version 1.1.3 [@ poggit https://poggit.pmmp.io/p/Festival](https://poggit.pmmp.io/p/Festival) )
+( latest stable version [@ poggit https://poggit.pmmp.io/p/Festival](https://poggit.pmmp.io/p/Festival) )
 
 ![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png)
 ###### Copyright [Genboy](https://genboy.net) 2018 - 2019 
@@ -11,6 +12,8 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 # Festival
 Stable version
 [![](https://poggit.pmmp.io/shield.state/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.api/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.dl.total/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.dl/Festival)](https://poggit.pmmp.io/p/Festival)
+
+
 [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
 
 
@@ -22,10 +25,10 @@ If you like to use Festival consider [sharing your experience and issues](https:
 **Read the Legal Notice** at the bottom of this README file or the Legal Notice tab at poggit.pmmp.io/p/Festival
 
 
-## 2.0.0
+## Overview
 
-### 2.0.0 Features
-> - Festival Manager Menu (UI) - or use the commands
+### version 2.0.0 
+> - Festival Manager Menu (UI) + magic items - or use the commands
 > - Cube AND Sphere area's set with diagonal, radius or diameter
 > - Area, Config AND Level flags managed from menu
 > - Area name (and desc) can now be Full string inCluDing MuLti wORds CaPitaLized
@@ -33,10 +36,11 @@ If you like to use Festival consider [sharing your experience and issues](https:
 > - Experimental Area Priority level 
 
 **Management UI in game**: 
-**command** /fe menu(ui, form, data)
-or **hold magic item** ( default item 201 - Purpur Pillar block - change in config management) 
+command **/fe menu** (ui, form, data) or **hold magic item** 
+( default magic item 201 - Purpur Pillar block - change in config management) 
+When using the form you need to **use the magic item to tab area positions**.
 
-or use the commands (now with Multi wORd FULLY CapitAlized nameS possible) 
+or use the commands as shown in the usage image  (now with Multi wORd FULLY CapitAlized nameS possible) 
 
 **Download development version**: 
 [Poggit development](https://poggit.pmmp.io/ci/genboy/Festival/Festival)
@@ -130,55 +134,71 @@ In version 2.0.0 the Festival Management Menu (FormUI) is introduced
 
 ---
 
+
 ## Menu (UI)
 
 #### Festival Menu
 
-Festival main menu
+**Festival main menu**
 
 ![Start menu select management option](https://genboy.net/wp-content/uploads/2019/06/manager_start.jpg)
 #### Teleport
 
-Select teleport destination
+**Select teleport destination**
 
 ![Select teleport destination](https://genboy.net/wp-content/uploads/2019/06/area_teleport_select.jpg)
 
 #### Areas
 
-Area management option menu
+**Area management option menu**
 
 ![Area option menu](https://genboy.net/wp-content/uploads/2019/06/manager_area_options.jpg)
 
-Select area to manage
+**Select area to manage**
 
 ![Select area](https://genboy.net/wp-content/uploads/2019/06/manager_area_select.jpg)
 
-Manage area settings
+**Manage area settings**
 
 ![Edit area settings](https://genboy.net/wp-content/uploads/2019/06/manage_areas_settings.jpg)
 
-Manage area flags
+**Manage area flags**
 
 ![Edit area flags](https://genboy.net/wp-content/uploads/2019/06/manager_area_options_end.jpg)
 
-Manage area commands
+**Manage area commands**
 
-![Manage commands to area](https://genboy.net/wp-content/uploads/2019/06/cmds_1_Minecraft-27-1-2019-16_50_24.jpg)
-
-Add command
-
-![Edit or add commands to area](https://genboy.net/wp-content/uploads/2019/06/cmds_2.jpg)
+![Manage commands for area events](https://genboy.net/wp-content/uploads/2019/07/cmds_1_Minecraft-27-1-2019-16_50_24.jpg)
 
 
-Manage area Whitelist
+**Add command**
+
+![Edit or add commands to area](https://genboy.net/wp-content/uploads/2019/07/cmds_2.jpg)
+
+using the @p reference in the command to target the player 
+(/heal command is an example, comes from another plugin)
+
+
+**Del or change command** (by id) 
+
+![Edit or add commands to area](https://genboy.net/wp-content/uploads/2019/07/cmds_3.jpg)
+
+Delete: Leave command empty and input 'delete cmd id' to delete id linked command.
+Change: Set event type, enter command and input 'edit cmd id' to change that id linked command
+
+
+**Manage area Whitelist**
 
 ![Manage area whitelist](https://genboy.net/wp-content/uploads/2019/06/area_whitelist.jpg)
 
-Select area to delete
+Set players on or off area whitelist (this is in development)
+
+
+**Select area to delete**
 
 ![Delete area](https://genboy.net/wp-content/uploads/2019/06/delete_area1.jpg)
 
-Confirm to delete area
+**Confirm to delete area**
 
 ![Cofirm area delete](https://genboy.net/wp-content/uploads/2019/06/delete_area2.jpg)
 
@@ -187,6 +207,8 @@ Confirm to delete area
 Select new area type
 
 ![Select new area type](https://genboy.net/wp-content/uploads/2019/06/start_make_area.jpg)
+Hold the magic item - 201 purpur block by defaults, set in configs
+**Tab positions with the magic block**, meanwhile use other blocks to build in between.
 
 Set area positions
 ###### Cube Diagonal 
@@ -219,7 +241,7 @@ Manage level flags options
 Manage Festival configuration options and set default flags 
 
 ![Manage configuration](https://genboy.net/wp-content/uploads/2019/06/manager_configuration.png)
-###### Copyright [Genboy](https://genboy.net) 2018 - 2019- markdown edited with [stackedit.io]
+###### Copyright [Genboy](https://genboy.net) 2018 - 2019 - markdown edited with [stackedit.io]
 
 ## Usage 
   
@@ -267,11 +289,11 @@ Manage Festival configuration options and set default flags
     /fe lang <en/nl/es/pl>
   
   Set Festival language en/nl/es/pl for area and command returned messages. 
-  en = english
-  nl = nederlands 
+  en = English
+  nl = Nederlands 
   es = Espanol 
   pl = Polski
-  __ = your language, please help [translate __.js](https://github.com/genboy/Festival/blob/master/resources/en.json)
+  __ = your language, please help [translate](https://github.com/genboy/Festival/tree/Translations)
   
 
 #### Create area
@@ -286,7 +308,7 @@ Manage Festival configuration options and set default flags
   
   these are the endpoints of the area longest diagonal.
 
-	/fe pos1
+	/fe pos1(pos)
 	/fe pos2
     
     
@@ -429,7 +451,7 @@ Manage Festival configuration options and set default flags
   - after .phar install and first restart/reload plugins; check console info and your areas.json and config.yml; restart after adjusted correctly 
   
   - ! Update Festival 2 in development translating resource config.yml or your mainfolder config.yml and areas.json on install
- 
+  
 
 ## Credits
 
@@ -448,7 +470,7 @@ You are legally bind to read the Festival Copyright statement.
 
 In short this change of Copyright statement does not change the usage levels as stated in the GPU, for a part it now prohibits any entities to sell the software without the knowledge of the owner. 
 
--- end legal notice -- 
+-- end legal notice --  
 ###### Copyright [Genboy](https://genboy.net) 2018 - 2019 
 markdown edited with [stackedit.io](https://stackedit.io) and 
 translated to html with [browserling.com](https://www.browserling.com/tools/markdown-to-html)

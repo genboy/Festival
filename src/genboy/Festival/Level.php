@@ -105,7 +105,7 @@ class Level{
 	 * @param string $option
 	 * @return bool
 	 */
-	public function getOption(string $opt) : bool{
+	public function getOption(string $opt) {
 		if(isset($this->options[$opt])){
 			return $this->options[$opt];
 		}
@@ -117,7 +117,7 @@ class Level{
 	 * @param bool   $value
 	 * @return bool
 	 */
-	public function setOption(string $opt, bool $value) : bool{
+	public function setOption(string $opt, $value) : bool{
 		if(isset($this->options[$opt])){
 			$this->options[$opt] = $value;
 			$this->plugin->helper->saveLevels();
