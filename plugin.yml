@@ -41,6 +41,12 @@ permissions:
               festival.command.fe.pos2:
                 description: "Allows access to the Festival pos2 subcommand."
                 default: op
+              festival.command.fe.rad:
+                description: "Allows access to the Festival radius subcommand."
+                default: op
+              festival.command.fe.dia:
+                description: "Allows access to the Festival diameter subcommand."
+                default: op
               festival.command.fe.create:
                 description: "Allows access to the Festival create subcommand."
                 default: op
@@ -58,6 +64,9 @@ permissions:
                 default: op
               festival.command.fe.desc:
                 description: "Allows access to the Festival description subcommand."
+                default: op
+              festival.command.fe.scale:
+                description: "Allows access to the Festival scale subcommand."
                 default: op
               festival.command.fe.flag:
                 description: "Allows access to the Festival flag subcommand."

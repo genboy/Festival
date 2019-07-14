@@ -293,7 +293,19 @@ class FormUI{
                     if( isset( $data["newareapriority"] ) && !empty( $data["newareapriority"] ) ){
                         $area->setPriority( intval( $data["newareapriority"] ) );
                     }
-                    $c = 3; // 3 variables, others are flags..
+
+                    if( isset( $data["newareatop"] ) && !empty( $data["newareatop"] ) ){
+                        $area->setTop( intval( $data["newareatop"] ) );
+                    }else{
+                        $area->setTop( 0 );
+                    }
+                    if( isset( $data["newareabottom"] ) && !empty( $data["newareabottom"] ) ){
+                        $area->setBottom( intval( $data["newareabottom"] ) );
+                    }else{
+                        $area->setBottom( 0 );
+                    }
+
+                    $c = 5; // 3 variables, others are flags..
                     $flagset = $area->getFlags();
                     foreach( $flagset as $nm => $set){
                         if( isset( $data[$c] ) ){
@@ -317,6 +329,10 @@ class FormUI{
             $form->addInput( Language::translate("ui-name"), "Area name", $this->plugin->areas[$areaname]->getName(), "newareaname" );
             $form->addInput(Language::translate("ui-description"), "Area description", $this->plugin->areas[$areaname]->getDesc(), "newareadesc" );
             $form->addInput( Language::translate("ui-priority"), "Area priority", strval( $this->plugin->areas[$areaname]->getPriority() ), "newareapriority" );
+
+            $form->addInput( Language::translate("ui-scale-height"), "Area scale up number", strval( $this->plugin->areas[$areaname]->getTop() ), "newareatop" );
+            $form->addInput( Language::translate("ui-scale-floor"), "Area scale down number", strval( $this->plugin->areas[$areaname]->getBottom() ), "newareabottom" );
+
             $flgs = $this->plugin->areas[$areaname]->getFlags();
             foreach( $flgs as $flag => $set){
                 $form->addToggle( $flag, $set );
@@ -406,7 +422,6 @@ class FormUI{
                     }else{
 
                         $this->areaSelectForm( $sender, Language::translate("ui-cmd-id-not-found")  );
-                        //$this->areaCommandForm( $sender , array("selectedArea" => $areaname), Language::translate("ui-cmd-id-not-found") );
 
                     }
 
@@ -426,7 +441,6 @@ class FormUI{
                     $sender->getServer()->dispatchCommand($sender, $command);
 
                     $this->areaSelectForm( $sender, Language::translate("area") . " ". $areaname . " " . Language::translate("ui-new") . " " . $event . " " . Language::translate("cmd") . " " .  $id . " " .  Language::translate("ui-saved"). " ". Language::translate("ui-select-an-option")  );
-                    //$this->areaCommandForm( $sender , array("selectedArea" => $areaname), Language::translate("area") . " ". $areaname . " " . Language::translate("ui-new") . " " . $event . " " . Language::translate("cmd") . " " .  $id . " " .  Language::translate("ui-saved"). " ". Language::translate("ui-select-an-option") );
 
                 }else{
 
@@ -462,7 +476,6 @@ class FormUI{
                     }else{
 
                         $this->areaSelectForm( $sender, Language::translate("ui-cmd-empty-not-saved")  );
-                        //$this->areaCommandForm( $sender , array("selectedArea" => $areaname), Language::translate("ui-cmd-id-not-found") );
 
                     }
 
@@ -659,11 +672,13 @@ class FormUI{
                                 $level = $this->plugin->levels[ strtolower( $newarea["level"]) ];
                                 $newarea["flags"] = $level->getFlags();
                             }else{
-                                $newarea["flags"] = $this->plugin->defaults;
+                                $newarea["flags"] = $this->plugin->config["defaults"];
                             }
                             $newarea["priority"] = 0;
+                            $newarea["top"] = 0;
+                            $newarea["bottom"] = 0;
 
-                            new FeArea( $newarea["name"], $newarea["desc"], $newarea["priority"], $newarea["flags"], $newarea["pos1"], $newarea["pos2"], $newarea["radius"], $newarea["level"], [], [], [], $this->plugin);
+                            new FeArea( $newarea["name"], $newarea["desc"], $newarea["priority"], $newarea["flags"], $newarea["pos1"], $newarea["pos2"], $newarea["radius"], $newarea["top"], $newarea["bottom"], $newarea["level"], [], [], [], $this->plugin);
                             $this->plugin->helper->saveAreas();
                             $this->plugin->checkAreaTitles( $sender, $sender->getPosition()->getLevel() );
                             $this->areaSelectForm( $sender, Language::translate("ui-new-area-named") ." ". $newarea["name"] ." ". Language::translate("ui-created") );

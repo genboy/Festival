@@ -14,7 +14,7 @@ Stable version
 [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
 
 
-![Festival 2.0.0 Command usage](https://genboy.net/wp-content/uploads/2019/06/festival_usage_v2.0.0.png)
+![Festival 2.0.0 Command usage](https://genboy.net/wp-content/uploads/2019/07/festival_usage_v2.0.0-release.png)
 
 If you like to use Festival consider [sharing your experience and issues](https://github.com/genboy/Festival/issues) to fix any usability problems before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1)! That way it will improve Festival, my coding skills, your Pocketmine-MP insights and strenghten the PMMP community, thank you!
  
@@ -29,22 +29,23 @@ If you like to use Festival consider [sharing your experience and issues](https:
 > - Cube AND Sphere area's set with diagonal, radius or diameter
 > - Area, Config AND Level flags managed from menu
 > - Area name (and desc) can now be Full string inCluDing MuLti wORds CaPitaLized
+> - Stretching area's up and down with y scaling
 > - Experimental Area Priority level 
 
 **Management UI in game**: 
-**command** /fe ui(form, config, data)
+**command** /fe menu(ui, form, data)
 or **hold magic item** ( default item 201 - Purpur Pillar block - change in config management) 
 
-or use the commands (now with Multi wORd FULLY CapitAlized nameS possible)
+or use the commands (now with Multi wORd FULLY CapitAlized nameS possible) 
 
 **Download development version**: 
-.phar zippackage [phar zipped https://genboy.net/wp-content/uploads/2019/06/Festival_v2.0.0-dev.zip](https://genboy.net/wp-content/uploads/2019/06/Festival_v2.0.0-dev.zip)
+[Poggit development](https://poggit.pmmp.io/ci/genboy/Festival/Festival)
 Please report bugs -thank you! [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
 
 or use [devtools plugin](https://poggit.pmmp.io/p/DevTools/1.13.0) and [download zip package https://github.com/genboy/Festival/archive/master.zip](https://github.com/genboy/Festival/archive/master.zip)
 
 
-**Festival version 2.0.0-dev Install**: 
+**Festival version 2.0.0 Install**: 
 *(always save copies of your previous used config.yml and areas.json before re-install)*
 1. place phar or unzipped folder in plugins folder and restart, 
 2. after restart;
@@ -81,6 +82,7 @@ In version 2.0.0 the Festival Management Menu (FormUI) is introduced
       - **diagonal** for cube
       - **radius** for sphere
       - **diameter** for sphere
+    - Scale area's verticaly up and down 
     - create/delete/list area’s
     - add area description
     - whitelist players for the area
@@ -225,7 +227,7 @@ Manage Festival configuration options and set default flags
   - using ingame Festival Menu (UI) for configurations
   - older versions (1.1.3) read [wiki on configurations](https://github.com/genboy/Festival/wiki/2.-Install,-Configure-&-Update)
 
-![Festival 2.0.0 Command usage](https://genboy.net/wp-content/uploads/2019/06/festival_usage_v2.0.0.png)
+![Festival 2.0.0 Command usage](https://genboy.net/wp-content/uploads/2019/07/festival_usage_v2.0.0-release.png) 
 
 
 #### Setup
@@ -250,27 +252,63 @@ Manage Festival configuration options and set default flags
   
   ###### Copyright [Genboy](https://genboy.net) 2018
   
+  
+#### Festival Manager menu
+
+  Open th Festival menu
+    
+    /fe ui
+    /fe menu
+    
+  or get hold of the magic item in the inventory
+
 #### Language
+  
+    /fe lang <en/nl/es/pl>
   
   Set Festival language en/nl/es/pl for area and command returned messages. 
   en = english
   nl = nederlands 
-  (es = Espanol)
-  (pl = Polski)
+  es = Espanol 
+  pl = Polski
   __ = your language, please help [translate __.js](https://github.com/genboy/Festival/blob/master/resources/en.json)
   
 
 #### Create area
   
-  First command '/fe pos1' and tab or break a block for position 1 (holding a block, not an item), 
+  ### Cube area
   
-  then command '/fe pos2' and tab or break a block to set position2, 
+  First command  '/fe pos' or '/fe pos1' 
+  and holding the magic block, default 201, tab or break a block for position 1 
+  
+  then command '/fe pos2' 
+  and and holding the magic block tab or break a block to set position2, 
   
   these are the endpoints of the area longest diagonal.
 
 	/fe pos1
 	/fe pos2
+    
+    
+  ### Sphere area
+  
+  First command '/fe pos' or '/fe pos1'
+  
+  For sphere radius;
+  holding the magic block tab or break a block for the center of the sphere  
+  then command '/fe rad' or '/fe radius'
+  and and holding the magic block tab or break a block to set the radius size.
+  
+  For sphere diameter;
+  holding the magic block tab or break a block for first end of the diameter
+  then command '/fe dia' or '/fe diameter'
+  and and holding the magic block tab or break a block for the other end of the diameter.
 
+	/fe pos
+	/fe rad / dia
+
+
+  ### After position selections
 
   Then name/save the selected area
 
@@ -285,7 +323,7 @@ Manage Festival configuration options and set default flags
 
 #### Set area flags 
   
-    Festival v1.0.1-11 introduced a fast toggle for flags:
+    fast toggle for flags: (since Festival v1.0.1-11)
   
       /fe <edit/hurt/pvp/flight/touch/mobs/animals/effect/tnt/fire/explode/shoot/drop/msg/pass/hunger/perms/fall/cmd> <AREANAME>
 
@@ -296,22 +334,22 @@ Manage Festival configuration options and set default flags
   
 #### Delete an area
 	
-	/fe delete(del,remove) <AREANAME>   
+	  /fe delete(del,remove) <AREANAME>   
     
   
-#### Position info
-	
-    See area information at position
-    
-	/fe here
-
-
 #### List all area's
 	
     See all area info, optional per level
     
-	/fe list (<LEVELNAME>)
+      /fe list (<LEVELNAME>)
 
+  
+#### Floating titles
+
+    Floating titles are set in the configs (menu or config.json / yml)
+    Toggles the titles on/off
+  
+    /fe titles
 
 #### Teleport to area
 	
@@ -382,6 +420,7 @@ Manage Festival configuration options and set default flags
 
 
 ---
+
 ### Updates
   
  Updates available at [poggit](https://poggit.pmmp.io/ci/genboy/Festival/Festival) and [github](https://github.com/genboy/Festival/releases)
@@ -390,16 +429,6 @@ Manage Festival configuration options and set default flags
   - after .phar install and first restart/reload plugins; check console info and your areas.json and config.yml; restart after adjusted correctly 
   
   - ! Update Festival 2 in development translating resource config.yml or your mainfolder config.yml and areas.json on install
- 
-#### Language
-  Command: /fe lang <en/nl>
-  Set Festival language en/nl/es/pl for area and command returned messages. 
-  en = english
-  nl = nederlands 
-  
-  todo: es = Espanol, pl = Polski
-  
-  __ = your language, please help [translate __.js](https://github.com/genboy/Festival/blob/master/resources/en.json)
  
 
 ## Credits
