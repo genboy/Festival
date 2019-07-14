@@ -201,8 +201,14 @@ class FormUI{
                 $newflightcontrol = "on";
             }
             $this->plugin->config["options"]["flightcontrol"] =  $newflightcontrol;
-
-            $c = 6; // after 5 options all input are flags
+            /*
+            $newlevelcontrol = "off";
+            if(  $data["levelcontrol"] == true){
+                $newlevelcontrol = "on";
+            }
+            $this->plugin->config["options"]["levelcontrol"] =  $newlevelcontrol;
+            */
+            $c = 6; // after 6 options all input are flags
             foreach( $this->plugin->config["defaults"] as $flag => $set){
                 $c++;
                 $defaults[$flag] = $data[$c];
@@ -247,6 +253,14 @@ class FormUI{
             $flightcontrol = true;
         }
         $form->addToggle( Language::translate("ui-config-flight-control"), $flightcontrol, "flightcontrol" );
+        /*
+        $levelcontrol = false;
+        if( $optionset["levelcontrol"] === true || $optionset["levelcontrol"] == "on"){
+            $levelcontrol = true;
+        }
+        //$form->addToggle( Language::translate("ui-config-flight-control"), $flightcontrol, "flightcontrol" );
+        $form->addToggle( "use level flag control (!)", $levelcontrol, "levelcontrol" );
+        */
 
         $nr = $optionset['itemid'];
         $form->addInput( Language::translate("ui-config-action-itemid"), "block itemid", "$nr", "itemid" );
@@ -832,15 +846,25 @@ class FormUI{
                     unset( $this->plugin->players[ strtolower( $sender->getName() ) ]["edit"] );
                 }
                 if( isset( $this->plugin->levels[ strtolower($levelname) ] ) ){
+
                     $lvl = $this->plugin->levels[ strtolower($levelname) ];
+
+                    $newlevelcontrol = "off";
+                    if(  $data["levelcontrol"] == true){
+                        $newlevelcontrol = "on";
+                    }
+                    $lvl->setOption( "levelcontrol", $newlevelcontrol );
+                    unset( $data["levelcontrol"] );
+
                     $flagset = $lvl->getFlags();
-                    $c = 0;
+                    $c = 3;
                     foreach( $flagset as $nm => $set){
                         if( isset( $data[$c] ) ){
                             $lvl->setFlag( $nm, $data[$c] );
                         }
                         $c++;
                     }
+
                     $lvl->save();
                     $this->plugin->helper->saveLevels();
                     $this->selectForm( $sender, Language::translate("ui-level"). " ". $levelname . " ". Language::translate("ui-flags-saved") . Language::translate("ui-select-an-option")  );
@@ -858,9 +882,22 @@ class FormUI{
                 return false;
             });
 
+            $optionset = $this->plugin->levels[strtolower($levelname)]->getOptions();
             $levels =$this->plugin->helper->getServerWorlds();
             $levelname = $levels[$inputs["selectedLevel"]];
             $form->setTitle( TextFormat::DARK_PURPLE . Language::translate("ui-level-flag-management"). " " . TextFormat::DARK_PURPLE . $levelname );
+
+
+            $form->addLabel( "Level options:" );
+
+            $levelcontrol = false;
+            if( $optionset["levelcontrol"] === true || $optionset["levelcontrol"] == "on"){
+                $levelcontrol = true;
+            }
+            //$form->addToggle( Language::translate("ui-config-flight-control"), $flightcontrol, "flightcontrol" );
+            $form->addToggle( "use level flags", $levelcontrol, "levelcontrol" );
+
+            $form->addLabel( "Level flags:" );
 
             $flgs = $this->plugin->levels[strtolower($levelname)]->getFlags();
             foreach( $flgs as $flag => $set){

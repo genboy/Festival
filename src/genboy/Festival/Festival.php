@@ -44,6 +44,7 @@ use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\EntityLevelChangeEvent;
 use pocketmine\level\particle\FloatingTextParticle;
 use pocketmine\event\Listener;
+use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
@@ -138,6 +139,7 @@ class Festival extends PluginBase implements Listener{
             $o = "Configuration ready!";
         }else{
             $prevconfig = $this->helper->getDataSet( "config", "yml" ); // check previous used config.yml in datafolder
+
             if( isset( $prevconfig["Options"] ) && is_array( $prevconfig["Options"] ) && isset( $prevconfig["Default"] ) && is_array( $prevconfig["Default"] ) ){
                 $this->config = $this->helper->formatOldConfigs( $prevconfig );
                 $o = "Previous config.yml used for configuration!";
@@ -720,7 +722,7 @@ class Festival extends PluginBase implements Listener{
                     $area = $this->areas[$name];
                     $position = $sender->getPosition();
 
-                    $perms = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("perms") : $this->config["defaults"]["perms"]);
+                    $perms = ( ( isset($this->levels[strtolower($position->getLevel()->getName())]) && $this->levels[strtolower($position->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("perms") : $this->config["defaults"]["perms"]);
 
                     if( $perms || $area->isWhitelisted($playerName) || $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->hasPermission("festival.command.fe.tp")){
 
@@ -1664,7 +1666,8 @@ class Festival extends PluginBase implements Listener{
 			return true;
 		}
 		$o = true;
-        $e = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("edit") : $this->config["defaults"]["edit"]);
+
+        $e = ( ( isset($this->levels[strtolower($position->getLevel()->getName())]) && $this->levels[strtolower($position->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("edit") : $this->config["defaults"]["edit"]);
 		if($e){
 			$o = false;
 		}
@@ -1704,7 +1707,7 @@ class Festival extends PluginBase implements Listener{
         $priority = 0;
 		$o = true;
 
-        $t = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("touch") : $this->config["defaults"]["touch"]);
+        $t = ( ( isset($this->levels[strtolower($position->getLevel()->getName())]) && $this->levels[strtolower($position->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("touch") : $this->config["defaults"]["touch"]);
 		if($t){
 			$o = false;
 		}
@@ -1769,7 +1772,7 @@ class Festival extends PluginBase implements Listener{
 	public function canGetHurt(Entity $entity) : bool{
 		$o = true;
         if( $entity instanceof Player){
-            $h = (isset($this->levels[strtolower($entity->getLevel()->getName())]) ? $this->levels[strtolower($entity->getLevel()->getName())]->getFlag("hurt") : $this->config["defaults"]["hurt"]);
+            $h = ( (isset($this->levels[strtolower($entity->getLevel()->getName())]) && $this->levels[strtolower($entity->getLevel()->getName())]->getOption("levelcontrol") != "off" ) ? $this->levels[strtolower($entity->getLevel()->getName())]->getFlag("hurt") : $this->config["defaults"]["hurt"]);
             if($h){
                 $o = false;
             }
@@ -1808,7 +1811,7 @@ class Festival extends PluginBase implements Listener{
 	public function hasFallDamage(Entity $entity) : bool{
 		$o = true;
         if( $entity instanceof Player ){
-            $f = (isset($this->levels[strtolower($entity->getLevel()->getName())]) ? $this->levels[strtolower($entity->getLevel()->getName())]->getFlag("fall") : $this->config["defaults"]["fall"]);
+            $f = ( (isset($this->levels[strtolower($entity->getLevel()->getName())]) && $this->levels[strtolower($entity->getLevel()->getName())]->getOption("levelcontrol") != "off" ) ? $this->levels[strtolower($entity->getLevel()->getName())]->getFlag("fall") : $this->config["defaults"]["fall"]);
             if($f){
                 $o = false;
             }
@@ -1849,7 +1852,7 @@ class Festival extends PluginBase implements Listener{
         if($ev instanceof EntityDamageByEntityEvent){
             if($ev->getEntity() instanceof Player && $ev->getDamager() instanceof Player){
                 $entity = $ev->getEntity();
-                $p = (isset($this->levels[strtolower($entity->getLevel()->getName())]) ? $this->levels[strtolower($entity->getLevel()->getName())]->getFlag("pvp") : $this->config["defaults"]["pvp"]);
+                $p = ( (isset($this->levels[strtolower($entity->getLevel()->getName())]) && $this->levels[strtolower($entity->getLevel()->getName())]->getOption("levelcontrol") != "off" ) ? $this->levels[strtolower($entity->getLevel()->getName())]->getFlag("pvp") : $this->config["defaults"]["pvp"]);
                 if($p){
                     $o = false;
                 }
@@ -1934,7 +1937,7 @@ class Festival extends PluginBase implements Listener{
 		$position = $player->getPosition();
         $playername = strtolower($player->getName());
         $priority = 0;
-        $f = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("flight") : $this->config["defaults"]["flight"]);
+        $f = ( ( isset($this->levels[strtolower($position->getLevel()->getName())]) && $this->levels[strtolower($position->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("flight") : $this->config["defaults"]["flight"]);
         if( $f ){
             $fly = false; // flag default
         }
@@ -2025,7 +2028,8 @@ class Festival extends PluginBase implements Listener{
             $animals =[ 'bat','chicken','cow', 'cat', 'chicken', 'fox', 'horse','donkey', 'mule', 'ocelot', 'parrot', 'fish', 'squit', 'pig','rabbit', 'panda', 'sheep', 'salmon','turtle', 'tropical_fish', 'cod', 'balloon', 'mooshroom', 'trader_llama', 'wolf', 'spider', 'cave_spider', 'dolphin', 'llama', 'polar_bear', 'pufferfish']; // passive <- wolf -> neutral
             $thisarea = '';
             if( in_array( strtolower($nm), $animals ) ){ // check animal flag
-                $a = (isset($this->levels[strtolower($pos->getLevel()->getName())]) ? $this->levels[strtolower($pos->getLevel()->getName())]->getFlag("animals") : $this->config["defaults"]["animals"]);
+
+                $a = ( ( isset($this->levels[strtolower($pos->getLevel()->getName())]) && $this->levels[strtolower($pos->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($pos->getLevel()->getName())]->getFlag("animals") : $this->config["defaults"]["animals"]);
                 if ($a) {
                     $o = false;
                 }
@@ -2045,7 +2049,7 @@ class Festival extends PluginBase implements Listener{
                     }
                 }
             }else{ // check other entities (mob) flag
-                $m = (isset($this->levels[strtolower($pos->getLevel()->getName())]) ? $this->levels[strtolower($pos->getLevel()->getName())]->getFlag("mobs") : $this->config["defaults"]["mobs"]);
+                $m = ( ( isset($this->levels[strtolower($pos->getLevel()->getName())]) && $this->levels[strtolower($pos->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($pos->getLevel()->getName())]->getFlag("mobs") : $this->config["defaults"]["mobs"]);
                 if ($m) {
                     $o = false;
                 }
@@ -2087,7 +2091,7 @@ class Festival extends PluginBase implements Listener{
         $playername = strtolower($player->getName());
         $priority = 0;
 		$o = true;
-        $e = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("effect") : $this->config["defaults"]["effect"]);
+        $e = ( ( isset($this->levels[strtolower($position->getLevel()->getName())]) && $this->levels[strtolower($position->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("effect") : $this->config["defaults"]["effect"]);
 		if($e){
 			$o = false;
 		}
@@ -2125,7 +2129,7 @@ class Festival extends PluginBase implements Listener{
 			return true;
 		}
 		$o = true;
-        $d = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("effect") : $this->config["defaults"]["effect"]);
+        $d = ( ( isset($this->levels[strtolower($position->getLevel()->getName())]) && $this->levels[strtolower($position->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("effect") : $this->config["defaults"]["effect"]);
 		if($d){
 			$o = false;
 		}
@@ -2164,7 +2168,7 @@ class Festival extends PluginBase implements Listener{
     public function canBurn( Position $pos ): bool{
         $o = true;
         $priority = 0;
-        $e = (isset($this->levels[strtolower($pos->getLevel()->getName())]) ? $this->levels[strtolower($pos->getLevel()->getName())]->getFlag("fire") : $this->config["defaults"]["fire"]);
+        $e = ( ( isset($this->levels[strtolower($pos->getLevel()->getName())]) && $this->levels[strtolower($pos->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($pos->getLevel()->getName())]->getFlag("fire") : $this->config["defaults"]["fire"]);
         if ($e) {
             $o = false;
         }
@@ -2196,7 +2200,7 @@ class Festival extends PluginBase implements Listener{
 
         $o = true;
         $priority = 0;
-        $e = (isset($this->levels[strtolower($pos->getLevel()->getName())]) ? $this->levels[strtolower($pos->getLevel()->getName())]->getFlag("explode") : $this->config["defaults"]["explode"]);
+        $e = ( ( isset($this->levels[strtolower($pos->getLevel()->getName())]) && $this->levels[strtolower($pos->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($pos->getLevel()->getName())]->getFlag("explode") : $this->config["defaults"]["explode"]);
         if ($e) {
             $o = false;
         }
@@ -2233,7 +2237,7 @@ class Festival extends PluginBase implements Listener{
 			return true;
 		}
 		$o = true;
-        $d = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("tnt") : $this->config["defaults"]["tnt"]);
+        $d = ( ( isset($this->levels[strtolower($position->getLevel()->getName())]) && $this->levels[strtolower($position->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("tnt") : $this->config["defaults"]["tnt"]);
 		if($d){
 			$o = false;
 		}
@@ -2271,7 +2275,7 @@ class Festival extends PluginBase implements Listener{
 
 		$o = true;
         $priority = 0;
-        $e = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("tnt") : $this->config["defaults"]["tnt"]);
+        $e = ( ( isset($this->levels[strtolower($position->getLevel()->getName())]) && $this->levels[strtolower($position->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("tnt") : $this->config["defaults"]["tnt"]);
         if ($e) {
             $o = false;
         }
@@ -2307,7 +2311,7 @@ class Festival extends PluginBase implements Listener{
         $priority = 0;
 		$o = true;
         $m = true;
-        $s = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("shoot") : $this->config["defaults"]["shoot"]);
+        $s = ( ( isset($this->levels[strtolower($position->getLevel()->getName())]) && $this->levels[strtolower($position->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("shoot") : $this->config["defaults"]["shoot"]);
 		if($s){
 			$o = false;
 		}
@@ -2356,7 +2360,7 @@ class Festival extends PluginBase implements Listener{
 		}
 		$position = $player->getPosition();
 		$o = true;
-        $p = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("shoot") : $this->config["defaults"]["shoot"]);
+        $p = ( ( isset($this->levels[strtolower($position->getLevel()->getName())]) && $this->levels[strtolower($position->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("shoot") : $this->config["defaults"]["shoot"]);
 		if($p){
 			$o = false;
 		}
@@ -2385,7 +2389,7 @@ class Festival extends PluginBase implements Listener{
         $priority = 0;
         $o = true;
 
-        $h = (isset($this->levels[strtolower($pos->getLevel()->getName())]) ? $this->levels[strtolower($pos->getLevel()->getName())]->getFlag("hunger") : $this->config["defaults"]["hunger"]);
+        $h = ( ( isset($this->levels[strtolower($pos->getLevel()->getName())]) && $this->levels[strtolower($pos->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($pos->getLevel()->getName())]->getFlag("hunger") : $this->config["defaults"]["hunger"]);
         if ($h) {
             $o = false;
         }
@@ -2589,7 +2593,7 @@ class Festival extends PluginBase implements Listener{
         $playername = strtolower($player->getName());
         $runcmd = true;
 
-        $c = (isset($this->levels[strtolower($position->getLevel()->getName())]) ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("cmd") : $this->config["defaults"]["cmd"]);
+        $c = ( ( isset($this->levels[strtolower($position->getLevel()->getName())]) && $this->levels[strtolower($position->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("cmd") : $this->config["defaults"]["cmd"]);
         if( $c && $area->getPriority() < 1 ){ // listen to level & default configs
             $runcmd = false; // flag default
         }
