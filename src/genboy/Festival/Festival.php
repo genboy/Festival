@@ -1654,7 +1654,12 @@ class Festival extends PluginBase implements Listener{
         }
     }
 
+
+
+
+
     /** OUTBOUND ACTION */
+
 
 	/** canEdit
 	 * @param Player   $player
@@ -1694,6 +1699,8 @@ class Festival extends PluginBase implements Listener{
 		return $o;
 	}
 
+
+
 	/** canTouch
 	 * @param Player   $player
 	 * @param Position $position
@@ -1732,6 +1739,8 @@ class Festival extends PluginBase implements Listener{
 		return $o;
 	}
 
+
+
     /** canInteract
      * @param PlayerInteractEvent $event
      * @return bool
@@ -1764,6 +1773,8 @@ class Festival extends PluginBase implements Listener{
         }
         return $o;
     }
+
+
 
 	/** Hurt
 	 * @param Entity $entity
@@ -1804,6 +1815,8 @@ class Festival extends PluginBase implements Listener{
 		return $o;
 	}
 
+
+
 	/** On No fall Damage
 	 * @param Entity $entity
 	 * @return bool
@@ -1841,6 +1854,8 @@ class Festival extends PluginBase implements Listener{
         }
 		return $o;
 	}
+
+
 
     /** PVP
 	 * @param Event $ev
@@ -1891,6 +1906,8 @@ class Festival extends PluginBase implements Listener{
 		return $o;
     }
 
+
+
     /** Player Damage Impact
 	 * @param EntityDamageEvent $event
 	 * @ignoreCancelled true
@@ -1926,6 +1943,8 @@ class Festival extends PluginBase implements Listener{
 		}
         return true;
     }
+
+
 
     /** Flight
 	 * @param Player $player
@@ -1995,6 +2014,8 @@ class Festival extends PluginBase implements Listener{
         $player->setAllowFlight($fly);
         return $fly;
     }
+
+
 
     /** canEntitySpawn
 	 * @param Entity $e
@@ -2079,6 +2100,8 @@ class Festival extends PluginBase implements Listener{
         return $o;
     }
 
+
+
     /** Effects
 	 * @param Player $player
 	 * @return bool
@@ -2119,6 +2142,8 @@ class Festival extends PluginBase implements Listener{
 		return $o;
 	}
 
+
+
 	/** canDrop
 	 * @param Player   $player
 	 * @param Position $position
@@ -2157,6 +2182,8 @@ class Festival extends PluginBase implements Listener{
 		return $o;
 	}
 
+
+
     /**
      * canBurn()
      * Checks if fire is allowed on given position
@@ -2188,6 +2215,8 @@ class Festival extends PluginBase implements Listener{
         }
         return $o;
     }
+
+
 
     /**
      * canExplode()
