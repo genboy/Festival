@@ -219,7 +219,10 @@
     "ui-select-level-edit": "Selecteer level om te beheren",
     "ui-level-flag-management": "Beheer level vlaggen",
     "ui-level": "Level",
-    "ui-flags-saved": "flagset opgeslagen!",
+    "ui-flags-saved": "vlaggenset opgeslagen!",
+    "ui-subtitle-level-options": "Level opties:",
+    "ui-toggle-flag-control": "gebruik level vlaggenset",
+    "ui-subtitle-level-flags": "Level vlaggen:",
 
     "ui-config-management": "Configuratie",
     "ui-festival-configuration": "Festival Configuratie",
