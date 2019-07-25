@@ -666,6 +666,7 @@ class FormUI{
 
                     if( $data === null){
                         $sender->sendMessage(Language::translate("ui-formdate-not-available-try-again"));
+                        unset( $this->plugin->players[ strtolower( $sender->getName() ) ]["makearea"] );
                         return;
                     }else{
 
@@ -713,6 +714,7 @@ class FormUI{
                 $form->addInput( Language::translate("ui-area-desc"), "area description", "", "desc" );
                 $form->sendToPlayer($sender);
             }
+
         }else{
 
             $this->plugin->players[ strtolower( $sender->getName() ) ]["makearea"] = [];
@@ -761,6 +763,7 @@ class FormUI{
             $form->addButton( Language::translate("ui-make-sphere-diameter") ); // sphere area
             $form->addButton( Language::translate("ui-go-back") );
             $form->sendToPlayer($sender);
+
         }
     }
 
