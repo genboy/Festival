@@ -259,11 +259,11 @@ class Helper {
         }
         $p['options']['flightcontrol'] = "off";
         if( isset( $c['Options']['FlightControl'] ) ){
-          $p['options']['flightcontrol']  = "on";
+          $p['options']['flightcontrol']  = $c['Options']['FlightControl'];
         }
         $p['options']['levelcontrol'] = "off";
         if( isset( $c['Options']['LevelControl'] ) ){
-          $p['options']['levelcontrol']  = "on";
+          $p['options']['levelcontrol']  = $c['Options']['LevelControl'];
         }
 
         if( isset( $c['Default'] ) && is_array( $c['Default'] ) ){

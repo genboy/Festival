@@ -268,18 +268,17 @@ Manage Festival configuration options and set default flags
   - Standard Plugin installation; Upload .phar file to server 'plugin' folder (or upload .zip if you have latest devtools installed), restart the server, go to  folder plugins/Festival;
 
   - read [wiki on configurations](https://github.com/genboy/Festival/wiki/2.-Install,-Configure-&-Update)
-
-  - Edit config.yml; set the defaults for options, default area flags and the default area flags for specific worlds.
-  
-  - ##### Read the config comments carefully about how the flags work!
-  
   
 #### Updates
   
   Updates available at [poggit](https://poggit.pmmp.io/ci/genboy/Festival/Festival) and [github](https://github.com/genboy/Festival/releases)
   
-##### !Before update always copy your config.yml and areas.json files to a save place, with this you can revert your Festival installation
-  - after .phar install and first restart/reload plugins; check console info and your areas.json and config.yml; restart after adjusted correctly
+##### !Before update always copy your config.yml and areas.json files to a save place, with this you can revert your Festival installation. Keep your old files (befor v2.0.0) for new install.
+  - first remove Festival folder (keep the areas.json and config.yml)
+  - after .phar install and first restart/reload plugins; check console info
+  - replace the new(empty) areas.json with your original (old) areas.json
+  - put your original config.yml in the Festival (or /resource) folder and remove the config.json file; 
+  - restart server after adjusted correctly
   
   ###### Copyright [Genboy](https://genboy.net) 2018
   
@@ -481,5 +480,5 @@ In short this change of Copyright statement does not change the usage levels as 
 
 -- end legal notice --  
 ###### Copyright [Genboy](https://genboy.net) 2018 - 2019 
-markdown edited with [stackedit.io](https://stackedit.io) and
+markdown edited with [stackedit.io](https://stackedit.io) and  
 translated to html with [browserling.com](https://www.browserling.com/tools/markdown-to-html)
