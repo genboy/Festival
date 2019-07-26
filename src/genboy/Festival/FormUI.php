@@ -666,6 +666,7 @@ class FormUI{
 
                     if( $data === null){
                         $sender->sendMessage(Language::translate("ui-formdate-not-available-try-again"));
+                        unset( $this->plugin->players[ strtolower( $sender->getName() ) ]["makearea"] );
                         return;
                     }else{
 
@@ -713,6 +714,7 @@ class FormUI{
                 $form->addInput( Language::translate("ui-area-desc"), "area description", "", "desc" );
                 $form->sendToPlayer($sender);
             }
+
         }else{
 
             $this->plugin->players[ strtolower( $sender->getName() ) ]["makearea"] = [];
@@ -761,6 +763,7 @@ class FormUI{
             $form->addButton( Language::translate("ui-make-sphere-diameter") ); // sphere area
             $form->addButton( Language::translate("ui-go-back") );
             $form->sendToPlayer($sender);
+
         }
     }
 
@@ -888,16 +891,16 @@ class FormUI{
             $form->setTitle( TextFormat::DARK_PURPLE . Language::translate("ui-level-flag-management"). " " . TextFormat::DARK_PURPLE . $levelname );
 
 
-            $form->addLabel( "Level options:" );
+            $form->addLabel( Language::translate("ui-subtitle-level-options") );
 
             $levelcontrol = false;
             if( $optionset["levelcontrol"] === true || $optionset["levelcontrol"] == "on"){
                 $levelcontrol = true;
             }
             //$form->addToggle( Language::translate("ui-config-flight-control"), $flightcontrol, "flightcontrol" );
-            $form->addToggle( "use level flags", $levelcontrol, "levelcontrol" );
+            $form->addToggle( Language::translate("ui-toggle-flag-control"), $levelcontrol, "levelcontrol" );
 
-            $form->addLabel( "Level flags:" );
+            $form->addLabel( Language::translate("ui-subtitle-level-flags") );
 
             $flgs = $this->plugin->levels[strtolower($levelname)]->getFlags();
             foreach( $flgs as $flag => $set){

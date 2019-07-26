@@ -162,7 +162,7 @@
     "ui-area-manager": "Festival Area Manager",
     "ui-create-area": "Crear nueva área",
     "ui-edit-area-options": "Editar indicadores y opciones",
-    "ui-edit-area-command": "Editar comandos",
+    "ui-edit-area-commands": "Editar comandos",
     "ui-edit-area-whitelist": "Editar lista blanca",
     "ui-delete-area": "Eliminar un área",
 
@@ -220,6 +220,9 @@
     "ui-level-flag-management": "Gestionar indicadores de nivel",
     "ui-level": "Level",
     "ui-flags-saved": "flagset guardado!",
+    "ui-subtitle-level-options": "Opciones de nivel:",
+    "ui-toggle-flag-control": "utilizar el conjunto de indicadores de nivel",
+    "ui-subtitle-level-flags": "Banderas de nivel:",
 
     "ui-config-management": "Configuración",
     "ui-festival-configuration": "Configuración del festival",
