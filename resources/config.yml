@@ -1,9 +1,12 @@
-# Config file for Festival 1.1.3
+# Config file for Festival 2.0.0
 
 # Festival options
 Options:
   # select a language: English = en, Dutch = nl, Español = es, Polskie = pl  ( todo: 日本人 = ja, 中文 = zh, 한국어 = ko, русский = ru, italiano = it, Indonesia = in, translate please)
   Language: en
+
+  # Hold Magic block/item to enter Menu and tab area positions
+  ItemID: 201
   
   # Area Messages Display position (msg/title/tip/pop)
   Msgtype: msg
@@ -11,18 +14,21 @@ Options:
   # Area Floatingtext title display (off/op/on)
   Areadisplay: op
 
-  # Area Messages persist display to ops (off/op/on)
-  Msgdisplay: off
+  # Area Messages persist display  (off/op/on)
+  Msgdisplay: op
   
   # Use flight flag (on/off) - since v.1.1.3 flight flag usage can be turn off
   FlightControl: on
 
+  # Use level flag protection system (on/off) - defaults are still used for area's
+  LevelControl: off
+
   # Auto whitelist area creator (on/off)
-  AutoWhitelist: on
+  AutoWhitelist: off
 
 # Flag settings for unprotected areas
 # Flag rule: a flag protects the area and the players in it
-# These are the default flags, default flags for new worlds and defaults for individual worlds:
+# These are the old default flag names, to be able to copy settings from previous config.yml versions
 Default:
 
   # Keep players from getting hurt? (true = Player god mode)
@@ -58,8 +64,14 @@ Default:
   # Keep players from dropping items in the area? (true = NoDropping)
   Drop: false
 
-  # No explosions allowed in the area? (true = NoExplosions)
-  TNT: false
+  # No explosions allowed in the area? (true = No TNT Explosions)
+  TNT: true
+
+  # No exploding mobs allowed in the area? (true = No creeper explosions etc.)
+  Explode: true
+
+  # No fire allowed in the area? (true = no fire)
+  Fire: false
 
   # No shooting allowed in the area? (true = NoShooting)
   Shoot: false
@@ -76,7 +88,7 @@ Default:
   # Keep area event commands from executing for non-ops (command test mode)
   CMDmode: false
   
-# Settings for unprotected areas in individual worlds:
+# Flag settings for unprotected areas in individual worlds:
 Worlds:
 
   # New worlds (ie. automatic generated)
@@ -118,6 +130,12 @@ Worlds:
     # No explosions allowed in the area? (true = NoExplosions)
     TNT: false
 
+    # No exploding mobs allowed in the area? (true = No creeper explosions etc.)
+    Explode: false
+
+    # No fire allowed in the area? (true = no fire)
+    Fire: false
+
     # No shooting allowed in the area? (true = NoShooting)
     Shoot: false
 
@@ -133,7 +151,7 @@ Worlds:
     # Keep area event commands from executing for non-ops (command test mode)
     CMDmode: false
 
-  # Example specific level default flags  (copy and replace 'world' with your levelname)
+  # Example specific level called 'world'  specific default flags (copy and replace 'world' with your levelname)
   world:
   
     # Keep players from getting hurt? (true = Player god mode)
@@ -171,6 +189,12 @@ Worlds:
 
     # No explosions allowed in the area? (true = NoExplosions)
     TNT: false
+
+    # No exploding mobs allowed in the area? (true = No creeper explosions etc.)
+    Explode: false
+
+    # No fire allowed in the area? (true = no fire)
+    Fire: false
 
     # No shooting allowed in the area? (true = NoShooting)
     Shoot: false
