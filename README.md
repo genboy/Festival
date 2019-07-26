@@ -1,5 +1,6 @@
 
 
+
 ## Festival
 
 Create a festival with this custom area events plugin for Pocketmine Server:
@@ -28,19 +29,21 @@ If you like to use Festival consider [sharing your experience and issues](https:
 ## Overview
 
 ### version 2.0.0 
-> - Festival Manager Menu (UI) + magic items - or use the commands
+> - Festival Manager Menu (UI + select item) - or use the commands
 > - Cube AND Sphere area's set with diagonal, radius or diameter
-> - Area, Config AND Level flags managed from menu
+> - Area's  and Config  managed from menu
+> - Optional Level flag protection
 > - Area name (and desc) can now be Full string inCluDing MuLti wORds CaPitaLized
 > - Stretching area's up and down with y scaling
-> - Experimental Area Priority level 
+> - Use priority number for overlapping area's
 
 **Management UI in game**: 
-command **/fe menu** (ui, form, data) or **hold magic item** 
+command **hold magic item** or ** /fe menu** (ui, form, data)
 ( default magic item 201 - Purpur Pillar block - change in config management) 
 When using the form you need to **use the magic item to tab area positions**.
+You can swapp item to build during area position 1 and 2 selection.
 
-or use the commands as shown in the usage image  (now with Multi wORd FULLY CapitAlized nameS possible) 
+Or use the commands as shown in the usage image (now with Multi wORd FULLY CapitAlized nameS possible) 
 
 **Download development version**: 
 [Poggit development](https://poggit.pmmp.io/ci/genboy/Festival/Festival)
@@ -51,7 +54,7 @@ or use [devtools plugin](https://poggit.pmmp.io/p/DevTools/1.13.0) and [download
 
 **Festival version 2.0.0 Install**: 
 *(always save copies of your previous used config.yml and areas.json before re-install)*
-1. place phar or unzipped folder in plugins folder and restart, 
+1. place phar file or unzipped Festival folder with (Devtools pluginfolder) in server plugins folder and restart, 
 2. after restart;
  2a. if need previous used configs and areas: delete config.json and areas.json from the root folder 
 and put your config.yml and areas.json in Festival (root) folder
@@ -132,6 +135,11 @@ In version 2.0.0 the Festival Management Menu (FormUI) is introduced
     - change event of area commands 
 
 
+**Level flags**
+
+- Use the level flags for level protection
+
+    - per level the levelcontrol toggle option enables the level flag protection
 ---
 
 
@@ -228,12 +236,13 @@ Create area with Name (and description)
 #### Levels
 
 
-Select level to manage flags 
+Select level to manage flags (if levelcontrol config is on)
 
 ![Select level](https://genboy.net/wp-content/uploads/2019/06/manage_level_select.jpg)
 
 Manage level flags options
 
+![Manage Level use option and flags](https://genboy.net/wp-content/uploads/2019/07/manage_level_option.jpg)
 ![Edit level flags(defaults)](https://genboy.net/wp-content/uploads/2019/06/manage_level_flags2.jpg)
 
 #### Configuration
@@ -296,17 +305,17 @@ Manage Festival configuration options and set default flags
   __ = your language, please help [translate](https://github.com/genboy/Festival/tree/Translations)
   
 
-#### Create area
+#### Create area (cmd)
   
-  ### Cube area
+    ### Cube area
   
-  First command  '/fe pos' or '/fe pos1' 
-  and holding the magic block, default 201, tab or break a block for position 1 
+    First command  '/fe pos' or '/fe pos1' 
+    and holding the magic block, default 201, tab or break a block for position 1 
   
-  then command '/fe pos2' 
-  and and holding the magic block tab or break a block to set position2, 
+    then command '/fe pos2' 
+    and and holding the magic block tab or break a block to set position2, 
   
-  these are the endpoints of the area longest diagonal.
+    these are the endpoints of the area longest diagonal.
 
 	/fe pos1(pos)
 	/fe pos2
@@ -314,17 +323,17 @@ Manage Festival configuration options and set default flags
     
   ### Sphere area
   
-  First command '/fe pos' or '/fe pos1'
+    First command '/fe pos' or '/fe pos1'
   
-  For sphere radius;
-  holding the magic block tab or break a block for the center of the sphere  
-  then command '/fe rad' or '/fe radius'
-  and and holding the magic block tab or break a block to set the radius size.
+    For sphere radius;
+    holding the magic block tab or break a block for the center of the sphere  
+    then command '/fe rad' or '/fe radius'
+    and and holding the magic block tab or break a block to set the radius size.
   
-  For sphere diameter;
-  holding the magic block tab or break a block for first end of the diameter
-  then command '/fe dia' or '/fe diameter'
-  and and holding the magic block tab or break a block for the other end of the diameter.
+    For sphere diameter;
+    holding the magic block tab or break a block for first end of the diameter
+    then command '/fe dia' or '/fe diameter'
+    and and holding the magic block tab or break a block for the other end of the diameter.
 
 	/fe pos
 	/fe rad / dia
@@ -332,7 +341,7 @@ Manage Festival configuration options and set default flags
 
   ### After position selections
 
-  Then name/save the selected area
+    Then name/save the selected area
 
 	/fe create <AREANAME>  
 
@@ -472,5 +481,5 @@ In short this change of Copyright statement does not change the usage levels as 
 
 -- end legal notice --  
 ###### Copyright [Genboy](https://genboy.net) 2018 - 2019 
-markdown edited with [stackedit.io](https://stackedit.io) and 
+markdown edited with [stackedit.io](https://stackedit.io) and
 translated to html with [browserling.com](https://www.browserling.com/tools/markdown-to-html)
