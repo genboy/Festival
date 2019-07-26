@@ -191,32 +191,33 @@ class Helper {
         'options' =>[
             'lang'              => "en",    // Language en/nl/pl/es
             'itemid'            =>  201,    // Purpur Pillar itemid key held item
-            'msgdisplay'        => 'op',    // msg display off,op,listed,on
-            'msgposition'       => 'msg',   // msg position msg,title,tip,pop
-            'areatitledisplay'  => 'op',    // area title display off,op,listed,on
-            'autowhitelist'     => 'on',    // area creator auto whitelist off,on
-            'flightcontrol'     => 'on',    // area creator auto whitelist off,on
+            'msgdisplay'        => 'on',    // msg display off,op,listed,on
+            'msgposition'       => 'tip',   // msg position msg,title,tip,pop
+            'areatitledisplay'  => 'on',    // area title display off,op,listed,on
+            'autowhitelist'     => 'off',    // area creator auto whitelist off,on
+            'flightcontrol'     => 'on',    // area fly-flag active off,on
+            'levelcontrol'      => 'off',    // area level flags active off,on
         ],
         'defaults' =>[
-            'perms'     => true,
-            'pass'      => true,    // previous passage(barrier) flag
-            'msg'       => true,
+            'perms'     => false,
+            'pass'      => false,    // previous passage(barrier) flag
+            'msg'       => false,
             'edit'      => true,
-            'touch'     => true,
-            'flight'    => true,
-            'hurt'      => true,    // previous god flag
-            'fall'      => true,    // previous falldamage flag
+            'touch'     => false,
+            'flight'    => false,
+            'hurt'      => false,    // previous god flag
+            'fall'      => false,    // previous falldamage flag
             'explode'   => true,
             'tnt'       => true,
-            'fire'      => true,
-            'shoot'     => true,
-            'pvp'       => true,
-            'effect'    => true,    // previous effect flag
-            'hunger'    => true,
-            'drop'      => true,
-            'mobs'      => true,
-            'animals'   => true,
-            'cmd'       => true,   // previous cmdmode flag
+            'fire'      => false,
+            'shoot'     => false,
+            'pvp'       => false,
+            'effect'    => false,    // previous effect flag
+            'hunger'    => false,
+            'drop'      => false,
+            'mobs'      => false,
+            'animals'   => false,
+            'cmd'       => false,   // previous cmdmode flag
         ]];
         return $c;
     }
@@ -258,7 +259,11 @@ class Helper {
         }
         $p['options']['flightcontrol'] = "off";
         if( isset( $c['Options']['FlightControl'] ) ){
-          $p['options']['flightcontrol']  = "on";
+          $p['options']['flightcontrol']  = $c['Options']['FlightControl'];
+        }
+        $p['options']['levelcontrol'] = "off";
+        if( isset( $c['Options']['LevelControl'] ) ){
+          $p['options']['levelcontrol']  = $c['Options']['LevelControl'];
         }
 
         if( isset( $c['Default'] ) && is_array( $c['Default'] ) ){
@@ -557,8 +562,6 @@ class Helper {
         }
         return $this->getSource( $name , $type );
     }
-
-
 
     public function isPluginLoaded(string $pluginName){
 

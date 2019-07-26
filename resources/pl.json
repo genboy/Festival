@@ -220,6 +220,9 @@
     "ui-level-flag-management": "Zarządzaj flagami poziomów",
     "ui-level": "Poziom",
     "ui-flags-saved": "zestaw flagowy zapisany!",
+    "ui-subtitle-level-options": "Opcje poziomu:",
+    "ui-toggle-flag-control": "użyj zestawu flag poziomu",
+    "ui-subtitle-level-flags": "Flagi poziomu:",
 
     "ui-config-management": "Konfiguracja",
     "ui-festival-configuration": "Konfiguracja Festival",
