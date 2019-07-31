@@ -1,6 +1,7 @@
 
 
 
+
 ## Festival
 
 Create a festival with this custom area events plugin for Pocketmine Server:
@@ -37,20 +38,11 @@ If you like to use Festival consider [sharing your experience and issues](https:
 > - Stretching area's up and down with y scaling
 > - Use priority number for overlapping area's
 
-**Management UI in game**: 
-command **hold magic item** or ** /fe menu** (ui, form, data)
-( default magic item 201 - Purpur Pillar block - change in config management) 
-When using the form you need to **use the magic item to tab area positions**.
-You can swapp item to build during area position 1 and 2 selection.
-
-Or use the commands as shown in the usage image (now with Multi wORd FULLY CapitAlized nameS possible) 
-
 **Download development version**: 
 [Poggit development](https://poggit.pmmp.io/ci/genboy/Festival/Festival)
 Please report bugs -thank you! [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
 
 or use [devtools plugin](https://poggit.pmmp.io/p/DevTools/1.13.0) and [download zip package https://github.com/genboy/Festival/archive/master.zip](https://github.com/genboy/Festival/archive/master.zip)
-
 
 **Festival version 2.0.0 Install**: 
 *(always save copies of your previous used config.yml and areas.json before re-install)*
@@ -62,6 +54,25 @@ and put your config.yml and areas.json in Festival (root) folder
 3. Then restart again, now areas.json, levels.json and config.json in Festival (root) folder are used.
 
 ( or download latest stable version [@ poggit https://poggit.pmmp.io/p/Festival](https://poggit.pmmp.io/p/Festival) - no Festival menu, only command usage)
+
+**Management UI in game**: 
+command **hold magic item** or ** /fe menu** (ui, form, data)
+( default magic item 201 - Purpur Pillar block - change in config management) 
+When using the form you need to **use the magic item to tab area positions**.
+You can swapp item to build/break during area position 1 and 2 selection.
+
+Or use the commands as shown in the usage image (now with Multi wORd FULLY CapitAlized nameS possible) 
+
+  **Create area** with **menu**:  
+ 
+    You can use cmd '/fe menu' or just hold the magic item (purpur block/your selected item/block). Then if you choose create area you should tab the positions with the magic item.  
+    After tab pos1 you may use other blocks to build etc. and then hold the magic item again to tab pos2. Directly after tab pos2 the menu should come back to name your area.
+
+ **Create area** with **commands**:  
+    
+    Use /fe pos1 and /fe pos2 to tab the positions, after pos2 you need '/fe create area ' to finnish the area creation.  
+    
+Here after both commands and menu can be used to manage the area.  
 
 ---
 ## Info
@@ -90,7 +101,7 @@ In version 2.0.0 the Festival Management Menu (FormUI) is introduced
       - **radius** for sphere
       - **diameter** for sphere
     - Scale area's verticaly up and down 
-    - create/delete/list area’s
+    - create/rename/delete/list area’s
     - add area description
     - whitelist players for the area
     - tp to an area
