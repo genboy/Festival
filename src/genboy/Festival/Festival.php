@@ -2032,6 +2032,10 @@ class Festival extends PluginBase implements Listener{
             || $e instanceof Projectile
             || $e instanceof FloatingTextParticle
             //|| $e instanceof mysterybox\entity\MysterySkull // https://github.com/CubePM/MysteryBox/blob/master/src/mysterybox/entity/MysterySkull.php
+
+            || $e->getSaveId() === "Slapper"  // https://forums.pmmp.io/threads/cleaning-entities.3759/
+            || $e instanceof SlapperEntity // https://github.com/jojoe77777/Slapper
+
         ){
             return $o; // might be allowed to spawn under different flag
         }
@@ -2048,6 +2052,7 @@ class Festival extends PluginBase implements Listener{
         if($pos && $nm != ''){
             $animals =[ 'bat','chicken','cow', 'cat', 'chicken', 'fox', 'horse','donkey', 'mule', 'ocelot', 'parrot', 'fish', 'squit', 'pig','rabbit', 'panda', 'sheep', 'salmon','turtle', 'tropical_fish', 'cod', 'balloon', 'mooshroom', 'trader_llama', 'wolf', 'spider', 'cave_spider', 'dolphin', 'llama', 'polar_bear', 'pufferfish']; // passive <- wolf -> neutral
             $thisarea = '';
+
             if( in_array( strtolower($nm), $animals ) ){ // check animal flag
 
                 $a = ( ( isset($this->levels[strtolower($pos->getLevel()->getName())]) && $this->levels[strtolower($pos->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($pos->getLevel()->getName())]->getFlag("animals") : $this->config["defaults"]["animals"]);
