@@ -1,12 +1,7 @@
 <?php
-/** Festival 1.1.4
+/** Festival 2.0.1
  * src/genboy/Festival/Festival.php
  * copyright Genbay 2019
- *
- * Options in config.yml (v 1.1.3 )
- * language: en/nl,  ItemID: 201, msgposition: msg/title/tip/pop, msgdisplay: off/op/on, Msgdisplay: off/op/on, autowhitelist: on/off, flightcontrol: on/off
- * Flags: hurt, pvp, flight, edit, touch, mobs, animals, effect, msg, pass, drop, tnt, fire, explode, shoot, hunger, perms, fall, cmd
- *
  */
 
 declare(strict_types = 1);
@@ -24,6 +19,7 @@ use pocketmine\command\ConsoleCommandSender;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Item;
 use pocketmine\block\Block;
+use pocketmine\entity\Human;
 use pocketmine\entity\object\ExperienceOrb;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\entity\object\FallingBlock;
@@ -340,7 +336,7 @@ class Festival extends PluginBase implements Listener{
 							if( $args[1] != '' && $args[1] != ' ' ){
 
                                 unset($args[0]);
-                                $newname = implode(" ", $args);
+                                $newname = preg_replace("/[^a-zA-Z0-9]+/", "", implode(" ", $args) );
 
                                 if( !isset($this->areas[$newname]) ){
                                     // get level default flags
@@ -462,7 +458,7 @@ class Festival extends PluginBase implements Listener{
 
                             $arr = explode(" to ", $string, 2);
                             $oldname = $arr[0];
-                            $newname = $arr[1];
+                            $newname = preg_replace( "/[^a-zA-Z0-9]+/", "", $arr[1] );
 
                             if(isset($this->areas[$oldname])){
 
@@ -508,7 +504,7 @@ class Festival extends PluginBase implements Listener{
 
                             $arr = explode(" set ", $string, 2);
                             $name = $arr[0];
-                            $newdesc = $arr[1];
+                            $newdesc = preg_replace("/[^a-zA-Z0-9]+/", "", $arr[1]); //$arr[1];
 
                             if(isset($this->areas[$name])){
 
@@ -1583,6 +1579,7 @@ class Festival extends PluginBase implements Listener{
 
             /*
             // the slapper problem (entities)
+            // >> SEE canEntitySpawn
             if( $this->helper->isPluginLoaded( "Slapper" )  ){ // && ($e instanceof SlapperEntity || $e instanceof SlapperHuman)
                 $e->flagForDespawn(); // https://github.com/jojoe77777/Slapper/blob/master/src/slapper/Main.php
             }else{
@@ -2035,6 +2032,9 @@ class Festival extends PluginBase implements Listener{
 
             || $e->getSaveId() === "Slapper"  // https://forums.pmmp.io/threads/cleaning-entities.3759/
             || $e instanceof SlapperEntity // https://github.com/jojoe77777/Slapper
+            || $e instanceof Human
+            || $e instanceof SlapperHuman
+            || $e instanceof Player
 
         ){
             return $o; // might be allowed to spawn under different flag
