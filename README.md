@@ -19,7 +19,7 @@ Stable version
 [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
 
 
-![Festival 2.0.0 Command usage](https://genboy.net/wp-content/uploads/2019/07/festival_usage_v2.0.0-release.png)
+![Festival 2.0.0 Command usage](https://genboy.net/wp-content/uploads/2019/08/festival_usage_v2.0.1.png)
 
 If you like to use Festival consider [sharing your experience and issues](https://github.com/genboy/Festival/issues) to fix any usability problems before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1)! That way it will improve Festival, my coding skills, your Pocketmine-MP insights and strenghten the PMMP community, thank you!
  
@@ -269,7 +269,7 @@ Manage Festival configuration options and set default flags
   - using ingame Festival Menu (UI) for configurations
   - older versions (1.1.3) read [wiki on configurations](https://github.com/genboy/Festival/wiki/2.-Install,-Configure-&-Update)
 
-![Festival 2.0.0 Command usage](https://genboy.net/wp-content/uploads/2019/07/festival_usage_v2.0.0-release.png) 
+![Festival 2.0.0 Command usage](https://genboy.net/wp-content/uploads/2019/08/festival_usage_v2.0.1.png) 
 
 
 #### Setup
