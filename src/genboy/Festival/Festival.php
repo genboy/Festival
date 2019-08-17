@@ -18,6 +18,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Item;
+use pocketmine\item\Item as ItemIdList;
 use pocketmine\block\Block;
 use pocketmine\entity\Human;
 use pocketmine\entity\object\ExperienceOrb;
@@ -1197,6 +1198,24 @@ class Festival extends PluginBase implements Listener{
         if( $itemheld ==  $this->config['options']['itemid'] && !isset( $this->players[ strtolower( $player->getName() ) ]["makearea"] ) ) {
             $this->form->openUI($player);
         }
+        // check compass to select direction
+        if($itemheld === ItemIdList::COMPASS){
+            $playerareas = [];
+            if( $player->isOp() || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+                $playerareas = $this->areas;
+            }else{
+                foreach($this->areas as $area){
+                    if( $area->isWhitelisted( strtolower( $player->getName() )  ) ){
+                        $playerareas[] = $area;
+                    }
+                }
+            }
+            if( count( $playerareas ) > 0 ){
+                $player->sendMessage('Use compass to find an area');
+                $this->form->compassAreaForm( $player );
+            }
+        }
+
     }
 
     /** levelChange
@@ -2810,6 +2829,8 @@ class Festival extends PluginBase implements Listener{
                 unset( $this->inArea[$p] ); // remove player from inArea list
             }
         }
+
+        // to do styling
         if(count($ap) > 0 ){
             $l .=  "\n". TextFormat::GRAY . "  - ". Language::translate("players-in-area") .": " . TextFormat::GOLD . implode(", ", $ap );
         }
@@ -2923,18 +2944,6 @@ class Festival extends PluginBase implements Listener{
 		return;
     }
 
-	/** Save areas
-	 * @var obj area
-	 * @file areas.json
-
-	public function saveAreas() : void{
-		$areas = [];
-		foreach($this->areas as $area){
-			$areas[] = ["name" => $area->getName(), "desc" => $area->getDesc(), "priority" => $area->getPriority(), "flags" => $area->getFlags(), "pos1" => [$area->getFirstPosition()->getFloorX(), $area->getFirstPosition()->getFloorY(), $area->getFirstPosition()->getFloorZ()] , "pos2" => [$area->getSecondPosition()->getFloorX(), $area->getSecondPosition()->getFloorY(), $area->getSecondPosition()->getFloorZ()], "radius" => $area->getRadius(), "top" => $area->getTop(), "bottom" => $area->getBottom(), "level" => $area->getLevelName(), "whitelist" => $area->getWhitelist(), "commands" => $area->getCommands(), "events" => $area->getEvents()];
-		}
-		file_put_contents($this->getDataFolder() . "areas.json", json_encode($areas));
-	}
-*/
 
     /**  Festival Console Sign Flag for developers
      *   makes it easy to find Festival console output fast
