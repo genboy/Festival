@@ -1,8 +1,4 @@
-
-
-
-
-## Festival
+## Festival 
 
 Create a festival with this custom area events plugin for Pocketmine Server:
 ###  Manage area's and run commmands attachted to area events. 
@@ -19,7 +15,7 @@ Stable version
 [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
 
 
-![Festival 2.0.0 Command usage](https://genboy.net/wp-content/uploads/2019/08/festival_usage_v2.0.1.png)
+![Festival 2.0.1 Command usage](https://genboy.net/wp-content/uploads/2019/08/festival_usage_v2.0.1.png)
 
 If you like to use Festival consider [sharing your experience and issues](https://github.com/genboy/Festival/issues) to fix any usability problems before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1)! That way it will improve Festival, my coding skills, your Pocketmine-MP insights and strenghten the PMMP community, thank you!
  
@@ -246,6 +242,8 @@ Create area with Name (and description)
 
 #### Levels
 
+Turn on level flag control to use the level flags (instead of defaults)
+![festival-use-level-flags](https://user-images.githubusercontent.com/30810841/63712056-291f7b00-c83d-11e9-9209-2dbb66c163fe.gif)
 
 Select level to manage flags (if levelcontrol config is on)
 
@@ -257,6 +255,9 @@ Manage level flags options
 ![Edit level flags(defaults)](https://genboy.net/wp-content/uploads/2019/06/manage_level_flags2.jpg)
 
 #### Configuration
+UI configuration to set overall options and default flags for levels and area's
+![festival-set-configs-default-flags](https://user-images.githubusercontent.com/30810841/63712052-26bd2100-c83d-11e9-82f0-5ed7f03312f4.gif)
+
 
 Manage Festival configuration options and set default flags 
 
@@ -269,7 +270,7 @@ Manage Festival configuration options and set default flags
   - using ingame Festival Menu (UI) for configurations
   - older versions (1.1.3) read [wiki on configurations](https://github.com/genboy/Festival/wiki/2.-Install,-Configure-&-Update)
 
-![Festival 2.0.0 Command usage](https://genboy.net/wp-content/uploads/2019/08/festival_usage_v2.0.1.png) 
+![Festival 2.0.1 Command usage](https://genboy.net/wp-content/uploads/2019/08/festival_usage_v2.0.1.png) 
 
 
 #### Setup

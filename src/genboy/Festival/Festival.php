@@ -59,6 +59,8 @@ use pocketmine\event\player\PlayerDropItemEvent;
 use pocketmine\event\player\PlayerBucketEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 
+use pocketmine\network\mcpe\protocol\SetSpawnPositionPacket;
+
 class Festival extends PluginBase implements Listener{
 
 	/** @var obj */
@@ -754,7 +756,69 @@ class Festival extends PluginBase implements Listener{
                     }
                 }else{
                     $list = $this->listAllAreas();
-                    $o = TextFormat::RED . Language::translate("the-area"). " " . implode(" ", array_slice($args, 0, 20)) . " ". Language::translate("cannot-be-found"). $list;
+                    $o = TextFormat::RED . Language::translate("the-area"). " " . implode(" ", array_slice($args, 0, 20)) . " ". Language::translate("cannot-be-found"). " " . $list;
+                }
+            break;
+
+			case "compass":
+
+				if (!isset($args[1])){
+                    $o = TextFormat::RED . Language::translate("specify-excisting-area-name"); //$o = TextFormat::RED . "You must specify an existing Area name";
+					break;
+                }
+
+                $name = implode(" ", array_slice($args, 1, 20));
+
+                if( $name == "r" || $name == "reset" || $name == "spawn" || $name == "worldspawn" ){
+
+                    $o = TextFormat::GREEN .'Compass direction set to world spawnpoint';
+                    $pk = new SetSpawnPositionPacket();
+                    $target = $sender->getLevel()->getSafeSpawn();
+                    $pk->x = $target->x;
+                    $pk->y = $target->y;
+                    $pk->z = $target->z;
+                    $pk->spawnType = SetSpawnPositionPacket::TYPE_WORLD_SPAWN;
+                    $pk->spawnForced = true;
+                    $sender->sendDataPacket($pk);
+                    break;
+                }
+
+                if( isset( $this->areas[$name] ) ){
+                    $area = $this->areas[$name];
+                    $currentlevel = strtolower( $sender->getPosition()->getLevel()->getName() );
+                    if( $area->getLevelName() == $currentlevel ){
+
+                        if( null !== $area->getRadius() && $area->getRadius() > 0 && null !== $area->getFirstPosition()  ){
+                            $cx = $area->getFirstPosition()->getX();
+                            $cy = $area->getFirstPosition()->getY();
+                            $cz = $area->getFirstPosition()->getZ();
+                        }else if( null !== $area->getFirstPosition() && null !== $area->getSecondPosition() ){
+                            $cx = $area->getSecondPosition()->getX() + ( ( $area->getFirstPosition()->getX() - $area->getSecondPosition()->getX() ) / 2 );
+                            $cy = $sender->getPosition()->getY();
+                            $cz = $area->getSecondPosition()->getZ() + ( ( $area->getFirstPosition()->getZ() - $area->getSecondPosition()->getZ() ) / 2 );
+                        }
+
+                        if( isset($cx) && isset($cy) && isset($cz) ){
+                            $o = TextFormat::GREEN . 'Compass direction set to area  '. $name; // Server::getInstance()->dispatchCommand($sender, "fe compass ".$areaname );
+                            $pk = new SetSpawnPositionPacket();
+                            $pk->spawnType = SetSpawnPositionPacket::TYPE_WORLD_SPAWN;
+                            $pk->x = (int) $cx;
+                            $pk->y = (int) $cy;
+                            $pk->z = (int) $cz;
+                            $pk->spawnForced = false;
+                            $sender->dataPacket($pk);
+                        }else{
+                            $o = TextFormat::RED . 'Direction could not be set on compass';
+                        }
+                    }else{
+                        $o = TextFormat::WHITE . "In this world " . Language::translate("the-area"). " " . TextFormat::RED . implode(" ", array_slice($args, 1, 20)) .
+                        " ". TextFormat::WHITE . Language::translate("cannot-be-found");
+                    }
+
+                }else{
+                    $list = $this->listAllAreas();
+                    $o = TextFormat::WHITE . Language::translate("the-area"). " " . TextFormat::RED . implode(" ", array_slice($args, 1, 20)) .
+                        " ". TextFormat::WHITE . Language::translate("cannot-be-found"). " " . TextFormat::GREEN . $list;
                 }
             break;
 
@@ -1198,8 +1262,10 @@ class Festival extends PluginBase implements Listener{
         if( $itemheld ==  $this->config['options']['itemid'] && !isset( $this->players[ strtolower( $player->getName() ) ]["makearea"] ) ) {
             $this->form->openUI($player);
         }
-        // check compass to select direction
-        if($itemheld === ItemIdList::COMPASS){
+
+        // check compass and level option to select direction
+        if( $itemheld === ItemIdList::COMPASS && ( isset($this->levels[strtolower($player->getLevel()->getName())]) && $this->levels[strtolower($player->getLevel()->getName())]->getOption("compass") != 'off' ) ){
+
             $playerareas = [];
             if( $player->isOp() || $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
                 $playerareas = $this->areas;
@@ -1211,7 +1277,7 @@ class Festival extends PluginBase implements Listener{
                 }
             }
             if( count( $playerareas ) > 0 ){
-                $player->sendMessage('Use compass to find an area');
+                // $player->sendMessage('Use compass to find an area');
                 $this->form->compassAreaForm( $player );
             }
         }
@@ -1223,11 +1289,40 @@ class Festival extends PluginBase implements Listener{
 	 * @param EntityLevelChangeEvent $event
 	 */
     public function levelChange(EntityLevelChangeEvent $event) {
+
         $entity = $event->getEntity();
+
         if ($entity instanceof Player) {
+
             $level = $event->getTarget();
+
+            // level area titles
             $this->checkAreaTitles( $entity, $level );
+
+            // reset compass
+            $leaving = $entity->getLevel();
+            $itemheld = $entity->getInventory()->getItemInHand()->getID();
+
+            // && ( ( isset($this->levels[strtolower($leaving->getName())]) && $this->levels[strtolower($leaving->getName())]->getOption("compass") != 'off' )
+            // || ( isset($this->levels[strtolower($level->getName())]) && $this->levels[strtolower($level->getName())]->getOption("compass") != 'off' ) )
+
+            if( $itemheld === ItemIdList::COMPASS ){
+
+                // reset to spawn
+                $entity->sendMessage('Compass level reset' );
+                $pk = new SetSpawnPositionPacket();
+                $target = $level->getSafeSpawn();
+                $pk->x = $target->x;
+                $pk->y = $target->y;
+                $pk->z = $target->z;
+                $pk->spawnType = SetSpawnPositionPacket::TYPE_WORLD_SPAWN;
+                $pk->spawnForced = true;
+                $entity->sendDataPacket($pk);
+
+            }
+
         }
+
     }
 
 	/** onMove
@@ -1310,9 +1405,11 @@ class Festival extends PluginBase implements Listener{
 		$player = $event->getPlayer();
         $itemhand = $player->getInventory()->getItemInHand();
 		$playerName = strtolower($player->getName());
+
         if( isset( $this->players[ strtolower( $playerName ) ]["makearea"]["type"] ) && $itemhand->getID() ==  $this->config['options']['itemid'] ){ // ? holding Festival tool
             $event->setCancelled();
             $newareatype = $this->players[ strtolower( $playerName ) ]["makearea"]["type"];
+
             if( !isset( $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] ) ){ // add here the item-tool check
                 $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $block->asVector3();
                 $o = TextFormat::GREEN . language::translate("make-pos2");
@@ -1350,17 +1447,23 @@ class Festival extends PluginBase implements Listener{
                 $this->form->areaNewForm( $player , ["type"=>$newareatype,"pos1"=>$pos1,"pos2"=>$p2,"radius"=>$radius], $msg = language::translate("ui-new-area-setup") . ":");
                 return;
             }
+
         }else if(isset($this->selectingFirst[$playerName])){
+
 			unset($this->selectingFirst[$playerName]);
 			$this->firstPosition[$playerName] = $block->asVector3();
 			$player->sendMessage(TextFormat::GREEN . language::translate("pos1")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
 			$event->setCancelled();
+
 		}elseif(isset($this->selectingSecond[$playerName])){
+
 			unset($this->selectingSecond[$playerName]);
 			$this->secondPosition[$playerName] = $block->asVector3();
 			$player->sendMessage(TextFormat::GREEN . language::translate("pos2")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
 			$event->setCancelled();
+
 		}elseif(isset($this->selectingRadius[$playerName])){
+
             unset($this->selectingRadius[$playerName]);
             $this->radiusPosition[$playerName] = $block->asVector3();
             $p1 = $this->firstPosition[$playerName];
@@ -1369,7 +1472,9 @@ class Festival extends PluginBase implements Listener{
             // Radius distance to position:
             $player->sendMessage( TextFormat::GREEN . language::translate("radius-distance-to-position"). ": " . $radius . " blocks (" . $p1->getX() . ", " . $p1->getY() . ", " . $p1->getZ() . " to " . $p2->getX() . ", " . $p2->getY() . ", " . $p2->getZ() . ")");
 			$event->setCancelled();
+
         }elseif(isset($this->selectingDiameter[$playerName])){
+
             unset($this->selectingDiameter[$playerName]);
             $this->diameterPosition[$playerName] = $block->asVector3();
 
@@ -1379,10 +1484,13 @@ class Festival extends PluginBase implements Listener{
             // Diameter distance to position:
             $player->sendMessage( TextFormat::GREEN . language::translate("diameter-distance-to-position"). ": " . $diameter . " blocks (" . $p1->getX() . ", " . $p1->getY() . ", " . $p1->getZ() . " to " . $p2->getX() . ", " . $p2->getY() . ", " . $p2->getZ() . ")");
 			$event->setCancelled();
+
         }else{
             //  .. canUseTNT( $player, $block )
-            if( $block->getID() == Block::TNT && !$this->canUseTNT( $player, $block ) ){
+
+            if( $block->getID() == Block::TNT && !$this->canUseTNT( $player, $block )  ){
                 if( $player->hasPermission("festival") || $player->hasPermission("festival.access") ){
+                    // allowed
 		        }else{
                     $event->setCancelled(); //$player->sendMessage("TNT not allowed here");
                 }
@@ -1403,10 +1511,12 @@ class Festival extends PluginBase implements Listener{
 		$player = $event->getPlayer();
 		$itemhand = $player->getInventory()->getItemInHand();
 		$playerName = strtolower($player->getName());
+
         if( isset( $this->players[ strtolower( $playerName ) ]["makearea"]["type"] ) && $itemhand->getID() ==  $this->config['options']['itemid'] ){ // ? holding Festival tool
             $event->setCancelled();
             $newareatype = $this->players[ strtolower( $playerName ) ]["makearea"]["type"];
             if( !isset( $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] ) ){ // add here the item-tool check
+
                 $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $block->asVector3();
                 $o = TextFormat::GREEN . language::translate("make-pos2");
                 if( $newareatype == "radius"){ // "Please place or break distand position 2 to set radius for new sphere area";
@@ -1417,7 +1527,9 @@ class Festival extends PluginBase implements Listener{
                 }
                 $player->sendMessage($o);
                 return;
+
             }else if( !isset( $this->players[ strtolower( $playerName ) ]["makearea"]["pos2"] ) ){ // add here the item-tool check
+
                 $this->players[ strtolower( $playerName ) ]["makearea"]["pos2"] = $block->asVector3();
                 $p1 = $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"];
                 $p2 = $this->players[ strtolower( $playerName ) ]["makearea"]["pos2"];
@@ -1443,17 +1555,23 @@ class Festival extends PluginBase implements Listener{
                 $this->form->areaNewForm( $player , ["type"=>$newareatype,"pos1"=>$pos1,"pos2"=>$p2,"radius"=>$radius], $msg = language::translate("ui-new-area-setup") . ":");
                 return;
             }
+
         }else if(isset($this->selectingFirst[$playerName])){
+
 			unset($this->selectingFirst[$playerName]);
 			$this->firstPosition[$playerName] = $block->asVector3();
 			$player->sendMessage(TextFormat::GREEN . language::translate("pos1")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
 			$event->setCancelled();
+
 		}elseif(isset($this->selectingSecond[$playerName])){
+
 			unset($this->selectingSecond[$playerName]);
 			$this->secondPosition[$playerName] = $block->asVector3();
 			$player->sendMessage(TextFormat::GREEN . language::translate("pos2")." ". language::translate("set-to"). ": (" . $block->getX() . ", " . $block->getY() . ", " . $block->getZ() . ")");
 			$event->setCancelled();
+
 		}elseif(isset($this->selectingRadius[$playerName])){
+
             unset($this->selectingRadius[$playerName]);
             $this->radiusPosition[$playerName] = $block->asVector3();
             $p1 = $this->firstPosition[$playerName];
@@ -1462,7 +1580,9 @@ class Festival extends PluginBase implements Listener{
             // Radius distance to position:
             $player->sendMessage( TextFormat::GREEN . language::translate("radius-distance-to-position"). ": " . $radius . " blocks (" . $p1->getX() . ", " . $p1->getY() . ", " . $p1->getZ() . " to " . $p2->getX() . ", " . $p2->getY() . ", " . $p2->getZ() . ")");
 			$event->setCancelled();
+
         }elseif(isset($this->selectingDiameter[$playerName])){
+
             unset($this->selectingDiameter[$playerName]);
             $this->diameterPosition[$playerName] = $block->asVector3();
             $p1 = $this->firstPosition[$playerName];
@@ -1471,20 +1591,26 @@ class Festival extends PluginBase implements Listener{
             // Diameter distance to position:
             $player->sendMessage( TextFormat::GREEN . language::translate("diameter-distance-to-position"). ": " . $diameter . " blocks (" . $p1->getX() . ", " . $p1->getY() . ", " . $p1->getZ() . " to " . $p2->getX() . ", " . $p2->getY() . ", " . $p2->getZ() . ")");
 			$event->setCancelled();
+
         }else{
+
 			if(!$this->canEdit($player, $block)){
 				$event->setCancelled();
 			}
+
 		}
 	}
+
 
 	/** onBlockTouch
 	 * @param PlayerInteractEvent $event
 	 * @ignoreCancelled true
 	 */
 	public function onBlockTouch(PlayerInteractEvent $event) : void{
+
 		$block = $event->getBlock();
 		$player = $event->getPlayer();
+
 		if(!$this->canTouch($player, $block)){
 			$event->setCancelled();
 		}
@@ -1495,10 +1621,22 @@ class Festival extends PluginBase implements Listener{
 	 * @ignoreCancelled true
 	 */
     public function onInteract( PlayerInteractEvent $event ): void{
+
         if ( !$this->canInteract( $event ) ) {
             $event->setCancelled();
         }
+
     }
+
+
+    public function onBreak( $item){
+
+        if( $item->getID() == 321 ){
+            $this->areaMessage( "No fun with paintings!" , $player );
+        }
+        //return $this->getLevel()->setBlock($this, new Air(), true, true);
+	}
+
 
     /** onBlockUpdate
      * BlockUpdateEvent
@@ -1518,6 +1656,9 @@ class Festival extends PluginBase implements Listener{
                 $f = false;
             }
         }
+
+
+
         // development .. to allow op players? maybe in surrounding of..
         /*
         $player = false;
@@ -1568,6 +1709,41 @@ class Festival extends PluginBase implements Listener{
     }
     */
 
+
+
+       /* Painting Action Entity
+    public function onClick(PlayerInteractEvent $event){
+
+        $block = $event->getBlock();
+        $player = $event->getPlayer();
+		$frame = $block->getLevel()->getTile($block);
+        $itemhand = $player->getInventory()->getItemInHand();
+        if( $itemhand->getID() == 321 && !$this->canEdit( $player, $block ) ){
+            $event->setCancelled();
+        }
+    }
+    */
+
+         /*
+        if( !($e instanceof PaintingEntity) && !$this->canEdit( $player, $block ) ){
+            $e->flagForDespawn();
+        }
+        $itemhand = $player->getInventory()->getItemInHand();
+        if( $itemhand->getID() == 321 && !$this->canEdit( $player, $block ) ){
+            $event->setCancelled();
+        }*/
+            /*
+            $block = $event->getBlock();
+            $player = $event->getPlayer();
+            $itemhand = $player->getInventory()->getItemInHand();
+            if( $itemhand->getID() == 321 && !$this->canEdit( $player, $block ) ){
+                $event->setCancelled();
+            }
+            */
+
+
+
+
 	/** onHurt
 	 * @param EntityDamageEvent $event
 	 * @ignoreCancelled true
@@ -1591,6 +1767,7 @@ class Festival extends PluginBase implements Listener{
     public function onEntitySpawn( EntitySpawnEvent $event ): void{
 
         $e = $event->getEntity();
+
         //($e instanceof Fire && !$this->canBurn( $e->getPosition() )) || (
         if( !($e instanceof Player) && !$this->canEntitySpawn( $e ) ){
 
@@ -1615,6 +1792,7 @@ class Festival extends PluginBase implements Listener{
             }
             */
         }
+
     }
 
 	/** Item drop
@@ -1757,6 +1935,9 @@ class Festival extends PluginBase implements Listener{
 
 
 
+
+
+
     /** canInteract
      * @param PlayerInteractEvent $event
      * @return bool
@@ -1766,10 +1947,12 @@ class Festival extends PluginBase implements Listener{
         $item = $event->getItem();
         $block = $event->getBlock();
 		$player = $event->getPlayer();
+
         $position = new Position($block->getFloorX(), $block->getFloorY(), $block->getFloorZ(), $block->getLevel());// $player->getPosition();
         $playername = strtolower($player->getName());
         $b = $block->getID();
         $i = $item->getID();
+
         // $player->sendMessage("Action on ".$block->getName()."(".$block->getID().") with ".$item->getName()."(".$item->getID().") at [x=".round($block->x). " y=".round($block->y)." z=".round($block->z)."]");
         if( $player->isOp() || $player->hasPermission("festival") || $player->hasPermission("festival.access")){
             return true;
@@ -1782,9 +1965,14 @@ class Festival extends PluginBase implements Listener{
         if( $i == 259 && $b != 46 && !$this->canBurn( $position ) ){ // FLINT_AND_STEEL + not tnt
             return false;
         }
-        // edit flag for items - 199 itemframe, dirt & grass + items for farm events
+
+        // edit flag for interaction with items -
+        // 199 itemframe
+        // painting 321 - added version 2.0.1
+        // dirt & grass + items for farm events
+        // $tile = $player->getLevel()->getTile($block); $tile instanceof PaintingItem ||
         $o = true;
-        if( ( $b == 199 || ( ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294 ) ) ) && !$this->canEdit($player, $block) ){
+        if( ( $b == 199 || $i == 321 ||  ( ( $b == 2 || $b == 3) && ( $i == 290 || $i == 291 || $i == 292 || $i == 293 || $i == 294  ) ) ) && !$this->canEdit($player, $block) ){
             $o = false;
         }
         return $o;
@@ -1852,10 +2040,10 @@ class Festival extends PluginBase implements Listener{
                         $area = $this->areas[$areaname];
                         if( $area->getPriority() >= $priority ){
                             $priority = $area->getPriority();
-                            if($area->getFlag("falldamage")){
+                            if($area->getFlag("fall")){
                                 $o = false;
                             }
-                            if(!$area->getFlag("falldamage") && $f){
+                            if(!$area->getFlag("fall") && $f){
                                 $o = true;
                             }
                             if($area->isWhitelisted($playername)){
@@ -1881,6 +2069,7 @@ class Festival extends PluginBase implements Listener{
         $o = true;
         $god = false;
         if($ev instanceof EntityDamageByEntityEvent){
+
             if($ev->getEntity() instanceof Player && $ev->getDamager() instanceof Player){
                 $entity = $ev->getEntity();
                 $p = ( (isset($this->levels[strtolower($entity->getLevel()->getName())]) && $this->levels[strtolower($entity->getLevel()->getName())]->getOption("levelcontrol") != "off" ) ? $this->levels[strtolower($entity->getLevel()->getName())]->getFlag("pvp") : $this->config["defaults"]["pvp"]);
@@ -1908,10 +2097,12 @@ class Festival extends PluginBase implements Listener{
                     }
                 }
             }
+
+
         }
         if( !$o ){
             $player = $ev->getDamager();
-            if( $this->skippTime( 2, strtolower($player->getName()) ) ){
+            if( $this->skippTime( 2, strtolower($player->getName()) )  ){
                 if( $god ){
                     $this->areaMessage( Language::translate("all-players-are-save"), $player );
                 }else{
@@ -1931,6 +2122,7 @@ class Festival extends PluginBase implements Listener{
 	public function canDamage(EntityDamageEvent $ev) : bool{
 
         if($ev->getEntity() instanceof Player){
+
 			$player = $ev->getEntity();
 			$playerName = strtolower($player->getName());
 			if( !$this->canGetHurt( $player ) ){
@@ -1956,8 +2148,11 @@ class Festival extends PluginBase implements Listener{
 				$ev->setCancelled();
                 return false;
 			}
+
 		}
+
         return true;
+
     }
 
 
@@ -1968,7 +2163,7 @@ class Festival extends PluginBase implements Listener{
     public function checkPlayerFlying(Player $player){
         $fly = true;
         $sendmsg = false;
-        $falldamage = false;
+        $nofalldamage = false;
 		$position = $player->getPosition();
         $playername = strtolower($player->getName());
         $priority = 0;
@@ -1994,8 +2189,8 @@ class Festival extends PluginBase implements Listener{
                         if( $area->isWhitelisted( $playername ) ){
                             $fly = true;
                         }
-                        if( $area->getFlag("falldamage") ){
-                            $falldamage = true;
+                        if( $area->getFlag("fall") ){
+                            $nofalldamage = true;
                         }
                     }
                 }
@@ -2012,8 +2207,8 @@ class Festival extends PluginBase implements Listener{
 
         $msg = '';
         if( !$fly && $player->isFlying() ){
-            if( $falldamage ){
-            $this->playerTP[ strtolower( $player->getName() ) ] = true; // player tp active (fall save)
+            if( $nofalldamage ){
+                $this->playerTP[ strtolower( $player->getName() ) ] = true; // player tp active (fall save)
             }
             $player->setFlying(false);
             if( $sendmsg ){
