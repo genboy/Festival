@@ -1,3 +1,4 @@
+
 ## Festival 
 
 Create a festival with this custom area events plugin for Pocketmine Server:
@@ -25,7 +26,7 @@ If you like to use Festival consider [sharing your experience and issues](https:
 
 ## Overview
 
-### version 2.0.0 
+### version 2
 > - Festival Manager Menu (UI + select item) - or use the commands
 > - Cube AND Sphere area's set with diagonal, radius or diameter
 > - Area's  and Config  managed from menu
@@ -34,13 +35,18 @@ If you like to use Festival consider [sharing your experience and issues](https:
 > - Stretching area's up and down with y scaling
 > - Use priority number for overlapping area's
 
+### version 2.0.1 
+> - Turn on compass usage (in development)
+   User can select their area's (whitelisted) to set compass direction
+   Command can be used to set any area compass direction on area event
+
 **Download development version**: 
 [Poggit development](https://poggit.pmmp.io/ci/genboy/Festival/Festival)
 Please report bugs -thank you! [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
 
 or use [devtools plugin](https://poggit.pmmp.io/p/DevTools/1.13.0) and [download zip package https://github.com/genboy/Festival/archive/master.zip](https://github.com/genboy/Festival/archive/master.zip)
 
-**Festival version 2.0.0 Install**: 
+**Festival version 2 Install**: 
 *(always save copies of your previous used config.yml and areas.json before re-install)*
 1. place phar file or unzipped Festival folder with (Devtools pluginfolder) in server plugins folder and restart, 
 2. after restart;
