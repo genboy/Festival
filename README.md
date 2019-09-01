@@ -1,4 +1,5 @@
 
+
 ## Festival 
 
 Create a festival with this custom area events plugin for Pocketmine Server:
@@ -16,7 +17,7 @@ Stable version
 [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
 
 
-![Festival 2.0.1 Command usage](https://genboy.net/wp-content/uploads/2019/08/festival_usage_v2.0.1.png)
+![Festival 2.1.0 Command usage](https://genboy.net/wp-content/uploads/2019/09/festival_usage_v2.1.0.png)
 
 If you like to use Festival consider [sharing your experience and issues](https://github.com/genboy/Festival/issues) to fix any usability problems before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1)! That way it will improve Festival, my coding skills, your Pocketmine-MP insights and strenghten the PMMP community, thank you!
  
@@ -35,8 +36,11 @@ If you like to use Festival consider [sharing your experience and issues](https:
 > - Stretching area's up and down with y scaling
 > - Use priority number for overlapping area's
 
-### version 2.0.1 
-> - Turn on compass usage (in development)
+### version 2.1.0 
+>  Mob/animal flag Slapper fix to remain on restart
+>  Edit flag protects paintings
+>  Fall flag bug fix
+>  Turn on compass usage (in development)
    User can select their area's (whitelisted) to set compass direction
    Command can be used to set any area compass direction on area event
 
@@ -276,7 +280,7 @@ Manage Festival configuration options and set default flags
   - using ingame Festival Menu (UI) for configurations
   - older versions (1.1.3) read [wiki on configurations](https://github.com/genboy/Festival/wiki/2.-Install,-Configure-&-Update)
 
-![Festival 2.0.1 Command usage](https://genboy.net/wp-content/uploads/2019/08/festival_usage_v2.0.1.png) 
+![Festival 2.1.0 Command usage](https://genboy.net/wp-content/uploads/2019/09/festival_usage_v2.1.0.png) 
 
 
 #### Setup
@@ -422,6 +426,9 @@ Manage Festival configuration options and set default flags
 	
     /fe whitelist <AREANAME> <add/list/remove(del,delete)> <PLAYERNAME>
 
+#### Set compass
+		
+	/fe compass <AREANAME/(reset/spawn)>
 
 #### Area event commands
 
@@ -442,7 +449,7 @@ Manage Festival configuration options and set default flags
     /fe command <AREANAME> <add/list/edit/event*/del> <COMMANDID> <COMMANDSTRING/enter*/leave*/center*> 
  
 	
-#### Add a command:
+   ##### Add a command:
 
 	/fe command <AREANAME> add <COMMANDID> <COMMANDSTRING>
 
@@ -450,19 +457,19 @@ Manage Festival configuration options and set default flags
 	  Using 'enter', 'center' or 'leave' instead of 'add' attaches the new command to 
 	  the given eventtype: i.e. /fe command <areaname> center <commandid> <commandstring>
 
-#### List area commands:
+   ##### List area commands:
 	
 	/fe command <AREANAME> list
 		
-#### Edit command:
+   ##### Edit command:
 	
 	/fe command <AREANAME> edit <COMMANDID> <COMMANDSTRING>
 
-#### Change command event:
+   ##### Change command event:
 	 
 	/fe command <AREANAME> event <COMMANDID> <enter/center/leave>
 		
-#### Remove command:
+   ##### Remove command:
 	
 	/fe command <AREANAME> del <COMMANDID>
 
