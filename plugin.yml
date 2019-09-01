@@ -1,6 +1,6 @@
 name: Festival
 author: Genboy
-version: 2.0.1
+version: 2.1.0
 main: genboy\Festival\Festival
 load: POSTWORLD
 api: [3.0.0]
@@ -8,7 +8,7 @@ website: "https://github.com/genboy/Festival"
 commands:
   fe:
     description: "Allows you to manage Festival area's and events."
-    usage: "\n§dFestival Commands & options \n§bAcces Menu: §f/fe menu(ui/form) \n§bChoose language: §f/fe lang <en/nl/es/pl> \n§bToggle floating area titles: §f/fe titles \n§bSee area info at location: §f/fe <list/here> \n§5Create cube area: §f/fe pos1 §6select 1 corner, §f/fe pos2 §6select opposite diagonal corner and §f/fe create <AREANAME> §6to name the area. \n§5Create sphere area: §f/fe pos1 §6select radius or diameter start, §f/fe rad(darius) §6select radius distance or §f/fe dia(diameter) §6select diameter direction and distance and §f/fe create <AREANAME> §6to name the area. \n§6Delete area: §f/fe del(delete) <AREANAME> \n§9Flags: §fhurt, pvp, flight, edit, touch, mobs, animals, effects, msg, pass, drop, tnt, fire, explode, shoot, hunger, perms, fall, cmd \n§9Toggle area flags: §f/fe <FLAGNAME> <AREANAME> \n§5Add an area event command: \n§f/fe command <AREANAME> <add/enter/center/leave> <COMMANDID> <COMMANDSTRING> \n§5Edit or delete command: \n§f/fe command <AREANAME> <(edit)/del> <COMMANDID> (<COMMANDSTRING>) \n§5Change command event: \n§f/fe command <AREANAME> event <COMMANDID> <enter/center/leave> \n§5Whitelist players: \n§f/fe whitelist <AREANAME> <add/remove> <PLAYERNAME> \n§5Area Priority level: \n§f/fe priority <AREANAME> set <numberINT> \n§5Area y-scaling: \n§f/fe scale <AREANAME> <up/down> <1-9998> (0 = default, 9999 = infinite)"
+    usage: "\n§dFestival Commands & options \n§bAcces Menu: §f/fe menu(ui/form) \n§bChoose language: §f/fe lang <en/nl/es/pl> \n§bToggle floating area titles: §f/fe titles \n§bSee area info at location: §f/fe <list/here> \n§5Create cube area: §f/fe pos1 §6select 1 corner, §f/fe pos2 §6select opposite diagonal corner and §f/fe create <AREANAME> §6to name the area. \n§5Create sphere area: §f/fe pos1 §6select radius or diameter start, §f/fe rad(darius) §6select radius distance or §f/fe dia(diameter) §6select diameter direction and distance and §f/fe create <AREANAME> §6to name the area. \n§6Delete area: §f/fe del(delete) <AREANAME> \n§9Flags: §fhurt, pvp, flight, edit, touch, mobs, animals, effects, msg, pass, drop, tnt, fire, explode, shoot, hunger, perms, fall, cmd \n§9Toggle area flags: §f/fe <FLAGNAME> <AREANAME> \n§5Add an area event command: \n§f/fe command <AREANAME> <add/enter/center/leave> <COMMANDID> <COMMANDSTRING> \n§5Edit or delete command: \n§f/fe command <AREANAME> <(edit)/del> <COMMANDID> (<COMMANDSTRING>) \n§5Change command event: \n§f/fe command <AREANAME> event <COMMANDID> <enter/center/leave> \n§5Whitelist players: \n§f/fe whitelist <AREANAME> <add/remove> <PLAYERNAME> \n§5Area Priority level: \n§f/fe priority <AREANAME> set <numberINT> \n§5Area y-scaling: \n§f/fe scale <AREANAME> <up/down> <1-9998> (0 = default, 9999 = infinite) \n§5Use compass: §f/fe compass <areaname/reset>"
     permission: festival.command.fe
 permissions:
   festival:
