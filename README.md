@@ -1,7 +1,6 @@
 
 
-
-## Festival
+## Festival 
 
 Create a festival with this custom area events plugin for Pocketmine Server:
 ###  Manage area's and run commmands attachted to area events. 
@@ -18,7 +17,7 @@ Stable version
 [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
 
 
-![Festival 2.0.0 Command usage](https://genboy.net/wp-content/uploads/2019/07/festival_usage_v2.0.0-release.png)
+![Festival 2.1.0 Command usage](https://genboy.net/wp-content/uploads/2019/09/festival_usage_v2.1.0.png)
 
 If you like to use Festival consider [sharing your experience and issues](https://github.com/genboy/Festival/issues) to fix any usability problems before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1)! That way it will improve Festival, my coding skills, your Pocketmine-MP insights and strenghten the PMMP community, thank you!
  
@@ -28,7 +27,7 @@ If you like to use Festival consider [sharing your experience and issues](https:
 
 ## Overview
 
-### version 2.0.0 
+### version 2
 > - Festival Manager Menu (UI + select item) - or use the commands
 > - Cube AND Sphere area's set with diagonal, radius or diameter
 > - Area's  and Config  managed from menu
@@ -37,13 +36,13 @@ If you like to use Festival consider [sharing your experience and issues](https:
 > - Stretching area's up and down with y scaling
 > - Use priority number for overlapping area's
 
-**Management UI in game**: 
-command **hold magic item** or ** /fe menu** (ui, form, data)
-( default magic item 201 - Purpur Pillar block - change in config management) 
-When using the form you need to **use the magic item to tab area positions**.
-You can swapp item to build during area position 1 and 2 selection.
-
-Or use the commands as shown in the usage image (now with Multi wORd FULLY CapitAlized nameS possible) 
+### version 2.1.0 
+>  Mob/animal flag Slapper fix to remain on restart
+>  Edit flag protects paintings
+>  Fall flag bug fix
+>  Turn on compass usage (in development)
+   User can select their area's (whitelisted) to set compass direction
+   Command can be used to set any area compass direction on area event
 
 **Download development version**: 
 [Poggit development](https://poggit.pmmp.io/ci/genboy/Festival/Festival)
@@ -51,8 +50,7 @@ Please report bugs -thank you! [issues @ github](https://github.com/genboy/Festi
 
 or use [devtools plugin](https://poggit.pmmp.io/p/DevTools/1.13.0) and [download zip package https://github.com/genboy/Festival/archive/master.zip](https://github.com/genboy/Festival/archive/master.zip)
 
-
-**Festival version 2.0.0 Install**: 
+**Festival version 2 Install**: 
 *(always save copies of your previous used config.yml and areas.json before re-install)*
 1. place phar file or unzipped Festival folder with (Devtools pluginfolder) in server plugins folder and restart, 
 2. after restart;
@@ -62,6 +60,25 @@ and put your config.yml and areas.json in Festival (root) folder
 3. Then restart again, now areas.json, levels.json and config.json in Festival (root) folder are used.
 
 ( or download latest stable version [@ poggit https://poggit.pmmp.io/p/Festival](https://poggit.pmmp.io/p/Festival) - no Festival menu, only command usage)
+
+**Management UI in game**: 
+command **hold magic item** or ** /fe menu** (ui, form, data)
+( default magic item 201 - Purpur Pillar block - change in config management) 
+When using the form you need to **use the magic item to tab area positions**.
+You can swapp item to build/break during area position 1 and 2 selection.
+
+Or use the commands as shown in the usage image (now with Multi wORd FULLY CapitAlized nameS possible) 
+
+  **Create area** with **menu**:  
+ 
+    You can use cmd '/fe menu' or just hold the magic item (purpur block/your selected item/block). Then if you choose create area you should tab the positions with the magic item.  
+    After tab pos1 you may use other blocks to build etc. and then hold the magic item again to tab pos2. Directly after tab pos2 the menu should come back to name your area.
+
+ **Create area** with **commands**:  
+    
+    Use /fe pos1 and /fe pos2 to tab the positions, after pos2 you need '/fe create area ' to finnish the area creation.  
+    
+Here after both commands and menu can be used to manage the area.  
 
 ---
 ## Info
@@ -90,7 +107,7 @@ In version 2.0.0 the Festival Management Menu (FormUI) is introduced
       - **radius** for sphere
       - **diameter** for sphere
     - Scale area's verticaly up and down 
-    - create/delete/list area’s
+    - create/rename/delete/list area’s
     - add area description
     - whitelist players for the area
     - tp to an area
@@ -235,6 +252,8 @@ Create area with Name (and description)
 
 #### Levels
 
+Turn on level flag control to use the level flags (instead of defaults)
+![festival-use-level-flags](https://user-images.githubusercontent.com/30810841/63712056-291f7b00-c83d-11e9-9209-2dbb66c163fe.gif)
 
 Select level to manage flags (if levelcontrol config is on)
 
@@ -246,6 +265,9 @@ Manage level flags options
 ![Edit level flags(defaults)](https://genboy.net/wp-content/uploads/2019/06/manage_level_flags2.jpg)
 
 #### Configuration
+UI configuration to set overall options and default flags for levels and area's
+![festival-set-configs-default-flags](https://user-images.githubusercontent.com/30810841/63712052-26bd2100-c83d-11e9-82f0-5ed7f03312f4.gif)
+
 
 Manage Festival configuration options and set default flags 
 
@@ -258,7 +280,7 @@ Manage Festival configuration options and set default flags
   - using ingame Festival Menu (UI) for configurations
   - older versions (1.1.3) read [wiki on configurations](https://github.com/genboy/Festival/wiki/2.-Install,-Configure-&-Update)
 
-![Festival 2.0.0 Command usage](https://genboy.net/wp-content/uploads/2019/07/festival_usage_v2.0.0-release.png) 
+![Festival 2.1.0 Command usage](https://genboy.net/wp-content/uploads/2019/09/festival_usage_v2.1.0.png) 
 
 
 #### Setup
@@ -404,6 +426,9 @@ Manage Festival configuration options and set default flags
 	
     /fe whitelist <AREANAME> <add/list/remove(del,delete)> <PLAYERNAME>
 
+#### Set compass
+		
+	/fe compass <AREANAME/(reset/spawn)>
 
 #### Area event commands
 
@@ -424,7 +449,7 @@ Manage Festival configuration options and set default flags
     /fe command <AREANAME> <add/list/edit/event*/del> <COMMANDID> <COMMANDSTRING/enter*/leave*/center*> 
  
 	
-#### Add a command:
+   ##### Add a command:
 
 	/fe command <AREANAME> add <COMMANDID> <COMMANDSTRING>
 
@@ -432,19 +457,19 @@ Manage Festival configuration options and set default flags
 	  Using 'enter', 'center' or 'leave' instead of 'add' attaches the new command to 
 	  the given eventtype: i.e. /fe command <areaname> center <commandid> <commandstring>
 
-#### List area commands:
+   ##### List area commands:
 	
 	/fe command <AREANAME> list
 		
-#### Edit command:
+   ##### Edit command:
 	
 	/fe command <AREANAME> edit <COMMANDID> <COMMANDSTRING>
 
-#### Change command event:
+   ##### Change command event:
 	 
 	/fe command <AREANAME> event <COMMANDID> <enter/center/leave>
 		
-#### Remove command:
+   ##### Remove command:
 	
 	/fe command <AREANAME> del <COMMANDID>
 

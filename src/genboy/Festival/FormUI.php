@@ -17,6 +17,8 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
 use pocketmine\utils\TextFormat;
 
+use pocketmine\network\mcpe\protocol\SetSpawnPositionPacket;
+
 class FormUI{
 
     private $plugin;
@@ -601,6 +603,7 @@ class FormUI{
                         }else{
                             $area->setWhitelisted($nm,false);
                         }
+                        $c++;
                     }
                     $this->areaWhitelistForm( $sender, false, Language::translate("ui-area-whitelist-saved") );
 
@@ -856,11 +859,36 @@ class FormUI{
                     if(  $data["levelcontrol"] == true){
                         $newlevelcontrol = "on";
                     }
+
                     $lvl->setOption( "levelcontrol", $newlevelcontrol );
                     unset( $data["levelcontrol"] );
 
+                    $newcompassoption = "off";
+
+                    if(  $data["compass"] == true){
+
+                        $newcompassoption = "on";
+
+                    }else{
+
+                       // reset compass to spawn
+                        $sender->sendMessage('Compass level reset' );
+                        $pk = new SetSpawnPositionPacket();
+                        $target = $sender->getLevel()->getSafeSpawn();
+                        $pk->x = $target->x;
+                        $pk->y = $target->y;
+                        $pk->z = $target->z;
+                        $pk->spawnType = SetSpawnPositionPacket::TYPE_WORLD_SPAWN;
+                        $pk->spawnForced = true;
+                        $sender->sendDataPacket($pk);
+
+                    }
+
+                    $lvl->setOption( "compass", $newcompassoption );
+                    unset( $data["compass"] );
+
                     $flagset = $lvl->getFlags();
-                    $c = 3;
+                    $c = 4;
                     foreach( $flagset as $nm => $set){
                         if( isset( $data[$c] ) ){
                             $lvl->setFlag( $nm, $data[$c] );
@@ -897,8 +925,14 @@ class FormUI{
             if( $optionset["levelcontrol"] === true || $optionset["levelcontrol"] == "on"){
                 $levelcontrol = true;
             }
-            //$form->addToggle( Language::translate("ui-config-flight-control"), $flightcontrol, "flightcontrol" );
             $form->addToggle( Language::translate("ui-toggle-flag-control"), $levelcontrol, "levelcontrol" );
+
+            $compass = false;
+            if( isset($optionset["compass"]) && ( $optionset["compass"] === true || $optionset["compass"] == "on" ) ){
+                $compass = true;
+            }
+            $form->addToggle( "Use compass directions", $compass, "compass" );
+
 
             $form->addLabel( Language::translate("ui-subtitle-level-flags") );
 
@@ -960,5 +994,88 @@ class FormUI{
         }
         $form->addDropdown( Language::translate("ui-tp-to-area") , $selectlist );
         $form->sendToPlayer($sender);
+    }
+
+    /** compassAreaForm
+     * @class formUI
+	 * @param Player $sender
+     */
+    public function compassAreaForm( Player $sender ) : void {
+        $form = new CustomForm( function ( Player $sender, ?array $data ) {
+            if( $data === null){
+                return;
+            }
+            //var_dump($data);
+            if( isset( $data[0] ) ){
+                $selectlist = array();
+                $currentlevel = strtolower( $sender->getPosition()->getLevel()->getName() );
+                foreach($this->plugin->areas as $area){
+                    if( $sender->isOp() || $sender->hasPermission("festival") || $sender->hasPermission("festival.access") || $area->isWhitelisted( strtolower( $sender->getName() ) ) ){
+                        if( $area->getLevelName() == $currentlevel ){
+                            $selectlist[] = $area->getName();
+                        }
+                    }
+                }
+                if( $data[0] == 0 ){
+
+                    $sender->sendMessage('Selected world spawnpoint' );
+                    $pk = new SetSpawnPositionPacket();
+                    $target = $sender->getLevel()->getSafeSpawn();
+                    $pk->x = $target->x;
+                    $pk->y = $target->y;
+                    $pk->z = $target->z;
+                    $pk->spawnType = SetSpawnPositionPacket::TYPE_WORLD_SPAWN;
+                    $pk->spawnForced = true;
+                    $sender->sendDataPacket($pk);
+
+                }else if(  $selectlist[ $data[0] - 1 ] ){
+
+                    $areaname = $selectlist[ $data[0] - 1 ];
+                    if( isset( $this->plugin->areas[ $areaname ] ) ){
+
+                        $area = $this->plugin->areas[ $areaname ];
+                        if( null !== $area->getRadius() && $area->getRadius() > 0 && null !== $area->getFirstPosition()  ){
+                            $cx = $area->getFirstPosition()->getX();
+                            $cy = $area->getFirstPosition()->getY();
+                            $cz = $area->getFirstPosition()->getZ();
+                        }else if( null !== $area->getFirstPosition() && null !== $area->getSecondPosition() ){
+                            $cx = $area->getSecondPosition()->getX() + ( ( $area->getFirstPosition()->getX() - $area->getSecondPosition()->getX() ) / 2 );
+                            $cy = $sender->getPosition()->getY();
+                            $cz = $area->getSecondPosition()->getZ() + ( ( $area->getFirstPosition()->getZ() - $area->getSecondPosition()->getZ() ) / 2 );
+                        }
+
+                        if( isset($cx) && isset($cy) && isset($cz) ){
+                            $sender->sendMessage('Selected '. $areaname ); // Server::getInstance()->dispatchCommand($sender, "fe tp ".$areaname );
+                            $pk = new SetSpawnPositionPacket();
+                            $pk->spawnType = SetSpawnPositionPacket::TYPE_WORLD_SPAWN;
+                            $pk->x = (int) $cx;
+                            $pk->y = (int) $cy;
+                            $pk->z = (int) $cz;
+                            $pk->spawnForced = false;
+                            $sender->dataPacket($pk);
+                        }else{
+                            $sender->sendMessage( 'Direction could not be set on compass' );
+                        }
+
+                    }else{
+                         $sender->sendMessage( 'Selected area could not be found' );
+                    }
+                }
+            }
+        });
+
+        $form->setTitle( "Set compass direction" );
+        $selectlist = array();
+        $currentlevel = strtolower( $sender->getPosition()->getLevel()->getName() );
+        $selectlist[] = "World spawnpoint (default)";
+        foreach($this->plugin->areas as $area){
+            if( $sender->isOp() || $sender->hasPermission("festival") || $sender->hasPermission("festival.access") || $area->isWhitelisted( strtolower( $sender->getName() ) ) ){
+                if( $area->getLevelName() == $currentlevel ){
+                    $selectlist[] = $area->getName();
+                }
+            }
+        }
+        $form->addDropdown( "Set compass direction" , $selectlist ); // Language::translate("Set compass direction")
+        $form->sendToPlayer( $sender );
     }
 }
