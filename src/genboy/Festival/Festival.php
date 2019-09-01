@@ -25,6 +25,7 @@ use pocketmine\entity\object\ExperienceOrb;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\entity\object\FallingBlock;
 use pocketmine\entity\object\FallingSand;
+use pocketmine\entity\object\Painting;
 use pocketmine\entity\object\PrimedTNT;
 use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\projectile\Projectile;
@@ -1629,13 +1630,6 @@ class Festival extends PluginBase implements Listener{
     }
 
 
-    public function onBreak( $item){
-
-        if( $item->getID() == 321 ){
-            $this->areaMessage( "No fun with paintings!" , $player );
-        }
-        //return $this->getLevel()->setBlock($this, new Air(), true, true);
-	}
 
 
     /** onBlockUpdate
@@ -1794,6 +1788,24 @@ class Festival extends PluginBase implements Listener{
         }
 
     }
+
+	/** Entity/Item hit (protect paintings)
+	 * @param EntityDamageEvent $event
+	 * @ignoreCancelled true
+	 */
+     public function onHit(EntityDamageEvent $event)
+     {
+         if ($event instanceof EntityDamageByEntityEvent) {
+             $target = $event->getEntity();
+             $player = $event->getDamager();
+             $pos = $player->getPosition();
+             if ($target instanceof Painting && !$this->canEdit($player, $pos )){
+                //$event->getDamager()->sendTip("You hit a painting");
+                $event->setCancelled();
+			    return;
+             }
+         }
+     }
 
 	/** Item drop
 	 * @param itemDropEvent $event
@@ -2125,6 +2137,7 @@ class Festival extends PluginBase implements Listener{
 
 			$player = $ev->getEntity();
 			$playerName = strtolower($player->getName());
+
 			if( !$this->canGetHurt( $player ) ){
                 if( $player->isOnFire() ){
                     $player->extinguish(); // 1.0.7-dev
