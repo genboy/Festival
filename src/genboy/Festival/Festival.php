@@ -261,7 +261,7 @@ class Festival extends PluginBase implements Listener{
             break;
             case "titles":
 				if( $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->isOp() || $this->isWhitelisted($sender) ){
-                    if( $this->config["options"]["msgdisplay"] == 'op' ||  $this->config["options"]["msgdisplay"] == 'on' ){
+                    if( $this->config["options"]["areatitledisplay"] == 'op' ||  $this->config["options"]["areatitledisplay"] == 'on' ){
                         if( isset($this->areaTitles[strtolower($sender->getName())]) && count($this->areaTitles[strtolower($sender->getName())]) > 0 ){
                             foreach($this->areas as $area){
                                 $this->hideAreaTitle( $sender, $sender->getPosition()->getLevel(), $area );
@@ -2248,6 +2248,11 @@ class Festival extends PluginBase implements Listener{
     public function canEntitySpawn( Entity $e ): bool{
 
         $o = true;
+
+        if( $this->helper->isPluginLoaded( "MysteryBox" ) && $e instanceof MysterySkull ){
+              return $o;
+        }
+
         if( // what entities are always allowed
             $e instanceof FallingBlock // FallingBlock (Sand,Gravel, Water, Lava? )// $e instanceof FallingSand
             || $e instanceof PrimedTNT
@@ -2256,8 +2261,7 @@ class Festival extends PluginBase implements Listener{
             || $e instanceof Projectile
             || $e instanceof FloatingTextParticle
             //|| $e instanceof mysterybox\entity\MysterySkull // https://github.com/CubePM/MysteryBox/blob/master/src/mysterybox/entity/MysterySkull.php
-
-            || $e->getSaveId() === "Slapper"  // https://forums.pmmp.io/threads/cleaning-entities.3759/
+            || ( null !== $e->getSaveId() && $e->getSaveId() === "Slapper")  // https://forums.pmmp.io/threads/cleaning-entities.3759/
             || $e instanceof SlapperEntity // https://github.com/jojoe77777/Slapper
             || $e instanceof Human
             || $e instanceof SlapperHuman
@@ -2977,10 +2981,10 @@ class Festival extends PluginBase implements Listener{
 	 * @return bool
 	 */
 	public function msgOpDsp( $area, $player ){
-		if( isset( $this->config["options"]['Msgdisplay'] ) && $player->isOp() ){
-			if( $this->config["options"]['Msgdisplay'] == 'on' ){
+		if( isset( $this->config["options"]['msgdisplay'] ) && $player->isOp() ){
+			if( $this->config["options"]['msgdisplay'] == 'on' ){
 				return true;
-			}else if( $this->config["options"]['Msgdisplay'] == 'op' && $area->isWhitelisted(strtolower($player->getName())) ){
+			}else if( $this->config["options"]['msgdisplay'] == 'op' && $area->isWhitelisted(strtolower($player->getName())) ){
 				return true;
 			}else{
 				return false;
@@ -3101,9 +3105,9 @@ class Festival extends PluginBase implements Listener{
         foreach($this->areas as $area){
             $this->hideAreaTitle( $player, $level, $area );
             if( $level->getName() == $area->getLevelName() &&
-               (( $this->config["options"]["msgdisplay"] == 'on' && ( !$area->getFlag("msg") || $area->isWhitelisted( strtolower( $player->getName() ) ) ) ) ||
-                ( $this->config["options"]["msgdisplay"] == 'op' && ( $player->isOp() || $area->isWhitelisted( strtolower( $player->getName() ) ) )
-                ))){
+               (( $this->config["options"]["areatitledisplay"] == 'on' && ( !$area->getFlag("msg") || $area->isWhitelisted( strtolower( $player->getName() ) ) ) ) ||
+                ( $this->config["options"]["areatitledisplay"] == 'op' && $player->isOp()  ) // || $area->isWhitelisted( strtolower( $player->getName() ) )
+                )){
                 $this->placeAreaTitle( $player, $level, $area );
             }
         }
