@@ -75,8 +75,6 @@ class Festival extends PluginBase implements Listener{
 	/** @var Area[] */
 	public $areas          = [];   // list of area objects
 
-
-
 	/** @var array[]
      * list of playernames with areanames they're in
      */
@@ -119,12 +117,17 @@ class Festival extends PluginBase implements Listener{
 	 * @return $this
 	 */
 	public function onEnable() : void{
+
         $this->getServer()->getPluginManager()->registerEvents($this, $this); // Load data & configurations
+
         $this->helper = new Helper($this);
         $this->form = new FormUI($this);
+
         $this->dataSetup();
+
         $this->getLogger()->info( "Genboy copyright 2019" );
 	}
+
     /** dataSetup
 	 * @class Helper
 	 * @func Helper getSource
@@ -158,6 +161,7 @@ class Festival extends PluginBase implements Listener{
         $this->helper->saveDataSet( "config", $this->config );
         $this->loadLanguage( $this->config["options"]["lang"] );
         $this->getLogger()->info( $o );
+
         /// check levels
         if( !$this->helper->loadLevels() || empty( $this->levels ) ){
             $this->helper->loadDefaultLevels();
@@ -169,11 +173,7 @@ class Festival extends PluginBase implements Listener{
         /** console output */
         $this->getLogger()->info( Language::translate("enabled-console-msg") );
         return true;
-
     }
-
-
-
 
     /** load language ( v1.0.7.7-dev )
 	 * @var plugin config[]
@@ -2608,7 +2608,7 @@ class Festival extends PluginBase implements Listener{
         }
         if( $m && !$o ){ // 'ínline' message method
             $msg = TextFormat::RED . Language::translate("no-shoot-area"). "!"; // NO Shooting here
-            $player->areaMessage( $msg );
+            $this->areaMessage( $msg , $player );
         }
 		return $o;
 
@@ -2707,7 +2707,7 @@ class Festival extends PluginBase implements Listener{
 		$player = $ev->getPlayer();
 		if( $this->msgOpDsp( $area, $player ) ){
 			$msg = TextFormat::WHITE . $area->getName(). TextFormat::RED . " " . Language::translate("enter-barrier-area");
-			$player->areaMessage( $msg );
+			$player->areaMessage( $msg, $player );
 		}
 		return;
 	}
