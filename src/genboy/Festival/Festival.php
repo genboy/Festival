@@ -2112,6 +2112,7 @@ class Festival extends PluginBase implements Listener{
 
 
         }
+
         if( !$o ){
             $player = $ev->getDamager();
             if( $this->skippTime( 2, strtolower($player->getName()) )  ){
@@ -2123,6 +2124,7 @@ class Festival extends PluginBase implements Listener{
 			}
         }
 		return $o;
+
     }
 
 
@@ -2156,11 +2158,17 @@ class Festival extends PluginBase implements Listener{
 				$ev->setCancelled();
                 return false;
 			}
+
 			if( isset($this->playerTP[$playerName]) && $this->playerTP[$playerName] == true ){
 				unset( $this->playerTP[$playerName] ); //$this->areaMessage( 'Fall save off', $player );
 				$ev->setCancelled();
                 return false;
 			}
+
+            if(!$this->hasFallDamage($player)){
+                $ev->setCancelled(); //$this->areaMessage( 'No Fall damage :) ', $player );
+                return false;
+            }
 
 		}
 
