@@ -772,7 +772,7 @@ class Festival extends PluginBase implements Listener{
 
                 if( $name == "r" || $name == "reset" || $name == "spawn" || $name == "worldspawn" ){
 
-                    $o = TextFormat::GREEN .'Compass direction set to world spawnpoint';
+                    $o = TextFormat::GREEN . Language::translate("compass-dir-wsp"); //'Compass direction set to world spawnpoint';
                     $pk = new SetSpawnPositionPacket();
                     $target = $sender->getLevel()->getSafeSpawn();
                     $pk->x = $target->x;
@@ -800,7 +800,7 @@ class Festival extends PluginBase implements Listener{
                         }
 
                         if( isset($cx) && isset($cy) && isset($cz) ){
-                            $o = TextFormat::GREEN . 'Compass direction set to area  '. $name; // Server::getInstance()->dispatchCommand($sender, "fe compass ".$areaname );
+                            $o = TextFormat::GREEN . Language::translate("compass-dir-area") . $name; // Server::getInstance()->dispatchCommand($sender, "fe compass ".$areaname );
                             $pk = new SetSpawnPositionPacket();
                             $pk->spawnType = SetSpawnPositionPacket::TYPE_WORLD_SPAWN;
                             $pk->x = (int) $cx;
@@ -809,15 +809,16 @@ class Festival extends PluginBase implements Listener{
                             $pk->spawnForced = false;
                             $sender->dataPacket($pk);
                         }else{
-                            $o = TextFormat::RED . 'Direction could not be set on compass';
+                            $o = TextFormat::RED . Language::translate("compass-dir-notset");
                         }
                     }else{
-                        $o = TextFormat::WHITE . "In this world " . Language::translate("the-area"). " " . TextFormat::RED . implode(" ", array_slice($args, 1, 20)) .
+                        $o = TextFormat::WHITE . Language::translate("compass-inthisworld") . Language::translate("the-area"). " " . TextFormat::RED . implode(" ", array_slice($args, 1, 20)) .
                         " ". TextFormat::WHITE . Language::translate("cannot-be-found");
                     }
 
                 }else{
-                    $list = $this->listAllAreas();
+                    $currentlevel = strtolower( $sender->getPosition()->getLevel()->getName() );
+                    $list = $this->listAllAreas( $currentlevel );
                     $o = TextFormat::WHITE . Language::translate("the-area"). " " . TextFormat::RED . implode(" ", array_slice($args, 1, 20)) .
                         " ". TextFormat::WHITE . Language::translate("cannot-be-found"). " " . TextFormat::GREEN . $list;
                 }
@@ -2112,6 +2113,7 @@ class Festival extends PluginBase implements Listener{
 
 
         }
+
         if( !$o ){
             $player = $ev->getDamager();
             if( $this->skippTime( 2, strtolower($player->getName()) )  ){
@@ -2123,6 +2125,7 @@ class Festival extends PluginBase implements Listener{
 			}
         }
 		return $o;
+
     }
 
 
@@ -2156,11 +2159,17 @@ class Festival extends PluginBase implements Listener{
 				$ev->setCancelled();
                 return false;
 			}
+
 			if( isset($this->playerTP[$playerName]) && $this->playerTP[$playerName] == true ){
 				unset( $this->playerTP[$playerName] ); //$this->areaMessage( 'Fall save off', $player );
 				$ev->setCancelled();
                 return false;
 			}
+
+            if(!$this->hasFallDamage($player)){
+                $ev->setCancelled(); //$this->areaMessage( 'No Fall damage :) ', $player );
+                return false;
+            }
 
 		}
 
@@ -3009,15 +3018,18 @@ class Festival extends PluginBase implements Listener{
     /** List all area's
      * return
      */
-    public function listAllAreas(){
+    public function listAllAreas( $lvl = false ){
+
         if( count($this->areas) > 0 ){
-            $t = 'Area names: ';
+            $t = Language::translate("area-list") . ': '; // 'Area names: ';
             foreach($this->areas as $area){
-                if( !empty( $area->getName() ) ){
-                    $t .= $area->getName().', ';
+                if( $lvl == false || ( $lvl && $lvl == $area->getLevelName() ) ){
+                    if( !empty( $area->getName() ) ){
+                        $t .= $area->getName().', ';
+                    }
                 }
             }
-            return rtrim($t,',');
+            return rtrim($t, ', ');
         }else{
             return Language::translate("area-no-area-available");
         }
