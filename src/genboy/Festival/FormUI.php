@@ -872,7 +872,7 @@ class FormUI{
                     }else{
 
                        // reset compass to spawn
-                        $sender->sendMessage('Compass level reset' );
+                        $sender->sendMessage( Language::translate("compass-level-reset") );
                         $pk = new SetSpawnPositionPacket();
                         $target = $sender->getLevel()->getSafeSpawn();
                         $pk->x = $target->x;
@@ -931,7 +931,7 @@ class FormUI{
             if( isset($optionset["compass"]) && ( $optionset["compass"] === true || $optionset["compass"] == "on" ) ){
                 $compass = true;
             }
-            $form->addToggle( "Use compass directions", $compass, "compass" );
+            $form->addToggle( Language::translate("ui-compass-use-compass"), $compass, "compass" );
 
 
             $form->addLabel( Language::translate("ui-subtitle-level-flags") );
@@ -1018,7 +1018,7 @@ class FormUI{
                 }
                 if( $data[0] == 0 ){
 
-                    $sender->sendMessage('Selected world spawnpoint' );
+                    $sender->sendMessage( Language::translate("ui-compass-selected-wsp") );
                     $pk = new SetSpawnPositionPacket();
                     $target = $sender->getLevel()->getSafeSpawn();
                     $pk->x = $target->x;
@@ -1045,7 +1045,7 @@ class FormUI{
                         }
 
                         if( isset($cx) && isset($cy) && isset($cz) ){
-                            $sender->sendMessage('Selected '. $areaname ); // Server::getInstance()->dispatchCommand($sender, "fe tp ".$areaname );
+                            $sender->sendMessage( Language::translate("ui-compass-selected-this") . $areaname ); // Server::getInstance()->dispatchCommand($sender, "fe tp ".$areaname );
                             $pk = new SetSpawnPositionPacket();
                             $pk->spawnType = SetSpawnPositionPacket::TYPE_WORLD_SPAWN;
                             $pk->x = (int) $cx;
@@ -1054,20 +1054,20 @@ class FormUI{
                             $pk->spawnForced = false;
                             $sender->dataPacket($pk);
                         }else{
-                            $sender->sendMessage( 'Direction could not be set on compass' );
+                            $sender->sendMessage( Language::translate("compass-dir-notset") );
                         }
 
                     }else{
-                         $sender->sendMessage( 'Selected area could not be found' );
+                         $sender->sendMessage( Language::translate("ui-compass-not-found") );
                     }
                 }
             }
         });
 
-        $form->setTitle( "Set compass direction" );
+        $form->setTitle( Language::translate("ui-compass-title") );
         $selectlist = array();
         $currentlevel = strtolower( $sender->getPosition()->getLevel()->getName() );
-        $selectlist[] = "World spawnpoint (default)";
+        $selectlist[] = Language::translate("ui-compass-wsp-default");
         foreach($this->plugin->areas as $area){
             if( $sender->isOp() || $sender->hasPermission("festival") || $sender->hasPermission("festival.access") || $area->isWhitelisted( strtolower( $sender->getName() ) ) ){
                 if( $area->getLevelName() == $currentlevel ){
@@ -1075,7 +1075,7 @@ class FormUI{
                 }
             }
         }
-        $form->addDropdown( "Set compass direction" , $selectlist ); // Language::translate("Set compass direction")
+        $form->addDropdown( Language::translate("ui-compass-title") , $selectlist );
         $form->sendToPlayer( $sender );
     }
 }

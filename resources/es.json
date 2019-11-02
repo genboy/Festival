@@ -142,6 +142,19 @@
     "no-is-falldamage-flag": "Se usó la antigua configuración de NoFalldamage, ahora configurada en 'false'; por favor renombra 'NoFalldamage' por 'Falldamage' en config.yml",
     "option-see-configfile": "Por favor, vea configuraciones originales en /resources/config.yml",
 
+    "compass-dir-wsp": "Dirección de la brújula establecida en el punto de generación mundial",
+    "compass-dir-area": "Dirección de la brújula establecida en el área ",
+    "compass-dir-notset": "No se pudo establecer la dirección en la brújula",
+    "compass-inthisworld": "En este mundo ",
+    "compass-level-reset": "Restablecer nivel de brújula",
+
+    "ui-compass-title": "Establecer la dirección de la brújula",
+    "ui-compass-use-compass": "Usa la brújula del festival",
+    "ui-compass-selected-wsp": "Punto de generación mundial seleccionado",
+    "ui-compass-selected-this": "Seleccionada ",
+    "ui-compass-not-found": "El área seleccionada no se pudo encontrar",
+    "ui-compass-wsp-default": "Punto de generación mundial (predeterminado)",
+
     "ui-festival-manager": "Director del festival",
     "ui-new-area-setup": "Configuración de área nueva",
     "ui-select-an-option": "Seleccione una opción",
