@@ -10,11 +10,9 @@ Create a festival with this custom area events plugin for Pocketmine Server:
 ###### Copyright [Genboy](https://genboy.net) 2018 - 2019 
 --- 
 # Festival
-Stable version
+The Festival Plugin is released on poggit
 [![](https://poggit.pmmp.io/shield.state/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.api/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.dl.total/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.dl/Festival)](https://poggit.pmmp.io/p/Festival)
-
-
-[issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
+See and make [reviews @ poggit](https://poggit.pmmp.io/p/Festival) and post your [issues @ github](https://github.com/genboy/Festival/issues) - [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/genboy/Festival.svg)](http://isitmaintained.com/project/genboy/Festival "Average resolve time")  [![Percentage of issues still open](http://isitmaintained.com/badge/open/genboy/Festival.svg)](http://isitmaintained.com/project/genboy/Festival "Percentage open")
 
 
 ![Festival 2.1.0 Command usage](https://genboy.net/wp-content/uploads/2019/09/festival_usage_v2.1.0.png)
