@@ -142,6 +142,19 @@
     "no-is-falldamage-flag": "Użyto starej konfiguracji NoFalldamage, teraz ustawionej na 'false'; prosze zmienić nazwę 'NoFalldamage' na 'Falldamage' w config.yml",
     "option-see-configfile": "prosze zobaczyć oryginalne ustawienia w /resources/config.yml",
 
+    "compass-dir-wsp": "Kierunek kompasu ustawiony na świat spawnpoint",
+    "compass-dir-area": "Kierunek kompasu ustawiony na obszar ",
+    "compass-dir-notset": "Nie można ustawić kierunku kompasu",
+    "compass-inthisworld": "Na tym świecie ",
+    "compass-level-reset": "Resetowanie poziomu kompasu",
+
+    "ui-compass-title": "Ustaw kierunek kompasu",
+    "ui-compass-use-compass": "Użyj kierunków kompasu festiwalu",
+    "ui-compass-selected-wsp": "Wybrany świat spawnpoint",
+    "ui-compass-selected-this": "Wybrany ",
+    "ui-compass-not-found": "Nie można znaleźć wybranego obszaru",
+    "ui-compass-wsp-default": "Świat spawnpoint (domyślnie)",
+
     "ui-festival-manager": "Festival Manager",
     "ui-new-area-setup": "Nowa konfiguracja obszaru",
     "ui-select-an-option": "Wybierz opcję",

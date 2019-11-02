@@ -142,6 +142,19 @@
     "no-is-falldamage-flag": "Oude NoFalldamage config werd gebruikt, nu ingevuld als 'false'; a.u.b. hernoem'NoFalldamage' naar 'fall' in config.yml",
     "option-see-configfile": "a.u.b. bekijk de originele configuratie in /resources/config.yml",
 
+    "compass-dir-wsp": "Compas gericht naar world spawnpoint",
+    "compass-dir-area": "Compas gericht naar gebied ",
+    "compass-dir-notset": "De compass richting kan niet aangepast worden",
+    "compass-inthisworld": "In deze wereld  ",
+    "compass-level-reset": "Compas level reset",
+
+    "ui-compass-title": "Compas richting aanpassen",
+    "ui-compass-use-compass": "Gebruik festival compas richting",
+    "ui-compass-selected-wsp": "World spawnpoint geselecteerd",
+    "ui-compass-selected-this": "Geselecteerd: ",
+    "ui-compass-not-found": "Geselecteerde gebied is niet gevonden",
+    "ui-compass-wsp-default": "World spawnpoint (default)",
+
     "ui-festival-manager": "Festival Beheer",
     "ui-new-area-setup": "Nieuw gebied maken",
     "ui-select-an-option": "Kies een optie",

@@ -24,10 +24,10 @@ class Helper {
         if(!is_dir($this->plugin->getDataFolder())){
             @mkdir($this->plugin->getDataFolder());
 		}
+        // add resource folder for backwards compatibility
         if( !is_dir($this->plugin->getDataFolder().'resources') ){
-            @mkdir($this->plugin->getDataFolder().'resources');
+           @mkdir($this->plugin->getDataFolder().'resources');
 		}
-
     }
 
 
