@@ -1,23 +1,25 @@
-
-
 ## Festival 
 
 Create a festival with this custom area events plugin for Pocketmine Server:
-###  Manage area's and run commmands attachted to area events. 
+###  Create area's, manage flags and run commmands attachted to area events. 
+
+### [> New! Set compass to Area direction! (genboy.net)](https://genboy.net/minecraft) 
+[> Attach commands to area events! (genboy.net)](https://genboy.net/minecraft/festival)
+
 ( latest stable version [@ poggit https://poggit.pmmp.io/p/Festival](https://poggit.pmmp.io/p/Festival) )
 
-![Festival plugin logo large](https://genboy.net/wp-content/uploads/2018/02/festival_plugin_logo.png)
-###### Copyright [Genboy](https://genboy.net) 2018 - 2019 
+![Festival plugin logo large](https://genboy.net/minecraft/wp-content/uploads/2018/02/festival_plugin_logo.png)
+###### Copyright [Genboy](https://genboy.net/minecraft) 2018 - 2019 
 --- 
 # Festival
-Stable version
+The Festival Plugin is released on poggit
 [![](https://poggit.pmmp.io/shield.state/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.api/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.dl.total/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.dl/Festival)](https://poggit.pmmp.io/p/Festival)
 
+See and make [reviews @ poggit](https://poggit.pmmp.io/p/Festival) 
+and post your [issues @ github](https://github.com/genboy/Festival/issues) - [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/genboy/Festival.svg)](http://isitmaintained.com/project/genboy/Festival "Average resolve time")  [![Percentage of issues still open](http://isitmaintained.com/badge/open/genboy/Festival.svg)](http://isitmaintained.com/project/genboy/Festival "Percentage open")
 
-[issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
 
-
-![Festival 2.1.0 Command usage](https://genboy.net/wp-content/uploads/2019/09/festival_usage_v2.1.0.png)
+![Festival 2.1.0 Command usage](https://genboy.net/minecraft/wp-content/uploads/2019/11/festival_usage_v2.1.1.png)
 
 If you like to use Festival consider [sharing your experience and issues](https://github.com/genboy/Festival/issues) to fix any usability problems before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1)! That way it will improve Festival, my coding skills, your Pocketmine-MP insights and strenghten the PMMP community, thank you!
  
@@ -43,6 +45,12 @@ If you like to use Festival consider [sharing your experience and issues](https:
 >  Turn on compass usage (in development)
    User can select their area's (whitelisted) to set compass direction
    Command can be used to set any area compass direction on area event
+
+### version 2.1.1
+>  Place compass translations
+>  Full fix falldamage
+>  Debug areaMessages & config
+>  Fix typo's
 
 **Download development version**: 
 [Poggit development](https://poggit.pmmp.io/ci/genboy/Festival/Festival)
@@ -71,14 +79,13 @@ Or use the commands as shown in the usage image (now with Multi wORd FULLY Capit
 
   **Create area** with **menu**:  
  
-    You can use cmd '/fe menu' or just hold the magic item (purpur block/your selected item/block). Then if you choose create area you should tab the positions with the magic item.  
+   You can use cmd '/fe menu' or just hold the magic item (purpur block/your selected item/block). 
+    Then if you choose create area you should tab the positions with the magic item.  
     After tab pos1 you may use other blocks to build etc. and then hold the magic item again to tab pos2. Directly after tab pos2 the menu should come back to name your area.
 
  **Create area** with **commands**:  
     
-    Use /fe pos1 and /fe pos2 to tab the positions, after pos2 you need '/fe create area ' to finnish the area creation.  
-    
-Here after both commands and menu can be used to manage the area.  
+   Use /fe pos1 and /fe pos2 to tab the positions, after pos2 you need '/fe create area ' to finnish the area creation. After creation both commands and menu can be used to manage the area.  
 
 ---
 ## Info
@@ -166,39 +173,39 @@ In version 2.0.0 the Festival Management Menu (FormUI) is introduced
 
 **Festival main menu**
 
-![Start menu select management option](https://genboy.net/wp-content/uploads/2019/06/manager_start.jpg)
+![Start menu select management option](https://genboy.net/minecraft/wp-content/uploads/2019/06/manager_start.jpg)
 #### Teleport
 
 **Select teleport destination**
 
-![Select teleport destination](https://genboy.net/wp-content/uploads/2019/06/area_teleport_select.jpg)
+![Select teleport destination](https://genboy.net/minecraft/wp-content/uploads/2019/06/area_teleport_select.jpg)
 
 #### Areas
 
 **Area management option menu**
 
-![Area option menu](https://genboy.net/wp-content/uploads/2019/06/manager_area_options.jpg)
+![Area option menu](https://genboy.net/minecraft/wp-content/uploads/2019/06/manager_area_options.jpg)
 
 **Select area to manage**
 
-![Select area](https://genboy.net/wp-content/uploads/2019/06/manager_area_select.jpg)
+![Select area](https://genboy.net/minecraft/wp-content/uploads/2019/06/manager_area_select.jpg)
 
 **Manage area settings**
 
-![Edit area settings](https://genboy.net/wp-content/uploads/2019/06/manage_areas_settings.jpg)
+![Edit area settings](https://genboy.net/minecraft/wp-content/uploads/2019/06/manage_areas_settings.jpg)
 
 **Manage area flags**
 
-![Edit area flags](https://genboy.net/wp-content/uploads/2019/06/manager_area_options_end.jpg)
+![Edit area flags](https://genboy.net/minecraft/wp-content/uploads/2019/06/manager_area_options_end.jpg)
 
 **Manage area commands**
 
-![Manage commands for area events](https://genboy.net/wp-content/uploads/2019/07/cmds_1_Minecraft-27-1-2019-16_50_24.jpg)
+![Manage commands for area events](https://genboy.net/minecraft/wp-content/uploads/2019/07/cmds_1_Minecraft-27-1-2019-16_50_24.jpg)
 
 
 **Add command**
 
-![Edit or add commands to area](https://genboy.net/wp-content/uploads/2019/07/cmds_2.jpg)
+![Edit or add commands to area](https://genboy.net/minecraft/wp-content/uploads/2019/07/cmds_2.jpg)
 
 using the @p reference in the command to target the player 
 (/heal command is an example, comes from another plugin)
@@ -206,7 +213,7 @@ using the @p reference in the command to target the player
 
 **Del or change command** (by id) 
 
-![Edit or add commands to area](https://genboy.net/wp-content/uploads/2019/07/cmds_3.jpg)
+![Edit or add commands to area](https://genboy.net/minecraft/wp-content/uploads/2019/07/cmds_3.jpg)
 
 Delete: Leave command empty and input 'delete cmd id' to delete id linked command.
 Change: Set event type, enter command and input 'edit cmd id' to change that id linked command
@@ -214,24 +221,24 @@ Change: Set event type, enter command and input 'edit cmd id' to change that id 
 
 **Manage area Whitelist**
 
-![Manage area whitelist](https://genboy.net/wp-content/uploads/2019/06/area_whitelist.jpg)
+![Manage area whitelist](https://genboy.net/minecraft/wp-content/uploads/2019/06/area_whitelist.jpg)
 
 Set players on or off area whitelist (this is in development)
 
 
 **Select area to delete**
 
-![Delete area](https://genboy.net/wp-content/uploads/2019/06/delete_area1.jpg)
+![Delete area](https://genboy.net/minecraft/wp-content/uploads/2019/06/delete_area1.jpg)
 
 **Confirm to delete area**
 
-![Cofirm area delete](https://genboy.net/wp-content/uploads/2019/06/delete_area2.jpg)
+![Cofirm area delete](https://genboy.net/minecraft/wp-content/uploads/2019/06/delete_area2.jpg)
 
 #### Create
 
 Select new area type
 
-![Select new area type](https://genboy.net/wp-content/uploads/2019/06/start_make_area.jpg)
+![Select new area type](https://genboy.net/minecraft/wp-content/uploads/2019/06/start_make_area.jpg)
 Hold the magic item - 201 purpur block by defaults, set in configs
 **Tab positions with the magic block**, meanwhile use other blocks to build in between.
 
@@ -248,7 +255,7 @@ Set area positions
  
 Create area with Name (and description)
 
-![Create area with name and description](https://genboy.net/wp-content/uploads/2019/06/create_new_area.jpg)
+![Create area with name and description](https://genboy.net/minecraft/wp-content/uploads/2019/06/create_new_area.jpg)
 
 #### Levels
 
@@ -257,12 +264,12 @@ Turn on level flag control to use the level flags (instead of defaults)
 
 Select level to manage flags (if levelcontrol config is on)
 
-![Select level](https://genboy.net/wp-content/uploads/2019/06/manage_level_select.jpg)
+![Select level](https://genboy.net/wp-content/minecraft/uploads/2019/06/manage_level_select.jpg)
 
 Manage level flags options
 
-![Manage Level use option and flags](https://genboy.net/wp-content/uploads/2019/07/manage_level_option.jpg)
-![Edit level flags(defaults)](https://genboy.net/wp-content/uploads/2019/06/manage_level_flags2.jpg)
+![Manage Level use option and flags](https://genboy.net/minecraft/wp-content/uploads/2019/07/manage_level_option.jpg)
+![Edit level flags(defaults)](https://genboy.net/minecraft/wp-content/uploads/2019/06/manage_level_flags2.jpg)
 
 #### Configuration
 UI configuration to set overall options and default flags for levels and area's
@@ -271,7 +278,7 @@ UI configuration to set overall options and default flags for levels and area's
 
 Manage Festival configuration options and set default flags 
 
-![Manage configuration](https://genboy.net/wp-content/uploads/2019/06/manager_configuration.png)
+![Manage configuration](https://genboy.net/minecraft/wp-content/uploads/2019/06/manager_configuration.png)
 ###### Copyright [Genboy](https://genboy.net) 2018 - 2019 - markdown edited with [stackedit.io]
 
 ## Usage 
@@ -280,7 +287,7 @@ Manage Festival configuration options and set default flags
   - using ingame Festival Menu (UI) for configurations
   - older versions (1.1.3) read [wiki on configurations](https://github.com/genboy/Festival/wiki/2.-Install,-Configure-&-Update)
 
-![Festival 2.1.0 Command usage](https://genboy.net/wp-content/uploads/2019/09/festival_usage_v2.1.0.png) 
+![Festival 2.1.0 Command usage](https://genboy.net/minecraft/wp-content/uploads/2019/11/festival_usage_v2.1.1.png) 
 
 
 #### Setup
@@ -302,7 +309,7 @@ Manage Festival configuration options and set default flags
   - put your original config.yml in the Festival (or /resource) folder and remove the config.json file; 
   - restart server after adjusted correctly
   
-  ###### Copyright [Genboy](https://genboy.net) 2018
+  ###### Copyright [Genboy](https://genboy.net/minecraft) 2018
   
   
 #### Festival Manager menu
@@ -504,6 +511,6 @@ You are legally bind to read the Festival Copyright statement.
 In short this change of Copyright statement does not change the usage levels as stated in the GPU, for a part it now prohibits any entities to sell the software without the knowledge of the owner. 
 
 -- end legal notice --  
-###### Copyright [Genboy](https://genboy.net) 2018 - 2019 
+###### Copyright [Genboy](https://genboy.net/minecraft) 2018 - 2019
 markdown edited with [stackedit.io](https://stackedit.io) and  
 translated to html with [browserling.com](https://www.browserling.com/tools/markdown-to-html)
