@@ -2262,7 +2262,7 @@ class Festival extends PluginBase implements Listener{
               return $o;
         }
 
-        pocketmine\entity\Entity->getSaveId()
+        // !error pocketmine\entity\Entity->getSaveId()
 
         if( // what entities are always allowed
             $e instanceof FallingBlock // FallingBlock (Sand,Gravel, Water, Lava? )// $e instanceof FallingSand
