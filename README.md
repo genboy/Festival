@@ -3,10 +3,9 @@
 Create a festival with this custom area events plugin for Pocketmine Server:
 ###  Create area's, manage flags and run commmands attachted to area events. 
 
-<video width="99%" height="540" autoplay loop muted markdown="0">
-        <source src="https://genboy.net/minecraft/wp-content/uploads/2019/07/Festival-2-Magic-Sphere.mp4" type="video/mp4" markdown="0">
-   </video>
-   
+### [> New! Set compass to Area direction! (genboy.net)](https://genboy.net/minecraft) 
+[> Attach commands to area events! (genboy.net)](https://genboy.net/minecraft/festival)
+
 ( latest stable version [@ poggit https://poggit.pmmp.io/p/Festival](https://poggit.pmmp.io/p/Festival) )
 
 ![Festival plugin logo large](https://genboy.net/minecraft/wp-content/uploads/2018/02/festival_plugin_logo.png)
