@@ -142,6 +142,19 @@
     "no-is-falldamage-flag": "Old NoFalldamage config was used, now set to 'false'; please rename 'NoFalldamage' to 'Falldamage' in config.yml",
     "option-see-configfile": "please see original configs in /resources/config.yml",
 
+    "compass-dir-wsp": "Compass direction set to world spawn point",
+    "compass-dir-area": "Compass direction set to area ",
+    "compass-dir-notset": "Direction could not be set on compass",
+    "compass-inthisworld": "In this world ",
+    "compass-level-reset": "Compass level reset",
+
+    "ui-compass-title": "Set compass direction",
+    "ui-compass-use-compass": "Use festival compass directions",
+    "ui-compass-selected-wsp": "Selected world spawnpoint",
+    "ui-compass-selected-this": "Selected ",
+    "ui-compass-not-found": "Selected area could not be found",
+    "ui-compass-wsp-default": "World spawnpoint (default)",
+
     "ui-festival-manager": "Festival Manager",
     "ui-new-area-setup": "New area setup",
     "ui-select-an-option": "Select an option",
@@ -234,4 +247,5 @@
     "ui-config-flight-control": "Flight Control",
     "ui-config-action-itemid": "Action item id",
     "ui-configs-saved": "Configs saved"
+
 }

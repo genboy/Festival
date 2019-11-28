@@ -75,8 +75,6 @@ class Festival extends PluginBase implements Listener{
 	/** @var Area[] */
 	public $areas          = [];   // list of area objects
 
-
-
 	/** @var array[]
      * list of playernames with areanames they're in
      */
@@ -119,12 +117,17 @@ class Festival extends PluginBase implements Listener{
 	 * @return $this
 	 */
 	public function onEnable() : void{
+
         $this->getServer()->getPluginManager()->registerEvents($this, $this); // Load data & configurations
+
         $this->helper = new Helper($this);
         $this->form = new FormUI($this);
+
         $this->dataSetup();
+
         $this->getLogger()->info( "Genboy copyright 2019" );
 	}
+
     /** dataSetup
 	 * @class Helper
 	 * @func Helper getSource
@@ -158,6 +161,7 @@ class Festival extends PluginBase implements Listener{
         $this->helper->saveDataSet( "config", $this->config );
         $this->loadLanguage( $this->config["options"]["lang"] );
         $this->getLogger()->info( $o );
+
         /// check levels
         if( !$this->helper->loadLevels() || empty( $this->levels ) ){
             $this->helper->loadDefaultLevels();
@@ -169,11 +173,7 @@ class Festival extends PluginBase implements Listener{
         /** console output */
         $this->getLogger()->info( Language::translate("enabled-console-msg") );
         return true;
-
     }
-
-
-
 
     /** load language ( v1.0.7.7-dev )
 	 * @var plugin config[]
@@ -261,7 +261,7 @@ class Festival extends PluginBase implements Listener{
             break;
             case "titles":
 				if( $sender->hasPermission("festival") || $sender->hasPermission("festival.command") || $sender->isOp() || $this->isWhitelisted($sender) ){
-                    if( $this->config["options"]["msgdisplay"] == 'op' ||  $this->config["options"]["msgdisplay"] == 'on' ){
+                    if( $this->config["options"]["areatitledisplay"] == 'op' ||  $this->config["options"]["areatitledisplay"] == 'on' ){
                         if( isset($this->areaTitles[strtolower($sender->getName())]) && count($this->areaTitles[strtolower($sender->getName())]) > 0 ){
                             foreach($this->areas as $area){
                                 $this->hideAreaTitle( $sender, $sender->getPosition()->getLevel(), $area );
@@ -772,7 +772,7 @@ class Festival extends PluginBase implements Listener{
 
                 if( $name == "r" || $name == "reset" || $name == "spawn" || $name == "worldspawn" ){
 
-                    $o = TextFormat::GREEN .'Compass direction set to world spawnpoint';
+                    $o = TextFormat::GREEN . Language::translate("compass-dir-wsp"); //'Compass direction set to world spawnpoint';
                     $pk = new SetSpawnPositionPacket();
                     $target = $sender->getLevel()->getSafeSpawn();
                     $pk->x = $target->x;
@@ -800,7 +800,7 @@ class Festival extends PluginBase implements Listener{
                         }
 
                         if( isset($cx) && isset($cy) && isset($cz) ){
-                            $o = TextFormat::GREEN . 'Compass direction set to area  '. $name; // Server::getInstance()->dispatchCommand($sender, "fe compass ".$areaname );
+                            $o = TextFormat::GREEN . Language::translate("compass-dir-area") . $name; // Server::getInstance()->dispatchCommand($sender, "fe compass ".$areaname );
                             $pk = new SetSpawnPositionPacket();
                             $pk->spawnType = SetSpawnPositionPacket::TYPE_WORLD_SPAWN;
                             $pk->x = (int) $cx;
@@ -809,15 +809,16 @@ class Festival extends PluginBase implements Listener{
                             $pk->spawnForced = false;
                             $sender->dataPacket($pk);
                         }else{
-                            $o = TextFormat::RED . 'Direction could not be set on compass';
+                            $o = TextFormat::RED . Language::translate("compass-dir-notset");
                         }
                     }else{
-                        $o = TextFormat::WHITE . "In this world " . Language::translate("the-area"). " " . TextFormat::RED . implode(" ", array_slice($args, 1, 20)) .
+                        $o = TextFormat::WHITE . Language::translate("compass-inthisworld") . Language::translate("the-area"). " " . TextFormat::RED . implode(" ", array_slice($args, 1, 20)) .
                         " ". TextFormat::WHITE . Language::translate("cannot-be-found");
                     }
 
                 }else{
-                    $list = $this->listAllAreas();
+                    $currentlevel = strtolower( $sender->getPosition()->getLevel()->getName() );
+                    $list = $this->listAllAreas( $currentlevel );
                     $o = TextFormat::WHITE . Language::translate("the-area"). " " . TextFormat::RED . implode(" ", array_slice($args, 1, 20)) .
                         " ". TextFormat::WHITE . Language::translate("cannot-be-found"). " " . TextFormat::GREEN . $list;
                 }
@@ -2112,6 +2113,7 @@ class Festival extends PluginBase implements Listener{
 
 
         }
+
         if( !$o ){
             $player = $ev->getDamager();
             if( $this->skippTime( 2, strtolower($player->getName()) )  ){
@@ -2123,6 +2125,7 @@ class Festival extends PluginBase implements Listener{
 			}
         }
 		return $o;
+
     }
 
 
@@ -2156,11 +2159,17 @@ class Festival extends PluginBase implements Listener{
 				$ev->setCancelled();
                 return false;
 			}
+
 			if( isset($this->playerTP[$playerName]) && $this->playerTP[$playerName] == true ){
 				unset( $this->playerTP[$playerName] ); //$this->areaMessage( 'Fall save off', $player );
 				$ev->setCancelled();
                 return false;
 			}
+
+            if(!$this->hasFallDamage($player)){
+                $ev->setCancelled(); //$this->areaMessage( 'No Fall damage :) ', $player );
+                return false;
+            }
 
 		}
 
@@ -2248,6 +2257,13 @@ class Festival extends PluginBase implements Listener{
     public function canEntitySpawn( Entity $e ): bool{
 
         $o = true;
+
+        if( $e instanceof MysterySkull ){ // $this->helper->isPluginLoaded( "MysteryBox" ) && $e instanceof mysterybox\entity\MysterySkull
+              return $o;
+        }
+
+        // !error pocketmine\entity\Entity->getSaveId()
+
         if( // what entities are always allowed
             $e instanceof FallingBlock // FallingBlock (Sand,Gravel, Water, Lava? )// $e instanceof FallingSand
             || $e instanceof PrimedTNT
@@ -2256,8 +2272,7 @@ class Festival extends PluginBase implements Listener{
             || $e instanceof Projectile
             || $e instanceof FloatingTextParticle
             //|| $e instanceof mysterybox\entity\MysterySkull // https://github.com/CubePM/MysteryBox/blob/master/src/mysterybox/entity/MysterySkull.php
-
-            || $e->getSaveId() === "Slapper"  // https://forums.pmmp.io/threads/cleaning-entities.3759/
+            || ( null !== $e->getSaveId() && $e->getSaveId() === "Slapper")  // $this->helper->isPluginLoaded( "Slapper" ) https://forums.pmmp.io/threads/cleaning-entities.3759/
             || $e instanceof SlapperEntity // https://github.com/jojoe77777/Slapper
             || $e instanceof Human
             || $e instanceof SlapperHuman
@@ -2604,7 +2619,7 @@ class Festival extends PluginBase implements Listener{
         }
         if( $m && !$o ){ // 'ínline' message method
             $msg = TextFormat::RED . Language::translate("no-shoot-area"). "!"; // NO Shooting here
-            $player->areaMessage( $msg );
+            $this->areaMessage( $msg , $player );
         }
 		return $o;
 
@@ -2703,7 +2718,7 @@ class Festival extends PluginBase implements Listener{
 		$player = $ev->getPlayer();
 		if( $this->msgOpDsp( $area, $player ) ){
 			$msg = TextFormat::WHITE . $area->getName(). TextFormat::RED . " " . Language::translate("enter-barrier-area");
-			$player->areaMessage( $msg );
+			$player->areaMessage( $msg, $player );
 		}
 		return;
 	}
@@ -2929,6 +2944,8 @@ class Festival extends PluginBase implements Listener{
         return $dist;
     }
 
+    //add particles to show area's
+    //https://forums.pmmp.io/threads/question-color-particles.1336/
 
 
 	/** skippTime
@@ -2977,10 +2994,10 @@ class Festival extends PluginBase implements Listener{
 	 * @return bool
 	 */
 	public function msgOpDsp( $area, $player ){
-		if( isset( $this->config["options"]['Msgdisplay'] ) && $player->isOp() ){
-			if( $this->config["options"]['Msgdisplay'] == 'on' ){
+		if( isset( $this->config["options"]['msgdisplay'] ) && $player->isOp() ){
+			if( $this->config["options"]['msgdisplay'] == 'on' ){
 				return true;
-			}else if( $this->config["options"]['Msgdisplay'] == 'op' && $area->isWhitelisted(strtolower($player->getName())) ){
+			}else if( $this->config["options"]['msgdisplay'] == 'op' && $area->isWhitelisted(strtolower($player->getName())) ){
 				return true;
 			}else{
 				return false;
@@ -3005,15 +3022,18 @@ class Festival extends PluginBase implements Listener{
     /** List all area's
      * return
      */
-    public function listAllAreas(){
+    public function listAllAreas( $lvl = false ){
+
         if( count($this->areas) > 0 ){
-            $t = 'Area names: ';
+            $t = Language::translate("area-list") . ': '; // 'Area names: ';
             foreach($this->areas as $area){
-                if( !empty( $area->getName() ) ){
-                    $t .= $area->getName().', ';
+                if( $lvl == false || ( $lvl && $lvl == $area->getLevelName() ) ){
+                    if( !empty( $area->getName() ) ){
+                        $t .= $area->getName().', ';
+                    }
                 }
             }
-            return rtrim($t,',');
+            return rtrim($t, ', ');
         }else{
             return Language::translate("area-no-area-available");
         }
@@ -3101,9 +3121,9 @@ class Festival extends PluginBase implements Listener{
         foreach($this->areas as $area){
             $this->hideAreaTitle( $player, $level, $area );
             if( $level->getName() == $area->getLevelName() &&
-               (( $this->config["options"]["msgdisplay"] == 'on' && ( !$area->getFlag("msg") || $area->isWhitelisted( strtolower( $player->getName() ) ) ) ) ||
-                ( $this->config["options"]["msgdisplay"] == 'op' && ( $player->isOp() || $area->isWhitelisted( strtolower( $player->getName() ) ) )
-                ))){
+               (( $this->config["options"]["areatitledisplay"] == 'on' && ( !$area->getFlag("msg") || $area->isWhitelisted( strtolower( $player->getName() ) ) ) ) ||
+                ( $this->config["options"]["areatitledisplay"] == 'op' && $player->isOp()  ) // || $area->isWhitelisted( strtolower( $player->getName() ) )
+                )){
                 $this->placeAreaTitle( $player, $level, $area );
             }
         }
