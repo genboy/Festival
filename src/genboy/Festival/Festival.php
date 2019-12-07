@@ -2258,9 +2258,11 @@ class Festival extends PluginBase implements Listener{
 
         $o = true;
 
-        if( $this->helper->isPluginLoaded( "MysteryBox" ) && $e instanceof MysterySkull ){
+        if( $e instanceof MysterySkull ){ // $this->helper->isPluginLoaded( "MysteryBox" ) && $e instanceof mysterybox\entity\MysterySkull
               return $o;
         }
+
+        // !error pocketmine\entity\Entity->getSaveId()
 
         if( // what entities are always allowed
             $e instanceof FallingBlock // FallingBlock (Sand,Gravel, Water, Lava? )// $e instanceof FallingSand
@@ -2270,7 +2272,7 @@ class Festival extends PluginBase implements Listener{
             || $e instanceof Projectile
             || $e instanceof FloatingTextParticle
             //|| $e instanceof mysterybox\entity\MysterySkull // https://github.com/CubePM/MysteryBox/blob/master/src/mysterybox/entity/MysterySkull.php
-            || ( null !== $e->getSaveId() && $e->getSaveId() === "Slapper")  // https://forums.pmmp.io/threads/cleaning-entities.3759/
+            || ( null !== $e->getSaveId() && $e->getSaveId() === "Slapper")  // $this->helper->isPluginLoaded( "Slapper" ) https://forums.pmmp.io/threads/cleaning-entities.3759/
             || $e instanceof SlapperEntity // https://github.com/jojoe77777/Slapper
             || $e instanceof Human
             || $e instanceof SlapperHuman
@@ -2942,6 +2944,8 @@ class Festival extends PluginBase implements Listener{
         return $dist;
     }
 
+    //add particles to show area's
+    //https://forums.pmmp.io/threads/question-color-particles.1336/
 
 
 	/** skippTime
