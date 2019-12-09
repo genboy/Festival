@@ -1628,16 +1628,16 @@ class Festival extends PluginBase implements Listener{
             $event->setCancelled();
         }
 
-        /* test for air click pos select */
-        if($event->getAction() === PlayerInteractEvent::RIGHT_CLICK_AIR){
+        $player = $event->getPlayer(); //$block = $event->getBlock();
+        $playerpos = new Vector3( $player->getX(), $player->getY(), $player->getZ() );
+        $itemhand = $player->getInventory()->getItemInHand();
+        $playerName = strtolower($player->getName());
+
+        /* test for flying & air click to select pos */
+        if( $event->getAction() === PlayerInteractEvent::RIGHT_CLICK_AIR && $player->isFlying() ){
 
             //$player = $event->getPlayer();
             //$player->sendMessage( "Right click in air!" );
-
-            $player = $event->getPlayer(); //$block = $event->getBlock();
-            $playerpos = new Vector3( $player->getX(), $player->getY(), $player->getZ() );
-            $itemhand = $player->getInventory()->getItemInHand();
-            $playerName = strtolower($player->getName());
 
             if( isset( $this->players[ strtolower( $playerName ) ]["makearea"]["type"] ) && $itemhand->getID() ==  $this->config['options']['itemid'] ){ // ? holding Festival tool
                 $event->setCancelled();
