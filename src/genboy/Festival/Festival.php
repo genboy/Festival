@@ -2354,9 +2354,10 @@ class Festival extends PluginBase implements Listener{
 
         $o = true;
 
-        if( $e instanceof MysterySkull ){ // $this->helper->isPluginLoaded( "MysteryBox" ) && $e instanceof mysterybox\entity\MysterySkull
+        /*if( $e instanceof MysterySkull || (method_exists($e,'getSaveId') && null !== $e->getSaveId() && $e->getSaveId() === "MysterySkull") ){
+            // $this->helper->isPluginLoaded( "MysteryBox" ) && $e instanceof mysterybox\entity\MysterySkull
               return $o;
-        }
+        }*/
 
         // !error pocketmine\entity\Entity->getSaveId()
 
