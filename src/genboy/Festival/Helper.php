@@ -303,8 +303,8 @@ class Helper {
             //$this->plugin->getLogger()->info( "Configure level data.." ); //.. before translation is known..
             $this->saveLevels( $this->plugin->levels );
         }
-
         return $p;
+
     }
 
     /** loadLevels
@@ -314,7 +314,9 @@ class Helper {
      */
     public function loadLevels(): bool{
         // create a list of current levels from saved json
+
         $ldata = $this->getDataSet( "levels" );
+
         if( isset($ldata) && is_array($ldata) && !empty($ldata[0])){
             foreach($ldata as $level){
                 // new compass option
