@@ -6,7 +6,10 @@ namespace genboy\Festival;
 
 use genboy\Festival\Festival;
 use genboy\Festival\lang\Language;
+
+use genboy\Festival\Level as FeLevel;
 use genboy\Festival\Area as FeArea;
+
 use xenialdan\customui\CustomForm;
 use xenialdan\customui\SimpleForm;
 
@@ -900,6 +903,7 @@ class FormUI{
                     $this->plugin->helper->saveLevels();
                     $this->selectForm( $sender, Language::translate("ui-level"). " ". $levelname . " ". Language::translate("ui-flags-saved") . Language::translate("ui-select-an-option")  );
                 }else{
+
                     // add new level configs?
                     $worlds = $this->plugin->helper->getServerWorlds();
                     if( in_array( strtolower($levelname), $worlds ) ){
@@ -956,6 +960,17 @@ class FormUI{
             }else{
                 $form->addLabel(  Language::translate("ui-select-level-edit") );
             }
+
+            $worldlist = $this->plugin->helper->getServerWorlds(); // available levels (world folder)
+            foreach( $worldlist as $ln){
+                if( !isset($this->plugin->levels[strtolower($ln)]) ){
+                    $desc = "Festival Area ". $ln;
+                    $presets = $this->plugin->helper->newConfigPreset();
+                    new FeLevel($ln, $desc, $presets['options'], $presets['defaults'], $this->plugin);
+                }
+            }
+            $this->plugin->helper->saveLevels( $this->plugin->levels );
+
             $levels = $this->plugin->helper->getServerWorlds();
             $current = $sender->getLevel()->getName();
             $slct = array_search( $current, $levels);
