@@ -2,7 +2,7 @@
 	"language-name": "Francais",
 	"language-selected": "Vous avez sélectionné Francais.",
 
-	"enabled-console-msg": "Festival est maintenant en fonction, Francais sélectionné (modifiez avec /fe lang <en/nl/es/pl/fr>).",
+	"enabled-console-msg": "Festival est maintenant en fonction, Francais sélectionné (modifiez avec /fe lang <fr/en/nl/es/pl/ru>).",
 
 	"cmd-ingameonly-msg": "Les commande de festival sont utilisables seulement en jeu.",
 	"cmd-unknown-msg": "commande festival inconnue",

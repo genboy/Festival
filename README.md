@@ -19,7 +19,7 @@ See and make [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
 and post your [issues @ github](https://github.com/genboy/Festival/issues) - [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/genboy/Festival.svg)](http://isitmaintained.com/project/genboy/Festival "Average resolve time")  [![Percentage of issues still open](http://isitmaintained.com/badge/open/genboy/Festival.svg)](http://isitmaintained.com/project/genboy/Festival "Percentage open")
 
 
-![Festival 2.1.0 Command usage](https://genboy.net/minecraft/wp-content/uploads/2019/11/festival_usage_v2.1.1.png)
+![Festival 2 Command usage](https://genboy.net/minecraft/wp-content/uploads/2019/11/festival_usage_v2.1.1.png)
 
 If you like to use Festival consider [sharing your experience and issues](https://github.com/genboy/Festival/issues) to fix any usability problems before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1)! That way it will improve Festival, my coding skills, your Pocketmine-MP insights and strenghten the PMMP community, thank you!
  
@@ -51,6 +51,8 @@ If you like to use Festival consider [sharing your experience and issues](https:
 >  Full fix falldamage
 >  Debug areaMessages & config
 >  Fix typo's
+>  Fr language
+>  Ru language
 
 **Download development version**: 
 [Poggit development](https://poggit.pmmp.io/ci/genboy/Festival/Festival)
@@ -97,7 +99,7 @@ In version 2.0.0 the Festival Management Menu (FormUI) is introduced
 
 **Config**
 - set default options in config.yml;
-  - Language: en - select language English = en, Dutch = nl, es = Español, pl = Polskie - translate please !
+  - Language: en - select language en = English, nl = Nederlands, es = Español, pl = Polskie, fr = Francais, ru = Русский - translate please !
   - ItemID: Hold this Magic block/item to enter Menu (default item 201 - Purpur Pillar block)
   - Msgtype: msg - Area Messages Display position (msg/title/tip/pop)
   - Msgdisplay: off - Area Messages persist display to ops (off/op/on)
@@ -156,7 +158,7 @@ In version 2.0.0 the Festival Management Menu (FormUI) is introduced
     - variable player in commands with {player} or @p
     - add/edit/delete area event command
     - list area commands (ordered by event)
-    - change event of area commands 
+    - change event of area commands  
 
 
 **Level flags**
@@ -325,12 +327,15 @@ Manage Festival configuration options and set default flags
   
     /fe lang <en/nl/es/pl>
   
-  Set Festival language en/nl/es/pl for area and command returned messages. 
+  Allready 6 languages available!
+  Set Festival language en/nl/es/pl/fr/ru for area and command returned messages. 
   en = English
-  nl = Nederlands 
-  es = Espanol 
-  pl = Polski
-  __ = your language, please help [translate](https://github.com/genboy/Festival/tree/Translations)
+  nl = Nederlands
+  es = Español
+  pl = Polskie
+  fr = Francais
+  ru = Русский
+  __ = feel free to add your [translations](https://github.com/genboy/Festival/tree/Translations)
   
 
 #### Create area (cmd)

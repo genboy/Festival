@@ -2,7 +2,7 @@
     "language-name": "Russian",
 	"language-selected": "Выбран язык Русский.",
 
-    "enabled-console-msg": "Фестиваль теперь включен, выбран язык русский (переключить язык командой /fe lang <en/nl/es/pl/ru>).",
+    "enabled-console-msg": "Фестиваль теперь включен, выбран язык русский (переключить язык командой /fe lang <ru/en/nl/es/pl/fr>).",
 
     "cmd-ingameonly-msg": "Команда фестиваля только для использования в игре.",
     "cmd-unknown-msg": "Неизвестная команда фестиваля",

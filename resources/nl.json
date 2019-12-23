@@ -2,7 +2,7 @@
     "language-name": "Nederlands",
 	"language-selected": "Nederlands geselecteerd.",
 
-    "enabled-console-msg": "Festival opgestart, Nederlands geselecteerd (pas aan met /fe lang <en/nl/es/pl>)",
+    "enabled-console-msg": "Festival opgestart, Nederlands geselecteerd (pas aan met /fe lang <nl/en/es/pl/fr/ru>)",
 
     "cmd-ingameonly-msg": "Commando alleen voor gebruik in het spel.",
     "cmd-unknown-msg": "Onbekend Festival commando",
