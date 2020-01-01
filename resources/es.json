@@ -2,7 +2,7 @@
     "language-name": "Español",
 	"language-selected": "Has Seleccionado el Español",
 
-    "enabled-console-msg": "Festival ahora habilitado, inglés seleccionado (ajustar con /fe lang <en/nl/es/pl>).",
+    "enabled-console-msg": "Festival ahora habilitado, inglés seleccionado (ajustar con /fe lang <es/en/nl/pl/fr/ru>).",
 
     "cmd-ingameonly-msg": "El comando solo puede ser usado en el juego.",
     "cmd-unknown-msg": "Comando desconocido",
