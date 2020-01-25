@@ -2815,7 +2815,7 @@ class Festival extends PluginBase implements Listener{
 		$player = $ev->getPlayer();
 		if( $this->msgOpDsp( $area, $player ) ){
 			$msg = TextFormat::WHITE . $area->getName(). TextFormat::RED . " " . Language::translate("enter-barrier-area");
-			$player->areaMessage( $msg, $player );
+			$this->areaMessage( $msg, $player );
 		}
 		return;
 	}
