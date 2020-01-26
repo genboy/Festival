@@ -2,7 +2,7 @@
     "language-name": "Polski",
 	"language-selected": "Teraz wybrany Polski.",
 
-    "enabled-console-msg": "Festival jest teraz włączony, wybrany Polski (dostosuj za pomocą /fe lang <en/nl/es/po>).",
+    "enabled-console-msg": "Festival jest teraz włączony, wybrany Polski (dostosuj za pomocą /fe lang <pl/en/nl/es/fr/ru>).",
 
     "cmd-ingameonly-msg": "Polecenie Festival używane tylko w grze.",
     "cmd-unknown-msg": "Nieznane polecenie Festival",

@@ -228,14 +228,35 @@ class Festival extends PluginBase implements Listener{
 	 * @return bool
 	 */
 	public function onCommand(CommandSender $sender, Command $cmd, string $label, array $args) : bool{
-		if(!($sender instanceof Player)){
+
+        if(!($sender instanceof Player)){
             $sender->sendMessage( TextFormat::RED . Language::translate("cmd-ingameonly-msg") ); //$sender->sendMessage(TextFormat::RED . "Command must be used in-game.");
 			return true;
 		}
 		if(!isset($args[0])){
 			return false;
 		}
+
 		$playerName = strtolower($sender->getName());
+        /*
+        $cheat = true;
+        foreach($this->inArea[$playerName] as $areaname){
+            if( isset($this->areas[$areaname]) ){
+                $area = $this->areas[$areaname];
+                if( $area->getPriority() >= $priority ){
+                    $priority = $area->getPriority();
+                    if( $area->getFlag("cheat") ){
+                        $cheat = false;
+                    }
+                }
+            }
+        }
+        if( $cheat == false ){ // && !$sender->isOp()
+            $sender->sendMessage( TextFormat::RED . Language::translate("No cheats allowed in this area") );
+            return false;
+        }
+        */
+
 		$action = strtolower($args[0]);
 		$o = "";
 		switch($action){
@@ -2815,7 +2836,8 @@ class Festival extends PluginBase implements Listener{
 		$player = $ev->getPlayer();
 		if( $this->msgOpDsp( $area, $player ) ){
 			$msg = TextFormat::WHITE . $area->getName(). TextFormat::RED . " " . Language::translate("enter-barrier-area");
-			$player->areaMessage( $msg, $player );
+			//$player->areaMessage( $msg, $player );
+            $this->areaMessage( $msg, $player );
 		}
 		return;
 	}
@@ -3091,10 +3113,10 @@ class Festival extends PluginBase implements Listener{
 	 * @return bool
 	 */
 	public function msgOpDsp( $area, $player ){
-		if( isset( $this->config["options"]['msgdisplay'] ) && $player->isOp() ){
+		if( isset( $this->config["options"]['msgdisplay'] ) ){
 			if( $this->config["options"]['msgdisplay'] == 'on' ){
 				return true;
-			}else if( $this->config["options"]['msgdisplay'] == 'op' && $area->isWhitelisted(strtolower($player->getName())) ){
+			}else if( $this->config["options"]['msgdisplay'] == 'op' && ( $area->isWhitelisted(strtolower($player->getName())) || $player->isOp() )  ){
 				return true;
 			}else{
 				return false;
