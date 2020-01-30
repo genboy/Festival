@@ -44,11 +44,13 @@ and post your [issues @ github](https://github.com/genboy/Festival/issues) - [![
   - Fix typo's
 
 ### version 2.1.2
-  - Russian (ru) and French (fr) translations
+  - Russian (ru) translations
+  - French (fr) translations
   - Add right-click position selection in air
   - Barrier op msg fix
   - ForceUTF8 update fix PHP 7.4
   - Debugged global eventhandling
+  - Area selection with Midair
 
 
 
@@ -518,5 +520,5 @@ In short this change of Copyright statement does not change the usage levels as 
 
 -- end legal notice --  
 ###### Copyright [Genboy](https://genboy.net/minecraft) 2018 - 2019 
-markdown edited with [stackedit.io](https://stackedit.io) and
+markdown edited with [stackedit.io](https://stackedit.io) and  
 translated to html with [browserling.com](https://www.browserling.com/tools/markdown-to-html)
