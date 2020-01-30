@@ -2,14 +2,15 @@
 
 ###  Create area's, manage flags and run commmands attachted to area events. 
 Latest stable version [@ poggit https://poggit.pmmp.io/p/Festival](https://poggit.pmmp.io/p/Festival)
+
+![Festival plugin logo large](https://genboy.net/minecraft/wp-content/uploads/2018/02/festival_plugin_logo.png)
+###### Copyright [Genboy](https://genboy.net/minecraft) 2018 - 2020
+###### Take notice of the Copyright Statement if you use Festival for the first time since 27 April 2019.  Read the Legal Notice** at the bottom of this README file or the Legal Notice tab at poggit.pmmp.io/p/Festival
+--- 
+# Festival
 If you like to use Festival consider [sharing your experience and issues](https://github.com/genboy/Festival/issues) to fix any usability problems before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1)! That way it will improve Festival, my coding skills, your Pocketmine-MP insights and strenghten the PMMP community, thank you!
 For more info visit [genboy.net/minecraft](https://genboy.net/minecraft), home of [Festival](https://genboy.net/minecraft/festival)
 
-![Festival plugin logo large](https://genboy.net/minecraft/wp-content/uploads/2018/02/festival_plugin_logo.png)!Take notice of the Copyright Statement if you use Festival for the first time since 27 April 2019. 
-**Read the Legal Notice** at the bottom of this README file or the Legal Notice tab at poggit.pmmp.io/p/Festival
-###### Copyright [Genboy](https://genboy.net/minecraft) 2018 - 2020
---- 
-# Festival
 The Festival Plugin is released on poggit
 [![](https://poggit.pmmp.io/shield.state/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.api/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.dl.total/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.dl/Festival)](https://poggit.pmmp.io/p/Festival)
 
@@ -21,34 +22,33 @@ and post your [issues @ github](https://github.com/genboy/Festival/issues) - [![
 ## Overview
 
 ### version 2
-> - Festival Manager Menu (UI + select item) - or use the commands
-> - Cube AND Sphere area's set with diagonal, radius or diameter
-> - Area's  and Config  managed from menu
-> - Optional Level flag protection
-> - Area name (and desc) can now be Full string inCluDing MuLti wORds CaPitaLized
-> - Stretching area's up and down with y scaling
-> - Use priority number for overlapping area's
+  Festival Manager Menu (UI + select item) - or use the commands
+  - Cube AND Sphere area's set with diagonal, radius or diameter
+  - Area's  and Config  managed from menu
+  - Optional Level flag protection
+  - Area name (and desc) can now be Full string inCluDing MuLti wORds CaPitaLized
+  - Stretching area's up and down with y scaling
+  - Use priority number for overlapping area's
 
 ### version 2.1.0 
->  Mob/animal flag Slapper fix to remain on restart
->  Edit flag protects paintings
->  Fall flag bug fix
->  Turn on compass usage (in development)
-   User can select their area's (whitelisted) to set compass direction
-   Command can be used to set any area compass direction on area event
+  - Mob/animal flag Slapper fix to remain on restart
+  - Edit flag protects paintings
+  - Fall flag bug fix
+  - Turn on compass usage (in development)
+    User can select their area's (whitelisted) to set compass direction Command can be used to set any area compass direction on area event
 
 ### version 2.1.1
->  Place compass translations
->  Full fix falldamage
->  Debug areaMessages & config
->  Fix typo's
+  - Place compass translations
+  - Full fix falldamage
+  - Debug areaMessages & config
+  - Fix typo's
 
 ### version 2.1.2
-> Russian (ru) and French (fr) translations
-> Add right-click position selection in air
-> Barrier op msg fix
-> ForceUTF8 update fix PHP 7.4
-> Debugged global eventhandling
+  - Russian (ru) and French (fr) translations
+  - Add right-click position selection in air
+  - Barrier op msg fix
+  - ForceUTF8 update fix PHP 7.4
+  - Debugged global eventhandling
 
 
 
@@ -323,13 +323,16 @@ Manage Festival configuration options and set default flags
 
 #### Language
   
-    /fe lang <en/nl/es/pl>
+    /fe lang <en/nl/es/pl/ru/fr>
   
-  Set Festival language en/nl/es/pl for area and command returned messages. 
+  Set Festival language en/nl/es/pl/ru/fr for area and command returned messages. 
   en = English
   nl = Nederlands 
-  es = Espanol 
+  es = Español
   pl = Polski
+  ru = русский (Russian)
+  fr = Français
+  
   __ = your language, please help [translate](https://github.com/genboy/Festival/tree/Translations)
   
 
@@ -381,7 +384,7 @@ Manage Festival configuration options and set default flags
 
 
 #### Set area flags 
-   
+  
     fast toggle for flags: (since Festival v1.0.1-11)
   
       /fe <edit/hurt/pvp/flight/touch/mobs/animals/effect/tnt/fire/explode/shoot/drop/msg/pass/hunger/perms/fall/cmd> <AREANAME>
@@ -515,5 +518,5 @@ In short this change of Copyright statement does not change the usage levels as 
 
 -- end legal notice --  
 ###### Copyright [Genboy](https://genboy.net/minecraft) 2018 - 2019 
-markdown edited with [stackedit.io](https://stackedit.io) and  
+markdown edited with [stackedit.io](https://stackedit.io) and
 translated to html with [browserling.com](https://www.browserling.com/tools/markdown-to-html)
