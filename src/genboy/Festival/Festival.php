@@ -2749,12 +2749,14 @@ class Festival extends PluginBase implements Listener{
 	 * @return bool
 	 */
 	public function useOpPerms(Player $player, Area $area) : bool{
+
+        // checked with PlayerCommandPreprocessEvent..
 		if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
 			return true; // festival ops..
 		}
 		$position = $player->getPosition();
 		$o = true;
-        $p = ( ( isset($this->levels[strtolower($position->getLevel()->getName())]) && $this->levels[strtolower($position->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("shoot") : $this->config["defaults"]["shoot"]);
+        $p = ( ( isset($this->levels[strtolower($position->getLevel()->getName())]) && $this->levels[strtolower($position->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("perms") : $this->config["defaults"]["perms"]);
 		if($p){
 			$o = false;
 		}
@@ -2992,7 +2994,7 @@ class Festival extends PluginBase implements Listener{
         if( $c && $area->getPriority() < 1 ){ // listen to level & default configs
             $runcmd = false; // flag default
         }
-        if( $area->getFlag("cmdmode")  ){
+        if( $area->getFlag("cmd")  ){
 			$runcmd = false;
 		}
         if( $runcmd || $player->isOp() ){
