@@ -1,8 +1,8 @@
-# Config file for Festival 2.0.0
+# Config file for Festival 2.1.1
 
 # Festival options
 Options:
-  # select a language: English = en, Dutch = nl, Español = es, Polskie = pl  ( todo: 日本人 = ja, 中文 = zh, 한국어 = ko, русский = ru, italiano = it, Indonesia = in, translate please)
+  # select a language: English = en, Dutch = nl, Español = es, Polskie = pl  ( todo: fr = france,  日本人 = ja, 中文 = zh, 한국어 = ko, русский = ru, italiano = it, Indonesia = in, translate please)
   Language: en
 
   # Hold Magic block/item to enter Menu and tab area positions
@@ -10,7 +10,7 @@ Options:
   
   # Area Messages Display position (msg/title/tip/pop)
   Msgtype: msg
-  
+
   # Area Floatingtext title display (off/op/on)
   Areadisplay: op
 
@@ -32,7 +32,7 @@ Options:
 Default:
 
   # Keep players from getting hurt? (true = Player god mode)
-  God: false
+  Hurt: false
 
   # Keep players from getting hurt by other players? (true = NoPVP)
   PVP: false
@@ -83,10 +83,10 @@ Default:
   Perms: false
   
   # Keep players from taking fall damage (true = NoFallDamage)
-  FallDamage: true
+  Fall: true
 
   # Keep area event commands from executing for non-ops (command test mode)
-  CMDmode: false
+  CMD: false
   
 # Flag settings for unprotected areas in individual worlds:
 Worlds:
@@ -95,7 +95,7 @@ Worlds:
   DEFAULT:
 
     # Keep players from getting hurt? (true = Player god mode)
-    God: false
+    Hurt: false
 
     # Keep players from getting hurt by other players? (true = NoPVP)
     PVP: false
@@ -146,16 +146,15 @@ Worlds:
     Perms: false
 
     # Keep players from taking fall damage (true = NoFallDamage)
-    FallDamage: true
+    Fall: true
 
     # Keep area event commands from executing for non-ops (command test mode)
-    CMDmode: false
+    CMD: false
 
   # Example specific level called 'world'  specific default flags (copy and replace 'world' with your levelname)
   world:
-  
-    # Keep players from getting hurt? (true = Player god mode)
-    God: false
+     # Keep players from getting hurt? (true = Player god mode)
+    Hurt: false
 
     # Keep players from getting hurt by other players? (true = NoPVP)
     PVP: false
@@ -206,7 +205,7 @@ Worlds:
     Perms: false
 
     # Keep players from taking fall damage (true = NoFallDamage)
-    FallDamage: true
+    Fall: true
 
     # Keep area event commands from executing for non-ops (command test mode)
-    CMDmode: false
+    CMD: false

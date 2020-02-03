@@ -1,5 +1,5 @@
 <?php
-/** Festival 2.0.1
+/** Festival 2.1.2
  * src/genboy/Festival/Festival.php
  * copyright Genbay 2019
  */
@@ -228,14 +228,35 @@ class Festival extends PluginBase implements Listener{
 	 * @return bool
 	 */
 	public function onCommand(CommandSender $sender, Command $cmd, string $label, array $args) : bool{
-		if(!($sender instanceof Player)){
+
+        if(!($sender instanceof Player)){
             $sender->sendMessage( TextFormat::RED . Language::translate("cmd-ingameonly-msg") ); //$sender->sendMessage(TextFormat::RED . "Command must be used in-game.");
 			return true;
 		}
 		if(!isset($args[0])){
 			return false;
 		}
+
 		$playerName = strtolower($sender->getName());
+        /*
+        $cheat = true;
+        foreach($this->inArea[$playerName] as $areaname){
+            if( isset($this->areas[$areaname]) ){
+                $area = $this->areas[$areaname];
+                if( $area->getPriority() >= $priority ){
+                    $priority = $area->getPriority();
+                    if( $area->getFlag("cheat") ){
+                        $cheat = false;
+                    }
+                }
+            }
+        }
+        if( $cheat == false ){ // && !$sender->isOp()
+            $sender->sendMessage( TextFormat::RED . Language::translate("No cheats allowed in this area") );
+            return false;
+        }
+        */
+
 		$action = strtolower($args[0]);
 		$o = "";
 		switch($action){
@@ -1628,6 +1649,102 @@ class Festival extends PluginBase implements Listener{
             $event->setCancelled();
         }
 
+        $player = $event->getPlayer(); //$block = $event->getBlock();
+        $playerpos = new Vector3( $player->getX(), $player->getY(), $player->getZ() );
+        $itemhand = $player->getInventory()->getItemInHand();
+        $playerName = strtolower($player->getName());
+
+        /* test for flying & air click to select pos */
+        if( $event->getAction() === PlayerInteractEvent::RIGHT_CLICK_AIR && $player->isFlying() ){
+
+            //$player = $event->getPlayer();
+            //$player->sendMessage( "Right click in air!" );
+
+            if( isset( $this->players[ strtolower( $playerName ) ]["makearea"]["type"] ) && $itemhand->getID() ==  $this->config['options']['itemid'] ){ // ? holding Festival tool
+                $event->setCancelled();
+                $newareatype = $this->players[ strtolower( $playerName ) ]["makearea"]["type"];
+
+                if( !isset( $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] ) ){ // add here the item-tool check
+                    $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $playerpos;
+                    $o = TextFormat::GREEN . language::translate("make-pos2");
+                    if( $newareatype == "radius"){ // "Please place or break distand position 2 to set radius for new sphere area";
+                        $o = TextFormat::GREEN . language::translate("make-radius-distance");
+                    }
+                    if( $newareatype == "diameter"){ // "Please place or break distand position 2 to set diameter for new sphere area";
+                        $o = TextFormat::GREEN . language::translate("make-diameter-distance");
+                    }
+                    $player->sendMessage($o);
+                    return;
+                }else if( !isset( $this->players[ strtolower( $playerName ) ]["makearea"]["pos2"] ) ){ // add here the item-tool check
+                    $this->players[ strtolower( $playerName ) ]["makearea"]["pos2"] = $playerpos;
+                    $p1 = $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"];
+                    $p2 = $this->players[ strtolower( $playerName ) ]["makearea"]["pos2"];
+                    $pos1 = $p1;
+                    $radius = intval( 0 );
+                    if( $newareatype == "radius" ){
+                        $dy = $p1->getY() - $p2->getY();
+                        $dz = $p1->getZ() - $p2->getZ();
+                        $dx = $p1->getX() - $p2->getX();
+                        $df = sqrt( ($dy*$dy)+($dx*$dx) );
+                        $radius = intval(  sqrt( ($df*$df)+($dz*$dz) ) );
+                    }
+                    if( $newareatype == "diameter" ){
+                        $cx = $p2->getX() + ( ( $p1->getX() - $p2->getX() ) / 2 );
+                        $cy = $p2->getY() + ( ( $p1->getY() - $p2->getY() ) / 2 );
+                        $cz = $p2->getZ() + ( ( $p1->getZ() - $p2->getZ() ) / 2 );
+                        $pos1 = new Position( $cx, $cy, $cz, $player->getLevel() ); // center
+                        $radius = $this->get_3d_distance($p1, $pos1);
+                        $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $pos1;
+                    }
+                    $this->players[ strtolower( $playerName ) ]["makearea"]["radius"] = $radius;
+                    // back to form
+                    $this->form->areaNewForm( $player , ["type"=>$newareatype,"pos1"=>$pos1,"pos2"=>$p2,"radius"=>$radius], $msg = language::translate("ui-new-area-setup") . ":");
+                    return;
+                }
+
+            }else if(isset($this->selectingFirst[$playerName])){
+
+                unset($this->selectingFirst[$playerName]);
+                $this->firstPosition[$playerName] = $playerpos;
+                $player->sendMessage(TextFormat::GREEN . language::translate("pos1")." ". language::translate("set-to"). ": (" . $player->getX() . ", " . $player->getY() . ", " . $player->getZ() . ")");
+                $event->setCancelled();
+
+            }elseif(isset($this->selectingSecond[$playerName])){
+
+                unset($this->selectingSecond[$playerName]);
+                $this->secondPosition[$playerName] = $playerpos;
+                $player->sendMessage(TextFormat::GREEN . language::translate("pos2")." ". language::translate("set-to"). ": (" . $player->getX() . ", " . $player->getY() . ", " . $player->getZ() . ")");
+                $event->setCancelled();
+
+            }elseif(isset($this->selectingRadius[$playerName])){
+
+                unset($this->selectingRadius[$playerName]);
+                $this->radiusPosition[$playerName] = $playerpos;
+                $p1 = $this->firstPosition[$playerName];
+                $p2 = $this->radiusPosition[$playerName];
+                $radius = $this->get_3d_distance($p1,$p2);
+                // Radius distance to position:
+                $player->sendMessage( TextFormat::GREEN . language::translate("radius-distance-to-position"). ": " . $radius . " blocks (" . $p1->getX() . ", " . $p1->getY() . ", " . $p1->getZ() . " to " . $p2->getX() . ", " . $p2->getY() . ", " . $p2->getZ() . ")");
+                $event->setCancelled();
+
+            }elseif(isset($this->selectingDiameter[$playerName])){
+
+                unset($this->selectingDiameter[$playerName]);
+                $this->diameterPosition[$playerName] = $playerpos;
+
+                $p1 = $this->firstPosition[$playerName];
+                $p2 = $this->diameterPosition[$playerName];
+                $diameter = $this->get_3d_distance($p1,$p2);
+                // Diameter distance to position:
+                $player->sendMessage( TextFormat::GREEN . language::translate("diameter-distance-to-position"). ": " . $diameter . " blocks (" . $p1->getX() . ", " . $p1->getY() . ", " . $p1->getZ() . " to " . $p2->getX() . ", " . $p2->getY() . ", " . $p2->getZ() . ")");
+                $event->setCancelled();
+
+            }else{
+                $event->setCancelled();
+            }
+
+        }
+
     }
 
 
@@ -2258,9 +2375,10 @@ class Festival extends PluginBase implements Listener{
 
         $o = true;
 
-        if( $e instanceof MysterySkull ){ // $this->helper->isPluginLoaded( "MysteryBox" ) && $e instanceof mysterybox\entity\MysterySkull
+        /*if( $e instanceof MysterySkull || (method_exists($e,'getSaveId') && null !== $e->getSaveId() && $e->getSaveId() === "MysterySkull") ){
+            // $this->helper->isPluginLoaded( "MysteryBox" ) && $e instanceof mysterybox\entity\MysterySkull
               return $o;
-        }
+        }*/
 
         // !error pocketmine\entity\Entity->getSaveId()
 
@@ -2631,12 +2749,14 @@ class Festival extends PluginBase implements Listener{
 	 * @return bool
 	 */
 	public function useOpPerms(Player $player, Area $area) : bool{
+
+        // checked with PlayerCommandPreprocessEvent..
 		if($player->hasPermission("festival") || $player->hasPermission("festival.access")){
 			return true; // festival ops..
 		}
 		$position = $player->getPosition();
 		$o = true;
-        $p = ( ( isset($this->levels[strtolower($position->getLevel()->getName())]) && $this->levels[strtolower($position->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("shoot") : $this->config["defaults"]["shoot"]);
+        $p = ( ( isset($this->levels[strtolower($position->getLevel()->getName())]) && $this->levels[strtolower($position->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("perms") : $this->config["defaults"]["perms"]);
 		if($p){
 			$o = false;
 		}
@@ -2718,7 +2838,8 @@ class Festival extends PluginBase implements Listener{
 		$player = $ev->getPlayer();
 		if( $this->msgOpDsp( $area, $player ) ){
 			$msg = TextFormat::WHITE . $area->getName(). TextFormat::RED . " " . Language::translate("enter-barrier-area");
-			$player->areaMessage( $msg, $player );
+			//$player->areaMessage( $msg, $player );
+            $this->areaMessage( $msg, $player );
 		}
 		return;
 	}
@@ -2873,7 +2994,7 @@ class Festival extends PluginBase implements Listener{
         if( $c && $area->getPriority() < 1 ){ // listen to level & default configs
             $runcmd = false; // flag default
         }
-        if( $area->getFlag("cmdmode")  ){
+        if( $area->getFlag("cmd")  ){
 			$runcmd = false;
 		}
         if( $runcmd || $player->isOp() ){
@@ -2994,10 +3115,10 @@ class Festival extends PluginBase implements Listener{
 	 * @return bool
 	 */
 	public function msgOpDsp( $area, $player ){
-		if( isset( $this->config["options"]['msgdisplay'] ) && $player->isOp() ){
+		if( isset( $this->config["options"]['msgdisplay'] ) ){
 			if( $this->config["options"]['msgdisplay'] == 'on' ){
 				return true;
-			}else if( $this->config["options"]['msgdisplay'] == 'op' && $area->isWhitelisted(strtolower($player->getName())) ){
+			}else if( $this->config["options"]['msgdisplay'] == 'op' && ( $area->isWhitelisted(strtolower($player->getName())) || $player->isOp() )  ){
 				return true;
 			}else{
 				return false;

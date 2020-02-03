@@ -1,17 +1,16 @@
 ## Festival 
 
-Create a festival with this custom area events plugin for Pocketmine Server:
 ###  Create area's, manage flags and run commmands attachted to area events. 
-
-### [> New! Set compass to Area direction! (genboy.net)](https://genboy.net/minecraft) 
-[> Attach commands to area events! (genboy.net)](https://genboy.net/minecraft/festival)
-
-( latest stable version [@ poggit https://poggit.pmmp.io/p/Festival](https://poggit.pmmp.io/p/Festival) )
+Latest stable version [@ poggit https://poggit.pmmp.io/p/Festival](https://poggit.pmmp.io/p/Festival)
 
 ![Festival plugin logo large](https://genboy.net/minecraft/wp-content/uploads/2018/02/festival_plugin_logo.png)
-###### Copyright [Genboy](https://genboy.net/minecraft) 2018 - 2019 
+###### Copyright [Genboy](https://genboy.net/minecraft) 2018 - 2020
+###### Take notice of the Copyright Statement if you use Festival for the first time since 27 April 2019.  Read the Legal Notice** at the bottom of this README file or the Legal Notice tab at poggit.pmmp.io/p/Festival
 --- 
 # Festival
+If you like to use Festival consider [sharing your experience and issues](https://github.com/genboy/Festival/issues) to fix any usability problems before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1)! That way it will improve Festival, my coding skills, your Pocketmine-MP insights and strenghten the PMMP community, thank you!
+For more info visit [genboy.net/minecraft](https://genboy.net/minecraft), home of [Festival](https://genboy.net/minecraft/festival)
+
 The Festival Plugin is released on poggit
 [![](https://poggit.pmmp.io/shield.state/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.api/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.dl.total/Festival)](https://poggit.pmmp.io/p/Festival) [![](https://poggit.pmmp.io/shield.dl/Festival)](https://poggit.pmmp.io/p/Festival)
 
@@ -19,38 +18,41 @@ See and make [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
 and post your [issues @ github](https://github.com/genboy/Festival/issues) - [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/genboy/Festival.svg)](http://isitmaintained.com/project/genboy/Festival "Average resolve time")  [![Percentage of issues still open](http://isitmaintained.com/badge/open/genboy/Festival.svg)](http://isitmaintained.com/project/genboy/Festival "Percentage open")
 
 
-![Festival 2.1.0 Command usage](https://genboy.net/minecraft/wp-content/uploads/2019/11/festival_usage_v2.1.1.png)
-
-If you like to use Festival consider [sharing your experience and issues](https://github.com/genboy/Festival/issues) to fix any usability problems before posting a [vote](https://poggit.pmmp.io/p/Festival/1.1.1)! That way it will improve Festival, my coding skills, your Pocketmine-MP insights and strenghten the PMMP community, thank you!
- 
-!Take notice of the Copyright Statement if you use Festival for the first time since 27 April 2019. 
-**Read the Legal Notice** at the bottom of this README file or the Legal Notice tab at poggit.pmmp.io/p/Festival
-
-
+![Festival 2.1.0 Command usage](https://genboy.net/minecraft/wp-content/uploads/2020/01/festival_usage_v2.1.2.png)
 ## Overview
 
 ### version 2
-> - Festival Manager Menu (UI + select item) - or use the commands
-> - Cube AND Sphere area's set with diagonal, radius or diameter
-> - Area's  and Config  managed from menu
-> - Optional Level flag protection
-> - Area name (and desc) can now be Full string inCluDing MuLti wORds CaPitaLized
-> - Stretching area's up and down with y scaling
-> - Use priority number for overlapping area's
+  Festival Manager Menu (UI + select item) - or use the commands
+  - Cube AND Sphere area's set with diagonal, radius or diameter
+  - Area's  and Config  managed from menu
+  - Optional Level flag protection
+  - Area name (and desc) can now be Full string inCluDing MuLti wORds CaPitaLized
+  - Stretching area's up and down with y scaling
+  - Use priority number for overlapping area's
 
 ### version 2.1.0 
->  Mob/animal flag Slapper fix to remain on restart
->  Edit flag protects paintings
->  Fall flag bug fix
->  Turn on compass usage (in development)
-   User can select their area's (whitelisted) to set compass direction
-   Command can be used to set any area compass direction on area event
+  - Mob/animal flag Slapper fix to remain on restart
+  - Edit flag protects paintings
+  - Fall flag bug fix
+  - Turn on compass usage (in development)
+    User can select their area's (whitelisted) to set compass direction Command can be used to set any area compass direction on area event
 
 ### version 2.1.1
->  Place compass translations
->  Full fix falldamage
->  Debug areaMessages & config
->  Fix typo's
+  - Place compass translations
+  - Full fix falldamage
+  - Debug areaMessages & config
+  - Fix typo's
+
+### version 2.1.2
+  - Russian (ru) translations
+  - French (fr) translations
+  - Add right-click position selection in air
+  - Barrier op msg fix
+  - ForceUTF8 update fix PHP 7.4
+  - Debugged global eventhandling
+  - Area selection with Midair
+
+
 
 **Download development version**: 
 [Poggit development](https://poggit.pmmp.io/ci/genboy/Festival/Festival)
@@ -287,7 +289,7 @@ Manage Festival configuration options and set default flags
   - using ingame Festival Menu (UI) for configurations
   - older versions (1.1.3) read [wiki on configurations](https://github.com/genboy/Festival/wiki/2.-Install,-Configure-&-Update)
 
-![Festival 2.1.0 Command usage](https://genboy.net/minecraft/wp-content/uploads/2019/11/festival_usage_v2.1.1.png) 
+![Festival 2.1.0 Command usage](https://genboy.net/minecraft/wp-content/uploads/2020/01/festival_usage_v2.1.2.png) 
 
 
 #### Setup
@@ -323,13 +325,16 @@ Manage Festival configuration options and set default flags
 
 #### Language
   
-    /fe lang <en/nl/es/pl>
+    /fe lang <en/nl/es/pl/ru/fr>
   
-  Set Festival language en/nl/es/pl for area and command returned messages. 
+  Set Festival language en/nl/es/pl/ru/fr for area and command returned messages. 
   en = English
   nl = Nederlands 
-  es = Espanol 
+  es = Español
   pl = Polski
+  ru = русский (Russian)
+  fr = Français
+  
   __ = your language, please help [translate](https://github.com/genboy/Festival/tree/Translations)
   
 
@@ -495,9 +500,12 @@ Manage Festival configuration options and set default flags
 
 ## Credits
 
-The area code derives from the [iProctector plugin](https://github.com/LDX-MCPE/iProtector). All credits for the area creation and protection code go to the iProtector creator [LDX-MCPE](https://github.com/LDX-MCPE) and [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network).
+### Many thanks to all who have posted valid issues and requests!
 
-The Festival code is written and tested by Genboy and first released on 12 Feb 2018, first extending the area object with area events (enter and leave messages) and soon added functions and ingame commands to attach a commandstring to a area-event. Since v1.0.7 the area's and players can be protected with 12 flags, and trigger commands on areaEnter, areaCenter and areaLeave. 
+The basic area code in Festival derives from the [iProctector plugin](https://github.com/LDX-MCPE/iProtector). Credits for the basic area creation and protection code go to the iProtector creator [LDX-MCPE](https://github.com/LDX-MCPE) and [other iProtector devs](https://github.com/LDX-MCPE/iProtector/network). 
+
+The Festival code is written and tested by [Genboy](https://www.genboy.net) and first released on 12 Feb 2018 with an area object holding events (enter and leave messages) and soon extended with functions and ingame commands to attach a commandstring to a area-event. Since v1.0.7 the area's and players can be protected with 12 flags, and trigger commands on areaEnter, areaCenter and areaLeave. And players can teleport to top-center of an area. 
+In festival version 1.0.8 many flag functions where improved and the plugin was extended with 8 new flags, language translation options and area floating titles. During v1.0.9 to 2.1.0 many flag functions where improved, a compass-to-area option added and translations extended to en/nl/es/pl .
 
 ## Legal Notice
 
@@ -511,6 +519,6 @@ You are legally bind to read the Festival Copyright statement.
 In short this change of Copyright statement does not change the usage levels as stated in the GPU, for a part it now prohibits any entities to sell the software without the knowledge of the owner. 
 
 -- end legal notice --  
-###### Copyright [Genboy](https://genboy.net/minecraft) 2018 - 2019
+###### Copyright [Genboy](https://genboy.net/minecraft) 2018 - 2019 
 markdown edited with [stackedit.io](https://stackedit.io) and  
 translated to html with [browserling.com](https://www.browserling.com/tools/markdown-to-html)
