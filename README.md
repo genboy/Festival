@@ -21,28 +21,6 @@ and post your [issues @ github](https://github.com/genboy/Festival/issues) - [![
 ![Festival 2.1.0 Command usage](https://genboy.net/minecraft/wp-content/uploads/2020/01/festival_usage_v2.1.2.png)
 ## Overview
 
-### version 2
-  Festival Manager Menu (UI + select item) - or use the commands
-  - Cube AND Sphere area's set with diagonal, radius or diameter
-  - Area's  and Config  managed from menu
-  - Optional Level flag protection
-  - Area name (and desc) can now be Full string inCluDing MuLti wORds CaPitaLized
-  - Stretching area's up and down with y scaling
-  - Use priority number for overlapping area's
-
-### version 2.1.0 
-  - Mob/animal flag Slapper fix to remain on restart
-  - Edit flag protects paintings
-  - Fall flag bug fix
-  - Turn on compass usage (in development)
-    User can select their area's (whitelisted) to set compass direction Command can be used to set any area compass direction on area event
-
-### version 2.1.1
-  - Place compass translations
-  - Full fix falldamage
-  - Debug areaMessages & config
-  - Fix typo's
-
 ### version 2.1.2
   - Russian (ru) translations
   - French (fr) translations
@@ -52,15 +30,34 @@ and post your [issues @ github](https://github.com/genboy/Festival/issues) - [![
   - Debugged global eventhandling
   - Area selection with Midair
 
+### version 2.1.1
+  - Place compass translations
+  - Full fix falldamage
+  - Debug areaMessages & config
+  - Fix typo's
+
+### version 2.1.0 
+  - Mob/animal flag Slapper fix to remain on restart
+  - Edit flag protects paintings
+  - Fall flag bug fix
+  - Turn on compass usage (in development)
+    User can select their area's (whitelisted) to set compass direction Command can be used to set any area compass direction on area event
+
+### version 2
+  Festival Manager Menu (UI + select item) - or use the commands
+  - Cube AND Sphere area's set with diagonal, radius or diameter
+  - Area's  and Config  managed from menu
+  - Optional Level flag protection
+  - Area name (and desc) can now be Full string inCluDing MuLti wORds CaPitaLized
+  - Stretching area's up and down with y scaling
+  - Use priority number for overlapping area's
 
 
-**Download development version**: 
-[Poggit development](https://poggit.pmmp.io/ci/genboy/Festival/Festival)
-Please report bugs -thank you! [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
+## Info
 
-or use [devtools plugin](https://poggit.pmmp.io/p/DevTools/1.13.0) and [download zip package https://github.com/genboy/Festival/archive/master.zip](https://github.com/genboy/Festival/archive/master.zip)
+#### Install
 
-**Festival version 2 Install**: 
+**Festival Install (version 2 )**: 
 *(always save copies of your previous used config.yml and areas.json before re-install)*
 1. place phar file or unzipped Festival folder with (Devtools pluginfolder) in server plugins folder and restart, 
 2. after restart;
@@ -70,6 +67,8 @@ and put your config.yml and areas.json in Festival (root) folder
 3. Then restart again, now areas.json, levels.json and config.json in Festival (root) folder are used.
 
 ( or download latest stable version [@ poggit https://poggit.pmmp.io/p/Festival](https://poggit.pmmp.io/p/Festival) - no Festival menu, only command usage)
+
+#### Get started
 
 **Management UI in game**: 
 command **hold magic item** or ** /fe menu** (ui, form, data)
@@ -89,10 +88,17 @@ Or use the commands as shown in the usage image (now with Multi wORd FULLY Capit
     
    Use /fe pos1 and /fe pos2 to tab the positions, after pos2 you need '/fe create area ' to finnish the area creation. After creation both commands and menu can be used to manage the area.  
 
----
-## Info
-### Features
 
+#### Development
+
+**Download development version**: 
+[Poggit development](https://poggit.pmmp.io/ci/genboy/Festival/Festival)
+Please report bugs -thank you! [issues @ github](https://github.com/genboy/Festival/issues) and/or [reviews @ poggit](https://poggit.pmmp.io/p/Festival)
+
+or use [devtools plugin](https://poggit.pmmp.io/p/DevTools/1.13.0) and [download zip package https://github.com/genboy/Festival/archive/master.zip](https://github.com/genboy/Festival/archive/master.zip)
+
+
+### Features
 
 **Menu**
 In version 2.0.0 the Festival Management Menu (FormUI) is introduced
