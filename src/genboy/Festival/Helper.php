@@ -288,7 +288,7 @@ class Helper {
             foreach( $worldlist as $ln){
                 $desc = "Festival Area ". $ln;
                 if( isset( $c['Worlds'][ $ln ] ) && is_array( $c['Worlds'][ $ln ] ) ){ // create level from old config
-                    $lvlflags = $c['Worlds'][ strtolower($ln) ];
+                    $lvlflags = $c['Worlds'][ $ln ]; //$c['Worlds'][ strtolower($ln) ];
                     $newflags = [];
                     foreach( $lvlflags as $f => $set ){
                         $flagname = $this->isFlag( $f );
@@ -313,8 +313,8 @@ class Helper {
 	 * @class FeLevel
      */
     public function loadLevels(): bool{
-        // create a list of current levels from saved json
 
+        // create a list of current levels from saved json
         $ldata = $this->getDataSet( "levels" );
 
         if( isset($ldata) && is_array($ldata) && !empty($ldata[0])){
