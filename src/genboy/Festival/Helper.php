@@ -6,7 +6,6 @@
  */
 namespace genboy\Festival;
 
-use genboy\Festival\Festival;
 use genboy\Festival\lang\Language;
 use genboy\Festival\Level as FeLevel;
 use genboy\Festival\Area as FeArea;

@@ -4,7 +4,6 @@
  */
 namespace genboy\Festival;
 
-use genboy\Festival\Festival;
 use genboy\Festival\lang\Language;
 
 use genboy\Festival\Level as FeLevel;
@@ -15,9 +14,6 @@ use xenialdan\customui\SimpleForm;
 
 use pocketmine\Server;
 use pocketmine\Player;
-use pocketmine\level\Position;
-use pocketmine\plugin\PluginBase;
-use pocketmine\event\Listener;
 use pocketmine\utils\TextFormat;
 
 use pocketmine\network\mcpe\protocol\SetSpawnPositionPacket;
