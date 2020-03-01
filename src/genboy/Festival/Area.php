@@ -216,19 +216,6 @@ class Area{
 	}
 
 	/**
-	 * @param string $flag
-	 * @return bool
-	 */
-	public function getCommand(string $id) : bool{
-		if(isset($this->commands[$id])){
-			return $this->commands[$id];
-		}
-
-		return false;
-	}
-
-
-	/**
 	 * @return string[]
 	 * @return array
 	 */
