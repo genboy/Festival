@@ -441,10 +441,7 @@ class Area{
 	 * @return bool
 	 */
 	public function isWhitelisted(string $playerName) : bool{
-		if(in_array($playerName, $this->whitelist)){
-			return true;
-		}
-		return false;
+		return in_array($playerName, $this->whitelist);
 	}
 
 	/**
