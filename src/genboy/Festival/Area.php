@@ -233,13 +233,6 @@ class Area{
 		return $arr;
 	}
 
-	/**
-	 * @return string[]
-	 */
-	public function setEvent( string $type, string $cmdid) : array{
-		return true;
-	}
-
 
 	/**
 	 * @param Vector3 $pos
