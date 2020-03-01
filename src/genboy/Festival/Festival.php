@@ -57,11 +57,11 @@ use pocketmine\network\mcpe\protocol\SetSpawnPositionPacket;
 
 class Festival extends PluginBase implements Listener{
 
-	/** @var obj */
+	/** @var Helper */
 	public $helper; // helper class
 	/** @var array[] */
 	public $config        = [];    // list of config options
-    /** @var obj */
+    /** @var FormUI */
     public $form;
 	/** @var array[] */
 	public $levels        = [];    // list of level objects
