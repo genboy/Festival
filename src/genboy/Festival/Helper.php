@@ -20,12 +20,13 @@ class Helper {
 
         $this->plugin = $plugin;
 
-        if(!is_dir($this->plugin->getDataFolder())){
-            @mkdir($this->plugin->getDataFolder());
+        $dataFolder = $this->plugin->getDataFolder();
+        if(!is_dir($dataFolder)){
+        	mkdir($dataFolder);
 		}
         // add resource folder for backwards compatibility
-        if( !is_dir($this->plugin->getDataFolder().'resources') ){
-           @mkdir($this->plugin->getDataFolder().'resources');
+        if(!is_dir($dataFolder.'resources') ){
+        	mkdir($dataFolder.'resources');
 		}
     }
 
