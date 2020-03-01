@@ -39,7 +39,7 @@ class Area{
 	public $commands;
 	/** @var string[] */
 	public $events;
-	/** @var Main */
+	/** @var Festival */
 	private $plugin;
 
 	public function __construct(string $name, string $desc, int $priority, array $flags, Vector3 $pos1, Vector3 $pos2, int $radius, int $top, int $bottom, string $levelName, array $whitelist, array $commands, array $events, Festival $plugin){
