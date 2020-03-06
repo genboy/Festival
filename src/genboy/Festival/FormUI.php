@@ -4,7 +4,6 @@
  */
 namespace genboy\Festival;
 
-use genboy\Festival\Festival;
 use genboy\Festival\lang\Language;
 
 use genboy\Festival\Level as FeLevel;
@@ -15,9 +14,6 @@ use xenialdan\customui\SimpleForm;
 
 use pocketmine\Server;
 use pocketmine\Player;
-use pocketmine\level\Position;
-use pocketmine\plugin\PluginBase;
-use pocketmine\event\Listener;
 use pocketmine\utils\TextFormat;
 
 use pocketmine\network\mcpe\protocol\SetSpawnPositionPacket;
@@ -107,7 +103,7 @@ class FormUI{
         // manage config
         $form->addButton( Language::translate("ui-config-management"), 0, "textures/blocks/command_block");
 
-        $form->sendToPlayer($sender);
+        $sender->sendForm($form);
 
     }
 
@@ -168,7 +164,7 @@ class FormUI{
 
         $form->addButton( Language::translate("ui-go-back") );
 
-        $form->sendToPlayer($sender);
+        $sender->sendForm($form);
 
     }
 
@@ -274,7 +270,7 @@ class FormUI{
         foreach( $this->plugin->config["defaults"] as $flag => $set){
             $form->addToggle( $flag, $set );
         }
-        $form->sendToPlayer($sender);
+        $sender->sendForm($form);
 
     }
 
@@ -356,7 +352,7 @@ class FormUI{
             foreach( $flgs as $flag => $set){
                 $form->addToggle( $flag, $set );
             }
-            $form->sendToPlayer($sender);
+            $sender->sendForm($form);
 
         }else{
 
@@ -375,7 +371,7 @@ class FormUI{
             $options = $areasnames[0];
             $slct = $areasnames[1];
             $form->addDropdown( Language::translate("ui-select-edit-area"), $options, $slct, "selectedArea");
-            $form->sendToPlayer($sender);
+            $sender->sendForm($form);
 
        }
     }
@@ -541,7 +537,7 @@ class FormUI{
             $form->addInput( Language::translate("ui-area-type-command-id-del"), "input command id to delete", "", "delcommand" );
 
 
-            $form->sendToPlayer($sender);
+            $sender->sendForm($form);
 
 
         }else{
@@ -562,7 +558,7 @@ class FormUI{
             $options = $areasnames[0];
             $slct = $areasnames[1];
             $form->addDropdown( Language::translate("ui-select-area"), $options, $slct, "selectedArea");
-            $form->sendToPlayer($sender);
+            $sender->sendForm($form);
 
        }
 
@@ -628,7 +624,7 @@ class FormUI{
                     }
                     $form->addToggle( $nm, $set );
                 }
-                $form->sendToPlayer($sender);
+                $sender->sendForm($form);
 
         }else{
 
@@ -649,7 +645,7 @@ class FormUI{
             $options = $areasnames[0];
             $slct = $areasnames[1];
             $form->addDropdown( Language::translate("ui-select-area"), $options, $slct, "selectedArea");
-            $form->sendToPlayer($sender);
+            $sender->sendForm($form);
 
         }
 
@@ -718,7 +714,7 @@ class FormUI{
                 }
                 $form->addInput( Language::translate("ui-area-name"), "area name", "", "name" );
                 $form->addInput( Language::translate("ui-area-desc"), "area description", "", "desc" );
-                $form->sendToPlayer($sender);
+                $sender->sendForm($form);
             }
 
         }else{
@@ -768,7 +764,7 @@ class FormUI{
             $form->addButton( Language::translate("ui-make-sphere-radius") ); // sphere area
             $form->addButton( Language::translate("ui-make-sphere-diameter") ); // sphere area
             $form->addButton( Language::translate("ui-go-back") );
-            $form->sendToPlayer($sender);
+            $sender->sendForm($form);
 
         }
     }
@@ -809,7 +805,7 @@ class FormUI{
             $areaname = $areasnames[$input["deleteArea"]];
             $form->setTitle( TextFormat::RED . Language::translate("ui-delete-this-area") . " " . TextFormat::WHITE . $areaname );
             $form->addLabel( TextFormat::RED . Language::translate("ui-gonna-delete-area") . " ".  $areaname );
-            $form->sendToPlayer($sender);
+            $sender->sendForm($form);
         }else{
             $form = new CustomForm(function ( Player $sender, ?array $data ) {
                 if( $data === null){
@@ -828,7 +824,7 @@ class FormUI{
             $options = $areasnames[0];
             $slct = $areasnames[1];
             $form->addDropdown( Language::translate("ui-select-to-delete-area"), $options, $slct, "deleteArea");
-            $form->sendToPlayer($sender);
+            $sender->sendForm($form);
        }
     }
 
@@ -944,7 +940,7 @@ class FormUI{
             foreach( $flgs as $flag => $set){
                 $form->addToggle( $flag, $set );
             }
-            $form->sendToPlayer($sender);
+            $sender->sendForm($form);
 
         }else{ // select level
             $form = new CustomForm(function ( Player $sender, ?array $data ) {
@@ -975,7 +971,7 @@ class FormUI{
             $current = $sender->getLevel()->getName();
             $slct = array_search( $current, $levels);
             $form->addDropdown( Language::translate("ui-level-select"), $levels, $slct, "selectedLevel");
-            $form->sendToPlayer($sender);
+            $sender->sendForm($form);
        }
     }
 
@@ -1008,7 +1004,7 @@ class FormUI{
             $selectlist[] = $area->getName();
         }
         $form->addDropdown( Language::translate("ui-tp-to-area") , $selectlist );
-        $form->sendToPlayer($sender);
+        $sender->sendForm($form);
     }
 
     /** compassAreaForm
@@ -1091,6 +1087,6 @@ class FormUI{
             }
         }
         $form->addDropdown( Language::translate("ui-compass-title") , $selectlist );
-        $form->sendToPlayer( $sender );
+        $sender->sendForm($form);
     }
 }

@@ -4,8 +4,6 @@
 
 namespace genboy\Festival;
 
-use genboy\Festival\Festival;
-
 class Level{
 
 	/** @var string */

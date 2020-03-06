@@ -39,7 +39,7 @@ class Area{
 	public $commands;
 	/** @var string[] */
 	public $events;
-	/** @var Main */
+	/** @var Festival */
 	private $plugin;
 
 	public function __construct(string $name, string $desc, int $priority, array $flags, Vector3 $pos1, Vector3 $pos2, int $radius, int $top, int $bottom, string $levelName, array $whitelist, array $commands, array $events, Festival $plugin){
@@ -216,19 +216,6 @@ class Area{
 	}
 
 	/**
-	 * @param string $flag
-	 * @return bool
-	 */
-	public function getCommand(string $id) : bool{
-		if(isset($this->commands[$id])){
-			return $this->commands[$id];
-		}
-
-		return false;
-	}
-
-
-	/**
 	 * @return string[]
 	 * @return array
 	 */
@@ -244,13 +231,6 @@ class Area{
 		}
 
 		return $arr;
-	}
-
-	/**
-	 * @return string[]
-	 */
-	public function setEvent( string $type, string $cmdid) : array{
-		return true;
 	}
 
 
@@ -441,10 +421,7 @@ class Area{
 	 * @return bool
 	 */
 	public function isWhitelisted(string $playerName) : bool{
-		if(in_array($playerName, $this->whitelist)){
-			return true;
-		}
-		return false;
+		return in_array($playerName, $this->whitelist);
 	}
 
 	/**
