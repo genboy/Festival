@@ -1540,6 +1540,7 @@ class Festival extends PluginBase implements Listener{
 		$playerName = strtolower($player->getName());
 
         if( isset( $this->players[ strtolower( $playerName ) ]["makearea"]["type"] ) && $itemhand->getID() ==  $this->config['options']['itemid'] ){ // ? holding Festival tool
+
             $event->setCancelled();
             $newareatype = $this->players[ strtolower( $playerName ) ]["makearea"]["type"];
             if( !isset( $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] ) ){ // add here the item-tool check
@@ -1575,9 +1576,10 @@ class Festival extends PluginBase implements Listener{
                     $cz = $p2->getZ() + ( ( $p1->getZ() - $p2->getZ() ) / 2 );
                     $pos1 = new Position( $cx, $cy, $cz, $player->getLevel() ); // center
                     $radius = $this->get_3d_distance($p1, $pos1);
-                    $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $pos1;
                 }
+                $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $pos1;
                 $this->players[ strtolower( $playerName ) ]["makearea"]["radius"] = $radius;
+
                 // back to form
                 $this->form->areaNewForm( $player , ["type"=>$newareatype,"pos1"=>$pos1,"pos2"=>$p2,"radius"=>$radius], $msg = language::translate("ui-new-area-setup") . ":");
                 return;
@@ -1658,6 +1660,7 @@ class Festival extends PluginBase implements Listener{
         $itemhand = $player->getInventory()->getItemInHand();
         $playerName = strtolower($player->getName());
 
+
         /* test for flying & air click to select pos */
         if( $event->getAction() === PlayerInteractEvent::RIGHT_CLICK_AIR && $player->isFlying() ){
 
@@ -1698,9 +1701,10 @@ class Festival extends PluginBase implements Listener{
                         $cz = $p2->getZ() + ( ( $p1->getZ() - $p2->getZ() ) / 2 );
                         $pos1 = new Position( $cx, $cy, $cz, $player->getLevel() ); // center
                         $radius = $this->get_3d_distance($p1, $pos1);
-                        $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $pos1;
                     }
+                    $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $pos1;
                     $this->players[ strtolower( $playerName ) ]["makearea"]["radius"] = $radius;
+
                     // back to form
                     $this->form->areaNewForm( $player , ["type"=>$newareatype,"pos1"=>$pos1,"pos2"=>$p2,"radius"=>$radius], $msg = language::translate("ui-new-area-setup") . ":");
                     return;
@@ -1858,22 +1862,9 @@ class Festival extends PluginBase implements Listener{
             */
 
 
-
-
-	/** onHurt
-	 * @param EntityDamageEvent $event
-	 * @ignoreCancelled true
-	 */
-	public function onHurt(EntityDamageEvent $event) : void{
-		$this->canDamage( $event );
-	}
-
-	/** onDamage
-	 * @param EntityDamageEvent $event
-	 * @ignoreCancelled true
-	 */
-	public function onDamage(EntityDamageEvent $event) : void{
-		$this->canDamage( $event );
+	public function e_damage(EntityDamageEvent $event){
+		// var_dump('Festival: e-damage');
+		// var_dump('Festival: e-damage result: '.$this->canDamage( $event ));
 	}
 
     /** Mob / Animal spawning
@@ -1911,23 +1902,6 @@ class Festival extends PluginBase implements Listener{
 
     }
 
-	/** Entity/Item hit (protect paintings)
-	 * @param EntityDamageEvent $event
-	 * @ignoreCancelled true
-	 */
-     public function onHit(EntityDamageEvent $event)
-     {
-         if ($event instanceof EntityDamageByEntityEvent) {
-             $target = $event->getEntity();
-             $player = $event->getDamager();
-             $pos = $player->getPosition();
-             if ($target instanceof Painting && !$this->canEdit($player, $pos )){
-                //$event->getDamager()->sendTip("You hit a painting");
-                $event->setCancelled();
-			    return;
-             }
-         }
-     }
 
 	/** Item drop
 	 * @param itemDropEvent $event
@@ -2199,11 +2173,10 @@ class Festival extends PluginBase implements Listener{
 	 * @param Event $ev
 	 * @return bool
 	 */
-	public function canPVP(EntityDamageEvent $ev) : bool{
+	public function canPVP($ev) : bool{
         $o = true;
         $god = false;
         if($ev instanceof EntityDamageByEntityEvent){
-
             if($ev->getEntity() instanceof Player && $ev->getDamager() instanceof Player){
                 $entity = $ev->getEntity();
                 $p = ( (isset($this->levels[strtolower($entity->getLevel()->getName())]) && $this->levels[strtolower($entity->getLevel()->getName())]->getOption("levelcontrol") != "off" ) ? $this->levels[strtolower($entity->getLevel()->getName())]->getFlag("pvp") : $this->config["defaults"]["pvp"]);
@@ -2252,13 +2225,12 @@ class Festival extends PluginBase implements Listener{
 
 
     /** Player Damage Impact
-	 * @param EntityDamageEvent $event
 	 * @ignoreCancelled true
      */
-	public function canDamage(EntityDamageEvent $ev) : bool{
-
+	public function canDamage($ev) : bool{
+		// var_dump('Festival: canDamage');
         if($ev->getEntity() instanceof Player){
-
+			// var_dump('Festival: canDamage event called for player');
 			$player = $ev->getEntity();
 			$playerName = strtolower($player->getName());
 
@@ -2266,28 +2238,33 @@ class Festival extends PluginBase implements Listener{
                 if( $player->isOnFire() ){
                     $player->extinguish(); // 1.0.7-dev
                 }
+				// var_dump('Festival: Player cant get hurt');
 				$ev->setCancelled();
                 return false;
 			}
             if( !$this->canBurn( $player->getPosition() )){
                 if( $player->isOnFire() ){
+					// var_dump('Festival: Player cant burn');
                     $player->extinguish(); // 1.0.7-dev
 				    $ev->setCancelled();
                     return false;
                 }
 			}
             if(!$this->canPVP($ev)){ // v 1.0.6-13
+				// var_dump('Festival: Player cant do PVP damage');
 				$ev->setCancelled();
                 return false;
 			}
 
 			if( isset($this->playerTP[$playerName]) && $this->playerTP[$playerName] == true ){
+				// var_dump('Festival: Dont know wht is that');
 				unset( $this->playerTP[$playerName] ); //$this->areaMessage( 'Fall save off', $player );
 				$ev->setCancelled();
                 return false;
 			}
 
             if(!$this->hasFallDamage($player)){
+				// var_dump('Festival: No Fall damage :) ');
                 $ev->setCancelled(); //$this->areaMessage( 'No Fall damage :) ', $player );
                 return false;
             }
@@ -2304,7 +2281,8 @@ class Festival extends PluginBase implements Listener{
 	 * @param Player $player
      */
     public function checkPlayerFlying(Player $player){
-        $fly = true;
+		// var_dump("Festival: checkPlayerFlying");
+        $fly = false;
         $sendmsg = false;
         $nofalldamage = false;
 		$position = $player->getPosition();
@@ -2312,11 +2290,14 @@ class Festival extends PluginBase implements Listener{
         $priority = 0;
         $f = ( ( isset($this->levels[strtolower($position->getLevel()->getName())]) && $this->levels[strtolower($position->getLevel()->getName())]->getOption("levelcontrol") != 'off') ? $this->levels[strtolower($position->getLevel()->getName())]->getFlag("flight") : $this->config["defaults"]["flight"]);
         if( $f ){
+			// var_dump("Festival: checkPlayerFlying -> DollarF");
             $fly = false; // flag default
         }
         if( isset( $this->inArea[$playername] ) && is_array( $this->inArea[$playername] ) ){
+			// var_dump("Festival: checkPlayerFlying -> inArea");
             foreach($this->inArea[$playername] as $areaname){
                 if( isset( $this->areas[$areaname] ) ){
+					// var_dump("Festival: checkPlayerFlying -> inArea -> $areaname");
                     $area = $this->areas[$areaname];
                     if( $area->getPriority() >= $priority ){
                         $priority = $area->getPriority();
@@ -2342,9 +2323,10 @@ class Festival extends PluginBase implements Listener{
             $fly = false; // flag default
         }
         // Survival Mode = 0, Creative Mode = 1, Adventure Mode = 2, Spectator Mode = 4
-        if( $player->hasPermission("festival") || $player->hasPermission("festival.access") || $player->getGamemode() === 1 ){ // ! if( $player->isOp() ){
+        if( $player->getGamemode() === 1 && $player->isOp() ){ // ! if( $player->isOp() ){
             $fly = true;
             $player->setAllowFlight(true);
+			// var_dump("Festival: Gamemode: Do player can fly ? : $fly");
             return $fly;
         }
 
@@ -2365,6 +2347,7 @@ class Festival extends PluginBase implements Listener{
                 $player->sendMessage( $msg );
             }
         }
+		// var_dump("Festival: Do player can fly ? : $fly");
         $player->setAllowFlight($fly);
         return $fly;
     }
