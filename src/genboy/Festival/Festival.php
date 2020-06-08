@@ -1074,7 +1074,7 @@ class Festival extends PluginBase implements Listener{
 				        case "enter":
 						case "leave":
 						case "center":
-				            if( isset($areaname) && isset($cmdid) && isset($cmdstring) ){
+				            if( isset($areaname) && isset($this->areas[$areaname]) && isset($cmdid) && isset($cmdstring) ){
 								$area = $this->areas[$areaname];
 								$cmds = $area->commands;
 								if( count($cmds) == 0 || !isset($cmds[$cmdid]) ){
@@ -1100,7 +1100,11 @@ class Festival extends PluginBase implements Listener{
 									$o = TextFormat::RED . Language::translate("cmd-id").': ' . $cmdid . ' ' . Language::translate("allready-set-for-area") . ' ' . $areaname. ', ' . Language::translate("edit-id-or-other");
 								}
                             }else{
-                                $o = TextFormat::RED . Language::translate("cmd-specify-id-and-command-usage");
+                                if( !isset($this->areas[$areaname]) ){
+                                    $o = $areaname . ' ' . TextFormat::RED . Language::translate("cannot-be-found") . ' ' . TextFormat::RED . Language::translate("cmd-specify-id-and-command-usage");
+                                }else{
+                                    $o = TextFormat::RED . Language::translate("cmd-specify-id-and-command-usage");
+                                }
 				            }
                             break;
 
