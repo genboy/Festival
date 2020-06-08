@@ -1540,6 +1540,7 @@ class Festival extends PluginBase implements Listener{
 		$playerName = strtolower($player->getName());
 
         if( isset( $this->players[ strtolower( $playerName ) ]["makearea"]["type"] ) && $itemhand->getID() ==  $this->config['options']['itemid'] ){ // ? holding Festival tool
+
             $event->setCancelled();
             $newareatype = $this->players[ strtolower( $playerName ) ]["makearea"]["type"];
             if( !isset( $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] ) ){ // add here the item-tool check
@@ -1575,9 +1576,10 @@ class Festival extends PluginBase implements Listener{
                     $cz = $p2->getZ() + ( ( $p1->getZ() - $p2->getZ() ) / 2 );
                     $pos1 = new Position( $cx, $cy, $cz, $player->getLevel() ); // center
                     $radius = $this->get_3d_distance($p1, $pos1);
-                    $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $pos1;
                 }
+                $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $pos1;
                 $this->players[ strtolower( $playerName ) ]["makearea"]["radius"] = $radius;
+
                 // back to form
                 $this->form->areaNewForm( $player , ["type"=>$newareatype,"pos1"=>$pos1,"pos2"=>$p2,"radius"=>$radius], $msg = language::translate("ui-new-area-setup") . ":");
                 return;
@@ -1658,6 +1660,7 @@ class Festival extends PluginBase implements Listener{
         $itemhand = $player->getInventory()->getItemInHand();
         $playerName = strtolower($player->getName());
 
+
         /* test for flying & air click to select pos */
         if( $event->getAction() === PlayerInteractEvent::RIGHT_CLICK_AIR && $player->isFlying() ){
 
@@ -1698,9 +1701,10 @@ class Festival extends PluginBase implements Listener{
                         $cz = $p2->getZ() + ( ( $p1->getZ() - $p2->getZ() ) / 2 );
                         $pos1 = new Position( $cx, $cy, $cz, $player->getLevel() ); // center
                         $radius = $this->get_3d_distance($p1, $pos1);
-                        $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $pos1;
                     }
+                    $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $pos1;
                     $this->players[ strtolower( $playerName ) ]["makearea"]["radius"] = $radius;
+
                     // back to form
                     $this->form->areaNewForm( $player , ["type"=>$newareatype,"pos1"=>$pos1,"pos2"=>$p2,"radius"=>$radius], $msg = language::translate("ui-new-area-setup") . ":");
                     return;
