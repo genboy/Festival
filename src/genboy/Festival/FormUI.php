@@ -213,10 +213,9 @@ class FormUI{
             }
             $this->plugin->config["options"]["levelcontrol"] =  $newlevelcontrol;
             */
-            $c = 6; // after 6 options all input are flags
+			
             foreach( $this->plugin->config["defaults"] as $flag => $set){
-                $c++;
-                $defaults[$flag] = $data[$c];
+                $defaults[$flag] = $data[$flag];
             }
 
             $this->plugin->config["defaults"] = $defaults;
@@ -272,7 +271,7 @@ class FormUI{
 
 
         foreach( $this->plugin->config["defaults"] as $flag => $set){
-            $form->addToggle( $flag, $set );
+            $form->addToggle(Language::translate("ui-".$flag), $set, $flag);
         }
         $form->sendToPlayer($sender);
 
@@ -324,13 +323,11 @@ class FormUI{
                         $area->setBottom( 0 );
                     }
 
-                    $c = 5; // 3 variables, others are flags..
                     $flagset = $area->getFlags();
                     foreach( $flagset as $nm => $set){
-                        if( isset( $data[$c] ) ){
-                            $area->setFlag( $nm, $data[$c] );
+                        if( isset( $data[$nm] ) ){
+                            $area->setFlag( $nm, $data[$nm] );
                         }
-                        $c++;
                     }
                     $area->save();
                     $this->plugin->helper->saveAreas();
@@ -354,7 +351,7 @@ class FormUI{
 
             $flgs = $this->plugin->areas[$areaname]->getFlags();
             foreach( $flgs as $flag => $set){
-                $form->addToggle( $flag, $set );
+                $form->addToggle(Language::translate("ui-".$flag), $set, $flag);
             }
             $form->sendToPlayer($sender);
 
