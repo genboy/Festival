@@ -246,5 +246,26 @@
     "ui-config-auto-whitelist": "Automatisch whitelist",
     "ui-config-flight-control": "Vlieg vlag optie",
     "ui-config-action-itemid": "Actie item id",
-    "ui-configs-saved": "Configuratie opgeslagen"
+    "ui-configs-saved": "Configuratie opgeslagen",
+
+    "ui-flag-perms": "Gebruik speler permissies",
+	"ui-flag-pass": "Alleen whitelisted spelers",
+	"ui-flag-msg": "Geen Festival berichten",
+	"ui-flag-edit": "Niet bouwen of breken",
+	"ui-flag-touch": "Geen interactie",
+	"ui-flag-flight": "Niet vliegen",
+	"ui-flag-hurt": "Geen schade",
+	"ui-flag-fall": "Geen val schade",
+	"ui-flag-explode": "Geen explosies",
+	"ui-flag-tnt": "Geen tnt explosie",
+	"ui-flag-fire": "Geen vuur",
+	"ui-flag-shoot": "Spelers niet schieten",
+	"ui-flag-pvp": "Geen PVP",
+	"ui-flag-effect": "Geen effecten",
+	"ui-flag-hunger": "Geen hunger",
+	"ui-flag-drop": "Geen speler buit",
+	"ui-flag-mobs": "Geen monster spawn",
+	"ui-flag-animals": "Geen dieren spawn",
+	"ui-flag-cmd": "Cmd alleen voor OPs"
+
 }

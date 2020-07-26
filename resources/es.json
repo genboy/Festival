@@ -246,5 +246,26 @@
     "ui-config-auto-whitelist": "Lista blanca automática",
     "ui-config-flight-control": "Control de vuelo",
     "ui-config-action-itemid": "ID de elemento de acción",
-    "ui-configs-saved": "Configs guardado"
+    "ui-configs-saved": "Configs guardado",
+
+    "ui-flag-perms": "Use players Perms ",
+	"ui-flag-pass": "Only whitelisted players",
+	"ui-flag-msg": "No Festival Msg",
+	"ui-flag-edit": "Not editable",
+	"ui-flag-touch": "No interaction",
+	"ui-flag-flight": "No fly",
+	"ui-flag-hurt": "No hurt",
+	"ui-flag-fall": "No fall damage",
+	"ui-flag-explode": "No explosion",
+	"ui-flag-tnt": "No TNT explosion",
+	"ui-flag-fire": "No Fire",
+	"ui-flag-shoot": "Players can't shoot",
+	"ui-flag-pvp": "No PVP",
+	"ui-flag-effect": "No effects",
+	"ui-flag-hunger": "No players hunger",
+	"ui-flag-drop": "No players Drop",
+	"ui-flag-mobs": "No mobs spawn",
+	"ui-flag-animals": "No animals spawn",
+	"ui-flag-cmd": "Cmd area only OPs"
+
 }

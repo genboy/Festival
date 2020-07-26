@@ -215,6 +215,8 @@ class FormUI{
             */
 			
             foreach( $this->plugin->config["defaults"] as $flag => $set){
+                $c++;
+                $defaults[$flag] = $data[$c];
                 $defaults[$flag] = $data[$flag];
             }
 
@@ -271,7 +273,7 @@ class FormUI{
 
 
         foreach( $this->plugin->config["defaults"] as $flag => $set){
-            $form->addToggle(Language::translate("ui-".$flag), $set, $flag);
+            $form->addToggle(Language::translate("ui-flag-".$flag), $set, $flag);
         }
         $form->sendToPlayer($sender);
 
@@ -351,7 +353,7 @@ class FormUI{
 
             $flgs = $this->plugin->areas[$areaname]->getFlags();
             foreach( $flgs as $flag => $set){
-                $form->addToggle(Language::translate("ui-".$flag), $set, $flag);
+                $form->addToggle(Language::translate("ui-flag-".$flag), $set, $flag);
             }
             $form->sendToPlayer($sender);
 
@@ -946,7 +948,7 @@ class FormUI{
 
             $flgs = $this->plugin->levels[strtolower($levelname)]->getFlags();
             foreach( $flgs as $flag => $set){
-                $form->addToggle( $flag, $set );
+                $form->addToggle(Language::translate("ui-flag-".$flag), $set, $flag);
             }
             $form->sendToPlayer($sender);
 
