@@ -1286,7 +1286,7 @@ class Festival extends PluginBase implements Listener{
         $player = $event->getPlayer();
         $itemheld = $event->getItem()->getID();
 
-        if( $itemheld ==  $this->config['options']['itemid'] && !isset( $this->players[ strtolower( $player->getName() ) ]["makearea"] ) ) {
+        if( $itemheld != '' && $itemheld == $this->config['options']['itemid'] && !isset( $this->players[ strtolower( $player->getName() ) ]["makearea"] ) ) {
             $this->form->openUI($player);
         }
 
