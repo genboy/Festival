@@ -782,6 +782,7 @@ class Festival extends PluginBase implements Listener{
                 }
             break;
 
+			/*
 			case "compass":
 
 				if (!isset($args[1])){
@@ -844,6 +845,7 @@ class Festival extends PluginBase implements Listener{
                         " ". TextFormat::WHITE . Language::translate("cannot-be-found"). " " . TextFormat::GREEN . $list;
                 }
             break;
+			*/
 
 			case "touch":
 			case "pvp":
@@ -1286,10 +1288,12 @@ class Festival extends PluginBase implements Listener{
         $player = $event->getPlayer();
         $itemheld = $event->getItem()->getID();
 
-        if( $itemheld ==  $this->config['options']['itemid'] && !isset( $this->players[ strtolower( $player->getName() ) ]["makearea"] ) ) {
+        if( $itemheld ==  $this->config['options']['itemid'] && !isset( $this->players[ strtolower( $player->getName() ) ]["makearea"] ) ) { 
             $this->form->openUI($player);
         }
 
+
+				/*
         // check compass and level option to select direction
         if( $itemheld === ItemIdList::COMPASS && ( isset($this->levels[strtolower($player->getLevel()->getName())]) && $this->levels[strtolower($player->getLevel()->getName())]->getOption("compass") != 'off' ) ){
 
@@ -1308,6 +1312,7 @@ class Festival extends PluginBase implements Listener{
                 $this->form->compassAreaForm( $player );
             }
         }
+				*/
 
     }
 
@@ -1326,6 +1331,8 @@ class Festival extends PluginBase implements Listener{
             // level area titles
             $this->checkAreaTitles( $entity, $level );
 
+
+						/*
             // reset compass
             $leaving = $entity->getLevel();
             $itemheld = $entity->getInventory()->getItemInHand()->getID();
@@ -1347,6 +1354,8 @@ class Festival extends PluginBase implements Listener{
                 $entity->sendDataPacket($pk);
 
             }
+						*/
+
 
         }
 
