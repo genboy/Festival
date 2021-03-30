@@ -22,25 +22,25 @@ class Area{
 	/** @var int */
 	public $priority;
 	/** @var Vector3 */
-	private $pos1;
+	public $pos1;
 	/** @var Vector3 */
-	private $pos2;
+	public $pos2;
     /** @var int */
-	private $radius;
+	public $radius;
     /** @var int */
 	public $top;
     /** @var int */
 	public $bottom;
 	/** @var string */
-	private $levelName;
+	public $levelName;
 	/** @var string[] */
-	private $whitelist;
+	public $whitelist;
 	/** @var string[] */
 	public $commands;
 	/** @var string[] */
 	public $events;
-	/** @var Main */
-	private $plugin;
+	/** @var Festival */
+	public $plugin;
 
 	public function __construct(string $name, string $desc, int $priority, array $flags, Vector3 $pos1, Vector3 $pos2, int $radius, int $top, int $bottom, string $levelName, array $whitelist, array $commands, array $events, Festival $plugin){
 		$this->name = $name;
@@ -61,22 +61,22 @@ class Area{
 	}
 
 	/**
-	 * @return string
+	 * @return str
 	 */
 	public function getName() : string {
 		return $this->name;
 	}
 
     /**
-	 * @param string
+	 * @param str
 	 */
-	public function setName( $str) : string {
+	public function setName( $str ) : string {
 		$this->name = $str;
 		return $this->name;
 	}
 
 	/**
-	 * @return string
+	 * @return str
 	 */
 	public function getDesc() : string {
 		return $this->desc;
@@ -104,7 +104,7 @@ class Area{
 	public function getPriority() : int{
 		return $this->priority;
 	}
-	
+
 	/**
 	 * @return Vector3
 	 */
@@ -136,9 +136,9 @@ class Area{
     /**
 	 * @param int
 	 */
-	public function setTop( $int ) : int{
+	public function setTop( int $int ) : int{
 		$this->top = $int;
-        return $int;
+      return $int;
 	}
 	/**
 	 * @return int
@@ -234,7 +234,7 @@ class Area{
 	 */
 	public function getEvents() : array{
 
-		$arr = []; 
+		$arr = [];
 		if(is_array($this->events)){
 			foreach($this->events as $nm => $ids){
 				if( $ids != '' && $ids != ' ' && $ids != 'null' ){
@@ -266,7 +266,6 @@ class Area{
 
             // in sphere area
             $r = $this->radius;
-
             if( $this->getTop() > 0 || $this->getBottom() > 0){
 
                 $cy1 = $this->pos1->getY() + $r;
@@ -281,32 +280,23 @@ class Area{
                 }else if( $this->getBottom() > 0 ){
                     $cy2 = $cy2 - $this->getBottom();
                 }
-
                 $distance2d = $this->plugin->get_flat_distance($this->pos1, $pos);
                 if( $distance2d <= $r && $cy1 >= $pos->getY() && $cy2 <= $pos->getY() ){
                     return true; // point outside radius + y height
-                }else{
-                    return false; // point outside radius + -y height
                 }
 
             }else{
 
                 $distance3d = $this->plugin->get_3d_distance($this->pos1, $pos);
-                if( $distance3d < $r  ){
+                if( $distance3d <= $r  ){
                     return true; //point in radius
-                }else if($distance3d == $r){
-                    return true; // point is equal to radius
-                }else{
-                    return false; // point outside radius
                 }
-
             }
+						return false; // point outside radius
 
         }else if( isset( $this->pos1 ) && isset( $this->pos2 ) ){
             // in cube area
-
             // if scale limit $cy1,$cy2 > 0
-
             $cy1 = max($this->pos1->getY(), $this->pos2->getY());
             if( $this->getTop() == 9999 ){
                 $cy1 = 999999;
@@ -320,15 +310,17 @@ class Area{
                 $cy2 = min( $this->pos2->getY(), $this->pos1->getY()) - $this->getBottom();
             }
 
-            // else
-            return ((min($this->pos1->getX(), $this->pos2->getX()) <= $pos->getX())
+            if((min($this->pos1->getX(), $this->pos2->getX()) <= $pos->getX())
                 && (max($this->pos1->getX(), $this->pos2->getX()) >= $pos->getX())
                 && ($cy2 <= $pos->getY()) //&& (min($this->pos1->getY(), $this->pos2->getY()) <= $pos->getY())
                 && ($cy1 >= $pos->getY())//&& (max($this->pos1->getY(), $this->pos2->getY()) >= $pos->getY())
                 && (min($this->pos1->getZ(), $this->pos2->getZ()) <= $pos->getZ())
                 && (max($this->pos1->getZ(), $this->pos2->getZ()) >= $pos->getZ())
-                &&  strtolower( $this->levelName ) === strtolower( $levelName ) );
+                &&  strtolower( $this->levelName ) === strtolower( $levelName ) ){
+								return true;
+						}
         }
+				return false;
 
 	}
 
@@ -362,22 +354,19 @@ class Area{
                 $distance2d = $this->plugin->get_flat_distance($this->pos1, $pos);
                 if( $distance2d <= $r && $cy1 >= $pos->getY() && $cy2 <= $pos->getY() ){
                     return true; // point outside radius + y height
-                }else{
-                    return false; // point outside radius + -y height
                 }
+								return false;
 
             }else{
 
                 $dis = $this->plugin->get_3d_distance($this->pos1, $pos);
-                if( $dis < $r  ){
-                    return true; //point in radius
-                }else if($dis == $r){
-                    return true; // point is equal to radius
-                }else{
-                    return false; // point outside radius
+                if( $dis <= $r  ){
+                    return true; // point in radius
                 }
+								return false;
 
             }
+						return false; // point outside radius + -y height
 
         }else if( isset( $this->pos1 ) && isset( $this->pos2 ) ){
 
@@ -402,9 +391,13 @@ class Area{
             $px = $pos->getX();
             $py = $pos->getY();
             $pz = $pos->getZ();
-            return( $px >= ($cx - 1) && $px <= ($cx + 1) && $pz >= ($cz - 1) && $pz <= ($cz + 1) && $py >= $cy2 && $py <= $cy1
-            && strtolower( $this->levelName ) === strtolower( $levelName ) );
-        }
+						if( $px >= ($cx - 1) && $px <= ($cx + 1) && $pz >= ($cz - 1) && $pz <= ($cz + 1) && $py >= $cy2 && $py <= $cy1 && strtolower( $this->levelName ) === strtolower( $levelName ) ){
+							return true;
+						}
+						return false;
+
+				}
+				return false;
 
 	}
 
