@@ -871,7 +871,7 @@ class FormUI{
 
                     $lvl->setOption( "levelcontrol", $newlevelcontrol );
                     unset( $data["levelcontrol"] );
-
+                    /*
                     $newcompassoption = "off";
 
                     if(  $data["compass"] == true){
@@ -888,13 +888,13 @@ class FormUI{
                         $pk->y = $target->y;
                         $pk->z = $target->z;
                         $pk->spawnType = SetSpawnPositionPacket::TYPE_WORLD_SPAWN;
-                        $pk->spawnForced = true;
+                        //$pk->spawnForced = true;
                         $sender->sendDataPacket($pk);
-
                     }
 
                     $lvl->setOption( "compass", $newcompassoption );
                     unset( $data["compass"] );
+                    */
 
                     $flagset = $lvl->getFlags();
                     $c = 4;
@@ -937,12 +937,13 @@ class FormUI{
             }
             $form->addToggle( Language::translate("ui-toggle-flag-control"), $levelcontrol, "levelcontrol" );
 
+            /*
             $compass = false;
             if( isset($optionset["compass"]) && ( $optionset["compass"] === true || $optionset["compass"] == "on" ) ){
                 $compass = true;
             }
             $form->addToggle( Language::translate("ui-compass-use-compass"), $compass, "compass" );
-
+            */
 
             $form->addLabel( Language::translate("ui-subtitle-level-flags") );
 
@@ -1021,7 +1022,11 @@ class FormUI{
      * @class formUI
 	 * @param Player $sender
      */
+
+
     public function compassAreaForm( Player $sender ) : void {
+
+      /*
         $form = new CustomForm( function ( Player $sender, ?array $data ) {
             if( $data === null){
                 return;
@@ -1046,10 +1051,11 @@ class FormUI{
                     $pk->y = $target->y;
                     $pk->z = $target->z;
                     $pk->spawnType = SetSpawnPositionPacket::TYPE_WORLD_SPAWN;
-                    $pk->spawnForced = true;
+                    //$pk->spawnForced = true;
                     $sender->sendDataPacket($pk);
 
-                }else if(  $selectlist[ $data[0] - 1 ] ){
+
+                }else if(  isset( $selectlist[ $data[0] - 1 ] ) ){
 
                     $areaname = $selectlist[ $data[0] - 1 ];
                     if( isset( $this->plugin->areas[ $areaname ] ) ){
@@ -1072,7 +1078,7 @@ class FormUI{
                             $pk->x = (int) $cx;
                             $pk->y = (int) $cy;
                             $pk->z = (int) $cz;
-                            $pk->spawnForced = false;
+                            //$pk->spawnForced = false;
                             $sender->dataPacket($pk);
                         }else{
                             $sender->sendMessage( Language::translate("compass-dir-notset") );
@@ -1098,5 +1104,7 @@ class FormUI{
         }
         $form->addDropdown( Language::translate("ui-compass-title") , $selectlist );
         $form->sendToPlayer( $sender );
+        */
+
     }
 }

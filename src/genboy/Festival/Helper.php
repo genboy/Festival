@@ -23,7 +23,7 @@ class Helper {
 
         if(!is_dir($this->plugin->getDataFolder())){
             @mkdir($this->plugin->getDataFolder());
-		}
+		        }
         // add resource folder for backwards compatibility
         if( !is_dir($this->plugin->getDataFolder().'resources') ){
            @mkdir($this->plugin->getDataFolder().'resources');
@@ -197,7 +197,7 @@ class Helper {
             'autowhitelist'     => 'off',    // area creator auto whitelist off,on
             'flightcontrol'     => 'on',    // area fly-flag active off,on
             'levelcontrol'      => 'off',    // area level flags active off,on
-            'compass'           => 'off',    // area level flags active off,on
+            //'compass'           => 'off',    // area level flags active off,on
         ],
         'defaults' =>[
             'perms'     => false,
@@ -266,11 +266,15 @@ class Helper {
         if( isset( $c['Options']['LevelControl'] ) ){
           $p['options']['levelcontrol']  = $c['Options']['LevelControl'];
         }
+
+        /*
         // compass option
         $p['options']['compass'] = "off";
         if( isset( $c['Options']['Compass'] ) ){
           $p['options']['compass']  = $c['Options']['Compass'];
         }
+        */
+
 
 
         if( isset( $c['Default'] ) && is_array( $c['Default'] ) ){
@@ -319,10 +323,12 @@ class Helper {
 
         if( isset($ldata) && is_array($ldata) && !empty($ldata[0])){
             foreach($ldata as $level){
+                /*
                 // new compass option
                 if( !isset( $level["options"]['compass'] ) ){
                     $level["options"]['compass'] = "off";
                 }
+                */
                 new FeLevel($level["name"], $level["desc"], $level["options"],$level["flags"], $this->plugin);
             }
             $this->plugin->getLogger()->info( "Level data set loaded!" );
