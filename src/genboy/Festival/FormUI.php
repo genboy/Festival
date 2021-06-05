@@ -286,7 +286,7 @@ class FormUI{
      */
     public function areaEditForm( Player $sender , $input = false, $msg = false) : void {
 
-        if( $input != false && isset( $input["selectedArea"] ) ){
+        if( $input != false && isset( $input["selectedArea"] ) && count($this->plugin->helper->getAreaNameList()) > 0 ){
             $areasnames = $this->plugin->helper->getAreaNameList();
             $areaname = $areasnames[$input["selectedArea"]];
             $this->plugin->players[ strtolower( $sender->getName() ) ]["edit"] = $areaname;
@@ -392,7 +392,7 @@ class FormUI{
 
             $areasnames = $this->plugin->helper->getAreaNameList();
 
-            if( isset( $input["selectedArea"] ) ){
+            if( isset( $input["selectedArea"] ) && $input["selectedArea"] > -1 && count($areasnames) > 0 ){
                 $areaname = $areasnames[ $input["selectedArea"] ];
                 $this->plugin->players[ strtolower( $sender->getName() ) ]["edit"] = $areaname;
             }
@@ -504,45 +504,51 @@ class FormUI{
 
             });
 
-            $areasnames = $this->plugin->helper->getAreaNameList();
-            $areaname = $areasnames[$input["selectedArea"]];
-            $area = $this->plugin->areas[$areaname]; // check is area exsists
+            if( count($this->plugin->helper->getAreaNameList()) > 0 ){
 
-            $form->setTitle( TextFormat::DARK_PURPLE . Language::translate("ui-edit-area-commands") ." ". Language::translate("for-area") . " " . TextFormat::DARK_PURPLE . $areaname );
+                $areasnames = $this->plugin->helper->getAreaNameList();
+                $areaname = $areasnames[$input["selectedArea"]];
+                $area = $this->plugin->areas[$areaname]; // check is area exsists
+
+                $form->setTitle( TextFormat::DARK_PURPLE . Language::translate("ui-edit-area-commands") ." ". Language::translate("for-area") . " " . TextFormat::DARK_PURPLE . $areaname );
 
 
-            $form->addLAbel(  Language::translate("ui-area-command-list") );
+                $form->addLAbel(  Language::translate("ui-area-command-list") );
 
-            foreach($area->events as $type => $list){
-				if( trim($list,",") != "" ){
-                    $form->addLabel( TextFormat::AQUA . "$type :");
-                    $cmds = explode(",", trim($list,",") );
-                    $clist = $area->getCommands();
-                    foreach( $cmds as $ci ){
-                        if(isset($area->commands[$ci])){
-                            $com = $area->commands[$ci];
-                            $form->addLabel("$ci: $com");
+                foreach($area->events as $type => $list){
+                    if( trim($list,",") != "" ){
+                        $form->addLabel( TextFormat::AQUA . "$type :");
+                        $cmds = explode(",", trim($list,",") );
+                        $clist = $area->getCommands();
+                        foreach( $cmds as $ci ){
+                            if(isset($area->commands[$ci])){
+                                $com = $area->commands[$ci];
+                                $form->addLabel("$ci: $com");
+                            }
                         }
                     }
                 }
+                $form->addLAbel( TextFormat::GREEN . Language::translate("ui-area-add-command") );
+
+                $msgdsp_tlt = Language::translate("ui-area-add-command-event");
+                $msgdsp_opt = ["enter", "center", "leave"];
+                $form->addStepSlider( $msgdsp_tlt, $msgdsp_opt, 0, "newcommandevent" );
+                $form->addInput( Language::translate("ui-area-add-new-command"), "add new Command (without / )", "", "newcommand" );
+
+
+                $form->addLAbel( Language::translate("ui-area-change-command") );
+                $form->addInput( Language::translate("ui-area-type-command-id-change"), "input command id to edit", "", "editid" );
+
+                $form->addLAbel( TextFormat::RED . Language::translate("ui-area-del-command") );
+                $form->addInput( Language::translate("ui-area-type-command-id-del"), "input command id to delete", "", "delcommand" );
+
+
+                $form->sendToPlayer($sender);
+
+            }else{
+                // no area available   area-not-excist
+                $this->selectForm($sender);
             }
-            $form->addLAbel( TextFormat::GREEN . Language::translate("ui-area-add-command") );
-
-            $msgdsp_tlt = Language::translate("ui-area-add-command-event");
-            $msgdsp_opt = ["enter", "center", "leave"];
-            $form->addStepSlider( $msgdsp_tlt, $msgdsp_opt, 0, "newcommandevent" );
-            $form->addInput( Language::translate("ui-area-add-new-command"), "add new Command (without / )", "", "newcommand" );
-
-
-            $form->addLAbel( Language::translate("ui-area-change-command") );
-            $form->addInput( Language::translate("ui-area-type-command-id-change"), "input command id to edit", "", "editid" );
-
-            $form->addLAbel( TextFormat::RED . Language::translate("ui-area-del-command") );
-            $form->addInput( Language::translate("ui-area-type-command-id-del"), "input command id to delete", "", "delcommand" );
-
-
-            $form->sendToPlayer($sender);
-
 
         }else{
 
@@ -575,7 +581,8 @@ class FormUI{
      */
     public function areaWhitelistForm( Player $sender , $input = false, $msg = false) : void {
 
-        if( $input != false && isset( $input["selectedArea"] ) ){
+
+        if( $input != false && isset( $input["selectedArea"] ) && count($this->plugin->helper->getAreaNameList()) > 0 ) {
 
             $areasnames = $this->plugin->helper->getAreaNameList();
             $areaname = $areasnames[$input["selectedArea"]];
@@ -782,7 +789,7 @@ class FormUI{
      */
     public function areaDeleteForm( Player $sender , $input = false, $msg = false) : void {
 
-        if( $input != false && isset( $input["deleteArea"] ) ){
+        if( $input != false && isset( $input["deleteArea"] ) && count($this->plugin->helper->getAreaNameList()) > 0){
             $areasnames = $this->plugin->helper->getAreaNameList();
             $areaname = $areasnames[$input["deleteArea"]];
             $this->plugin->players[ strtolower( $sender->getName() ) ]["del"] = $areaname;
@@ -865,7 +872,7 @@ class FormUI{
 
                     $lvl->setOption( "levelcontrol", $newlevelcontrol );
                     unset( $data["levelcontrol"] );
-
+                    /*
                     $newcompassoption = "off";
 
                     if(  $data["compass"] == true){
@@ -882,13 +889,13 @@ class FormUI{
                         $pk->y = $target->y;
                         $pk->z = $target->z;
                         $pk->spawnType = SetSpawnPositionPacket::TYPE_WORLD_SPAWN;
-                        $pk->spawnForced = true;
+                        //$pk->spawnForced = true;
                         $sender->sendDataPacket($pk);
-
                     }
 
                     $lvl->setOption( "compass", $newcompassoption );
                     unset( $data["compass"] );
+                    */
 
                     $flagset = $lvl->getFlags();
                     $c = 4;
@@ -931,12 +938,13 @@ class FormUI{
             }
             $form->addToggle( Language::translate("ui-toggle-flag-control"), $levelcontrol, "levelcontrol" );
 
+            /*
             $compass = false;
             if( isset($optionset["compass"]) && ( $optionset["compass"] === true || $optionset["compass"] == "on" ) ){
                 $compass = true;
             }
             $form->addToggle( Language::translate("ui-compass-use-compass"), $compass, "compass" );
-
+            */
 
             $form->addLabel( Language::translate("ui-subtitle-level-flags") );
 
@@ -994,7 +1002,7 @@ class FormUI{
                 foreach($this->plugin->areas as $area){
                     $selectlist[]= $area->getName();
                 }
-                if(  $selectlist[ $data[0] - 1 ] ){
+                if(  count( $selectlist ) > 0 && $data[0] - 1 > -1 ){
                     $areaname = $selectlist[ $data[0] - 1 ];
                     Server::getInstance()->dispatchCommand($sender, "fe tp ".$areaname );
                 }
@@ -1015,7 +1023,11 @@ class FormUI{
      * @class formUI
 	 * @param Player $sender
      */
+
+
     public function compassAreaForm( Player $sender ) : void {
+
+      /*
         $form = new CustomForm( function ( Player $sender, ?array $data ) {
             if( $data === null){
                 return;
@@ -1040,10 +1052,11 @@ class FormUI{
                     $pk->y = $target->y;
                     $pk->z = $target->z;
                     $pk->spawnType = SetSpawnPositionPacket::TYPE_WORLD_SPAWN;
-                    $pk->spawnForced = true;
+                    //$pk->spawnForced = true;
                     $sender->sendDataPacket($pk);
 
-                }else if(  $selectlist[ $data[0] - 1 ] ){
+
+                }else if(  isset( $selectlist[ $data[0] - 1 ] ) ){
 
                     $areaname = $selectlist[ $data[0] - 1 ];
                     if( isset( $this->plugin->areas[ $areaname ] ) ){
@@ -1066,7 +1079,7 @@ class FormUI{
                             $pk->x = (int) $cx;
                             $pk->y = (int) $cy;
                             $pk->z = (int) $cz;
-                            $pk->spawnForced = false;
+                            //$pk->spawnForced = false;
                             $sender->dataPacket($pk);
                         }else{
                             $sender->sendMessage( Language::translate("compass-dir-notset") );
@@ -1092,5 +1105,7 @@ class FormUI{
         }
         $form->addDropdown( Language::translate("ui-compass-title") , $selectlist );
         $form->sendToPlayer( $sender );
+        */
+
     }
 }

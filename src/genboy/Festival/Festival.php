@@ -1,25 +1,32 @@
 <?php
 /** Festival 2.1.2
  * src/genboy/Festival/Festival.php
- * copyright Genbay 2019
+ * copyright Genboy 2018-2021
  */
 
 declare(strict_types = 1);
 
 namespace genboy\Festival;
 
-use neitanod\ForceUTF8\Encoding;
 use genboy\Festival\Helper;
 use genboy\Festival\FormUI;
 use genboy\Festival\lang\Language;
+use neitanod\ForceUTF8\Encoding;
+
+use pocketmine\Server;
+use pocketmine\Player;
+use pocketmine\plugin\PluginBase;
+use pocketmine\utils\TextFormat;
+use pocketmine\math\Vector3;
+use pocketmine\item\Item as ItemIdList;
+use pocketmine\block\Block;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
+
 use pocketmine\entity\Entity;
 use pocketmine\entity\Item;
-use pocketmine\item\Item as ItemIdList;
-use pocketmine\block\Block;
 use pocketmine\entity\Human;
 use pocketmine\entity\object\ExperienceOrb;
 use pocketmine\entity\object\ItemEntity;
@@ -29,26 +36,8 @@ use pocketmine\entity\object\Painting;
 use pocketmine\entity\object\PrimedTNT;
 use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\projectile\Projectile;
-use pocketmine\event\block\BlockBreakEvent;
-use pocketmine\event\block\BlockPlaceEvent;
-use pocketmine\event\block\BlockUpdateEvent;
-use pocketmine\event\block\BlockBurnEvent;
-use pocketmine\event\entity\EntitySpawnEvent;
-use pocketmine\event\entity\EntityDespawnEvent;
-use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\event\entity\EntityExplodeEvent;
-use pocketmine\event\entity\EntityShootBowEvent;
-use pocketmine\event\entity\EntityLevelChangeEvent;
-use pocketmine\level\particle\FloatingTextParticle;
+
 use pocketmine\event\Listener;
-use pocketmine\level\Level;
-use pocketmine\level\Position;
-use pocketmine\math\Vector3;
-use pocketmine\Player;
-use pocketmine\plugin\PluginBase;
-use pocketmine\utils\TextFormat;
-use pocketmine\Server;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerLoginEvent;
 use pocketmine\event\player\PlayerMoveEvent;
@@ -59,63 +48,67 @@ use pocketmine\event\player\PlayerExhaustEvent;
 use pocketmine\event\player\PlayerDropItemEvent;
 use pocketmine\event\player\PlayerBucketEvent;
 use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\event\entity\EntitySpawnEvent;
+use pocketmine\event\entity\EntityDespawnEvent;
+use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityExplodeEvent;
+use pocketmine\event\entity\EntityShootBowEvent;
+use pocketmine\event\entity\EntityLevelChangeEvent;
+use pocketmine\event\block\BlockBreakEvent;
+use pocketmine\event\block\BlockPlaceEvent;
+use pocketmine\event\block\BlockUpdateEvent;
+use pocketmine\event\block\BlockBurnEvent;
 
-use pocketmine\network\mcpe\protocol\SetSpawnPositionPacket;
+use pocketmine\level\Level;
+use pocketmine\level\Position;
+use pocketmine\level\particle\FloatingTextParticle;
+
+// use pocketmine\network\mcpe\protocol\SetSpawnPositionPacket; // for compass positions
 
 class Festival extends PluginBase implements Listener{
 
-	/** @var obj */
+	/* @var obj */
 	public $helper; // helper class
-	/** @var array[] */
+	/* @var array[] */
 	public $config        = [];    // list of config options
-    /** @var obj */
-    public $form;
-	/** @var array[] */
+  /* @var obj */
+  public $form;
+	/* @var array[] */
 	public $levels        = [];    // list of level objects
-	/** @var Area[] */
-	public $areas          = [];   // list of area objects
+	/* @var Area[] */
+	public $areas         = [];   // list of area objects
 
-	/** @var array[]
-     * list of playernames with areanames they're in
-     */
-	private $inArea    = [];
+	/* @var array[] */
+	private $inArea    		= []; //list of playernames with areanames they're in
 
-	/** @var array[]
-     * list of areanames with active floatingtextparticle objects
-     */
-	private $areaTitles  = [];
-	/** @var array[]
-     * list of playernames in a global delay counter per player (skipptime)
-     */
-	private $skipsec   = [];
-	/** @var array[]
-     * list of playernames who have fall damage/teleport protection (skipptime)
-     */
-	public $playerTP   = [];
-
-	/** @var array[] */
-	public $players        = [];   // todo: make class
+	/* @var array[] */
+	private $areaTitles  	= []; // list of areanames with active floatingtextparticle objects
+	/* @var array[] */
+	private $skipsec   		= []; // list of playernames in a global delay counter per player (skipptime)
+	/* @var array[] */
+	public $playerTP   		= []; // list of playernames who have fall damage/teleport protection (skipptime)
+	/* @var array[] */
+	public $players       = [];   // todo: make class
 
 	/** @var bool[] */
-	private $selectingFirst    = [];
+	private $selectingFirst			= [];
 	/** @var bool[] */
-	private $selectingSecond   = [];
+	private $selectingSecond  	= [];
 	/** @var bool[] */
-	private $selectingRadius   = [];
+	private $selectingRadius  	= [];
 	/** @var bool[] */
-	private $selectingDiameter   = [];
+	private $selectingDiameter	= [];
 	/** @var Vector3[] */
-	private $firstPosition     = [];
+	private $firstPosition     	= [];
 	/** @var Vector3[] */
-	private $secondPosition    = [];
+	private $secondPosition    	= [];
 	/** @var int */
-	private $radiusPosition    = [];
+	private $radiusPosition    	= [];
 	/** @var int */
-	private $diameterPosition    = [];
+	private $diameterPosition   = [];
 
-	/** Enable
-	 * @return $this
-	 */
+	/* @return */
 	public function onEnable() : void{
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this); // Load data & configurations
@@ -128,11 +121,9 @@ class Festival extends PluginBase implements Listener{
         $this->getLogger()->info( "Genboy copyright 2019" );
 	}
 
-    /** dataSetup
-	 * @class Helper
-	 * @func Helper getSource
+  /** dataSetup
 	 * @var $plugin->options
-     */
+   */
     public function dataSetup(): bool{
         // check config file and defaults
         $o = "";
@@ -782,6 +773,7 @@ class Festival extends PluginBase implements Listener{
                 }
             break;
 
+			/*
 			case "compass":
 
 				if (!isset($args[1])){
@@ -844,6 +836,7 @@ class Festival extends PluginBase implements Listener{
                         " ". TextFormat::WHITE . Language::translate("cannot-be-found"). " " . TextFormat::GREEN . $list;
                 }
             break;
+			*/
 
 			case "touch":
 			case "pvp":
@@ -1290,6 +1283,8 @@ class Festival extends PluginBase implements Listener{
             $this->form->openUI($player);
         }
 
+
+				/*
         // check compass and level option to select direction
         if( $itemheld === ItemIdList::COMPASS && ( isset($this->levels[strtolower($player->getLevel()->getName())]) && $this->levels[strtolower($player->getLevel()->getName())]->getOption("compass") != 'off' ) ){
 
@@ -1308,6 +1303,7 @@ class Festival extends PluginBase implements Listener{
                 $this->form->compassAreaForm( $player );
             }
         }
+				*/
 
     }
 
@@ -1326,6 +1322,8 @@ class Festival extends PluginBase implements Listener{
             // level area titles
             $this->checkAreaTitles( $entity, $level );
 
+
+						/*
             // reset compass
             $leaving = $entity->getLevel();
             $itemheld = $entity->getInventory()->getItemInHand()->getID();
@@ -1347,6 +1345,8 @@ class Festival extends PluginBase implements Listener{
                 $entity->sendDataPacket($pk);
 
             }
+						*/
+
 
         }
 
@@ -1540,6 +1540,7 @@ class Festival extends PluginBase implements Listener{
 		$playerName = strtolower($player->getName());
 
         if( isset( $this->players[ strtolower( $playerName ) ]["makearea"]["type"] ) && $itemhand->getID() ==  $this->config['options']['itemid'] ){ // ? holding Festival tool
+
             $event->setCancelled();
             $newareatype = $this->players[ strtolower( $playerName ) ]["makearea"]["type"];
             if( !isset( $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] ) ){ // add here the item-tool check
@@ -1575,9 +1576,10 @@ class Festival extends PluginBase implements Listener{
                     $cz = $p2->getZ() + ( ( $p1->getZ() - $p2->getZ() ) / 2 );
                     $pos1 = new Position( $cx, $cy, $cz, $player->getLevel() ); // center
                     $radius = $this->get_3d_distance($p1, $pos1);
-                    $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $pos1;
                 }
+                $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $pos1;
                 $this->players[ strtolower( $playerName ) ]["makearea"]["radius"] = $radius;
+
                 // back to form
                 $this->form->areaNewForm( $player , ["type"=>$newareatype,"pos1"=>$pos1,"pos2"=>$p2,"radius"=>$radius], $msg = language::translate("ui-new-area-setup") . ":");
                 return;
@@ -1658,6 +1660,7 @@ class Festival extends PluginBase implements Listener{
         $itemhand = $player->getInventory()->getItemInHand();
         $playerName = strtolower($player->getName());
 
+
         /* test for flying & air click to select pos */
         if( $event->getAction() === PlayerInteractEvent::RIGHT_CLICK_AIR && $player->isFlying() ){
 
@@ -1698,9 +1701,10 @@ class Festival extends PluginBase implements Listener{
                         $cz = $p2->getZ() + ( ( $p1->getZ() - $p2->getZ() ) / 2 );
                         $pos1 = new Position( $cx, $cy, $cz, $player->getLevel() ); // center
                         $radius = $this->get_3d_distance($p1, $pos1);
-                        $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $pos1;
                     }
+                    $this->players[ strtolower( $playerName ) ]["makearea"]["pos1"] = $pos1;
                     $this->players[ strtolower( $playerName ) ]["makearea"]["radius"] = $radius;
+
                     // back to form
                     $this->form->areaNewForm( $player , ["type"=>$newareatype,"pos1"=>$pos1,"pos2"=>$p2,"radius"=>$radius], $msg = language::translate("ui-new-area-setup") . ":");
                     return;
@@ -1797,17 +1801,17 @@ class Festival extends PluginBase implements Listener{
      * BlockBurnEvent
      * @param BlockUpdateEvent $event
      * @return void
-        // Should check BlockBurnEvent ..
-        // https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/event/block/BlockBurnEvent.php
+     * Should check BlockBurnEvent ..
+     * https://github.com/pmmp/PocketMine-MP/blob/master/src/pocketmine/event/block/BlockBurnEvent.php
 
-    public function onBlockBurn( BlockBurnEvent $event ): void { // BlockBurnEvent
-        $block = $event->getBlock();
-        $position = new Position($block->getFloorX(), $block->getFloorY(), $block->getFloorZ(), $block->getLevel());
-        $levelname = $block->getLevel()->getName();
-        if( !$this->canBurn( $position ) ){ // is fire not allowed? // Block::FIRE
-            $event->setCancelled();
-        }
-    }
+    * public function onBlockBurn( BlockBurnEvent $event ): void { // BlockBurnEvent
+    *    $block = $event->getBlock();
+    *    $position = new Position($block->getFloorX(), $block->getFloorY(), $block->getFloorZ(), $block->getLevel());
+    *    $levelname = $block->getLevel()->getName();
+    *    if( !$this->canBurn( $position ) ){ // is fire not allowed? // Block::FIRE
+    *        $event->setCancelled();
+    *    }
+    * }
     */
 
     /** onPlayerBucketEvent
@@ -1815,14 +1819,14 @@ class Festival extends PluginBase implements Listener{
      * @param getBlockClicked $event
      * @return void
 
-    public function onPlayerBucketEvent( PlayerBucketEvent $event): void{
-        $block = $event->getBlockClicked();
-        $position = new Position($block->getFloorX(), $block->getFloorY(), $block->getFloorZ(), $block->getLevel());
-        if( ($event->getItem()->getId() == 10 || $event->getItem()->getId() == 11) && !$this->canBurn( $position ) ){
-			$event->setCancelled();
-            $this->getLogger()->info( 'No lava bucket allowed!' );
-        }
-    }
+    * public function onPlayerBucketEvent( PlayerBucketEvent $event): void{
+    *    $block = $event->getBlockClicked();
+    *    $position = new Position($block->getFloorX(), $block->getFloorY(), $block->getFloorZ(), $block->getLevel());
+    *    if( ($event->getItem()->getId() == 10 || $event->getItem()->getId() == 11) && !$this->canBurn( $position ) ){
+		*	$event->setCancelled();
+    *        $this->getLogger()->info( 'No lava bucket allowed!' );
+    *    }
+    *}
     */
 
 
