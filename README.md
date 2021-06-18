@@ -2,7 +2,7 @@
 
 ###  Create area's, manage flags and run commmands attachted to area events. 
 Latest Release v2.1.3 
-phar available @ [github](https://github.com/genboy/Festival/releases/tag/2.1.3) or [poggit](https://poggit.pmmp.io/p/Festival)
+phar available @ [github](https://github.com/genboy/Festival/releases/tag/2.1.3) 
 
 ![Festival plugin logo large](https://genboy.net/minecraft/wp-content/uploads/2018/02/festival_plugin_logo.png)
 ###### Copyright [Genboy](https://genboy.net/minecraft) 2018 - 2020
