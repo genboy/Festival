@@ -1,5 +1,9 @@
 ## Festival 
 
+# SORRY! This minecraft Pocketmine-MP plugin 
+# is not maintained anymore!
+
+
 ###  Create area's, manage flags and run commmands attachted to area events. 
 Latest Release v2.1.3 
 phar available @ [github](https://github.com/genboy/Festival/releases/tag/2.1.3) 
