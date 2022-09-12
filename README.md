@@ -1,7 +1,8 @@
 ## Festival 
 
-# SORRY! This minecraft Pocketmine-MP plugin 
-# is not maintained anymore!
+# SORRY! This minecraft Pocketmine-MP plugin is not maintained anymore!
+
+Please note that Festival is no longer actively being developed or maintained. Issues will not be attended to, the remainder of this README has been kept in place for future reference.
 
 
 ###  Create area's, manage flags and run commmands attachted to area events. 
