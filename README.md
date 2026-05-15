@@ -1,8 +1,16 @@
 ## Festival 
+2019 -2026 copyright Genboy / Oddsized / Dencken
 
-# SORRY! This minecraft Pocketmine-MP plugin is not maintained anymore!
+# Festival continues to development in to the Real World
+[Dencken Festival](https://dencken.net/)
 
-Please note that Festival is no longer actively being developed or maintained. Issues will not be attended to, the remainder of this README has been kept in place for future reference.
+---
+# This minecraft Pocketmine-MP plugin is not maintained anymore!
+
+Please note that the Festival PMMP is no longer actively being developed or maintained. 
+ssues will not be attended to, the remainder of this README has been kept in place for future reference.
+
+---
 
 
 ###  Create area's, manage flags and run commmands attachted to area events. 
